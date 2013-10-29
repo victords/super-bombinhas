@@ -1,7 +1,8 @@
 require './global.rb'
 
 module Movement
-	attr_reader :speed, :x, :y, :w, :h, :passable
+	attr_reader :speed, :w, :h, :passable, :top, :bottom, :left, :right
+	attr_accessor :x, :y
 	
 	def move(forces, obst, ramps)
 		@top = @bottom = @left = @right = nil
