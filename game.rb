@@ -4,6 +4,7 @@ require 'gosu'
 require './movement.rb'
 require './ramp.rb'
 require './elevator.rb'
+require './map.rb'
 
 class GameObject
 	include Movement
@@ -43,6 +44,8 @@ class Game < Gosu::Window
 		
 		@el = Elevator.new(0, 0, 100, 20, 4, self, "el.png")
 		@obst.push(@el)
+		
+		@map = Map.new(32, 32, 10, 10)
 	end
 
 	def update

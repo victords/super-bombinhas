@@ -17,7 +17,6 @@ class Elevator
 	def move_to(x, y, obst)
 		if !@moving
 			x_dist = x - @x; y_dist = y - @y
-			puts "#{x_dist} #{y_dist}"
 			freq = @speed_m / Math.sqrt(x_dist * x_dist + y_dist * y_dist)
 			@speed.x = x_dist * freq
 			@speed.y = y_dist * freq
