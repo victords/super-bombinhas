@@ -1,11 +1,12 @@
 class Ramp
-	def initialize(x, y, w, h, left)
-		@x = x;
-		@y = y;
-		@w = w;
-		@h = h;
+	def initialize(x, y, w, h, left, color)
+		@x = x
+		@y = y
+		@w = w
+		@h = h
 		# Indicates whether the ramp raises from left to right
-		@left = left;
+		@left = left
+		@color = color
 	end
 	
 	def intersects(obj)
@@ -20,5 +21,11 @@ class Ramp
 		elsif obj.x < @x; return @y - obj.h
 		else; return @y + (1.0 * (obj.x - @x) * @h / @w) - obj.h
 		end
+	end
+	
+	def draw(window, map)
+		window.draw_triangle((@left ? @x + @w : @x) - map.cam.x, @y - map.cam.y, @color,
+			(@left ? @x : @x + @w) - map.cam.x, @y + @h - map.cam.y, @color,
+			(@left ? @x + @w : @x) - map.cam.x, @y + @h - map.cam.y, @color, 0)
 	end
 end

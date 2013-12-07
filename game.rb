@@ -1,26 +1,39 @@
+#!/home/victor/.rvm/rubies/ruby-2.0.0-p247/bin/ruby
 #encoding: UTF-8
 
 require 'gosu'
-require './movement.rb'
-require './ramp.rb'
-require './elevator.rb'
-require './map.rb'
+require './resources'
+require './movement'
+require './ramp'
+require './elevator'
+require './map'
 
 class GameObject
 	include Movement
-	def initialize(window, img, x, y, w, h, passable = false)
+	def initialize(x, y, w, h, img, img_x = 0, img_y = 0, passable = false)
 		@x = x
 		@y = y
 		@w = w
 		@h = h
+		@img_x = img_x
+		@img_y = img_y
 		@speed = Vector.new(0, 0)
 		@stored_forces = Vector.new(0, 0)
 		@passable = passable
-		@img = Gosu::Image.new(window, img)
+		@img = Res.img(img)
+		@snd = Res.sound(:btn1, true)
 	end
 	
 	def draw
-		@img.draw(@x, @y, 0)
+		@img.draw(@x + @img_x, @y + @img_y, 0)
+	end
+	
+#	def draw(map)
+#		@img.draw(@x + @img_x - map.cam.x, @y + @img_y - map.cam.y, 0)
+#	end
+	
+	def aaa
+		@snd.play
 	end
 end
 
@@ -28,54 +41,43 @@ class Game < Gosu::Window
 	def initialize
 		super 800, 600, false
 		self.caption = "Super Bombinhas"
-
-		@j = JSHelper.new(0)
+		G.initialize(self)
+		Res.initialize
 		
-		PhysicalEnvironment.initialize
-		#PhysicalEnvironment.gravity = Vector.new(0, 0)
-		@obj = GameObject.new(self, "face.png", 10, 10, 100, 100)
-		@obst = []
-		for i in 1..12
-			@obst.push(GameObject.new(self, "test.png", 400, 32 * i, 32, 32))
-			@obst.push(GameObject.new(self, "test.png", 32 * i, 400, 32, 32))
-		end
-		@ramps = []
-		@ramps.push(Ramp.new(300, 340, 100, 60, true))
+		@obj1 = GameObject.new(0, 0, 50, 50, :sprite_Ball)
+		@obj2 = GameObject.new(100, 0, 50, 50, :sprite_Ball)
+		@obj3 = GameObject.new(200, 0, 50, 50, :sprite_Ball)
+		@obj4 = GameObject.new(300, 0, 50, 50, :sprite_Elevator1)
+		@obj5 = GameObject.new(0, 100, 50, 50, :fx_Balao1)
+		@obj6 = GameObject.new(100, 100, 50, 50, :fx_Balao2)
+		@obj7 = GameObject.new(200, 100, 50, 50, :fx_Balao2)
 		
-		@el = Elevator.new(0, 0, 100, 20, 4, self, "el.png")
-		@obst.push(@el)
+		@menu = Res.img(:other_stageMenu, true)
+		@song = Res.song(:caveTheme)
+		@song.play
 		
-		@map = Map.new(32, 32, 10, 10)
+		@frame = 0
 	end
 
 	def update
-		if button_down? Gosu::KbEscape
-			@j.close
-			close
+		@frame += 1
+		if @frame == 60
+			@obj1.aaa
+			Res.oi
+			@frame = 0
 		end
-		#puts "#{@obj.x} #{@obj.y}"
-		@j.update
-		
-		forces = Vector.new(0, 0)
-		forces.x -= 0.5 if @j.axis_down(0, Direction::LEFT)
-		forces.x += 0.5 if @j.axis_down(0, Direction::RIGHT)
-		forces.y -= 15 if @j.axis_down(0, Direction::UP) && @obj.bottom
-		if @obj.bottom
-			forces.x -= 0.15 if @obj.speed.x > 0
-			forces.x += 0.15 if @obj.speed.x < 0
-		end
-		@obj.move(forces, @obst, @ramps)
-		
-		@el.cycle([[300, 10], [87, 330], [0, 0]], [@obj])
 	end
 
 	def draw
-		@obj.draw
-		@obst.each do |o| o.draw end
-		@el.draw
-#		@ramps.each do |r|
-#			
-#		end
+		@obj1.draw
+		@obj2.draw
+		@obj3.draw
+		@obj4.draw
+		@obj5.draw
+		@obj6.draw
+		@obj7.draw
+		
+		@menu.draw(300, 100, 0)
 	end
 end
 

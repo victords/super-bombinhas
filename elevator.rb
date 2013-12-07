@@ -4,7 +4,7 @@ require './global.rb'
 class Elevator
 	attr_reader :x, :y, :w, :h, :passable
 	
-	def initialize(x, y, w, h, speed, window, img)
+	def initialize(x, y, w, h, speed, window, img, img_x = 0, img_y = 0)
 		@x = x; @y = y; @w = w; @h = h
 		@speed = Vector.new(0, 0)
 		@speed_m = speed
@@ -12,6 +12,8 @@ class Elevator
 		@moving = false
 		@passable = true
 		@img = Gosu::Image.new(window, img)
+		@img_x = img_x
+		@img_y = img_y
 	end
 	
 	def move_to(x, y, obst)
@@ -59,7 +61,7 @@ class Elevator
 		true
 	end
 	
-	def draw
-		@img.draw(@x, @y, 0)
+	def draw(map)
+		@img.draw(@x + @img_x - map.cam.x, @y + @img_y - map.cam.y, 0)
 	end
 end

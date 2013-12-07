@@ -1,4 +1,4 @@
-require './global.rb'
+require './global'
 
 module Movement
 	attr_reader :speed, :w, :h, :passable, :top, :bottom, :left, :right
@@ -6,7 +6,7 @@ module Movement
 	
 	def move(forces, obst, ramps)
 		@top = @bottom = @left = @right = nil
-		forces.x += PhysicalEnvironment.gravity.x; forces.y += PhysicalEnvironment.gravity.y
+		forces.x += G.gravity.x; forces.y += G.gravity.y
 		forces.x += @stored_forces.x; forces.y += @stored_forces.y
 		@stored_forces.x = @stored_forces.y = 0
 		

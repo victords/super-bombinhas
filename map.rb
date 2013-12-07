@@ -1,7 +1,7 @@
 require './global.rb'
 
 class Map
-	attr_reader :tile_size, :size, :min_vis_x, :min_vis_y, :max_vis_x, :max_vis_y
+	attr_reader :tile_size, :size, :cam
 	
 	def initialize(t_w, t_h, t_x_count, t_y_count, scr_w = 800, scr_h = 600)
 		@tile_size = Vector.new(t_w, t_h)

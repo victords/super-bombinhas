@@ -1,7 +1,31 @@
-# global definitions
 require 'joystick'
 
 Vector = Struct.new(:x, :y)
+
+module C
+	UP = 0
+	RIGHT = 1
+	DOWN = 2
+	LEFT = 3
+	TILE_SIZE = 32
+end
+
+class G	
+	def self.window
+		@@window
+	end
+	def self.gravity
+		@@gravity
+	end
+	def self.gravity= value
+		@@gravity = value
+	end
+	
+	def self.initialize window
+		@@window = window
+		@@gravity = Vector.new(0, 1)
+	end
+end
 
 class Rectangle
 	attr_reader :x, :y, :w, :h
@@ -13,26 +37,6 @@ class Rectangle
 	def intersects(r)
 		@x < r.x + r.w && @x + @w > r.x && @y < r.y + r.h && @y + @h > r.y
 	end
-end
-
-class PhysicalEnvironment
-	def self.gravity
-		@@gravity
-	end
-	def self.gravity=(value)
-		@@gravity = value
-	end
-	
-	def self.initialize
-		@@gravity = Vector.new(0, 1)
-	end
-end
-
-module Direction
-	UP = 0
-	RIGHT = 1
-	DOWN = 2
-	LEFT = 3
 end
 
 class JSHelper
@@ -100,26 +104,26 @@ class JSHelper
 	
 	def axis_down(axis, dir)
 		return false if !@is_valid
-		return @axes[axis+1] < 0 if dir == Direction::UP
-		return @axes[axis] > 0 if dir == Direction::RIGHT
-		return @axes[axis+1] > 0 if dir == Direction::DOWN
-		return @axes[axis] < 0 if dir == Direction::LEFT
+		return @axes[axis+1] < 0 if dir == Consts::UP
+		return @axes[axis] > 0 if dir == Consts::RIGHT
+		return @axes[axis+1] > 0 if dir == Consts::DOWN
+		return @axes[axis] < 0 if dir == Consts::LEFT
 	end
 	
 	def axis_pressed(axis, dir)
 		return false if !@is_valid
-		return @axes[axis+1] < 0 && @axesPrev[axis+1] >= 0 if dir == Direction::UP
-		return @axes[axis] > 0 && @axesPrev[axis] <= 0 if dir == Direction::RIGHT
-		return @axes[axis+1] > 0 && @axesPrev[axis+1] <= 0 if dir == Direction::DOWN
-		return @axes[axis] < 0 && @axesPrev[axis] >= 0 if dir == Direction::LEFT
+		return @axes[axis+1] < 0 && @axesPrev[axis+1] >= 0 if dir == Consts::UP
+		return @axes[axis] > 0 && @axesPrev[axis] <= 0 if dir == Consts::RIGHT
+		return @axes[axis+1] > 0 && @axesPrev[axis+1] <= 0 if dir == Consts::DOWN
+		return @axes[axis] < 0 && @axesPrev[axis] >= 0 if dir == Consts::LEFT
 	end
 	
 	def axis_released(axis, dir)
 		return false if !@is_valid
-		return @axes[axis+1] >= 0 && @axesPrev[axis+1] < 0 if dir == Direction::UP
-		return @axes[axis] <= 0 && @axesPrev[axis] > 0 if dir == Direction::RIGHT
-		return @axes[axis+1] <= 0 && @axesPrev[axis+1] > 0 if dir == Direction::DOWN
-		return @axes[axis] >= 0 && @axesPrev[axis] < 0 if dir == Direction::LEFT
+		return @axes[axis+1] >= 0 && @axesPrev[axis+1] < 0 if dir == Consts::UP
+		return @axes[axis] <= 0 && @axesPrev[axis] > 0 if dir == Consts::RIGHT
+		return @axes[axis+1] <= 0 && @axesPrev[axis+1] > 0 if dir == Consts::DOWN
+		return @axes[axis] >= 0 && @axesPrev[axis] < 0 if dir == Consts::LEFT
 	end
 	
 	def close
