@@ -7,6 +7,7 @@ require './movement'
 require './ramp'
 require './elevator'
 require './map'
+require './stage'
 
 class GameObject
 	include Movement
@@ -21,7 +22,6 @@ class GameObject
 		@stored_forces = Vector.new(0, 0)
 		@passable = passable
 		@img = Res.img(img)
-		@snd = Res.sound(:btn1, true)
 	end
 	
 	def draw
@@ -31,10 +31,6 @@ class GameObject
 #	def draw(map)
 #		@img.draw(@x + @img_x - map.cam.x, @y + @img_y - map.cam.y, 0)
 #	end
-	
-	def aaa
-		@snd.play
-	end
 end
 
 class Game < Gosu::Window
@@ -53,17 +49,17 @@ class Game < Gosu::Window
 		@obj7 = GameObject.new(200, 100, 50, 50, :fx_Balao2)
 		
 		@menu = Res.img(:other_stageMenu, true)
-		@song = Res.song(:caveTheme)
-		@song.play
+#		@song = Res.song(:caveTheme)
+#		@song.play
 		
 		@frame = 0
+		
+		@stage = Stage.new 2
 	end
 
 	def update
 		@frame += 1
 		if @frame == 60
-			@obj1.aaa
-			Res.oi
 			@frame = 0
 		end
 	end

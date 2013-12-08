@@ -104,26 +104,26 @@ class JSHelper
 	
 	def axis_down(axis, dir)
 		return false if !@is_valid
-		return @axes[axis+1] < 0 if dir == Consts::UP
-		return @axes[axis] > 0 if dir == Consts::RIGHT
-		return @axes[axis+1] > 0 if dir == Consts::DOWN
-		return @axes[axis] < 0 if dir == Consts::LEFT
+		return @axes[axis+1] < 0 if dir == C::UP
+		return @axes[axis] > 0 if dir == C::RIGHT
+		return @axes[axis+1] > 0 if dir == C::DOWN
+		return @axes[axis] < 0 if dir == C::LEFT
 	end
 	
 	def axis_pressed(axis, dir)
 		return false if !@is_valid
-		return @axes[axis+1] < 0 && @axesPrev[axis+1] >= 0 if dir == Consts::UP
-		return @axes[axis] > 0 && @axesPrev[axis] <= 0 if dir == Consts::RIGHT
-		return @axes[axis+1] > 0 && @axesPrev[axis+1] <= 0 if dir == Consts::DOWN
-		return @axes[axis] < 0 && @axesPrev[axis] >= 0 if dir == Consts::LEFT
+		return @axes[axis+1] < 0 && @axesPrev[axis+1] >= 0 if dir == C::UP
+		return @axes[axis] > 0 && @axesPrev[axis] <= 0 if dir == C::RIGHT
+		return @axes[axis+1] > 0 && @axesPrev[axis+1] <= 0 if dir == C::DOWN
+		return @axes[axis] < 0 && @axesPrev[axis] >= 0 if dir == C::LEFT
 	end
 	
 	def axis_released(axis, dir)
 		return false if !@is_valid
-		return @axes[axis+1] >= 0 && @axesPrev[axis+1] < 0 if dir == Consts::UP
-		return @axes[axis] <= 0 && @axesPrev[axis] > 0 if dir == Consts::RIGHT
-		return @axes[axis+1] <= 0 && @axesPrev[axis+1] > 0 if dir == Consts::DOWN
-		return @axes[axis] >= 0 && @axesPrev[axis] < 0 if dir == Consts::LEFT
+		return @axes[axis+1] >= 0 && @axesPrev[axis+1] < 0 if dir == C::UP
+		return @axes[axis] <= 0 && @axesPrev[axis] > 0 if dir == C::RIGHT
+		return @axes[axis+1] <= 0 && @axesPrev[axis+1] > 0 if dir == C::DOWN
+		return @axes[axis] >= 0 && @axesPrev[axis] < 0 if dir == C::LEFT
 	end
 	
 	def close

@@ -38,13 +38,4 @@ class Res
 	def self.text id
 		G.texts[G.lang][id]
 	end
-	
-	def self.oi
-		puts @@imgs.length
-		puts @@global_imgs.length
-		puts @@sounds.length
-		puts @@global_sounds.length
-		puts @@songs.length
-		puts @@global_songs.length
-	end
 end
