@@ -1,13 +1,15 @@
 require 'joystick'
 
-Vector = Struct.new(:x, :y)
+Vector = Struct.new :x, :y
 
 module C
-	UP = 0
-	RIGHT = 1
-	DOWN = 2
-	LEFT = 3
-	TILE_SIZE = 32
+	Up = 0
+	Right = 1
+	Down = 2
+	Left = 3
+	TileSize = 32
+	ScreenWidth = 800
+	ScreenHeight = 600
 end
 
 class G	
@@ -20,21 +22,28 @@ class G
 	def self.gravity= value
 		@@gravity = value
 	end
+	def self.lang
+		@@lang
+	end
+	def self.lang= value
+		@@lang = value
+	end
 	
 	def self.initialize window
 		@@window = window
-		@@gravity = Vector.new(0, 1)
+		@@gravity = Vector.new 0, 1
+		@@lang = :portuguese
 	end
 end
 
 class Rectangle
 	attr_reader :x, :y, :w, :h
 	
-	def initialize(x, y, w, h)
+	def initialize x, y, w, h
 		@x = x; @y = y; @w = w; @h = h
 	end
 	
-	def intersects(r)
+	def intersects r
 		@x < r.x + r.w && @x + @w > r.x && @y < r.y + r.h && @y + @h > r.y
 	end
 end
@@ -42,7 +51,7 @@ end
 class JSHelper
 	attr_reader :is_valid
 	
-	def initialize(index)
+	def initialize index
 		@j = Joystick::Device.new "/dev/input/js#{index}"
 		@axes = {}
 		@axesPrev = {}
@@ -87,43 +96,43 @@ class JSHelper
 		end
 	end
 	
-	def button_down(btn)
+	def button_down btn
 		return false if !@is_valid
 		@btns[btn] == 1
 	end
 	
-	def button_pressed(btn)
+	def button_pressed btn
 		return false if !@is_valid
 		@btns[btn] == 1 && @btnsPrev[btn] == 0
 	end
 	
-	def button_released(btn)
+	def button_released btn
 		return false if !@is_valid
 		@btns[btn] == 0 && @btnsPrev[btn] == 1
 	end
 	
-	def axis_down(axis, dir)
+	def axis_down axis, dir
 		return false if !@is_valid
-		return @axes[axis+1] < 0 if dir == C::UP
-		return @axes[axis] > 0 if dir == C::RIGHT
-		return @axes[axis+1] > 0 if dir == C::DOWN
-		return @axes[axis] < 0 if dir == C::LEFT
+		return @axes[axis+1] < 0 if dir == C::Up
+		return @axes[axis] > 0 if dir == C::Right
+		return @axes[axis+1] > 0 if dir == C::Down
+		return @axes[axis] < 0 if dir == C::Left
 	end
 	
-	def axis_pressed(axis, dir)
+	def axis_pressed axis, dir
 		return false if !@is_valid
-		return @axes[axis+1] < 0 && @axesPrev[axis+1] >= 0 if dir == C::UP
-		return @axes[axis] > 0 && @axesPrev[axis] <= 0 if dir == C::RIGHT
-		return @axes[axis+1] > 0 && @axesPrev[axis+1] <= 0 if dir == C::DOWN
-		return @axes[axis] < 0 && @axesPrev[axis] >= 0 if dir == C::LEFT
+		return @axes[axis+1] < 0 && @axesPrev[axis+1] >= 0 if dir == C::Up
+		return @axes[axis] > 0 && @axesPrev[axis] <= 0 if dir == C::Right
+		return @axes[axis+1] > 0 && @axesPrev[axis+1] <= 0 if dir == C::Down
+		return @axes[axis] < 0 && @axesPrev[axis] >= 0 if dir == C::Left
 	end
 	
-	def axis_released(axis, dir)
+	def axis_released axis, dir
 		return false if !@is_valid
-		return @axes[axis+1] >= 0 && @axesPrev[axis+1] < 0 if dir == C::UP
-		return @axes[axis] <= 0 && @axesPrev[axis] > 0 if dir == C::RIGHT
-		return @axes[axis+1] <= 0 && @axesPrev[axis+1] > 0 if dir == C::DOWN
-		return @axes[axis] >= 0 && @axesPrev[axis] < 0 if dir == C::LEFT
+		return @axes[axis+1] >= 0 && @axesPrev[axis+1] < 0 if dir == C::Up
+		return @axes[axis] <= 0 && @axesPrev[axis] > 0 if dir == C::Right
+		return @axes[axis+1] <= 0 && @axesPrev[axis+1] > 0 if dir == C::Down
+		return @axes[axis] >= 0 && @axesPrev[axis] < 0 if dir == C::Left
 	end
 	
 	def close

@@ -2,7 +2,6 @@
 #encoding: UTF-8
 
 require 'gosu'
-require './resources'
 require './movement'
 require './ramp'
 require './elevator'
@@ -35,7 +34,7 @@ end
 
 class Game < Gosu::Window
 	def initialize
-		super 800, 600, false
+		super C::ScreenWidth, C::ScreenHeight, false
 		self.caption = "Super Bombinhas"
 		G.initialize(self)
 		Res.initialize

@@ -1,3 +1,5 @@
+require './section'
+
 class Stage
 	def initialize num
 		@name = File.read "data/stage/#{num}.sbs"
@@ -20,5 +22,10 @@ class Stage
 		if @cur_section.change_section
 			@cur_section = @sections[@cur_section.change_section]
 		end
+	end
+	
+	def draw
+		# aqui ficará parte relacionada a transições também
+		@cur_section.draw
 	end
 end

@@ -4,19 +4,19 @@ require './global.rb'
 class Elevator
 	attr_reader :x, :y, :w, :h, :passable
 	
-	def initialize(x, y, w, h, speed, window, img, img_x = 0, img_y = 0)
+	def initialize x, y, w, h, speed, window, img, img_x = 0, img_y = 0
 		@x = x; @y = y; @w = w; @h = h
-		@speed = Vector.new(0, 0)
+		@speed = Vector.new 0, 0
 		@speed_m = speed
 		@point = 0
 		@moving = false
 		@passable = true
-		@img = Gosu::Image.new(window, img)
+		@img = Gosu::Image.new window, img
 		@img_x = img_x
 		@img_y = img_y
 	end
 	
-	def move_to(x, y, obst)
+	def move_to x, y, obst
 		if !@moving
 			x_dist = x - @x; y_dist = y - @y
 			freq = @speed_m / Math.sqrt(x_dist * x_dist + y_dist * y_dist)
@@ -30,7 +30,7 @@ class Elevator
 			if @x + @w > o.x && o.x + o.w > @x
 				foot = o.y + o.h
 				if foot.round(6) == @y.round(6) || @speed.y < 0 && foot < @y && foot > y_aim
-					passengers.push(o)
+					passengers << o
 				end
 			end
 		end
@@ -49,8 +49,8 @@ class Elevator
 		@moving = false if @speed.x == 0 && @speed.y == 0
 	end
 	
-	def cycle(points, obst)
-		move_to(points[@point][0], points[@point][1], obst)
+	def cycle points, obst
+		move_to points[@point][0], points[@point][1], obst
 		if !@moving
 			if @point == points.length - 1; @point = 0
 			else; @point += 1; end
@@ -61,7 +61,7 @@ class Elevator
 		true
 	end
 	
-	def draw(map)
+	def draw map
 		@img.draw(@x + @img_x - map.cam.x, @y + @img_y - map.cam.y, 0)
 	end
 end

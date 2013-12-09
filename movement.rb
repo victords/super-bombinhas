@@ -4,7 +4,7 @@ module Movement
 	attr_reader :speed, :w, :h, :passable, :top, :bottom, :left, :right
 	attr_accessor :x, :y
 	
-	def move(forces, obst, ramps)
+	def move forces, obst, ramps
 		@top = @bottom = @left = @right = nil
 		forces.x += G.gravity.x; forces.y += G.gravity.y
 		forces.x += @stored_forces.x; forces.y += @stored_forces.y
@@ -20,7 +20,7 @@ module Movement
 		
 		if forces.y > 0
 			ramps.each do |r|
-				begin forces.y = 0; @bottom = r; break end if r.is_below(self)
+				begin forces.y = 0; @bottom = r; break end if r.is_below self
 			end
 		end
 		
@@ -30,20 +30,20 @@ module Movement
 		y = @speed.y < 0 ? @y + @speed.y : @y
 		w = @w + (@speed.x < 0 ? -@speed.x : @speed.x)
 		h = @h + (@speed.y < 0 ? -@speed.y : @speed.y)
-		move_bounds = Rectangle.new(x, y, w, h)
+		move_bounds = Rectangle.new x, y, w, h
 		coll_list = []
 		obst.each do |o|
-			coll_list.push(o) if move_bounds.intersects(Rectangle.new(o.x, o.y, o.w, o.h))
+			coll_list << o if move_bounds.intersects(Rectangle.new o.x, o.y, o.w, o.h)
 		end
 		
 		if coll_list.length > 0
 			up = @speed.y < 0; rt = @speed.x > 0; dn = @speed.y > 0; lf = @speed.x < 0
 			if @speed.x == 0 || @speed.y == 0
 				# Ortogonal
-				if rt; x_lim = find_right_limit(coll_list)
-				elsif lf; x_lim = find_left_limit(coll_list)
-				elsif dn; y_lim = find_down_limit(coll_list)
-				elsif up; y_lim = find_up_limit(coll_list)
+				if rt; x_lim = find_right_limit coll_list
+				elsif lf; x_lim = find_left_limit coll_list
+				elsif dn; y_lim = find_down_limit coll_list
+				elsif up; y_lim = find_up_limit coll_list
 				end
 				if rt && @x + @w + @speed.x > x_lim; @x = x_lim - @w; @speed.x = 0
 				elsif lf && @x + @speed.x < x_lim; @x = x_lim; @speed.x = 0
@@ -101,34 +101,34 @@ module Movement
 		@y += @speed.y
 		
 		ramps.each do |r|
-			if r.intersects(self)
-				@y = r.get_y(self)
+			if r.intersects self
+				@y = r.get_y self
 				@speed.y = 0
 			end
 		end
 	end	
-	def find_right_limit(coll_list)
+	def find_right_limit coll_list
 		limit = @x + @w + @speed.x
 		coll_list.each do |c|
 			limit = c.x if !c.passable && c.x < limit
 		end
 		limit
 	end
-	def find_left_limit(coll_list)
+	def find_left_limit coll_list
 		limit = @x + @speed.x
 		coll_list.each do |c|
 			limit = c.x + c.w if !c.passable && c.x + c.w > limit
 		end
 		limit
 	end
-	def find_down_limit(coll_list)
+	def find_down_limit coll_list
 		limit = coll_list[0].y
 		coll_list.each do |c|
 			limit = c.y if c.y < limit
 		end
 		limit
 	end
-	def find_up_limit(coll_list)
+	def find_up_limit coll_list
 		limit = @y + @speed.y
 		coll_list.each do |c|
 			limit = c.y + c.h if !c.passable && c.y + c.h > limit
