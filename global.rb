@@ -8,11 +8,12 @@ module C
 	Down = 2
 	Left = 3
 	TileSize = 32
+	TilesetSize = 8
 	ScreenWidth = 800
 	ScreenHeight = 600
 end
 
-class G	
+class G
 	def self.window
 		@@window
 	end
@@ -37,7 +38,7 @@ class G
 end
 
 class Rectangle
-	attr_reader :x, :y, :w, :h
+	attr_accessor :x, :y, :w, :h
 	
 	def initialize x, y, w, h
 		@x = x; @y = y; @w = w; @h = h
