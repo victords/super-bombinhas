@@ -11,6 +11,7 @@ class Stage
 			@sections << Section.new(s, @entrances, @items)
 		end
 		@cur_section = @sections[0]
+		@cur_section.load
 	end
 	
 	def update
