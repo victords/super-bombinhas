@@ -58,10 +58,14 @@ class GameObject < Sprite
 		@bounds = Rectangle.new x, y, w, h
 		@speed = Vector.new 0, 0
 		@stored_forces = Vector.new 0, 0
+		@active = false
 	end
 	
 	def is_visible map
-		return map.cam.intersects @bounds if @bounds
+		if @active_bounds
+			return map.cam.intersects @active_bounds if @active
+			return true
+		end
 		false
 	end
 	

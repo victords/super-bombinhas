@@ -7,6 +7,8 @@ class Map
 		@tile_size = Vector.new t_w, t_h
 		@size = Vector.new t_x_count, t_y_count
 		@cam = Rectangle.new 0, 0, scr_w, scr_h
+		@max_x = t_x_count * t_w - scr_w
+		@max_y = t_y_count * t_h - scr_h
 	end
 	
 	def get_absolute_size
@@ -35,7 +37,18 @@ class Map
 		set_bounds
 	end
 	
+	def move_camera x, y
+		@cam.x += x
+		@cam.y += y
+		set_bounds
+	end
+	
 	def set_bounds
+		@cam.x = 0 if @cam.x < 0
+		@cam.x = @max_x if @cam.x > @max_x
+		@cam.y = 0 if @cam.y < 0
+		@cam.y = @max_y if @cam.y > @max_y
+		
 		@min_vis_x = @cam.x / @tile_size.x
 		@min_vis_y = @cam.y / @tile_size.y
 		@max_vis_x = (@cam.x + @cam.w - 1) / @tile_size.x

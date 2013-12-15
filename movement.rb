@@ -12,11 +12,13 @@ module Movement
 		
 		obst.each do |o|
 			x2 = @x + @w; y2 = @y + @h; x2o = o.x + o.w; y2o = o.y + o.h
-			begin forces.x = 0; @right = o end if !o.passable && x2.round(6) == o.x.round(6) && y2 > o.y && @y < y2o && forces.x > 0
-			begin forces.x = 0; @left = o end if !o.passable && @x.round(6) == x2o.round(6) && y2 > o.y && @y < y2o && forces.x < 0
-			begin forces.y = 0; @bottom = o end if y2.round(6) == o.y.round(6) && x2 > o.x && @x < x2o && forces.y > 0
-			begin forces.y = 0; @top = o end if !o.passable && @y.round(6) == y2o.round(6) && x2 > o.x && @x < x2o && forces.y < 0
+			@right = o if !o.passable && x2.round(6) == o.x.round(6) && y2 > o.y && @y < y2o
+			@left = o if !o.passable && @x.round(6) == x2o.round(6) && y2 > o.y && @y < y2o
+			@bottom = o if y2.round(6) == o.y.round(6) && x2 > o.x && @x < x2o
+			@top = o if !o.passable && @y.round(6) == y2o.round(6) && x2 > o.x && @x < x2o
 		end
+		forces.x = 0 if forces.x < 0 and @left or forces.x > 0 and @right
+		forces.y = 0 if forces.y < 0 and @top or forces.y > 0 and @bottom
 		
 		if forces.y > 0
 			ramps.each do |r|

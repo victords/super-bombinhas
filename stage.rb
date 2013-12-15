@@ -6,7 +6,7 @@ class Stage
 		@sections = []
 		@entrances = []
 		@items = []
-		sections = Dir["data/stage/#{num}-*"]
+		sections = Dir["data/stage/#{num}-*.sbs"]
 		sections.sort.each do |s|
 			@sections << Section.new(s, @entrances, @items)
 		end

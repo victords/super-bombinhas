@@ -8,15 +8,16 @@ class Wheeliam < GameObject
 		@dont_fall = args.nil?
 		@interval = 8
 		@indices = [0, 1]
-		@forces = Vector.new -13, 0
+		@forces = Vector.new -4, 0
 		@facing_right = false
+		
+		@active_bounds = Rectangle.new -1000, @y + @img_gap.y, 0, 35
 	end
 	
 	def update section
 		move @forces, section.obstacles, []
-		if @forces.x != 0
-			@forces.x = 0
-		elsif @left
+		@forces.x = 0
+		if @left
 			set_direction C::Right
 		elsif @right
 			set_direction C::Left
@@ -34,15 +35,20 @@ class Wheeliam < GameObject
 	def set_direction dir
 		@speed.x = 0
 		if dir == C::Left
-			@forces.x = -13
+			@forces.x = -4
 			@facing_right = false
 			@indices[0] = 0; @indices[1] = 1
 			set_animation 0
+			if @active_bounds.w == 0
+				@active_bounds.w = @x + @img_gap.x + @img[0].width - @active_bounds.x
+				@active = true
+			end
 		else
-			@forces.x = 13
+			@forces.x = 4
 			@facing_right = true
 			@indices[0] = 2; @indices[1] = 3
 			set_animation 2
+			@active_bounds.x = @x + @img_gap.x if @active_bounds.x < 0
 		end
 	end
 end

@@ -1,4 +1,4 @@
-#!/home/victor/.rvm/rubies/ruby-2.0.0-p247/bin/ruby
+#!/home/victor/.rvm/rubies/ruby-2.0.0-p353/bin/ruby
 #encoding: UTF-8
 
 require 'gosu'

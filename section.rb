@@ -8,6 +8,7 @@ class Section
 	attr_reader :change_section, :obstacles
 	
 	def initialize file, entrances, items
+		puts "reading #{file}..."
 		parts = File.read(file).split '#'
 		p1 = parts[0].split ','
 		set_map_tileset_bg p1
@@ -24,7 +25,7 @@ class Section
 		t_x_count = s[0].to_i; t_y_count = s[1].to_i
 		@tiles = Array.new(t_x_count) {
 			Array.new(t_y_count) {
-				Tile.new Vector.new(-1, 0), Vector.new(-1, 0), Vector.new(-1, 0), Vector.new(-1, 0), false
+				Tile.new -1, -1, -1, -1, false
 			}
 		}
 		@border_exit = s[2].to_i # should be C::Up, C::Right, C::Down or C::Left
@@ -32,7 +33,7 @@ class Section
 		@bg2 = Res.img "bg_#{s[4]}".to_sym if s[4] != "0"
 		@tileset = Res.tileset s[5]
 		@map = Map.new C::TileSize, C::TileSize, t_x_count, t_y_count
-		@map.set_camera 350, 900
+		@map.set_camera 4500, 1200
 	end
 	
 	def set_elements s, entrances, items
@@ -67,10 +68,10 @@ class Section
 	
 	def tile_type c
 		case c
-			when 'b' then :back
-			when 'f' then :fore
-			when 'p' then :pass
-			when 'w' then :wall
+			when 'B' then :back
+			when 'F' then :fore
+			when 'P' then :pass
+			when 'W' then :wall
 			else :none
 		end
 	end
@@ -128,9 +129,7 @@ class Section
 	end
 	
 	def set_tile x, y, type, s
-		v = @tiles[x][y].send type
-		v.x = s[0].to_i - 1
-		v.y = s[1].to_i - 1
+		@tiles[x][y].send "#{type}=", s.to_i
 		if type == :pass
 			@obstacles << Block.new(x * C::TileSize, y * C::TileSize, C::TileSize, C::TileSize, true)
 		elsif type == :wall
@@ -150,21 +149,27 @@ class Section
 	end
 	
 	def obstacle_at? x, y
-		pos = Vector.new(x / @map.tile_size.x, y / @map.tile_size.y)
-		return @tiles[pos.x][pos.y].pass.x + @tiles[pos.x][pos.y].wall.x >= 0
+		i = x / @map.tile_size.x
+		j = y / @map.tile_size.y
+		return @tiles[i][j].pass + @tiles[i][j].wall >= 0
 	end
 	
 	def update
 		@elements.each do |e|
 			e.update self if e.is_visible @map
 		end
+		
+		@map.move_camera 0, -3 if G.window.button_down? Gosu::KbUp
+		@map.move_camera 0, 3 if G.window.button_down? Gosu::KbDown
+		@map.move_camera -3, 0 if G.window.button_down? Gosu::KbLeft
+		@map.move_camera 3, 0 if G.window.button_down? Gosu::KbRight
 	end
 	
 	def draw
 		@map.foreach do |i, j, x, y|
-			draw_tile @tiles[i][j].back, x, y if @tiles[i][j].back.x >= 0
-			draw_tile @tiles[i][j].pass, x, y if @tiles[i][j].pass.x >= 0
-			draw_tile @tiles[i][j].wall, x, y if @tiles[i][j].wall.x >= 0
+			@tileset[@tiles[i][j].back].draw x, y, 0 if @tiles[i][j].back >= 0
+			@tileset[@tiles[i][j].pass].draw x, y, 0 if @tiles[i][j].pass >= 0
+			@tileset[@tiles[i][j].wall].draw x, y, 0 if @tiles[i][j].wall >= 0
 		end
 		
 		@elements.each do |e|
@@ -172,12 +177,7 @@ class Section
 		end
 		
 		@map.foreach do |i, j, x, y|
-			draw_tile @tiles[i][j].fore, x, y if @tiles[i][j].fore.x >= 0
+			@tileset[@tiles[i][j].fore].draw x, y, 0 if @tiles[i][j].fore >= 0
 		end
-	end
-	
-	def draw_tile v, x, y
-		index = v.y * C::TilesetSize + v.x
-		@tileset[index].draw x, y, 0
 	end
 end
