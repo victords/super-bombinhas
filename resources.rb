@@ -5,12 +5,8 @@ class Res
 	def self.initialize
 		@@imgs = Hash.new
 		@@global_imgs = Hash.new
-		@@tilesets = Hash.new
-		@@global_tilesets = Hash.new
 		@@sounds = Hash.new
 		@@global_sounds = Hash.new
-		@@songs = Hash.new
-		@@global_songs = Hash.new
 	end
 	
 	def self.img id, global = false, ext = ".png"
@@ -21,8 +17,16 @@ class Res
 		a[id] = img
 	end
 	
+	def self.imgs id, sprite_width, sprite_height, global = false, ext = ".png"
+		if global; a = @@global_imgs; else; a = @@imgs; end
+		return a[id] if a[id]
+		s = "data/img/" + id.to_s.split('_').join('/') + ext
+		imgs = Image.load_tiles G.window, s, sprite_width, sprite_height, false
+		a[id] = imgs
+	end
+	
 	def self.tileset id, global = false
-		if global; a = @@global_tilesets; else; a = @@tilesets; end
+		if global; a = @@global_imgs; else; a = @@imgs; end
 		return a[id] if a[id]
 		s = "data/img/tileset/#{id}.png"
 		tileset = Image.load_tiles G.window, s, C::TileSize, C::TileSize, true
@@ -38,7 +42,7 @@ class Res
 	end
 	
 	def self.song id, global = false
-		if global; a = @@global_songs; else; a = @@songs; end
+		if global; a = @@global_sounds; else; a = @@sounds; end
 		return a[id] if a[id]
 		s = "data/sound/bgm/" + id.to_s.split('_').join('/') + ".ogg"
 		song = Song.new G.window, s
@@ -51,8 +55,6 @@ class Res
 	
 	def self.clear
 		@imgs.clear
-		@tilesets.clear
 		@sounds.clear
-		@songs.clear
 	end
 end

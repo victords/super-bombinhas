@@ -1,11 +1,11 @@
 require './global'
-require './resources'
 require './elements'
+require './map'
 
 Tile = Struct.new :back, :fore, :pass, :wall, :hidden
 
 class Section
-	attr_reader :change_section
+	attr_reader :change_section, :obstacles
 	
 	def initialize file, entrances, items
 		parts = File.read(file).split '#'
@@ -39,6 +39,7 @@ class Section
 		x = 0; y = 0
 		@element_info = []
 		@hiding_walls = []
+		@obstacles = []
 		s.each do |e|
 			if e[0] == '_'; x, y = set_spaces e[1..-1].to_i, x, y
 			elsif e[0] == '!'
@@ -53,7 +54,7 @@ class Section
 					t = tile_type e[i]
 					if t == :none
 						t, a = element_type e[(i+1)..-1]
-						@element_info << { type: t, args: a } if t != :none
+						@element_info << { x: x, y: y, type: t, args: a } if t != :none
 						i += 1000
 					else; set_tile x, y, t, e[i+1, 2]; end
 					i += 3
@@ -130,6 +131,11 @@ class Section
 		v = @tiles[x][y].send type
 		v.x = s[0].to_i - 1
 		v.y = s[1].to_i - 1
+		if type == :pass
+			@obstacles << Block.new(x * C::TileSize, y * C::TileSize, C::TileSize, C::TileSize, true)
+		elsif type == :wall
+			@obstacles << Block.new(x * C::TileSize, y * C::TileSize, C::TileSize, C::TileSize, false)
+		end
 	end
 	
 	def set_ramps s
@@ -139,14 +145,19 @@ class Section
 	
 	def load
 		@element_info.each do |e|
-			@elements << Object.const_get(e[:type]).new(e[:args])
+			@elements << Object.const_get(e[:type]).new(e[:x], e[:y], e[:args])
 		end
 	end
 	
+	def obstacle_at? x, y
+		pos = Vector.new(x / @map.tile_size.x, y / @map.tile_size.y)
+		return @tiles[pos.x][pos.y].pass.x + @tiles[pos.x][pos.y].wall.x >= 0
+	end
+	
 	def update
-#		@elements.each do |e|
-#			e.update
-#		end
+		@elements.each do |e|
+			e.update self if e.is_visible @map
+		end
 	end
 	
 	def draw
@@ -156,9 +167,9 @@ class Section
 			draw_tile @tiles[i][j].wall, x, y if @tiles[i][j].wall.x >= 0
 		end
 		
-#		@elements.each do |e|
-#			e.draw
-#		end
+		@elements.each do |e|
+			e.draw @map if e.is_visible @map
+		end
 		
 		@map.foreach do |i, j, x, y|
 			draw_tile @tiles[i][j].fore, x, y if @tiles[i][j].fore.x >= 0

@@ -2,13 +2,11 @@
 #encoding: UTF-8
 
 require 'gosu'
-require './movement'
-require './ramp'
-require './elevator'
-require './map'
 require './stage'
 
 class Game < Gosu::Window
+	attr_reader :frame
+	
 	def initialize
 		super C::ScreenWidth, C::ScreenHeight, false
 		self.caption = "Super Bombinhas"
@@ -22,9 +20,9 @@ class Game < Gosu::Window
 
 	def update
 		@frame += 1
-		if @frame == 60
-			@frame = 0
-		end
+#		if @frame == 60
+#			@frame = 0
+#		end
 		
 		@stage.update
 	end
@@ -36,3 +34,4 @@ end
 
 game = Game.new
 game.show
+puts game.frame
