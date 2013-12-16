@@ -3,10 +3,6 @@ require 'joystick'
 Vector = Struct.new :x, :y
 
 module C
-	Up = 0
-	Right = 1
-	Down = 2
-	Left = 3
 	TileSize = 32
 	TilesetSize = 8
 	ScreenWidth = 800
@@ -114,26 +110,26 @@ class JSHelper
 	
 	def axis_down axis, dir
 		return false if !@is_valid
-		return @axes[axis+1] < 0 if dir == C::Up
-		return @axes[axis] > 0 if dir == C::Right
-		return @axes[axis+1] > 0 if dir == C::Down
-		return @axes[axis] < 0 if dir == C::Left
+		return @axes[axis+1] < 0 if dir == :up
+		return @axes[axis] > 0 if dir == :right
+		return @axes[axis+1] > 0 if dir == :down
+		return @axes[axis] < 0 if dir == :left
 	end
 	
 	def axis_pressed axis, dir
 		return false if !@is_valid
-		return @axes[axis+1] < 0 && @axesPrev[axis+1] >= 0 if dir == C::Up
-		return @axes[axis] > 0 && @axesPrev[axis] <= 0 if dir == C::Right
-		return @axes[axis+1] > 0 && @axesPrev[axis+1] <= 0 if dir == C::Down
-		return @axes[axis] < 0 && @axesPrev[axis] >= 0 if dir == C::Left
+		return @axes[axis+1] < 0 && @axesPrev[axis+1] >= 0 if dir == :up
+		return @axes[axis] > 0 && @axesPrev[axis] <= 0 if dir == :right
+		return @axes[axis+1] > 0 && @axesPrev[axis+1] <= 0 if dir == :down
+		return @axes[axis] < 0 && @axesPrev[axis] >= 0 if dir == :left
 	end
 	
 	def axis_released axis, dir
 		return false if !@is_valid
-		return @axes[axis+1] >= 0 && @axesPrev[axis+1] < 0 if dir == C::Up
-		return @axes[axis] <= 0 && @axesPrev[axis] > 0 if dir == C::Right
-		return @axes[axis+1] <= 0 && @axesPrev[axis+1] > 0 if dir == C::Down
-		return @axes[axis] >= 0 && @axesPrev[axis] < 0 if dir == C::Left
+		return @axes[axis+1] >= 0 && @axesPrev[axis+1] < 0 if dir == :up
+		return @axes[axis] <= 0 && @axesPrev[axis] > 0 if dir == :right
+		return @axes[axis+1] <= 0 && @axesPrev[axis+1] > 0 if dir == :down
+		return @axes[axis] >= 0 && @axesPrev[axis] < 0 if dir == :left
 	end
 	
 	def close

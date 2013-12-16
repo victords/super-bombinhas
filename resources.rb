@@ -17,11 +17,11 @@ class Res
 		a[id] = img
 	end
 	
-	def self.imgs id, sprite_width, sprite_height, global = false, ext = ".png"
+	def self.imgs id, sprite_cols, sprite_rows, global = false, ext = ".png"
 		if global; a = @@global_imgs; else; a = @@imgs; end
 		return a[id] if a[id]
 		s = "data/img/" + id.to_s.split('_').join('/') + ext
-		imgs = Image.load_tiles G.window, s, sprite_width, sprite_height, false
+		imgs = Image.load_tiles G.window, s, -sprite_cols, -sprite_rows, false
 		a[id] = imgs
 	end
 	

@@ -44,6 +44,8 @@ class Map
 	end
 	
 	def set_bounds
+		@cam.x = @cam.x.round
+		@cam.y = @cam.y.round
 		@cam.x = 0 if @cam.x < 0
 		@cam.x = @max_x if @cam.x > @max_x
 		@cam.y = 0 if @cam.y < 0

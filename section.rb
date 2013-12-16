@@ -1,11 +1,12 @@
 require './global'
 require './elements'
+require './bomb'
 require './map'
 
 Tile = Struct.new :back, :fore, :pass, :wall, :hidden
 
 class Section
-	attr_reader :change_section, :obstacles
+	attr_reader :change_section, :obstacles, :ramps
 	
 	def initialize file, entrances, items
 		puts "reading #{file}..."
@@ -41,10 +42,11 @@ class Section
 		@element_info = []
 		@hiding_walls = []
 		@obstacles = []
+		@ramps = []
 		s.each do |e|
 			if e[0] == '_'; x, y = set_spaces e[1..-1].to_i, x, y
 			elsif e[0] == '!'
-				puts "entrance"
+				entrances << Vector.new(x * C::TileSize, y * C::TileSize)
 				x += 1
 				begin y += 1; x = 0 end if x == @tiles.length
 			elsif e[0] == '?'; puts "exit"
@@ -55,7 +57,7 @@ class Section
 					t = tile_type e[i]
 					if t == :none
 						t, a = element_type e[(i+1)..-1]
-						@element_info << { x: x, y: y, type: t, args: a } if t != :none
+						@element_info << {x: x * C::TileSize, y: y * C::TileSize, type: t, args: a} if t != :none
 						i += 1000
 					else; set_tile x, y, t, e[i+1, 2]; end
 					i += 3
@@ -138,14 +140,17 @@ class Section
 	end
 	
 	def set_ramps s
-		puts "Rampas: #{s.length}"
+		puts "ramps: #{s.length}"
 	end
 	#end initialization
 	
-	def load
+	def load entrance
 		@element_info.each do |e|
 			@elements << Object.const_get(e[:type]).new(e[:x], e[:y], e[:args])
 		end
+		@elements << (@bomb = Bomb.new(entrance.x, entrance.y, :azul))
+		@margin = Vector.new((C::ScreenWidth - @bomb.w) / 2, (C::ScreenHeight - @bomb.h) / 2)
+		@map.set_camera @bomb.x - @margin.x, @bomb.y - @margin.y
 	end
 	
 	def obstacle_at? x, y
@@ -159,10 +164,11 @@ class Section
 			e.update self if e.is_visible @map
 		end
 		
-		@map.move_camera 0, -3 if G.window.button_down? Gosu::KbUp
-		@map.move_camera 0, 3 if G.window.button_down? Gosu::KbDown
-		@map.move_camera -3, 0 if G.window.button_down? Gosu::KbLeft
-		@map.move_camera 3, 0 if G.window.button_down? Gosu::KbRight
+#		@map.move_camera 0, -3 if G.window.button_down? Gosu::KbUp
+#		@map.move_camera 0, 3 if G.window.button_down? Gosu::KbDown
+#		@map.move_camera -3, 0 if G.window.button_down? Gosu::KbLeft
+#		@map.move_camera 3, 0 if G.window.button_down? Gosu::KbRight
+		@map.set_camera @bomb.x - @margin.x, @bomb.y - @margin.y
 	end
 	
 	def draw

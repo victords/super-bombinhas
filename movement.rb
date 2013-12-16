@@ -17,16 +17,19 @@ module Movement
 			@bottom = o if y2.round(6) == o.y.round(6) && x2 > o.x && @x < x2o
 			@top = o if !o.passable && @y.round(6) == y2o.round(6) && x2 > o.x && @x < x2o
 		end
-		forces.x = 0 if forces.x < 0 and @left or forces.x > 0 and @right
-		forces.y = 0 if forces.y < 0 and @top or forces.y > 0 and @bottom
+		forces.x = 0 if (forces.x < 0 and @left) or (forces.x > 0 and @right)
+		forces.y = 0 if (forces.y < 0 and @top) or (forces.y > 0 and @bottom)
 		
 		if forces.y > 0
 			ramps.each do |r|
 				begin forces.y = 0; @bottom = r; break end if r.is_below self
 			end
 		end
-		
 		@speed.x += forces.x; @speed.y += forces.y
+		@speed.x = 0 if @speed.x.abs < @min_speed.x
+		@speed.y = 0 if @speed.y.abs < @min_speed.y
+		@speed.x = (@speed.x <=> 0) * @max_speed.x if @speed.x.abs > @max_speed.x
+		@speed.y = (@speed.y <=> 0) * @max_speed.y if @speed.y.abs > @max_speed.y
 		
 		x = @speed.x < 0 ? @x + @speed.x : @x
 		y = @speed.y < 0 ? @y + @speed.y : @y
@@ -124,9 +127,9 @@ module Movement
 		limit
 	end
 	def find_down_limit coll_list
-		limit = coll_list[0].y
+		limit = @y + @h + @speed.y
 		coll_list.each do |c|
-			limit = c.y if c.y < limit
+			limit = c.y if c.y < limit && c.y > @y + @h
 		end
 		limit
 	end

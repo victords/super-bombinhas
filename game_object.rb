@@ -2,13 +2,13 @@ require './movement'
 require './resources'
 
 class Sprite
-	def initialize x, y, img, sprite_width = nil, sprite_height = nil
+	def initialize x, y, img, sprite_cols = nil, sprite_rows = nil
 		@x = x; @y = y
 		@img =
-			if sprite_width.nil?
+			if sprite_cols.nil?
 				[Res.img(img)]
 			else
-				Res.imgs img, sprite_width, sprite_height
+				Res.imgs img, sprite_cols, sprite_rows
 			end
 		@counter = 0
 		@img_index = 0
@@ -16,12 +16,11 @@ class Sprite
 	end
 	
 	def update param
-		
 	end
 	
 	def animate interval, indices
 		@counter += 1
-		if @counter == interval
+		if @counter >= interval
 			@index_index += 1
 			@index_index = 0 if @index_index == indices.length
 			@img_index = indices[@index_index]
@@ -40,14 +39,16 @@ class Block
 	def initialize x, y, w, h, passable
 		@x = x; @y = y; @w = w; @h = h
 		@passable = passable
+		@min_speed = Vector.new 0, 0
+		@max_speed = Vector.new 0, 0
 	end
 end
 
 class GameObject < Sprite
 	include Movement
 	
-	def initialize x, y, w, h, img, sprite_width = nil, sprite_height = nil, img_gap = nil
-		super x, y, img, sprite_width, sprite_height
+	def initialize x, y, w, h, img, sprite_cols = nil, sprite_rows = nil, img_gap = nil
+		super x, y, img, sprite_cols, sprite_rows
 		@w = w; @h = h
 		@img_gap =
 			if img_gap.nil?
@@ -57,8 +58,16 @@ class GameObject < Sprite
 			end
 		@bounds = Rectangle.new x, y, w, h
 		@speed = Vector.new 0, 0
+		@min_speed = Vector.new 0.01, 0.01
+		@max_speed = Vector.new 15, 15
 		@stored_forces = Vector.new 0, 0
 		@active = false
+	end
+	
+	def set_animation index
+		@counter = 0
+		@img_index = index
+		@index_index = 0
 	end
 	
 	def is_visible map
@@ -67,12 +76,6 @@ class GameObject < Sprite
 			return true
 		end
 		false
-	end
-	
-	def set_animation index
-		@counter = 0
-		@img_index = index
-		@index_index = 0
 	end
 	
 	def draw map
