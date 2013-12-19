@@ -12,7 +12,7 @@ class Bomb < GameObject
 		end
 		
 		super x + 6, y + 2, 20, 30, img, 5, 2, Vector.new(r_img_gap, t_img_gap)
-		@max_speed.x = 3.7
+		@max_speed.x = 5
 		@indices = [0, 1, 0, 2]
 		@facing_right = true
 		@type = type
@@ -33,7 +33,9 @@ class Bomb < GameObject
 			forces.x -= 0.15 * @speed.x
 		end
 		if G.window.button_down? Gosu::KbSpace and @bottom
-			forces.y -= 12 + @speed.x.abs
+			forces.y -= 7.2 + 1.2 * @speed.x.abs
+			puts "jump!"
+		else; puts "-"
 		end
 		move forces, section.obstacles, section.ramps
 		if @speed.x != 0
@@ -43,6 +45,8 @@ class Bomb < GameObject
 		else
 			set_animation 5
 		end
+#		if @bottom; puts "-----"
+#		else; puts " "; end
 	end
 	
 	def set_direction dir

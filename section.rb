@@ -1,4 +1,5 @@
 require './global'
+require './ramp'
 require './elements'
 require './bomb'
 require './map'
@@ -42,7 +43,6 @@ class Section
 		@element_info = []
 		@hiding_walls = []
 		@obstacles = []
-		@ramps = []
 		s.each do |e|
 			if e[0] == '_'; x, y = set_spaces e[1..-1].to_i, x, y
 			elsif e[0] == '!'
@@ -140,7 +140,16 @@ class Section
 	end
 	
 	def set_ramps s
-		puts "ramps: #{s.length}"
+		@ramps = []
+		s.each do |r|
+			left = r[0] == 'l'
+			w = r[1].to_i * C::TileSize
+			h = r[2].to_i * C::TileSize
+			coords = r.split(':')[1].split(',')
+			x = coords[0].to_i * C::TileSize
+			y = coords[1].to_i * C::TileSize
+			@ramps << Ramp.new(x, y, w, h, left)
+		end
 	end
 	#end initialization
 	
@@ -160,14 +169,12 @@ class Section
 	end
 	
 	def update
+		# testar construção da lista de obstáculos a cada turno
+		
 		@elements.each do |e|
 			e.update self if e.is_visible @map
 		end
 		
-#		@map.move_camera 0, -3 if G.window.button_down? Gosu::KbUp
-#		@map.move_camera 0, 3 if G.window.button_down? Gosu::KbDown
-#		@map.move_camera -3, 0 if G.window.button_down? Gosu::KbLeft
-#		@map.move_camera 3, 0 if G.window.button_down? Gosu::KbRight
 		@map.set_camera @bomb.x - @margin.x, @bomb.y - @margin.y
 	end
 	

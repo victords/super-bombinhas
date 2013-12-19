@@ -34,7 +34,7 @@ class Wheeliam < GameObject
 	def set_direction dir
 		@speed.x = 0
 		if dir == :left
-			@forces.x = -4
+			@forces.x = -3
 			@facing_right = false
 			@indices[0] = 0; @indices[1] = 1
 			set_animation 0
@@ -43,7 +43,7 @@ class Wheeliam < GameObject
 				@active = true
 			end
 		else
-			@forces.x = 4
+			@forces.x = 3
 			@facing_right = true
 			@indices[0] = 2; @indices[1] = 3
 			set_animation 2

@@ -28,7 +28,7 @@ class G
 	
 	def self.initialize window
 		@@window = window
-		@@gravity = Vector.new 0, 1
+		@@gravity = Vector.new 0, 0.9
 		@@lang = :portuguese
 	end
 end

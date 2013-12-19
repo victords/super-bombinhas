@@ -5,26 +5,26 @@ module Movement
 	attr_accessor :x, :y
 	
 	def move forces, obst, ramps
-		@top = @bottom = @left = @right = nil
 		forces.x += G.gravity.x; forces.y += G.gravity.y
 		forces.x += @stored_forces.x; forces.y += @stored_forces.y
 		@stored_forces.x = @stored_forces.y = 0
 		
+		@top = @bottom = @left = @right = nil		
 		obst.each do |o|
 			x2 = @x + @w; y2 = @y + @h; x2o = o.x + o.w; y2o = o.y + o.h
 			@right = o if !o.passable && x2.round(6) == o.x.round(6) && y2 > o.y && @y < y2o
 			@left = o if !o.passable && @x.round(6) == x2o.round(6) && y2 > o.y && @y < y2o
 			@bottom = o if y2.round(6) == o.y.round(6) && x2 > o.x && @x < x2o
 			@top = o if !o.passable && @y.round(6) == y2o.round(6) && x2 > o.x && @x < x2o
+		end		
+		if @bottom.nil?
+			ramps.each do |r|
+				@bottom = r if r.is_below self
+			end
 		end
 		forces.x = 0 if (forces.x < 0 and @left) or (forces.x > 0 and @right)
 		forces.y = 0 if (forces.y < 0 and @top) or (forces.y > 0 and @bottom)
 		
-		if forces.y > 0
-			ramps.each do |r|
-				begin forces.y = 0; @bottom = r; break end if r.is_below self
-			end
-		end
 		@speed.x += forces.x; @speed.y += forces.y
 		@speed.x = 0 if @speed.x.abs < @min_speed.x
 		@speed.y = 0 if @speed.y.abs < @min_speed.y
