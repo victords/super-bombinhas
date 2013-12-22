@@ -11,7 +11,7 @@ class Bomb < GameObject
 		when :aldan then @name = "Aldan"; img = :sprite_Aldan; l_img_gap = -6; r_img_gap = -14; t_img_gap = -26
 		end
 		
-		super x + 6, y + 2, 20, 30, img, 5, 2, Vector.new(r_img_gap, t_img_gap)
+		super x + 6, y + 2, 20, 30, img, Vector.new(r_img_gap, t_img_gap), 5, 2
 		@max_speed.x = 5
 		@indices = [0, 1, 0, 2]
 		@facing_right = true
@@ -33,9 +33,7 @@ class Bomb < GameObject
 			forces.x -= 0.15 * @speed.x
 		end
 		if G.window.button_down? Gosu::KbSpace and @bottom
-			forces.y -= 7.2 + 1.2 * @speed.x.abs
-			puts "jump!"
-		else; puts "-"
+			forces.y -= 7.1 + 0.2 * @speed.x.abs
 		end
 		move forces, section.obstacles, section.ramps
 		if @speed.x != 0
@@ -45,8 +43,6 @@ class Bomb < GameObject
 		else
 			set_animation 5
 		end
-#		if @bottom; puts "-----"
-#		else; puts " "; end
 	end
 	
 	def set_direction dir

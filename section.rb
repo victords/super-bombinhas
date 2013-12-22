@@ -9,17 +9,14 @@ Tile = Struct.new :back, :fore, :pass, :wall, :hidden
 class Section
 	attr_reader :change_section, :obstacles, :ramps
 	
-	def initialize file, entrances, items
-		puts "reading #{file}..."
+	def initialize file, entrances
 		parts = File.read(file).split '#'
 		p1 = parts[0].split ','
 		set_map_tileset_bg p1
 		p2 = parts[1].split ';'
-		set_elements p2, entrances, items
+		set_elements p2, entrances
 		p3 = parts[2].split ';'
 		set_ramps p3
-		@change_section = false
-		@elements = []
 	end
 	
 	# initialization
@@ -30,7 +27,7 @@ class Section
 				Tile.new -1, -1, -1, -1, false
 			}
 		}
-		@border_exit = s[2].to_i # should be C::Up, C::Right, C::Down or C::Left
+		@border_exit = s[2].to_i # 0: top, 1: right, 2: down, 3: left, 4: none
 		@bg1 = Res.img "bg_#{s[3]}".to_sym, false, ".jpg"
 		@bg2 = Res.img "bg_#{s[4]}".to_sym if s[4] != "0"
 		@tileset = Res.tileset s[5]
@@ -38,7 +35,7 @@ class Section
 		@map.set_camera 4500, 1200
 	end
 	
-	def set_elements s, entrances, items
+	def set_elements s, entrances
 		x = 0; y = 0
 		@element_info = []
 		@hiding_walls = []
@@ -46,7 +43,8 @@ class Section
 		s.each do |e|
 			if e[0] == '_'; x, y = set_spaces e[1..-1].to_i, x, y
 			elsif e[0] == '!'
-				entrances << Vector.new(x * C::TileSize, y * C::TileSize)
+				#entrances << Vector.new(x * C::TileSize, y * C::TileSize)
+				entrances[e[1].to_i] = Vector.new(x * C::TileSize, y * C::TileSize)
 				x += 1
 				begin y += 1; x = 0 end if x == @tiles.length
 			elsif e[0] == '?'; puts "exit"
@@ -57,7 +55,11 @@ class Section
 					t = tile_type e[i]
 					if t == :none
 						t, a = element_type e[(i+1)..-1]
-						@element_info << {x: x * C::TileSize, y: y * C::TileSize, type: t, args: a} if t != :none
+						if t != :none
+							el = {x: x * C::TileSize, y: y * C::TileSize, type: t, args: a}
+							el[:index] = @element_info.length if e[i] == '$'
+							@element_info << el
+						end
 						i += 1000
 					else; set_tile x, y, t, e[i+1, 2]; end
 					i += 3
@@ -82,31 +84,31 @@ class Section
 		i = s.index ':'
 		if i; n = s[0..i].to_i
 		else; n = s.to_i; end
-		case n
-			when  1 then type = :Wheeliam
-			when  2 then type = :FireRock
-			when  3 then type = :Bombie
-			when  4 then type = :Sprinny
-			when  7 then type = :Life
-			when  8 then type = :Key
-			when  9 then type = :Door
-			when 12 then type = :GunPowder
-			when 13 then type = :Crack
-			when 17 then type = :Elevator
-			when 18 then type = :Fureel
-			when 20 then type = :SaveBombie
-			when 21 then type = :Pin
-			when 23 then type = :Spikes
-			when 24 then type = :Attack1
-			when 25 then type = :MovingWall
-			when 26 then type = :Ball
-			when 27 then type = :BallReceptor
-			when 28 then type = :Yaw
-			when 29 then type = :Ekips
-			when 31 then type = :Spec
-			when 32 then type = :Faller
-			when 33 then type = :Turner
-			else type = :none
+		type = case n
+			when  1 then :Wheeliam
+			when  2 then :FireRock
+			when  3 then :Bombie
+			when  4 then :Sprinny
+			when  7 then :Life
+			when  8 then :Key
+			when  9 then :Door
+			when 12 then :GunPowder
+			when 13 then :Crack
+			when 17 then :Elevator
+			when 18 then :Fureel
+			when 20 then :SaveBombie
+			when 21 then :Pin
+			when 23 then :Spikes
+			when 24 then :Attack1
+			when 25 then :MovingWall
+			when 26 then :Ball
+			when 27 then :BallReceptor
+			when 28 then :Yaw
+			when 29 then :Ekips
+			when 31 then :Spec
+			when 32 then :Faller
+			when 33 then :Turner
+			else :none
 		end
 		args = s[(i+1)..-1] if i
 		[type, args]
@@ -154,12 +156,19 @@ class Section
 	#end initialization
 	
 	def load entrance
+		@elements = []
 		@element_info.each do |e|
-			@elements << Object.const_get(e[:type]).new(e[:x], e[:y], e[:args])
+			if e[:index]
+				@elements << Object.const_get(e[:type]).new(e[:x], e[:y], e[:args], e[:index])
+			else
+				@elements << Object.const_get(e[:type]).new(e[:x], e[:y], e[:args])
+			end
 		end
 		@elements << (@bomb = Bomb.new(entrance.x, entrance.y, :azul))
 		@margin = Vector.new((C::ScreenWidth - @bomb.w) / 2, (C::ScreenHeight - @bomb.h) / 2)
 		@map.set_camera @bomb.x - @margin.x, @bomb.y - @margin.y
+		@change_section = nil
+		puts @elements.length
 	end
 	
 	def obstacle_at? x, y
@@ -168,8 +177,19 @@ class Section
 		return @tiles[i][j].pass + @tiles[i][j].wall >= 0
 	end
 	
+	def collide_with_player? obj
+		@bomb.bounds.intersects obj.bounds
+	end
+	
+	def take_item index
+		@element_info.delete_at index
+		@elements.delete_at index
+	end
+	
 	def update
 		# testar construção da lista de obstáculos a cada turno
+		
+		@change_section = 0 if G.window.button_down? Gosu::KbEscape
 		
 		@elements.each do |e|
 			e.update self if e.is_visible @map

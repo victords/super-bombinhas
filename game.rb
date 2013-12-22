@@ -20,9 +20,10 @@ class Game < Gosu::Window
 
 	def update
 		@frame += 1
-#		if @frame == 60
-#			@frame = 0
-#		end
+		if @frame == 60
+			puts G.window.send(:fps)
+			@frame = 0
+		end
 		
 		@stage.update
 	end
@@ -34,4 +35,3 @@ end
 
 game = Game.new
 game.show
-puts game.frame

@@ -47,7 +47,7 @@ end
 class GameObject < Sprite
 	include Movement
 	
-	def initialize x, y, w, h, img, sprite_cols = nil, sprite_rows = nil, img_gap = nil
+	def initialize x, y, w, h, img, img_gap = nil, sprite_cols = nil, sprite_rows = nil
 		super x, y, img, sprite_cols, sprite_rows
 		@w = w; @h = h
 		@img_gap =
@@ -56,12 +56,15 @@ class GameObject < Sprite
 			else
 				img_gap
 			end
-		@bounds = Rectangle.new x, y, w, h
 		@speed = Vector.new 0, 0
 		@min_speed = Vector.new 0.01, 0.01
 		@max_speed = Vector.new 15, 15
 		@stored_forces = Vector.new 0, 0
 		@active = false
+	end
+	
+	def bounds
+		Rectangle.new x, y, w, h
 	end
 	
 	def set_animation index

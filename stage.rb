@@ -4,11 +4,10 @@ class Stage
 	def initialize num
 		@name = File.read "data/stage/#{num}.sbs"
 		@sections = []
-		@entrances = []
-		@items = []
+		@entrances = {}
 		sections = Dir["data/stage/#{num}-*.sbs"]
 		sections.sort.each do |s|
-			@sections << Section.new(s, @entrances, @items)
+			@sections << Section.new(s, @entrances)
 		end
 		@cur_section = @sections[0]
 		@cur_section.load @entrances[0]
@@ -22,6 +21,7 @@ class Stage
 	def check_change_section
 		if @cur_section.change_section
 			@cur_section = @sections[@cur_section.change_section]
+			@cur_section.load @entrances[0]
 		end
 	end
 	

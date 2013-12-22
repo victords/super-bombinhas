@@ -2,7 +2,7 @@ require './game_object'
 
 class Wheeliam < GameObject
 	def initialize x, y, args
-		super x, y, 32, 32, :sprite_Wheeliam, 4, 1, Vector.new(-4, -3)
+		super x, y, 32, 32, :sprite_Wheeliam, Vector.new(-4, -3), 4, 1
 		
 		@dont_fall = args.nil?
 		@interval = 8
@@ -71,14 +71,22 @@ class Sprinny < GameObject
 end
 
 class Life < GameObject
-	def initialize x, y, args
+	def initialize x, y, args, index
 		@args = args
 	end
 end
 
 class Key < GameObject
-	def initialize x, y, args
-		@args = args
+	def initialize x, y, args, index
+		super x + 3, y + 4, 26, 26, :sprite_Key, Vector.new(-3, -4)
+		@index = index
+		@active_bounds = Rectangle.new x + 3, y + 2, 26, 28
+	end
+	
+	def update section
+		if section.collide_with_player? self
+			section.take_item @index
+		end
 	end
 end
 
@@ -89,7 +97,7 @@ class Door < GameObject
 end
 
 class GunPowder < GameObject
-	def initialize x, y, args
+	def initialize x, y, args, index
 		@args = args
 	end
 end
@@ -131,7 +139,7 @@ class Spikes < GameObject
 end
 
 class Attack1 < GameObject
-	def initialize x, y, args
+	def initialize x, y, args, index
 		@args = args
 	end
 end
@@ -167,7 +175,7 @@ class Ekips < GameObject
 end
 
 class Spec < GameObject
-	def initialize x, y, args
+	def initialize x, y, args, index
 		@args = args
 	end
 end
