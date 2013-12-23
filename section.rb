@@ -7,7 +7,8 @@ require './map'
 Tile = Struct.new :back, :fore, :pass, :wall, :hidden
 
 class Section
-	attr_reader :change_section, :obstacles, :ramps
+	attr_reader :entrance, :reload, :obstacles, :ramps
+	attr_accessor :warp
 	
 	def initialize file, entrances
 		parts = File.read(file).split '#'
@@ -42,26 +43,26 @@ class Section
 		@obstacles = []
 		s.each do |e|
 			if e[0] == '_'; x, y = set_spaces e[1..-1].to_i, x, y
-			elsif e[0] == '!'
-				#entrances << Vector.new(x * C::TileSize, y * C::TileSize)
-				entrances[e[1].to_i] = Vector.new(x * C::TileSize, y * C::TileSize)
-				x += 1
-				begin y += 1; x = 0 end if x == @tiles.length
-			elsif e[0] == '?'; puts "exit"
 			elsif e[3] == '*'; x, y = set_tiles e[4..-1].to_i, x, y, tile_type(e[0]), e[1, 2]
 			else
 				i = 0
 				begin
 					t = tile_type e[i]
-					if t == :none
-						t, a = element_type e[(i+1)..-1]
-						if t != :none
-							el = {x: x * C::TileSize, y: y * C::TileSize, type: t, args: a}
-							el[:index] = @element_info.length if e[i] == '$'
-							@element_info << el
+					if t != :none
+						set_tile x, y, t, e[i+1, 2]
+					else
+						if e[i] == '!'
+							entrances[e[(i+1)..-1].to_i] = {x: x * C::TileSize, y: y * C::TileSize, section: self}
+						else
+							t, a = element_type e[(i+1)..-1]
+							if t != :none # teste poderá ser removido no final
+								el = {x: x * C::TileSize, y: y * C::TileSize, type: t, args: a}
+								el[:index] = @element_info.length if e[i] == '$'
+								@element_info << el
+							end           # teste poderá ser removido no final
 						end
 						i += 1000
-					else; set_tile x, y, t, e[i+1, 2]; end
+					end
 					i += 3
 				end until e[i].nil?
 				x += 1
@@ -155,7 +156,8 @@ class Section
 	end
 	#end initialization
 	
-	def load entrance
+	def load x, y
+		@taken_items = []
 		@elements = []
 		@element_info.each do |e|
 			if e[:index]
@@ -164,11 +166,17 @@ class Section
 				@elements << Object.const_get(e[:type]).new(e[:x], e[:y], e[:args])
 			end
 		end
-		@elements << (@bomb = Bomb.new(entrance.x, entrance.y, :azul))
+		@elements << (@bomb = Bomb.new(x, y, :azul))
 		@margin = Vector.new((C::ScreenWidth - @bomb.w) / 2, (C::ScreenHeight - @bomb.h) / 2)
 		@map.set_camera @bomb.x - @margin.x, @bomb.y - @margin.y
-		@change_section = nil
-		puts @elements.length
+		
+		map_size = @map.get_absolute_size
+		@obstacles << Block.new(map_size.x, 0, 1, map_size.y, false) if @border_exit != 1
+		@obstacles << Block.new(-1, 0, 1, map_size.y, false) if @border_exit != 3
+		
+		@reload = false
+		@entrance = nil
+		@warp = nil
 	end
 	
 	def obstacle_at? x, y
@@ -182,14 +190,27 @@ class Section
 	end
 	
 	def take_item index
-		@element_info.delete_at index
+		@taken_items << index
 		@elements.delete_at index
+	end
+	
+	def save_check_point id
+		@taken_items.each do |i|
+			@element_info.delete_at i
+		end
+		@entrance = id
+	end
+	
+	def do_warp x, y
+		@bomb.do_warp x, y
+		@map.set_camera @bomb.x - @margin.x, @bomb.y - @margin.y
+		@warp = nil
 	end
 	
 	def update
 		# testar construção da lista de obstáculos a cada turno
 		
-		@change_section = 0 if G.window.button_down? Gosu::KbEscape
+		@reload = true if G.window.button_down? Gosu::KbEscape
 		
 		@elements.each do |e|
 			e.update self if e.is_visible @map

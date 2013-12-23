@@ -28,7 +28,7 @@ class Wheeliam < GameObject
 			end
 		end
 		
-		animate @interval, @indices
+		animate @indices, @interval
 	end
 	
 	def set_direction dir
@@ -92,7 +92,21 @@ end
 
 class Door < GameObject
 	def initialize x, y, args
-		@args = args
+		super x, y + 63, 32, 1, :sprite_Door, Vector.new(0, -63), 5, 1
+		s = args.split ','
+		@id = s[0].to_i
+		@locked = (not s[1].nil?)
+		@open = false
+		@active_bounds = Rectangle.new x, y, 32, 64
+	end
+	
+	def update section
+		if not @open and section.collide_with_player? self
+			if G.window.button_down? Gosu::KbA
+				section.warp = @id
+				@open = true
+			end
+		end
 	end
 end
 
@@ -122,7 +136,22 @@ end
 
 class SaveBombie < GameObject
 	def initialize x, y, args
-		@args = args
+		super x - 16, y, 64, 32, :sprite_Bombie2, Vector.new(-16, -26), 4, 2
+		@id = args.to_i
+		@active_bounds = Rectangle.new x - 32, y - 26, 96, 58
+		@saved = false
+	end
+	
+	def update section
+		if not @saved and section.collide_with_player? self
+			section.save_check_point @id
+			@saved = true
+			@indices = [1, 2, 3]
+		end
+		
+		if @saved
+			animate @indices, 8
+		end
 	end
 end
 

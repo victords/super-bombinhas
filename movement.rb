@@ -4,6 +4,10 @@ module Movement
 	attr_reader :speed, :w, :h, :passable, :top, :bottom, :left, :right
 	attr_accessor :x, :y
 	
+	def bounds
+		Rectangle.new @x, @y, @w, @h
+	end
+	
 	def move forces, obst, ramps
 		forces.x += G.gravity.x; forces.y += G.gravity.y
 		forces.x += @stored_forces.x; forces.y += @stored_forces.y
@@ -38,7 +42,7 @@ module Movement
 		move_bounds = Rectangle.new x, y, w, h
 		coll_list = []
 		obst.each do |o|
-			coll_list << o if move_bounds.intersects(Rectangle.new o.x, o.y, o.w, o.h)
+			coll_list << o if move_bounds.intersects o.bounds
 		end
 		
 		if coll_list.length > 0

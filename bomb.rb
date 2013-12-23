@@ -37,7 +37,7 @@ class Bomb < GameObject
 		end
 		move forces, section.obstacles, section.ramps
 		if @speed.x != 0
-			animate 30 / @speed.x.abs, @indices
+			animate @indices, 30 / @speed.x.abs
 		elsif @facing_right
 			set_animation 0
 		else
@@ -55,6 +55,14 @@ class Bomb < GameObject
 			@indices = [0, 1, 0, 2]
 			set_animation 0
 		end
+	end
+	
+	def do_warp x, y
+		@speed.x = @speed.y = 0
+		@x = x + 6; @y = y + 2
+		@facing_right = true
+		@indices = [0, 1, 0, 2]
+		set_animation 0
 	end
 	
 	def is_visible map

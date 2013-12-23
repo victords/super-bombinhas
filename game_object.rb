@@ -18,7 +18,7 @@ class Sprite
 	def update param
 	end
 	
-	def animate interval, indices
+	def animate indices, interval
 		@counter += 1
 		if @counter >= interval
 			@index_index += 1
@@ -61,10 +61,6 @@ class GameObject < Sprite
 		@max_speed = Vector.new 15, 15
 		@stored_forces = Vector.new 0, 0
 		@active = false
-	end
-	
-	def bounds
-		Rectangle.new x, y, w, h
 	end
 	
 	def set_animation index
