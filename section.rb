@@ -7,7 +7,7 @@ require './map'
 Tile = Struct.new :back, :fore, :pass, :wall, :hidden
 
 class Section
-	attr_reader :entrance, :reload, :obstacles, :ramps
+	attr_reader :entrance, :reload, :obstacles, :ramps, :loaded
 	attr_accessor :warp
 	
 	def initialize file, entrances
@@ -212,8 +212,10 @@ class Section
 		
 		@reload = true if G.window.button_down? Gosu::KbEscape
 		
+		@loaded = true
 		@elements.each do |e|
 			e.update self if e.is_visible @map
+			@loaded = false if not e.ready?
 		end
 		
 		@map.set_camera @bomb.x - @margin.x, @bomb.y - @margin.y
@@ -225,11 +227,11 @@ class Section
 			@tileset[@tiles[i][j].pass].draw x, y, 0 if @tiles[i][j].pass >= 0
 			@tileset[@tiles[i][j].wall].draw x, y, 0 if @tiles[i][j].wall >= 0
 		end
-		
+	
 		@elements.each do |e|
 			e.draw @map if e.is_visible @map
 		end
-		
+	
 		@map.foreach do |i, j, x, y|
 			@tileset[@tiles[i][j].fore].draw x, y, 0 if @tiles[i][j].fore >= 0
 		end

@@ -60,7 +60,7 @@ class GameObject < Sprite
 		@min_speed = Vector.new 0.01, 0.01
 		@max_speed = Vector.new 15, 15
 		@stored_forces = Vector.new 0, 0
-		@active = false
+		@ready = false
 	end
 	
 	def set_animation index
@@ -71,10 +71,14 @@ class GameObject < Sprite
 	
 	def is_visible map
 		if @active_bounds
-			return map.cam.intersects @active_bounds if @active
+			return map.cam.intersects @active_bounds if @ready
 			return true
 		end
 		false
+	end
+	
+	def ready?
+		@ready
 	end
 	
 	def draw map

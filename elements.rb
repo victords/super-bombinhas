@@ -40,7 +40,7 @@ class Wheeliam < GameObject
 			set_animation 0
 			if @active_bounds.w == 0
 				@active_bounds.w = @x + @img_gap.x + @img[0].width - @active_bounds.x
-				@active = true
+				@ready = true
 			end
 		else
 			@forces.x = 3
@@ -54,25 +54,25 @@ end
 
 class FireRock < GameObject
 	def initialize x, y, args
-		@args = args
+		@ready = true
 	end
 end
 
 class Bombie < GameObject
 	def initialize x, y, args
-		@args = args
+		@ready = true
 	end
 end
 
 class Sprinny < GameObject
 	def initialize x, y, args
-		@args = args
+		@ready = true
 	end
 end
 
 class Life < GameObject
 	def initialize x, y, args, index
-		@args = args
+		@ready = true
 	end
 end
 
@@ -81,6 +81,7 @@ class Key < GameObject
 		super x + 3, y + 4, 26, 26, :sprite_Key, Vector.new(-3, -4)
 		@index = index
 		@active_bounds = Rectangle.new x + 3, y + 2, 26, 28
+		@ready = true
 	end
 	
 	def update section
@@ -98,13 +99,21 @@ class Door < GameObject
 		@locked = (not s[1].nil?)
 		@open = false
 		@active_bounds = Rectangle.new x, y, 32, 64
+		@ready = true
 	end
 	
 	def update section
-		if not @open and section.collide_with_player? self
+		if not @opening and section.collide_with_player? self
 			if G.window.button_down? Gosu::KbA
+				set_animation 1
+				@opening = true
+			end
+		end
+		if @opening
+			animate [1, 2, 3, 4, 0], 5
+			if @img_index == 0
 				section.warp = @id
-				@open = true
+				@opening = false
 			end
 		end
 	end
@@ -112,25 +121,25 @@ end
 
 class GunPowder < GameObject
 	def initialize x, y, args, index
-		@args = args
+		@ready = true
 	end
 end
 
 class Crack < GameObject
 	def initialize x, y, args
-		@args = args
+		@ready = true
 	end
 end
 
 class Elevator < GameObject
 	def initialize x, y, args
-		@args = args
+		@ready = true
 	end
 end
 
 class Fureel < GameObject
 	def initialize x, y, args
-		@args = args
+		@ready = true
 	end
 end
 
@@ -140,6 +149,7 @@ class SaveBombie < GameObject
 		@id = args.to_i
 		@active_bounds = Rectangle.new x - 32, y - 26, 96, 58
 		@saved = false
+		@ready = true
 	end
 	
 	def update section
@@ -157,67 +167,67 @@ end
 
 class Pin < GameObject
 	def initialize x, y, args
-		@args = args
+		@ready = true
 	end
 end
 
 class Spikes < GameObject
 	def initialize x, y, args
-		@args = args
+		@ready = true
 	end
 end
 
 class Attack1 < GameObject
 	def initialize x, y, args, index
-		@args = args
+		@ready = true
 	end
 end
 
 class MovingWall < GameObject
 	def initialize x, y, args
-		@args = args
+		@ready = true
 	end
 end
 
 class Ball < GameObject
 	def initialize x, y, args
-		@args = args
+		@ready = true
 	end
 end
 
 class BallReceptor < GameObject
 	def initialize x, y, args
-		@args = args
+		@ready = true
 	end
 end
 
 class Yaw < GameObject
 	def initialize x, y, args
-		@args = args
+		@ready = true
 	end
 end
 
 class Ekips < GameObject
 	def initialize x, y, args
-		@args = args
+		@ready = true
 	end
 end
 
 class Spec < GameObject
 	def initialize x, y, args, index
-		@args = args
+		@ready = true
 	end
 end
 
 class Faller < GameObject
 	def initialize x, y, args
-		@args = args
+		@ready = true
 	end
 end
 
 class Turner < GameObject
 	def initialize x, y, args
-		@args = args
+		@ready = true
 	end
 end
 

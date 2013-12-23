@@ -15,6 +15,7 @@ class Bomb < GameObject
 		@max_speed.x = 5
 		@indices = [0, 1, 0, 2]
 		@facing_right = true
+		@ready = true
 		@type = type
 	end
 	

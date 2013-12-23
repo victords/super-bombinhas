@@ -25,11 +25,15 @@ class G
 	def self.lang= value
 		@@lang = value
 	end
+	def self.font
+		@@font
+	end
 	
 	def self.initialize window
 		@@window = window
 		@@gravity = Vector.new 0, 0.9
 		@@lang = :portuguese
+		@@font = Font.new window, "BankGothicMedium.ttf", 20
 	end
 end
 

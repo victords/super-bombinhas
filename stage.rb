@@ -12,6 +12,8 @@ class Stage
 		@cur_section = @sections[0]
 		@cur_entrance = @entrances[0]
 		@cur_section.load @cur_entrance[:x], @cur_entrance[:y]
+		@counter = 0
+		@dots = "."
 	end
 	
 	def update
@@ -24,6 +26,8 @@ class Stage
 	def check_reload
 		if @cur_section.reload
 			@cur_section.load @cur_entrance[:x], @cur_entrance[:y]
+			@counter = 0
+			@dots = "."
 		end
 	end
 	
@@ -36,17 +40,28 @@ class Stage
 	def check_warp
 		if @cur_section.warp
 			entrance = @entrances[@cur_section.warp]
-			if entrance[:section] != @cur_section
-				@cur_section = entrance[:section]
-				@cur_section.load entrance[:x], entrance[:y]
-			else
+			@cur_section = entrance[:section]
+			if @cur_section.loaded
 				@cur_section.do_warp entrance[:x], entrance[:y]
+			else
+				@cur_section.load entrance[:x], entrance[:y]
 			end
+			@counter = 0
+			@dots = "."
 		end
 	end
 	
 	def draw
-		# aqui ficará parte relacionada a transições também
-		@cur_section.draw
+		if @cur_section.loaded
+			@cur_section.draw
+		else
+			G.font.draw "Loading" + @dots, 10, 10, 0xffffffff
+			@counter += 1
+			if @counter == 10
+				@dots += '.'
+				@dots = '.' if @dots.length > 3
+				@counter = 0
+			end
+		end
 	end
 end
