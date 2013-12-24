@@ -8,7 +8,7 @@ Tile = Struct.new :back, :fore, :pass, :wall, :hidden
 
 class Section
 	attr_reader :entrance, :reload, :obstacles, :ramps, :loaded
-	attr_accessor :warp
+	attr_accessor :warp, :locked_door
 	
 	def initialize file, entrances
 		parts = File.read(file).split '#'
@@ -18,6 +18,7 @@ class Section
 		set_elements p2, entrances
 		p3 = parts[2].split ';'
 		set_ramps p3
+		@taken_items = []
 	end
 	
 	# initialization
@@ -157,7 +158,11 @@ class Section
 	#end initialization
 	
 	def load x, y
-		@taken_items = []
+		G.player.clear
+		@taken_items.each do |i|
+			G.player.add_item i[:type]
+		end
+		@temp_taken_items = []
 		@elements = []
 		@element_info.each do |e|
 			if e[:index]
@@ -174,9 +179,11 @@ class Section
 		@obstacles << Block.new(map_size.x, 0, 1, map_size.y, false) if @border_exit != 1
 		@obstacles << Block.new(-1, 0, 1, map_size.y, false) if @border_exit != 3
 		
+		@loaded = false
 		@reload = false
 		@entrance = nil
 		@warp = nil
+		@locked_door = false
 	end
 	
 	def obstacle_at? x, y
@@ -189,15 +196,18 @@ class Section
 		@bomb.bounds.intersects obj.bounds
 	end
 	
-	def take_item index
-		@taken_items << index
+	def take_item index, type
+		@temp_taken_items << {index: index, type: type}
 		@elements.delete_at index
+		G.player.add_item type
 	end
 	
 	def save_check_point id
-		@taken_items.each do |i|
-			@element_info.delete_at i
+		@temp_taken_items.each do |i|
+			@element_info.delete_at i[:index]
+			@taken_items << i
 		end
+		@temp_taken_items.clear
 		@entrance = id
 	end
 	
@@ -207,10 +217,16 @@ class Section
 		@warp = nil
 	end
 	
+	def unlock_door
+		@locked_door.unlock
+		@locked_door = nil
+	end
+	
 	def update
 		# testar construção da lista de obstáculos a cada turno
 		
 		@reload = true if G.window.button_down? Gosu::KbEscape
+		G.player.use_item self if G.window.button_down? Gosu::KbA
 		
 		@loaded = true
 		@elements.each do |e|

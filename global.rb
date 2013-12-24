@@ -1,4 +1,5 @@
 require 'joystick'
+require './player'
 
 Vector = Struct.new :x, :y
 
@@ -12,6 +13,9 @@ end
 class G
 	def self.window
 		@@window
+	end
+	def self.player
+		@@player
 	end
 	def self.gravity
 		@@gravity
@@ -31,6 +35,7 @@ class G
 	
 	def self.initialize window
 		@@window = window
+		@@player = Player.new
 		@@gravity = Vector.new 0, 0.9
 		@@lang = :portuguese
 		@@font = Font.new window, "BankGothicMedium.ttf", 20

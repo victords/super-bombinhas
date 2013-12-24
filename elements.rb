@@ -86,25 +86,32 @@ class Key < GameObject
 	
 	def update section
 		if section.collide_with_player? self
-			section.take_item @index
+			section.take_item @index, :Key
 		end
 	end
 end
 
 class Door < GameObject
 	def initialize x, y, args
-		super x, y + 63, 32, 1, :sprite_Door, Vector.new(0, -63), 5, 1
+		super x + 15, y + 63, 2, 1, :sprite_Door, Vector.new(-15, -63), 5, 1
 		s = args.split ','
 		@id = s[0].to_i
 		@locked = (not s[1].nil?)
 		@open = false
 		@active_bounds = Rectangle.new x, y, 32, 64
 		@ready = true
+		@lock = Res.img(:sprite_Lock) if @locked
 	end
 	
 	def update section
-		if not @opening and section.collide_with_player? self
-			if G.window.button_down? Gosu::KbA
+		collide = section.collide_with_player? self
+		if @locked and collide
+			section.locked_door = self
+		else
+			section.locked_door = nil
+		end
+		if not @locked and not @opening and collide
+			if G.window.button_down? Gosu::KbUp
 				set_animation 1
 				@opening = true
 			end
@@ -116,6 +123,16 @@ class Door < GameObject
 				@opening = false
 			end
 		end
+	end
+	
+	def unlock
+		@locked = false
+		@lock = nil
+	end
+	
+	def draw map
+		super map
+		@lock.draw(@x + 4 - map.cam.x, @y - 38 - map.cam.y, 0) if @lock
 	end
 end
 
