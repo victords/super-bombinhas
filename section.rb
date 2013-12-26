@@ -4,7 +4,7 @@ require './elements'
 require './bomb'
 require './map'
 
-Tile = Struct.new :back, :fore, :pass, :wall, :hidden
+Tile = Struct.new :back, :fore, :pass, :wall, :hide
 
 class Section
 	attr_reader :entrance, :reload, :obstacles, :ramps, :loaded
@@ -26,12 +26,13 @@ class Section
 		t_x_count = s[0].to_i; t_y_count = s[1].to_i
 		@tiles = Array.new(t_x_count) {
 			Array.new(t_y_count) {
-				Tile.new -1, -1, -1, -1, false
+				Tile.new -1, -1, -1, -1, -1
 			}
 		}
 		@border_exit = s[2].to_i # 0: top, 1: right, 2: down, 3: left, 4: none
 		@bg1 = Res.img "bg_#{s[3]}".to_sym, false, ".jpg"
 		@bg2 = Res.img "bg_#{s[4]}".to_sym if s[4] != "0"
+		@tileset_num = s[5].to_i
 		@tileset = Res.tileset s[5]
 		@map = Map.new C::TileSize, C::TileSize, t_x_count, t_y_count
 		@map.set_camera 4500, 1200
@@ -40,8 +41,8 @@ class Section
 	def set_elements s, entrances
 		x = 0; y = 0
 		@element_info = []
-		@hiding_walls = []
 		@obstacles = []
+		@hide_tiles = []
 		s.each do |e|
 			if e[0] == '_'; x, y = set_spaces e[1..-1].to_i, x, y
 			elsif e[3] == '*'; x, y = set_tiles e[4..-1].to_i, x, y, tile_type(e[0]), e[1, 2]
@@ -78,6 +79,7 @@ class Section
 			when 'F' then :fore
 			when 'P' then :pass
 			when 'W' then :wall
+			when 'H' then :hide
 			else :none
 		end
 	end
@@ -91,15 +93,24 @@ class Section
 			when  2 then :FireRock
 			when  3 then :Bombie
 			when  4 then :Sprinny
+			####  5       Sprinny dois pulos
+			####  6       Sprinny três pulos
 			when  7 then :Life
 			when  8 then :Key
 			when  9 then :Door
+			#### 10       Door locked
+			#### 11       warp (virou entrance)
 			when 12 then :GunPowder
 			when 13 then :Crack
+			#### 14       gambiarra da rampa, eliminada!
+			#### 15       gambiarra da rampa, eliminada!
+			#### 16       Wheeliam dont_fall false
 			when 17 then :Elevator
 			when 18 then :Fureel
+			#### 19       Fureel dont_fall false
 			when 20 then :SaveBombie
 			when 21 then :Pin
+			#### 22       Pin com obstáculo
 			when 23 then :Spikes
 			when 24 then :Attack1
 			when 25 then :MovingWall
@@ -107,6 +118,7 @@ class Section
 			when 27 then :BallReceptor
 			when 28 then :Yaw
 			when 29 then :Ekips
+			#### 30       ForeWall
 			when 31 then :Spec
 			when 32 then :Faller
 			when 33 then :Turner
@@ -163,14 +175,24 @@ class Section
 			G.player.add_item i[:type]
 		end
 		@temp_taken_items = []
+		
 		@elements = []
 		@element_info.each do |e|
-			if e[:index]
-				@elements << Object.const_get(e[:type]).new(e[:x], e[:y], e[:args], e[:index])
-			else
-				@elements << Object.const_get(e[:type]).new(e[:x], e[:y], e[:args])
+			type = Object.const_get e[:type]
+			if e[:index]; @elements << type.new(e[:x], e[:y], e[:args], e[:index])
+			else; @elements << type.new(e[:x], e[:y], e[:args]); end
+		end
+		
+		index = 1
+		@tiles.each_with_index do |v, i|
+			v.each_with_index do |t, j|
+				if @tiles[i][j].hide == 0
+					@hide_tiles << HideTile.new(i, j, index, @tiles, @tileset_num)
+					index += 1
+				end
 			end
 		end
+		
 		@elements << (@bomb = Bomb.new(x, y, :azul))
 		@margin = Vector.new((C::ScreenWidth - @bomb.w) / 2, (C::ScreenHeight - @bomb.h) / 2)
 		@map.set_camera @bomb.x - @margin.x, @bomb.y - @margin.y
@@ -194,6 +216,11 @@ class Section
 	
 	def collide_with_player? obj
 		@bomb.bounds.intersects obj.bounds
+	end
+	
+	def player_at? i, j
+		rect = Rectangle.new i * C::TileSize, j * C::TileSize, C::TileSize, C::TileSize
+		@bomb.bounds.intersects rect
 	end
 	
 	def take_item index, type
@@ -229,9 +256,13 @@ class Section
 		G.player.use_item self if G.window.button_down? Gosu::KbA
 		
 		@loaded = true
+		@showing_tiles = false
 		@elements.each do |e|
 			e.update self if e.is_visible @map
 			@loaded = false if not e.ready?
+		end
+		@hide_tiles.each do |t|
+			t.update self if t.is_visible @map
 		end
 		
 		@map.set_camera @bomb.x - @margin.x, @bomb.y - @margin.y
@@ -243,13 +274,17 @@ class Section
 			@tileset[@tiles[i][j].pass].draw x, y, 0 if @tiles[i][j].pass >= 0
 			@tileset[@tiles[i][j].wall].draw x, y, 0 if @tiles[i][j].wall >= 0
 		end
-	
+		
 		@elements.each do |e|
 			e.draw @map if e.is_visible @map
 		end
-	
+		
 		@map.foreach do |i, j, x, y|
 			@tileset[@tiles[i][j].fore].draw x, y, 0 if @tiles[i][j].fore >= 0
+		end
+		
+		@hide_tiles.each do |t|
+			t.draw @map if t.is_visible @map
 		end
 	end
 end

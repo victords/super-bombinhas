@@ -18,14 +18,12 @@ class Player
 	end
 	
 	def use_item section
-		puts "antes: #{@items}"
 		return if @items[@cur_item_type].nil?
 		item = Object.const_get("#{@cur_item_type}Item").new
 		if item.use section
 			@items[@cur_item_type] -= 1
 			@items.delete @cur_item_type if @items[@cur_item_type] == 0
 		end
-		puts "depois: #{@items}"
 	end
 	
 	def clear

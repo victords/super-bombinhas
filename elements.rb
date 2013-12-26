@@ -248,3 +248,76 @@ class Turner < GameObject
 	end
 end
 
+class HideTile
+	#falta fazer a checagem de bordas
+	
+	def initialize i, j, group, tiles, num
+		@state = 0
+		@alpha = 0xff
+		@color = 0xffffffff
+		
+		@group = group
+		@points = []
+		check_tile i, j, tiles, 4
+		
+		@img = Res.imgs "sprite_ForeWall#{num}".to_sym, 5, 1
+	end
+	
+	def check_tile i, j, tiles, dir
+		return if tiles[i][j].nil?
+		return if tiles[i][j].hide < 0
+		tiles[i][j].hide = @group
+		@points << Vector.new(i, j)
+		check_tile i, j-1, tiles, 0 if dir != 2
+		check_tile i+1, j, tiles, 1 if dir != 3
+		check_tile i, j+1, tiles, 2 if dir != 0
+		check_tile i-1, j, tiles, 3 if dir != 1
+	end
+	
+	def update section
+		will_show = false
+		@points.each do |p|
+			if section.player_at? p.x, p.y
+				will_show = true
+				break
+			end
+		end
+		if will_show; show
+		else; hide; end
+	end
+	
+	def show
+		if @state != 2
+			@alpha -= 17
+			if @alpha == 51
+				@state = 2
+			else
+				@state = 1
+			end
+			@color = 0x00ffffff | (@alpha << 24)
+		end
+	end
+	
+	def hide
+		if @state != 0
+			@alpha += 17
+			if @alpha == 0xff
+				@state = 0
+			else
+				@state = 1
+			end
+			@color = 0x00ffffff | (@alpha << 24)
+		end
+	end
+	
+	def is_visible map
+		true
+	end
+	
+	def draw map
+		@points.each do |p|
+			@img[0].draw p.x * C::TileSize - map.cam.x, p.y * C::TileSize - map.cam.y, 0, 1, 1, @color
+		end
+	end
+end
+
