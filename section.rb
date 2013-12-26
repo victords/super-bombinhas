@@ -178,9 +178,11 @@ class Section
 		
 		@elements = []
 		@element_info.each do |e|
-			type = Object.const_get e[:type]
-			if e[:index]; @elements << type.new(e[:x], e[:y], e[:args], e[:index])
-			else; @elements << type.new(e[:x], e[:y], e[:args]); end
+			if e
+				type = Object.const_get e[:type]
+				if e[:index]; @elements << type.new(e[:x], e[:y], e[:args], e[:index])
+				else; @elements << type.new(e[:x], e[:y], e[:args]); end
+			end
 		end
 		
 		index = 1
@@ -225,13 +227,13 @@ class Section
 	
 	def take_item index, type
 		@temp_taken_items << {index: index, type: type}
-		@elements.delete_at index
+		@elements[index] = nil
 		G.player.add_item type
 	end
 	
 	def save_check_point id
 		@temp_taken_items.each do |i|
-			@element_info.delete_at i[:index]
+			@element_info[i[:index]] = nil
 			@taken_items << i
 		end
 		@temp_taken_items.clear
@@ -258,8 +260,10 @@ class Section
 		@loaded = true
 		@showing_tiles = false
 		@elements.each do |e|
-			e.update self if e.is_visible @map
-			@loaded = false if not e.ready?
+			if e
+				e.update self if e.is_visible @map
+				@loaded = false if not e.ready?
+			end
 		end
 		@hide_tiles.each do |t|
 			t.update self if t.is_visible @map
@@ -276,7 +280,9 @@ class Section
 		end
 		
 		@elements.each do |e|
-			e.draw @map if e.is_visible @map
+			if e
+				e.draw @map if e.is_visible @map
+			end
 		end
 		
 		@map.foreach do |i, j, x, y|

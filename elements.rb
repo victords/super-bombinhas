@@ -249,7 +249,7 @@ class Turner < GameObject
 end
 
 class HideTile
-	#falta fazer a checagem de bordas
+	#falta fazer a checagem de bordas e implementar is_visible
 	
 	def initialize i, j, group, tiles, num
 		@state = 0
@@ -265,7 +265,7 @@ class HideTile
 	
 	def check_tile i, j, tiles, dir
 		return if tiles[i][j].nil?
-		return if tiles[i][j].hide < 0
+		return if tiles[i][j].hide < 0 or tiles[i][j].hide == @group
 		tiles[i][j].hide = @group
 		@points << Vector.new(i, j)
 		check_tile i, j-1, tiles, 0 if dir != 2
