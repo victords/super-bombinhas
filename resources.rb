@@ -9,11 +9,11 @@ class Res
 		@@global_sounds = Hash.new
 	end
 	
-	def self.img id, global = false, ext = ".png"
+	def self.img id, global = false, tileable = false, ext = ".png"
 		if global; a = @@global_imgs; else; a = @@imgs; end
 		return a[id] if a[id]
 		s = "data/img/" + id.to_s.split('_').join('/') + ext
-		img = Image.new G.window, s
+		img = Image.new G.window, s, tileable
 		a[id] = img
 	end
 	

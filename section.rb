@@ -11,7 +11,7 @@ class Section
 	attr_accessor :warp, :locked_door
 	
 	def initialize file, entrances
-		parts = File.read(file).split '#'
+		parts = File.read(file).chomp.split('#', -1)
 		p1 = parts[0].split ','
 		set_map_tileset_bg p1
 		p2 = parts[1].split ';'
@@ -30,8 +30,8 @@ class Section
 			}
 		}
 		@border_exit = s[2].to_i # 0: top, 1: right, 2: down, 3: left, 4: none
-		@bg1 = Res.img "bg_#{s[3]}".to_sym, false, ".jpg"
-		@bg2 = Res.img "bg_#{s[4]}".to_sym if s[4] != "0"
+		@bg1 = Res.img "bg_#{s[3]}".to_sym, false, true, ".jpg"
+		@bg2 = Res.img "bg_#{s[4]}".to_sym, false, true if s[4] != "0"
 		@tileset_num = s[5].to_i
 		@tileset = Res.tileset s[5]
 		@map = Map.new C::TileSize, C::TileSize, t_x_count, t_y_count
@@ -75,11 +75,11 @@ class Section
 	
 	def tile_type c
 		case c
-			when 'B' then :back
-			when 'F' then :fore
-			when 'P' then :pass
-			when 'W' then :wall
-			when 'H' then :hide
+			when 'b' then :back
+			when 'f' then :fore
+			when 'p' then :pass
+			when 'w' then :wall
+			when 'h' then :hide
 			else :none
 		end
 	end
@@ -273,6 +273,9 @@ class Section
 	end
 	
 	def draw
+		draw_bg1
+		draw_bg2 if @bg2
+		
 		@map.foreach do |i, j, x, y|
 			@tileset[@tiles[i][j].back].draw x, y, 0 if @tiles[i][j].back >= 0
 			@tileset[@tiles[i][j].pass].draw x, y, 0 if @tiles[i][j].pass >= 0
@@ -291,6 +294,48 @@ class Section
 		
 		@hide_tiles.each do |t|
 			t.draw @map if t.is_visible @map
+		end
+	end
+	
+	def draw_bg1
+		map_size = @map.get_absolute_size
+		back_x = -@map.cam.x * 0.3; back_y = -@map.cam.y * 0.3
+		tiles_x = map_size.x / @bg1.width; tiles_y = map_size.y / @bg1.height
+		for i in 1..tiles_x-1
+			if back_x + i * @bg1.width > 0
+				back_x += (i - 1) * @bg1.width
+				break
+			end
+		end
+		for i in 1..tiles_y-1
+			if back_y + i * @bg1.height > 0
+				back_y += (i - 1) * @bg1.height
+				break
+			end
+		end
+		first_back_y = back_y
+		while back_x < C::ScreenWidth
+			while back_y < C::ScreenHeight
+				@bg1.draw back_x, back_y, 0
+				back_y += @bg1.height
+			end
+			back_x += @bg1.width
+			back_y = first_back_y
+		end
+	end
+	
+	def draw_bg2
+		back_x = -@map.cam.x * 0.5
+		tiles_x = @map.get_absolute_size.x / @bg2.width
+		for i in 1..tiles_x-1
+			if back_x + i * @bg2.width > 0
+				back_x += (i - 1) * @bg2.width
+				break
+			end
+		end
+		while back_x < C::ScreenWidth
+			@bg2.draw back_x, 0, 0
+			back_x += @bg2.width
 		end
 	end
 end
