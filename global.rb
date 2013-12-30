@@ -38,7 +38,7 @@ class G
 		@@player = Player.new
 		@@gravity = Vector.new 0, 0.9
 		@@lang = :portuguese
-		@@font = Font.new window, "BankGothicMedium.ttf", 20
+		@@font = Font.new window, "data/font/BankGothicMedium.ttf", 20
 	end
 end
 

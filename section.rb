@@ -259,10 +259,11 @@ class Section
 		
 		@loaded = true
 		@showing_tiles = false
-		@elements.each do |e|
+		@elements.each_with_index do |e, i|
 			if e
 				e.update self if e.is_visible @map
 				@loaded = false if not e.ready?
+				@elements[i] = nil if e.dead?
 			end
 		end
 		@hide_tiles.each do |t|
@@ -295,6 +296,9 @@ class Section
 		@hide_tiles.each do |t|
 			t.draw @map if t.is_visible @map
 		end
+		
+		G.font.draw "Score", 10, 10, 0, 1, 1, 0xff000000
+		G.font.draw G.player.score, 100, 10, 0, 1, 1, 0xff000000
 	end
 	
 	def draw_bg1

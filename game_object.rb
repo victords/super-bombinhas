@@ -81,6 +81,10 @@ class GameObject < Sprite
 		@ready
 	end
 	
+	def dead?
+		@dead
+	end
+	
 	def draw map
 		@img[@img_index].draw @x + @img_gap.x - map.cam.x,
 		                      @y + @img_gap.y - map.cam.y, 0 if @img

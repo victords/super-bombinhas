@@ -1,6 +1,8 @@
 require './items'
 
 class Player
+	attr_accessor :score
+	
 	def initialize score = 0, stage = 0, bomb = :azul
 		@score = score
 		@stage = stage

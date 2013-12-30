@@ -52,9 +52,30 @@ class Wheeliam < GameObject
 	end
 end
 
-class FireRock < GameObject
+class FireRock < GameObject	
 	def initialize x, y, args
+		super x + 6, y + 8, 20, 20, :sprite_FireRock, Vector.new(-2, -18), 4, 1
+		@active_bounds = Rectangle.new x + 4, y - 10, 24, 40
 		@ready = true
+		@state = 0
+		@move_counter = 0
+		@indices = [0, 1, 2, 3]
+	end
+	
+	def update section
+		if section.collide_with_player? self
+			G.player.score += 10
+			@dead = true
+		end
+		@move_counter += 1
+		if @move_counter == 10
+			if @state == 0 or @state == 1; @y -= 1
+			else; @y += 1; end
+			@state += 1
+			@state = 0 if @state == 4
+			@move_counter = 0
+		end
+		animate @indices, 5
 	end
 end
 
@@ -82,11 +103,21 @@ class Key < GameObject
 		@index = index
 		@active_bounds = Rectangle.new x + 3, y + 2, 26, 28
 		@ready = true
+		@state = 0
+		@move_counter = 0
 	end
 	
 	def update section
 		if section.collide_with_player? self
 			section.take_item @index, :Key
+		end
+		@move_counter += 1
+		if @move_counter == 10
+			if @state == 0 or @state == 1; @y -= 1
+			else; @y += 1; end
+			@state += 1
+			@state = 0 if @state == 4
+			@move_counter = 0
 		end
 	end
 end
