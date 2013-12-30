@@ -14,7 +14,7 @@ class Wheeliam < GameObject
 	end
 	
 	def update section
-		move @forces, section.obstacles, section.ramps
+		move @forces, section.get_obstacles(@x, @y), section.ramps
 		@forces.x = 0
 		if @left
 			set_direction :right

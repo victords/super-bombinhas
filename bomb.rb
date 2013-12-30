@@ -36,7 +36,7 @@ class Bomb < GameObject
 		if G.window.button_down? Gosu::KbSpace and @bottom
 			forces.y -= 7.1 + 0.2 * @speed.x.abs
 		end
-		move forces, section.obstacles, section.ramps
+		move forces, section.get_obstacles(@x, @y), section.ramps
 		if @speed.x != 0
 			animate @indices, 30 / @speed.x.abs
 		elsif @facing_right

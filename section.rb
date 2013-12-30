@@ -7,7 +7,7 @@ require './map'
 Tile = Struct.new :back, :fore, :pass, :wall, :hide
 
 class Section
-	attr_reader :entrance, :reload, :obstacles, :ramps, :loaded
+	attr_reader :entrance, :reload, :ramps, :loaded
 	attr_accessor :warp, :locked_door
 	
 	def initialize file, entrances
@@ -41,7 +41,6 @@ class Section
 	def set_elements s, entrances
 		x = 0; y = 0
 		@element_info = []
-		@obstacles = []
 		@hide_tiles = []
 		s.each do |e|
 			if e[0] == '_'; x, y = set_spaces e[1..-1].to_i, x, y
@@ -148,11 +147,6 @@ class Section
 	
 	def set_tile x, y, type, s
 		@tiles[x][y].send "#{type}=", s.to_i
-		if type == :pass
-			@obstacles << Block.new(x * C::TileSize, y * C::TileSize, C::TileSize, C::TileSize, true)
-		elsif type == :wall
-			@obstacles << Block.new(x * C::TileSize, y * C::TileSize, C::TileSize, C::TileSize, false)
-		end
 	end
 	
 	def set_ramps s
@@ -169,7 +163,7 @@ class Section
 	end
 	#end initialization
 	
-	def load x, y
+	def load bomb_x, bomb_y
 		G.player.clear
 		@taken_items.each do |i|
 			G.player.add_item i[:type]
@@ -195,19 +189,44 @@ class Section
 			end
 		end
 		
-		@elements << (@bomb = Bomb.new(x, y, :azul))
+		@elements << (@bomb = Bomb.new(bomb_x, bomb_y, :azul))
 		@margin = Vector.new((C::ScreenWidth - @bomb.w) / 2, (C::ScreenHeight - @bomb.h) / 2)
 		@map.set_camera @bomb.x - @margin.x, @bomb.y - @margin.y
 		
 		map_size = @map.get_absolute_size
-		@obstacles << Block.new(map_size.x, 0, 1, map_size.y, false) if @border_exit != 1
-		@obstacles << Block.new(-1, 0, 1, map_size.y, false) if @border_exit != 3
 		
 		@loaded = false
 		@reload = false
 		@entrance = nil
 		@warp = nil
 		@locked_door = false
+	end
+	
+	def get_obstacles x, y
+		obstacles = []
+		map_size = @map.get_absolute_size
+		if x > map_size.x - 4 * C::TileSize and @border_exit != 1
+			obstacles << Block.new(map_size.x, 0, 1, map_size.y, false)
+		end
+		if x < 4 * C::TileSize and @border_exit != 3
+			obstacles << Block.new(-1, 0, 1, map_size.y, false)
+		end
+		
+		i = (x / @map.tile_size.x).round
+		j = (y / @map.tile_size.y).round
+		for k in (i-3)..(i+3)
+			for l in (j-3)..(j+3)
+				if @tiles[k][l]
+					if @tiles[k][l].pass >= 0
+						obstacles << Block.new(k * C::TileSize, l * C::TileSize, C::TileSize, C::TileSize, true)
+					elsif @tiles[k][l].wall >= 0
+						obstacles << Block.new(k * C::TileSize, l * C::TileSize, C::TileSize, C::TileSize, false)
+					end
+				end
+			end
+		end
+		
+		obstacles
 	end
 	
 	def obstacle_at? x, y
