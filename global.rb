@@ -145,3 +145,38 @@ class JSHelper
 		@j.close if @is_valid
 	end
 end
+
+class KB
+	def self.initialize
+		@@keys = [
+			Gosu::KbUp, Gosu::KbRight, Gosu::KbDown, Gosu::KbLeft,
+			Gosu::KbSpace, Gosu::KbReturn, Gosu::KbBackspace, Gosu::KbEscape,
+			Gosu::KbLeftControl, Gosu::KbRightControl, Gosu::KbLeftShift, Gosu::KbRightShift,
+			Gosu::KbA
+		]
+		@@down = []
+		@@prev_down = []
+	end
+	
+	def self.update
+		@@prev_down = @@down.clone
+		@@down.clear
+		@@keys.each do |k|
+			if G.window.button_down? k
+				@@down << k
+			end
+		end
+	end
+	
+	def self.key_pressed? key
+		@@prev_down.index(key).nil? and @@down.index(key)
+	end
+	
+	def self.key_down? key
+		@@down.index(key)
+	end
+	
+	def self.key_released? key
+		@@prev_down.index(key) and @@down.index(key).nil?
+	end
+end

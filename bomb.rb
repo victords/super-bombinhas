@@ -20,21 +20,25 @@ class Bomb < GameObject
 	end
 	
 	def update section
+		if KB.key_pressed? Gosu::KbLeftShift or KB.key_pressed? Gosu::KbRightShift
+			G.player.change_item
+		end
+		
 		forces = Vector.new 0, 0
-		if G.window.button_down? Gosu::KbLeft
+		if KB.key_down? Gosu::KbLeft
 			set_direction :left if @facing_right
 			forces.x -= 0.15
 		elsif @speed.x < 0
 			forces.x -= 0.15 * @speed.x
 		end
-		if G.window.button_down? Gosu::KbRight
+		if KB.key_down? Gosu::KbRight
 			set_direction :right if not @facing_right
 			forces.x += 0.15
 		elsif @speed.x > 0
 			forces.x -= 0.15 * @speed.x
 		end
-		if G.window.button_down? Gosu::KbSpace and @bottom
-			forces.y -= 7.1 + 0.2 * @speed.x.abs
+		if KB.key_pressed? Gosu::KbSpace and @bottom
+			forces.y -= 13.7 + 0.4 * @speed.x.abs
 		end
 		move forces, section.get_obstacles(@x, @y), section.ramps
 		if @speed.x != 0

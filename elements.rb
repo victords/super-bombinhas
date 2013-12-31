@@ -1,5 +1,37 @@
 require './game_object'
 
+class FloatingItem < GameObject
+	def initialize x, y, w, h, img, img_gap = nil, sprite_cols = nil, sprite_rows = nil, indices = nil, interval = nil
+		super x, y, w, h, img, img_gap, sprite_cols, sprite_rows
+		if img_gap
+			@active_bounds = Rectangle.new x + img_gap.x, y - img_gap.y, @img[0].width, @img[0].height
+		else
+			@active_bounds = Rectangle.new x, y, @img[0].width, @img[0].height
+		end
+		@ready = true
+		@state = 3
+		@move_counter = 0
+		@indices = indices
+		@interval = interval
+	end
+	
+	def update section
+		if section.collide_with_player? self
+			yield
+			@dead = true
+		end
+		@move_counter += 1
+		if @move_counter == 10
+			if @state == 0 or @state == 1; @y -= 1
+			else; @y += 1; end
+			@state += 1
+			@state = 0 if @state == 4
+			@move_counter = 0
+		end
+		animate @indices, @interval if @indices
+	end
+end
+
 class Wheeliam < GameObject
 	def initialize x, y, args
 		super x, y, 32, 32, :sprite_Wheeliam, Vector.new(-4, -3), 4, 1
@@ -52,30 +84,15 @@ class Wheeliam < GameObject
 	end
 end
 
-class FireRock < GameObject	
+class FireRock < FloatingItem
 	def initialize x, y, args
-		super x + 6, y + 8, 20, 20, :sprite_FireRock, Vector.new(-2, -18), 4, 1
-		@active_bounds = Rectangle.new x + 4, y - 10, 24, 40
-		@ready = true
-		@state = 0
-		@move_counter = 0
-		@indices = [0, 1, 2, 3]
+		super x + 6, y + 7, 20, 20, :sprite_FireRock, Vector.new(-2, -17), 4, 1, [0, 1, 2, 3], 5
 	end
 	
 	def update section
-		if section.collide_with_player? self
+		super section do
 			G.player.score += 10
-			@dead = true
 		end
-		@move_counter += 1
-		if @move_counter == 10
-			if @state == 0 or @state == 1; @y -= 1
-			else; @y += 1; end
-			@state += 1
-			@state = 0 if @state == 4
-			@move_counter = 0
-		end
-		animate @indices, 5
 	end
 end
 
@@ -91,33 +108,29 @@ class Sprinny < GameObject
 	end
 end
 
-class Life < GameObject
+class Life < FloatingItem
 	def initialize x, y, args, index
-		@ready = true
-	end
-end
-
-class Key < GameObject
-	def initialize x, y, args, index
-		super x + 3, y + 4, 26, 26, :sprite_Key, Vector.new(-3, -4)
+		super x + 3, y + 3, 26, 26, :sprite_Life, Vector.new(-3, -3), 8, 1,
+			[0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7], 6
 		@index = index
-		@active_bounds = Rectangle.new x + 3, y + 2, 26, 28
-		@ready = true
-		@state = 0
-		@move_counter = 0
 	end
 	
 	def update section
-		if section.collide_with_player? self
-			section.take_item @index, :Key
+		super section do
+			section.take_item @index, :Life, true, false
 		end
-		@move_counter += 1
-		if @move_counter == 10
-			if @state == 0 or @state == 1; @y -= 1
-			else; @y += 1; end
-			@state += 1
-			@state = 0 if @state == 4
-			@move_counter = 0
+	end
+end
+
+class Key < FloatingItem
+	def initialize x, y, args, index
+		super x + 3, y + 3, 26, 26, :sprite_Key, Vector.new(-3, -3)
+		@index = index
+	end
+	
+	def update section
+		super section do
+			section.take_item @index, :Key, true, true
 		end
 	end
 end
@@ -142,7 +155,7 @@ class Door < GameObject
 			section.locked_door = nil
 		end
 		if not @locked and not @opening and collide
-			if G.window.button_down? Gosu::KbUp
+			if KB.key_pressed? Gosu::KbUp
 				set_animation 1
 				@opening = true
 			end
@@ -225,9 +238,16 @@ class Spikes < GameObject
 	end
 end
 
-class Attack1 < GameObject
+class Attack1 < FloatingItem
 	def initialize x, y, args, index
-		@ready = true
+		super x + 3, y + 3, 26, 26, :sprite_Attack1, Vector.new(-3, -3), 8, 1,
+			[0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7], 6
+	end
+	
+	def update section
+		super section do
+			section.take_item -1, :Attack1, false, true
+		end
 	end
 end
 

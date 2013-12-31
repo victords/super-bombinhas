@@ -75,19 +75,19 @@ module Movement
 					
 					if c.passable
 						y_lim_def = y_lim if dn && @y + @h <= y_lim && y_lim < y_lim_def
-					elsif rt && @x + @w > x_lim || lf && @x < x_lim
+					elsif (rt && @x + @w > x_lim) || (lf && @x < x_lim)
 						# Can't limit by x, will limit by y
-						y_lim_def = y_lim if dn && y_lim < y_lim_def || up && y_lim > y_lim_def
-					elsif (dn && @y + @h > y_lim || up && @y < y_lim)
+						y_lim_def = y_lim if (dn && y_lim < y_lim_def) || (up && y_lim > y_lim_def)
+					elsif (dn && @y + @h > y_lim) || (up && @y < y_lim)
 						# Can't limit by y, will limit by x 
-						x_lim_def = x_lim if rt && x_lim < x_lim_def || lf && x_lim > x_lim_def
+						x_lim_def = x_lim if (rt && x_lim < x_lim_def) || (lf && x_lim > x_lim_def)
 					else
 						xTime = 1.0 * (x_lim - @x - (@speed.x < 0 ? 0 : @w)) / @speed.x
 						yTime = 1.0 * (y_lim - @y - (@speed.y < 0 ? 0 : @h)) / @speed.y
 						if xTime > yTime
 							# Will limit by x
-							x_lim_def = x_lim if rt && x_lim < x_lim_def || lf && x_lim > x_lim_def
-						elsif dn && y_lim < y_lim_def || up && y_lim > y_lim_def
+							x_lim_def = x_lim if (rt && x_lim < x_lim_def) || (lf && x_lim > x_lim_def)
+						elsif (dn && y_lim < y_lim_def) || (up && y_lim > y_lim_def)
 							y_lim_def = y_lim
 						end
 					end
@@ -133,7 +133,7 @@ module Movement
 	def find_down_limit coll_list
 		limit = @y + @h + @speed.y
 		coll_list.each do |c|
-			limit = c.y if c.y < limit && c.y > @y + @h
+			limit = c.y if c.y < limit && c.y >= @y + @h
 		end
 		limit
 	end

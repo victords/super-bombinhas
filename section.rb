@@ -244,10 +244,12 @@ class Section
 		@bomb.bounds.intersects rect
 	end
 	
-	def take_item index, type
-		@temp_taken_items << {index: index, type: type}
-		@elements[index] = nil
-		G.player.add_item type
+	def take_item index, type, once, store
+		if once
+			@temp_taken_items << {index: index, type: type}
+		end
+		if store; G.player.add_item type
+		else; Object.const_get("#{type}Item").new.use self; end
 	end
 	
 	def save_check_point id
@@ -271,10 +273,8 @@ class Section
 	end
 	
 	def update
-		# testar construção da lista de obstáculos a cada turno
-		
-		@reload = true if G.window.button_down? Gosu::KbEscape
-		G.player.use_item self if G.window.button_down? Gosu::KbA
+		@reload = true if KB.key_pressed? Gosu::KbEscape
+		G.player.use_item self if KB.key_pressed? Gosu::KbA
 		
 		@loaded = true
 		@showing_tiles = false
@@ -316,8 +316,7 @@ class Section
 			t.draw @map if t.is_visible @map
 		end
 		
-		G.font.draw "Score", 10, 10, 0, 1, 1, 0xff000000
-		G.font.draw G.player.score, 100, 10, 0, 1, 1, 0xff000000
+		G.player.draw_stats
 	end
 	
 	def draw_bg1
