@@ -8,6 +8,7 @@ module C
 	TilesetSize = 8
 	ScreenWidth = 800
 	ScreenHeight = 600
+	PlayerOverTolerance = 10
 end
 
 class G

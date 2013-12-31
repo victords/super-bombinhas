@@ -12,6 +12,14 @@ class Player
 		@item_index = 0
 	end
 	
+	def dead?
+		@dead
+	end
+	
+	def die
+		@dead = true
+	end
+	
 	def add_item type
 		if @items[type]
 			@items[type].amount += 1
@@ -74,8 +82,10 @@ class Player
 		end
 	end
 	
-	def clear
+	def reset
 		@items.clear
 		@cur_item_type = nil
+		@item_index = 0
+		@dead = false
 	end
 end

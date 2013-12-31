@@ -46,6 +46,13 @@ class Wheeliam < GameObject
 	end
 	
 	def update section
+		if section.player_over? self
+			G.player.score += 100
+			@dead = true
+		elsif section.collide_with_player? self
+			G.player.die
+		end
+		
 		move @forces, section.get_obstacles(@x, @y), section.ramps
 		@forces.x = 0
 		if @left
@@ -104,7 +111,50 @@ end
 
 class Sprinny < GameObject
 	def initialize x, y, args
+		super x + 3, y - 4, 26, 36, :sprite_Sprinny, Vector.new(-2, -5), 6, 1
+		
+		@leaps = 1000
+		@max_leaps = args.to_i
+		@facing_right = true
+		@interval = 5
+		@indices = [0]
+		
+		@active_bounds = Rectangle.new x - 4 * C::TileSize * @max_leaps, y - 4 * C::TileSize,
+			4 * C::TileSize * @max_leaps + C::TileSize, 5 * C::TileSize
 		@ready = true
+	end
+	
+	def update section
+		if section.player_over? self
+			G.player.score += 350
+			@dead = true
+		elsif section.collide_with_player? self
+			G.player.die
+		end
+		
+		forces = Vector.new 0, 0
+		if @bottom
+			@leaps += 1
+			if @leaps > @max_leaps
+				@leaps = 1
+				if @facing_right
+					@facing_right = false
+					@indices = [0, 1, 2, 1]
+					set_animation 0
+				else
+					@facing_right = true
+					@indices = [3, 4, 5, 4]
+					set_animation 3
+				end
+			end
+			@speed.x = 0
+			if @facing_right; forces.x = 4
+			else; forces.x = -4; end
+			forces.y = -15
+		end
+		move forces, section.get_obstacles(@x, @y), section.ramps
+		
+		animate @indices, @interval
 	end
 end
 

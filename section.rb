@@ -164,7 +164,7 @@ class Section
 	#end initialization
 	
 	def load bomb_x, bomb_y
-		G.player.clear
+		G.player.reset
 		@taken_items.each do |i|
 			G.player.add_item i[:type]
 		end
@@ -192,8 +192,6 @@ class Section
 		@elements << (@bomb = Bomb.new(bomb_x, bomb_y, :azul))
 		@margin = Vector.new((C::ScreenWidth - @bomb.w) / 2, (C::ScreenHeight - @bomb.h) / 2)
 		@map.set_camera @bomb.x - @margin.x, @bomb.y - @margin.y
-		
-		map_size = @map.get_absolute_size
 		
 		@loaded = false
 		@reload = false
@@ -235,6 +233,12 @@ class Section
 		return @tiles[i][j].pass + @tiles[i][j].wall >= 0
 	end
 	
+	def player_over? obj
+		@bomb.x + @bomb.w > obj.x and obj.x + obj.w > @bomb.x and
+			@bomb.y < obj.y - C::PlayerOverTolerance and @bomb.y + @bomb.h > obj.y and
+			@bomb.speed.y > 0
+	end
+	
 	def collide_with_player? obj
 		@bomb.bounds.intersects obj.bounds
 	end
@@ -262,6 +266,7 @@ class Section
 	end
 	
 	def do_warp x, y
+		@reload = false
 		@bomb.do_warp x, y
 		@map.set_camera @bomb.x - @margin.x, @bomb.y - @margin.y
 		@warp = nil
@@ -273,7 +278,7 @@ class Section
 	end
 	
 	def update
-		@reload = true if KB.key_pressed? Gosu::KbEscape
+		@reload = true if G.player.dead? or KB.key_pressed? Gosu::KbEscape
 		G.player.use_item self if KB.key_pressed? Gosu::KbA
 		
 		@loaded = true

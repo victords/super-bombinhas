@@ -13,19 +13,7 @@ module Movement
 		forces.x += @stored_forces.x; forces.y += @stored_forces.y
 		@stored_forces.x = @stored_forces.y = 0
 		
-		@top = @bottom = @left = @right = nil		
-		obst.each do |o|
-			x2 = @x + @w; y2 = @y + @h; x2o = o.x + o.w; y2o = o.y + o.h
-			@right = o if !o.passable && x2.round(6) == o.x.round(6) && y2 > o.y && @y < y2o
-			@left = o if !o.passable && @x.round(6) == x2o.round(6) && y2 > o.y && @y < y2o
-			@bottom = o if y2.round(6) == o.y.round(6) && x2 > o.x && @x < x2o
-			@top = o if !o.passable && @y.round(6) == y2o.round(6) && x2 > o.x && @x < x2o
-		end		
-		if @bottom.nil?
-			ramps.each do |r|
-				@bottom = r if r.is_below self
-			end
-		end
+		check_contact obst, ramps
 		forces.x = 0 if (forces.x < 0 and @left) or (forces.x > 0 and @right)
 		forces.y = 0 if (forces.y < 0 and @top) or (forces.y > 0 and @bottom)
 		
@@ -115,7 +103,23 @@ module Movement
 				@speed.y = 0
 			end
 		end
-	end	
+		check_contact obst, ramps
+	end
+	def check_contact obst, ramps
+		@top = @bottom = @left = @right = nil
+		obst.each do |o|
+			x2 = @x + @w; y2 = @y + @h; x2o = o.x + o.w; y2o = o.y + o.h
+			@right = o if !o.passable && x2.round(6) == o.x.round(6) && y2 > o.y && @y < y2o
+			@left = o if !o.passable && @x.round(6) == x2o.round(6) && y2 > o.y && @y < y2o
+			@bottom = o if y2.round(6) == o.y.round(6) && x2 > o.x && @x < x2o
+			@top = o if !o.passable && @y.round(6) == y2o.round(6) && x2 > o.x && @x < x2o
+		end		
+		if @bottom.nil?
+			ramps.each do |r|
+				@bottom = r if r.is_below self
+			end
+		end
+	end
 	def find_right_limit coll_list
 		limit = @x + @w + @speed.x
 		coll_list.each do |c|
