@@ -10,7 +10,7 @@ class FloatingItem < GameObject
 		end
 		@ready = true
 		@state = 3
-		@move_counter = 0
+		@counter = 0
 		@indices = indices
 		@interval = interval
 	end
@@ -20,13 +20,13 @@ class FloatingItem < GameObject
 			yield
 			@dead = true
 		end
-		@move_counter += 1
-		if @move_counter == 10
+		@counter += 1
+		if @counter == 10
 			if @state == 0 or @state == 1; @y -= 1
 			else; @y += 1; end
 			@state += 1
 			@state = 0 if @state == 4
-			@move_counter = 0
+			@counter = 0
 		end
 		animate @indices, @interval if @indices
 	end
@@ -286,7 +286,37 @@ end
 
 class GunPowder < GameObject
 	def initialize x, y, args, index
+		super x + 3, y + 19, 26, 13, :sprite_GunPowder, Vector.new(-2, -2)
+		@life = 10
+		@counter = 0
+		
+		@active_bounds = Rectangle.new x + 1, y + 17, 30, 15
 		@ready = true
+	end
+	
+	def update section
+		if @active
+			@counter += 1
+			if @counter == 60
+				@life -= 1
+				if @life == 0
+					section.send_to_bomb :explode
+					@dead = true
+				end
+				@counter = 0
+			end
+		elsif section.collide_with_player? self
+			@active = true
+		end
+	end
+	
+	def draw map
+		if @active
+			G.font.draw_rel Res.text(:count_down), 400, 200, 0, 0.5, 0.5, 1, 1, 0xff000000 if @life > 6
+			G.font.draw_rel @life.to_s, 400, 220, 0, 0.5, 0.5, 1, 1, 0xff000000
+		else
+			super map
+		end
 	end
 end
 

@@ -1,5 +1,6 @@
-loading	Carregando
-lives		Vidas
-score		Pontos
-msg1		Testando mensagem...
-msg2		Segunda mensagem de teste
+loading		Carregando
+lives			Vidas
+score			Pontos
+msg1			Testando mensagem...
+msg2			Segunda mensagem de teste
+count_down	Contagem regressiva para explodir!

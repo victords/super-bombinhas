@@ -41,7 +41,7 @@ class G
 		@@window = window
 		@@player = Player.new
 		@@gravity = Vector.new 0, 0.9
-		@@lang = :english
+		@@lang = :spanish
 		@@font = Font.new window, "data/font/BankGothicMedium.ttf", 20
 		@@texts = {}
 		files = Dir["data/text/*.txt"]

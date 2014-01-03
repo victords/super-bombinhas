@@ -2,6 +2,8 @@ require './movement'
 require './resources'
 
 class Sprite
+	attr_accessor :x, :y
+	
 	def initialize x, y, img, sprite_cols = nil, sprite_rows = nil
 		@x = x; @y = y
 		@img =
@@ -10,7 +12,7 @@ class Sprite
 			else
 				Res.imgs img, sprite_cols, sprite_rows
 			end
-		@counter = 0
+		@anim_counter = 0
 		@img_index = 0
 		@index_index = 0
 	end
@@ -19,17 +21,21 @@ class Sprite
 	end
 	
 	def animate indices, interval
-		@counter += 1
-		if @counter >= interval
+		@anim_counter += 1
+		if @anim_counter >= interval
 			@index_index += 1
 			@index_index = 0 if @index_index == indices.length
 			@img_index = indices[@index_index]
-			@counter = 0
+			@anim_counter = 0
 		end
 	end
 	
-	def draw
-		@img[@img_index].draw @x, @y, 0
+	def draw map = nil
+		if map
+			@img[@img_index].draw @x - map.cam.x, @y - map.cam.y, 0
+		else
+			@img[@img_index].draw @x, @y, 0
+		end
 	end
 end
 
@@ -64,7 +70,7 @@ class GameObject < Sprite
 	end
 	
 	def set_animation index
-		@counter = 0
+		@anim_counter = 0
 		@img_index = index
 		@index_index = 0
 	end

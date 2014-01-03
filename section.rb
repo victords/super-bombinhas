@@ -247,6 +247,10 @@ class Section
 		@bomb.bounds
 	end
 	
+	def send_to_bomb something
+		@bomb.send something
+	end
+	
 	def take_item index, type, once, store
 		if once
 			@temp_taken_items << {index: index, type: type}

@@ -17,6 +17,9 @@ class Bomb < GameObject
 		@facing_right = true
 		@ready = true
 		@type = type
+		
+		@explosion = Sprite.new 0, 0, :fx_Explosion, 2, 2
+		@explosion_counter = 0
 	end
 	
 	def update section
@@ -41,12 +44,22 @@ class Bomb < GameObject
 			forces.y -= 13.7 + 0.4 * @speed.x.abs
 		end
 		move forces, section.get_obstacles(@x, @y), section.ramps
+		
 		if @speed.x != 0
 			animate @indices, 30 / @speed.x.abs
 		elsif @facing_right
 			set_animation 0
 		else
 			set_animation 5
+		end
+		
+		if @exploding
+			@explosion.animate [0, 1, 2, 3], 5
+			@explosion_counter += 1
+			if @explosion_counter == 90
+				@exploding = false
+				@explosion_counter = 0
+			end
 		end
 	end
 	
@@ -70,7 +83,18 @@ class Bomb < GameObject
 		set_animation 0
 	end
 	
+	def explode
+		@exploding = true
+		@explosion.x = @x - 80
+		@explosion.y = @y - 75
+	end
+	
 	def is_visible map
 		true
+	end
+	
+	def draw map
+		super map
+		@explosion.draw map if @exploding
 	end
 end

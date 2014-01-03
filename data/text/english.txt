@@ -1,5 +1,6 @@
-loading	Loading
-lives		Lives
-score		Score
-msg1		Testing message
-msg2		Second test message
+loading		Loading
+lives			Lives
+score			Score
+msg1			Testing message
+msg2			Second test message
+count_down	Countdown to explosion!
