@@ -33,13 +33,26 @@ class G
 	def self.font
 		@@font
 	end
+	def self.texts
+		@@texts
+	end
 	
 	def self.initialize window
 		@@window = window
 		@@player = Player.new
 		@@gravity = Vector.new 0, 0.9
-		@@lang = :portuguese
+		@@lang = :english
 		@@font = Font.new window, "data/font/BankGothicMedium.ttf", 20
+		@@texts = {}
+		files = Dir["data/text/*.txt"]
+		files.each do |f|
+			lang = (f.split('/')[-1].chomp ".txt").to_sym
+			@@texts[lang] = {}
+			File.open(f).each do |l|
+				parts = l.split "\t"
+				@@texts[lang][parts[0].to_sym] = parts[-1].chomp
+			end
+		end
 	end
 end
 

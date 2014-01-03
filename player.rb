@@ -53,9 +53,9 @@ class Player
 		                   205, 5, 0x80abcdef,
 		                   205, 55, 0x80abcdef,
 		                   5, 55, 0x80abcdef, 0
-		G.font.draw "Lives", 10, 10, 0, 1, 1, 0xff000000
+		G.font.draw Res.text(:lives), 10, 10, 0, 1, 1, 0xff000000
 		G.font.draw @lives, 100, 10, 0, 1, 1, 0xff000000
-		G.font.draw "Score", 10, 30, 0, 1, 1, 0xff000000
+		G.font.draw Res.text(:score), 10, 30, 0, 1, 1, 0xff000000
 		G.font.draw @score, 100, 30, 0, 1, 1, 0xff000000
 		
 		G.window.draw_quad 690, 5, 0x80abcdef,

@@ -243,9 +243,8 @@ class Section
 		@bomb.bounds.intersects obj.bounds
 	end
 	
-	def player_at? i, j
-		rect = Rectangle.new i * C::TileSize, j * C::TileSize, C::TileSize, C::TileSize
-		@bomb.bounds.intersects rect
+	def bomb_bounds
+		@bomb.bounds
 	end
 	
 	def take_item index, type, once, store

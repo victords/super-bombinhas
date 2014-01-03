@@ -1,0 +1,5 @@
+loading	Carregando
+lives		Vidas
+score		Pontos
+msg1		Testando mensagem...
+msg2		Segunda mensagem de teste

@@ -56,7 +56,7 @@ class Stage
 		if @cur_section.loaded
 			@cur_section.draw
 		else
-			G.font.draw "Loading" + @dots, 10, 10, 0, 1, 1, 0xffffffff
+			G.font.draw Res.text(:loading) + @dots, 10, 10, 0, 1, 1, 0xffffffff
 			@counter += 1
 			if @counter == 10
 				@dots += '.'

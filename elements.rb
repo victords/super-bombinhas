@@ -105,7 +105,61 @@ end
 
 class Bombie < GameObject
 	def initialize x, y, args
+		super x, y, 32, 32, :sprite_Bombie, Vector.new(1, -2), 6, 1
+		@msg_id = "msg#{args.to_i}".to_sym
+		@balloon = Res.img :fx_Balloon1
+		@facing_right = false
+		@active = false
+		@speaking = false
+		@interval = 8
+		
+		@active_bounds = Rectangle.new x, y, 32, 32
 		@ready = true
+	end
+	
+	def update section
+		if section.collide_with_player? self
+			if not @facing_right and section.bomb_bounds.x > @x + @w / 2
+				@facing_right = true
+				@indices = [3, 4, 5]
+				set_animation 3
+			elsif @facing_right and section.bomb_bounds.x < @x - @w / 2
+				@facing_right = false
+				@indices = [0, 1, 2]
+				set_animation 0
+			end
+			if KB.key_pressed? Gosu::KbUp
+				@speaking = (not @speaking)
+				if @speaking
+					if @facing_right; @indices = [3, 4, 5]
+					else; @indices = [0, 1, 2]; end
+					@active = false
+				else
+					if @facing_right; set_animation 3
+					else; set_animation 0; end
+				end
+			end
+			@active = (not @speaking)
+		else
+			@active = false
+			@speaking = false
+			if @facing_right; set_animation 3
+			else; set_animation 0; end
+		end
+		
+		animate @indices, @interval if @speaking
+	end
+	
+	def draw map
+		super map
+		@balloon.draw @x - map.cam.x, @y - map.cam.y - 32, 0 if @active
+		if @speaking
+			G.window.draw_quad 5, 495, 0x80abcdef,
+			                   795, 495, 0x80abcdef,
+			                   795, 595, 0x80abcdef,
+			                   5, 595, 0x80abcdef, 0
+			G.font.draw Res.text(@msg_id), 10, 500, 0, 1, 1, 0xff000000
+		end
 	end
 end
 
@@ -377,8 +431,10 @@ class HideTile
 	
 	def update section
 		will_show = false
+		bounds = section.bomb_bounds
 		@points.each do |p|
-			if section.player_at? p.x, p.y
+			rect = Rectangle.new p.x * C::TileSize, p.y * C::TileSize, C::TileSize, C::TileSize
+			if bounds.intersects rect
 				will_show = true
 				break
 			end
