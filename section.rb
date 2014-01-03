@@ -7,7 +7,7 @@ require './map'
 Tile = Struct.new :back, :fore, :pass, :wall, :hide
 
 class Section
-	attr_reader :entrance, :reload, :ramps, :loaded
+	attr_reader :entrance, :reload, :ramps, :loaded, :bomb
 	attr_accessor :warp, :locked_door
 	
 	def initialize file, entrances
@@ -243,14 +243,6 @@ class Section
 		@bomb.bounds.intersects obj.bounds
 	end
 	
-	def bomb_bounds
-		@bomb.bounds
-	end
-	
-	def send_to_bomb something
-		@bomb.send something
-	end
-	
 	def take_item index, type, once, store
 		if once
 			@temp_taken_items << {index: index, type: type}
@@ -286,6 +278,7 @@ class Section
 		
 		@loaded = true
 		@showing_tiles = false
+		@locked_door = nil
 		@elements.each_with_index do |e, i|
 			if e
 				e.update self if e.is_visible @map

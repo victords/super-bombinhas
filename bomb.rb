@@ -28,31 +28,6 @@ class Bomb < GameObject
 		end
 		
 		forces = Vector.new 0, 0
-		if KB.key_down? Gosu::KbLeft
-			set_direction :left if @facing_right
-			forces.x -= 0.15
-		elsif @speed.x < 0
-			forces.x -= 0.15 * @speed.x
-		end
-		if KB.key_down? Gosu::KbRight
-			set_direction :right if not @facing_right
-			forces.x += 0.15
-		elsif @speed.x > 0
-			forces.x -= 0.15 * @speed.x
-		end
-		if KB.key_pressed? Gosu::KbSpace and @bottom
-			forces.y -= 13.7 + 0.4 * @speed.x.abs
-		end
-		move forces, section.get_obstacles(@x, @y), section.ramps
-		
-		if @speed.x != 0
-			animate @indices, 30 / @speed.x.abs
-		elsif @facing_right
-			set_animation 0
-		else
-			set_animation 5
-		end
-		
 		if @exploding
 			@explosion.animate [0, 1, 2, 3], 5
 			@explosion_counter += 1
@@ -60,7 +35,33 @@ class Bomb < GameObject
 				@exploding = false
 				@explosion_counter = 0
 			end
+			forces.x -= 0.15 * @speed.x if @speed.x != 0
+		else
+			if KB.key_down? Gosu::KbLeft
+				set_direction :left if @facing_right
+				forces.x -= 0.15
+			elsif @speed.x < 0
+				forces.x -= 0.15 * @speed.x
+			end
+			if KB.key_down? Gosu::KbRight
+				set_direction :right if not @facing_right
+				forces.x += 0.15
+			elsif @speed.x > 0
+				forces.x -= 0.15 * @speed.x
+			end
+			if KB.key_pressed? Gosu::KbSpace and @bottom
+				forces.y -= 13.7 + 0.4 * @speed.x.abs
+			end
+		
+			if @speed.x != 0
+				animate @indices, 30 / @speed.x.abs
+			elsif @facing_right
+				set_animation 0
+			else
+				set_animation 5
+			end
 		end
+		move forces, section.get_obstacles(@x, @y), section.ramps
 	end
 	
 	def set_direction dir
@@ -87,6 +88,16 @@ class Bomb < GameObject
 		@exploding = true
 		@explosion.x = @x - 80
 		@explosion.y = @y - 75
+		set_animation (@facing_right ? 4 : 9)
+	end
+	
+	def explode? obj
+		return false if not @exploding
+		radius = @type == :verde ? 120 : 90
+		c_x = @x + @w / 2; c_y = @y + @h / 2
+		o_c_x = obj.x + obj.w / 2; o_c_y = obj.y + obj.h / 2
+		sq_dist = (o_c_x - c_x)**2 + (o_c_y - c_y)**2
+		sq_dist <= radius**2
 	end
 	
 	def is_visible map

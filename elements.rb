@@ -49,6 +49,9 @@ class Wheeliam < GameObject
 		if section.player_over? self
 			G.player.score += 100
 			@dead = true
+		elsif section.bomb.explode? self
+			G.player.score += 100
+			@dead = true
 		elsif section.collide_with_player? self
 			G.player.die
 		end
@@ -119,11 +122,11 @@ class Bombie < GameObject
 	
 	def update section
 		if section.collide_with_player? self
-			if not @facing_right and section.bomb_bounds.x > @x + @w / 2
+			if not @facing_right and section.bomb.bounds.x > @x + @w / 2
 				@facing_right = true
 				@indices = [3, 4, 5]
 				set_animation 3
-			elsif @facing_right and section.bomb_bounds.x < @x - @w / 2
+			elsif @facing_right and section.bomb.bounds.x < @x - @w / 2
 				@facing_right = false
 				@indices = [0, 1, 2]
 				set_animation 0
@@ -255,8 +258,6 @@ class Door < GameObject
 		collide = section.collide_with_player? self
 		if @locked and collide
 			section.locked_door = self
-		else
-			section.locked_door = nil
 		end
 		if not @locked and not @opening and collide
 			if KB.key_pressed? Gosu::KbUp
@@ -300,7 +301,7 @@ class GunPowder < GameObject
 			if @counter == 60
 				@life -= 1
 				if @life == 0
-					section.send_to_bomb :explode
+					section.bomb.explode
 					@dead = true
 				end
 				@counter = 0
@@ -461,10 +462,9 @@ class HideTile
 	
 	def update section
 		will_show = false
-		bounds = section.bomb_bounds
 		@points.each do |p|
 			rect = Rectangle.new p.x * C::TileSize, p.y * C::TileSize, C::TileSize, C::TileSize
-			if bounds.intersects rect
+			if section.bomb.bounds.intersects rect
 				will_show = true
 				break
 			end
