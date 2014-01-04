@@ -1,13 +1,14 @@
 require './global'
 require './ramp'
 require './elements'
+require './enemies'
 require './bomb'
 require './map'
 
 Tile = Struct.new :back, :fore, :pass, :wall, :hide
 
 class Section
-	attr_reader :entrance, :reload, :ramps, :loaded, :bomb
+	attr_reader :entrance, :reload, :ramps, :bomb, :size
 	attr_accessor :warp, :locked_door
 	
 	def initialize file, entrances
@@ -36,6 +37,7 @@ class Section
 		@tileset = Res.tileset s[5]
 		@map = Map.new C::TileSize, C::TileSize, t_x_count, t_y_count
 		@map.set_camera 4500, 1200
+		@size = @map.get_absolute_size
 	end
 	
 	def set_elements s, entrances
@@ -193,7 +195,6 @@ class Section
 		@margin = Vector.new((C::ScreenWidth - @bomb.w) / 2, (C::ScreenHeight - @bomb.h) / 2)
 		@map.set_camera @bomb.x - @margin.x, @bomb.y - @margin.y
 		
-		@loaded = false
 		@reload = false
 		@entrance = nil
 		@warp = nil
@@ -202,19 +203,18 @@ class Section
 	
 	def get_obstacles x, y
 		obstacles = []
-		map_size = @map.get_absolute_size
-		if x > map_size.x - 4 * C::TileSize and @border_exit != 1
-			obstacles << Block.new(map_size.x, 0, 1, map_size.y, false)
+		if x > @size.x - 4 * C::TileSize and @border_exit != 1
+			obstacles << Block.new(@size.x, 0, 1, @size.y, false)
 		end
 		if x < 4 * C::TileSize and @border_exit != 3
-			obstacles << Block.new(-1, 0, 1, map_size.y, false)
+			obstacles << Block.new(-1, 0, 1, @size.y, false)
 		end
 		
 		i = (x / @map.tile_size.x).round
 		j = (y / @map.tile_size.y).round
-		for k in (i-3)..(i+3)
-			for l in (j-3)..(j+3)
-				if @tiles[k][l]
+		for k in (i-2)..(i+2)
+			for l in (j-2)..(j+2)
+				if @tiles[k] and @tiles[k][l]
 					if @tiles[k][l].pass >= 0
 						obstacles << Block.new(k * C::TileSize, l * C::TileSize, C::TileSize, C::TileSize, true)
 					elsif @tiles[k][l].wall >= 0
@@ -230,7 +230,7 @@ class Section
 	def obstacle_at? x, y
 		i = x / @map.tile_size.x
 		j = y / @map.tile_size.y
-		return @tiles[i][j].pass + @tiles[i][j].wall >= 0
+		@tiles[i] and @tiles[i][j] and @tiles[i][j].pass + @tiles[i][j].wall >= 0
 	end
 	
 	def player_over? obj
@@ -276,13 +276,11 @@ class Section
 		@reload = true if G.player.dead? or KB.key_pressed? Gosu::KbEscape
 		G.player.use_item self if KB.key_pressed? Gosu::KbA
 		
-		@loaded = true
 		@showing_tiles = false
 		@locked_door = nil
 		@elements.each_with_index do |e, i|
 			if e
 				e.update self if e.is_visible @map
-				@loaded = false if not e.ready?
 				@elements[i] = nil if e.dead?
 			end
 		end
@@ -321,9 +319,8 @@ class Section
 	end
 	
 	def draw_bg1
-		map_size = @map.get_absolute_size
 		back_x = -@map.cam.x * 0.3; back_y = -@map.cam.y * 0.3
-		tiles_x = map_size.x / @bg1.width; tiles_y = map_size.y / @bg1.height
+		tiles_x = @size.x / @bg1.width; tiles_y = @size.y / @bg1.height
 		for i in 1..tiles_x-1
 			if back_x + i * @bg1.width > 0
 				back_x += (i - 1) * @bg1.width
@@ -349,7 +346,7 @@ class Section
 	
 	def draw_bg2
 		back_x = -@map.cam.x * 0.5
-		tiles_x = @map.get_absolute_size.x / @bg2.width
+		tiles_x = @size.x / @bg2.width
 		for i in 1..tiles_x-1
 			if back_x + i * @bg2.width > 0
 				back_x += (i - 1) * @bg2.width

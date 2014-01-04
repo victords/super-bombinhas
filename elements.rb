@@ -32,68 +32,6 @@ class FloatingItem < GameObject
 	end
 end
 
-class Wheeliam < GameObject
-	def initialize x, y, args
-		super x, y, 32, 32, :sprite_Wheeliam, Vector.new(-4, -3), 4, 1
-		
-		@dont_fall = args.nil?
-		@interval = 8
-		@indices = [0, 1]
-		@forces = Vector.new -4, 0
-		@facing_right = false
-		
-		@active_bounds = Rectangle.new -1000, @y + @img_gap.y, 0, 35
-	end
-	
-	def update section
-		if section.player_over? self
-			G.player.score += 100
-			@dead = true
-		elsif section.bomb.explode? self
-			G.player.score += 100
-			@dead = true
-		elsif section.collide_with_player? self
-			G.player.die
-		end
-		
-		move @forces, section.get_obstacles(@x, @y), section.ramps
-		@forces.x = 0
-		if @left
-			set_direction :right
-		elsif @right
-			set_direction :left
-		elsif @dont_fall
-			if @facing_right
-				set_direction :left if not section.obstacle_at? @x + @w, @y + @h
-			elsif not section.obstacle_at? @x - 1, @y + @h
-				set_direction :right
-			end
-		end
-		
-		animate @indices, @interval
-	end
-	
-	def set_direction dir
-		@speed.x = 0
-		if dir == :left
-			@forces.x = -3
-			@facing_right = false
-			@indices[0] = 0; @indices[1] = 1
-			set_animation 0
-			if @active_bounds.w == 0
-				@active_bounds.w = @x + @img_gap.x + @img[0].width - @active_bounds.x
-				@ready = true
-			end
-		else
-			@forces.x = 3
-			@facing_right = true
-			@indices[0] = 2; @indices[1] = 3
-			set_animation 2
-			@active_bounds.x = @x + @img_gap.x if @active_bounds.x < 0
-		end
-	end
-end
-
 class FireRock < FloatingItem
 	def initialize x, y, args
 		super x + 6, y + 7, 20, 20, :sprite_FireRock, Vector.new(-2, -17), 4, 1, [0, 1, 2, 3], 5
@@ -163,55 +101,6 @@ class Bombie < GameObject
 			                   5, 595, 0x80abcdef, 0
 			G.font.draw Res.text(@msg_id), 10, 500, 0, 1, 1, 0xff000000
 		end
-	end
-end
-
-class Sprinny < GameObject
-	def initialize x, y, args
-		super x + 3, y - 4, 26, 36, :sprite_Sprinny, Vector.new(-2, -5), 6, 1
-		
-		@leaps = 1000
-		@max_leaps = args.to_i
-		@facing_right = true
-		@interval = 5
-		@indices = [0]
-		
-		@active_bounds = Rectangle.new x - 4 * C::TileSize * @max_leaps, y - 4 * C::TileSize,
-			4 * C::TileSize * @max_leaps + C::TileSize, 5 * C::TileSize
-		@ready = true
-	end
-	
-	def update section
-		if section.player_over? self
-			G.player.score += 350
-			@dead = true
-		elsif section.collide_with_player? self
-			G.player.die
-		end
-		
-		forces = Vector.new 0, 0
-		if @bottom
-			@leaps += 1
-			if @leaps > @max_leaps
-				@leaps = 1
-				if @facing_right
-					@facing_right = false
-					@indices = [0, 1, 2, 1]
-					set_animation 0
-				else
-					@facing_right = true
-					@indices = [3, 4, 5, 4]
-					set_animation 3
-				end
-			end
-			@speed.x = 0
-			if @facing_right; forces.x = 4
-			else; forces.x = -4; end
-			forces.y = -15
-		end
-		move forces, section.get_obstacles(@x, @y), section.ramps
-		
-		animate @indices, @interval
 	end
 end
 

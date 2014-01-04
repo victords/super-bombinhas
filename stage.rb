@@ -12,8 +12,8 @@ class Stage
 		@cur_section = @sections[0]
 		@cur_entrance = @entrances[0]
 		@cur_section.load @cur_entrance[:x], @cur_entrance[:y]
-		@counter = 0
-		@dots = "."
+#		@counter = 0
+#		@dots = "."
 	end
 	
 	def update
@@ -27,8 +27,8 @@ class Stage
 		if @cur_section.reload
 			@cur_section = @cur_entrance[:section]
 			@cur_section.load @cur_entrance[:x], @cur_entrance[:y]
-			@counter = 0
-			@dots = "."
+#			@counter = 0
+#			@dots = "."
 		end
 	end
 	
@@ -47,22 +47,22 @@ class Stage
 			else
 				@cur_section.load entrance[:x], entrance[:y]
 			end
-			@counter = 0
-			@dots = "."
+#			@counter = 0
+#			@dots = "."
 		end
 	end
 	
 	def draw
-		if @cur_section.loaded
+#		if @cur_section.loaded
 			@cur_section.draw
-		else
-			G.font.draw Res.text(:loading) + @dots, 10, 10, 0, 1, 1, 0xffffffff
-			@counter += 1
-			if @counter == 10
-				@dots += '.'
-				@dots = '.' if @dots.length > 3
-				@counter = 0
-			end
-		end
+#		else
+#			G.font.draw Res.text(:loading) + @dots, 10, 10, 0, 1, 1, 0xffffffff
+#			@counter += 1
+#			if @counter == 10
+#				@dots += '.'
+#				@dots = '.' if @dots.length > 3
+#				@counter = 0
+#			end
+#		end
 	end
 end

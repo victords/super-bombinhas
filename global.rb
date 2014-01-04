@@ -9,6 +9,7 @@ module C
 	ScreenWidth = 800
 	ScreenHeight = 600
 	PlayerOverTolerance = 10
+	TopMargin = -200
 end
 
 class G

@@ -17,9 +17,6 @@ class Sprite
 		@index_index = 0
 	end
 	
-	def update param
-	end
-	
 	def animate indices, interval
 		@anim_counter += 1
 		if @anim_counter >= interval
@@ -66,7 +63,6 @@ class GameObject < Sprite
 		@min_speed = Vector.new 0.01, 0.01
 		@max_speed = Vector.new 15, 15
 		@stored_forces = Vector.new 0, 0
-		@ready = false
 	end
 	
 	def set_animation index
@@ -76,19 +72,18 @@ class GameObject < Sprite
 	end
 	
 	def is_visible map
-		if @active_bounds
-			return map.cam.intersects @active_bounds if @ready
-			return true
+		if @active_bounds and @active_bounds.x < 0
+			p @active_bounds
 		end
+		return map.cam.intersects @active_bounds if @active_bounds
 		false
-	end
-	
-	def ready?
-		@ready
 	end
 	
 	def dead?
 		@dead
+	end
+	
+	def update param
 	end
 	
 	def draw map
