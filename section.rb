@@ -267,9 +267,12 @@ class Section
 		@warp = nil
 	end
 	
-	def unlock_door
-		@locked_door.unlock
-		@locked_door = nil
+	def on_locked_door
+		yield @locked_door
+	end
+	
+	def on_tiles
+		yield @tiles
 	end
 	
 	def update

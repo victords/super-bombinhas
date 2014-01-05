@@ -8,7 +8,6 @@ class FloatingItem < GameObject
 		else
 			@active_bounds = Rectangle.new x, y, @img[0].width, @img[0].height
 		end
-		@ready = true
 		@state = 3
 		@counter = 0
 		@indices = indices
@@ -55,7 +54,6 @@ class Bombie < GameObject
 		@interval = 8
 		
 		@active_bounds = Rectangle.new x, y, 32, 32
-		@ready = true
 	end
 	
 	def update section
@@ -139,7 +137,6 @@ class Door < GameObject
 		@locked = (not s[1].nil?)
 		@open = false
 		@active_bounds = Rectangle.new x, y, 32, 64
-		@ready = true
 		@lock = Res.img(:sprite_Lock) if @locked
 	end
 	
@@ -181,7 +178,6 @@ class GunPowder < GameObject
 		@counter = 0
 		
 		@active_bounds = Rectangle.new x + 1, y + 17, 30, 15
-		@ready = true
 	end
 	
 	def update section
@@ -212,19 +208,99 @@ end
 
 class Crack < GameObject
 	def initialize x, y, args
-		@ready = true
+		super x + 32, y, 32, 32, :sprite_Crack
+		@active_bounds = Rectangle.new x + 32, y, 32, 32
+	end
+	
+	def update section
+		if section.bomb.explode? self
+			i = (@x / C::TileSize).floor
+			j = (@y / C::TileSize).floor
+			section.on_tiles do |t|
+				t[i][j].wall = -1
+				t[i][j].pass = -1
+			end
+			@dead = true
+		end
 	end
 end
 
 class Elevator < GameObject
 	def initialize x, y, args
-		@ready = true
+		a = args.split(':')
+		type = a[0].to_i
+		case type
+			when 1 then w = 32; cols = nil; rows = nil
+			when 2 then w = 64; cols = 4; rows = 1
+		end
+		super x, y, w, 1, "sprite_Elevator#{type}", Vector.new(0, 0), cols, rows
+		
+		@speed_m = a[1].to_i
+		@moving = false
+		@point = 0
+		@points = []
+		ps = a[2..-1]
+		ps.each do |p|
+			coords = p.split ','
+			@points << [coords[0].to_i * C::TileSize, coords[1].to_i * C::TileSize]
+		end
+		@points << [x, y]
+	end
+	
+	def move_to x, y, obst
+		if not @moving
+			x_dist = x - @x; y_dist = y - @y
+			freq = @speed_m / Math.sqrt(x_dist * x_dist + y_dist * y_dist)
+			@speed.x = x_dist * freq
+			@speed.y = y_dist * freq
+			@moving = true
+		end
+		x_aim = @x + @speed.x; y_aim = @y + @speed.y
+		passengers = []
+		obst.each do |o|
+			if @x + @w > o.x && o.x + o.w > @x
+				foot = o.y + o.h
+				if foot.round(6) == @y.round(6) || @speed.y < 0 && foot < @y && foot > y_aim
+					passengers << o
+				end
+			end
+		end
+		
+		if @speed.x > 0 && x_aim >= x || @speed.x < 0 && x_aim <= x
+			passengers.each do |p| p.x += x - @x end
+			@x = x; @speed.x = 0
+		else
+			passengers.each do |p| p.x += @speed.x end
+			@x = x_aim
+		end
+		if @speed.y > 0 && y_aim >= y || @speed.y < 0 && y_aim <= y
+			@y = y; @speed.y = 0
+		else; @y = y_aim; end
+		passengers.each do |p| p.y = @y - p.h end
+		@moving = false if @speed.x == 0 && @speed.y == 0
+	end
+	
+	def cycle obst
+		move_to @points[@point][0], @points[@point][1], obst
+		if not @moving
+			if @point == @points.length - 1; @point = 0
+			else; @point += 1; end
+		end
+	end
+	
+	def update section
+		obst = [section.bomb]
+		cycle obst
+	end
+	
+	def is_visible map
+		true
 	end
 end
 
 class Fureel < GameObject
 	def initialize x, y, args
-		@ready = true
+		
 	end
 end
 
@@ -234,7 +310,6 @@ class SaveBombie < GameObject
 		@id = args.to_i
 		@active_bounds = Rectangle.new x - 32, y - 26, 96, 58
 		@saved = false
-		@ready = true
 	end
 	
 	def update section
@@ -252,13 +327,13 @@ end
 
 class Pin < GameObject
 	def initialize x, y, args
-		@ready = true
+		
 	end
 end
 
 class Spikes < GameObject
 	def initialize x, y, args
-		@ready = true
+		
 	end
 end
 
@@ -277,55 +352,53 @@ end
 
 class MovingWall < GameObject
 	def initialize x, y, args
-		@ready = true
+		
 	end
 end
 
 class Ball < GameObject
 	def initialize x, y, args
-		@ready = true
+		
 	end
 end
 
 class BallReceptor < GameObject
 	def initialize x, y, args
-		@ready = true
+		
 	end
 end
 
 class Yaw < GameObject
 	def initialize x, y, args
-		@ready = true
+		
 	end
 end
 
 class Ekips < GameObject
 	def initialize x, y, args
-		@ready = true
+		
 	end
 end
 
 class Spec < GameObject
 	def initialize x, y, args, index
-		@ready = true
+		
 	end
 end
 
 class Faller < GameObject
 	def initialize x, y, args
-		@ready = true
+		
 	end
 end
 
 class Turner < GameObject
 	def initialize x, y, args
-		@ready = true
+		
 	end
 end
 
 class HideTile
-	#falta fazer a checagem de bordas e implementar is_visible
-	
 	def initialize i, j, group, tiles, num
 		@state = 0
 		@alpha = 0xff
@@ -339,20 +412,30 @@ class HideTile
 	end
 	
 	def check_tile i, j, tiles, dir
-		return if tiles[i][j].nil?
-		return if tiles[i][j].hide < 0 or tiles[i][j].hide == @group
+		return -1 if tiles[i].nil? or tiles[i][j].nil?
+		return tiles[i][j].wall if tiles[i][j].hide < 0
+		return 0 if tiles[i][j].hide == @group
+		
 		tiles[i][j].hide = @group
-		@points << Vector.new(i, j)
-		check_tile i, j-1, tiles, 0 if dir != 2
-		check_tile i+1, j, tiles, 1 if dir != 3
-		check_tile i, j+1, tiles, 2 if dir != 0
-		check_tile i-1, j, tiles, 3 if dir != 1
+		t = 0; r = 0; b = 0; l = 0
+		t = check_tile i, j-1, tiles, 0 if dir != 2
+		r = check_tile i+1, j, tiles, 1 if dir != 3
+		b = check_tile i, j+1, tiles, 2 if dir != 0
+		l = check_tile i-1, j, tiles, 3 if dir != 1
+		if t < 0 and r >= 0 and b >= 0 and l >= 0; img = 1
+		elsif t >= 0 and r < 0 and b >= 0 and l >= 0; img = 2
+		elsif t >= 0 and r >= 0 and b < 0 and l >= 0; img = 3
+		elsif t >= 0 and r >= 0 and b >= 0 and l < 0; img = 4
+		else; img = 0; end
+		
+		@points << {x: i * C::TileSize, y: j * C::TileSize, img: img}
+		0
 	end
 	
 	def update section
 		will_show = false
 		@points.each do |p|
-			rect = Rectangle.new p.x * C::TileSize, p.y * C::TileSize, C::TileSize, C::TileSize
+			rect = Rectangle.new p[:x], p[:y], C::TileSize, C::TileSize
 			if section.bomb.bounds.intersects rect
 				will_show = true
 				break
@@ -392,7 +475,7 @@ class HideTile
 	
 	def draw map
 		@points.each do |p|
-			@img[0].draw p.x * C::TileSize - map.cam.x, p.y * C::TileSize - map.cam.y, 0, 1, 1, @color
+			@img[p[:img]].draw p[:x] - map.cam.x, p[:y] - map.cam.y, 0, 1, 1, @color
 		end
 	end
 end

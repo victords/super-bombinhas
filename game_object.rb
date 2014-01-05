@@ -72,9 +72,6 @@ class GameObject < Sprite
 	end
 	
 	def is_visible map
-		if @active_bounds and @active_bounds.x < 0
-			p @active_bounds
-		end
 		return map.cam.intersects @active_bounds if @active_bounds
 		false
 	end

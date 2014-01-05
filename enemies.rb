@@ -15,10 +15,10 @@ class Enemy < GameObject
 		b = (@y + @img_gap.y + @img[0].height).ceil
 		l = (@x + @img_gap.x).floor
 		
-		if t > section.size.y; @dead = true; puts "morrendo baixo"
-		elsif r < 0; @dead = true; puts "morrendo esq"
+		if t > section.size.y; @dead = true
+		elsif r < 0; @dead = true
 		elsif b < C::TopMargin; @dead = true #para sumir por cima, a margem deve ser maior
-		elsif l > section.size.x; @dead = true; puts "morrendo dir"
+		elsif l > section.size.x; @dead = true
 		else
 			if t < @active_bounds.y
 				@active_bounds.h += @active_bounds.y - t
@@ -76,7 +76,6 @@ class Wheeliam < Enemy
 				end
 			end
 		end
-		puts "cheguei! #{@x}" if @x < 0
 	end
 	
 	def set_direction dir

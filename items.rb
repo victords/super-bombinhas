@@ -12,11 +12,9 @@ end
 
 class KeyItem < Item
 	def use section
-		if section.locked_door
-			section.unlock_door
-			return true
+		section.on_locked_door do |d|
+			d.unlock if d
 		end
-		false
 	end
 end
 
