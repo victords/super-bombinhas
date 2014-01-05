@@ -61,6 +61,7 @@ class Section
 							if t != :none # teste poderá ser removido no final
 								el = {x: x * C::TileSize, y: y * C::TileSize, type: t, args: a}
 								el[:index] = @element_info.length if e[i] == '$'
+								el[:obst] = true if e[i] == '%'
 								@element_info << el
 							end           # teste poderá ser removido no final
 						end
@@ -173,10 +174,12 @@ class Section
 		@temp_taken_items = []
 		
 		@elements = []
+		@obstacles = []
 		@element_info.each do |e|
 			if e
 				type = Object.const_get e[:type]
 				if e[:index]; @elements << type.new(e[:x], e[:y], e[:args], e[:index])
+				elsif e[:obst]; @elements << type.new(e[:x], e[:y], e[:args], @obstacles)
 				else; @elements << type.new(e[:x], e[:y], e[:args]); end
 			end
 		end
@@ -221,6 +224,13 @@ class Section
 						obstacles << Block.new(k * C::TileSize, l * C::TileSize, C::TileSize, C::TileSize, false)
 					end
 				end
+			end
+		end
+		
+		@obstacles.each do |o|
+			if o.x > x - 2 * C::TileSize and o.x < x + 2 * C::TileSize and
+			   o.y > y - 2 * C::TileSize and o.y < y + 2 * C::TileSize
+				obstacles << o
 			end
 		end
 		

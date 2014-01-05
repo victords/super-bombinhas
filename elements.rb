@@ -226,7 +226,7 @@ class Crack < GameObject
 end
 
 class Elevator < GameObject
-	def initialize x, y, args
+	def initialize x, y, args, obstacles
 		a = args.split(':')
 		type = a[0].to_i
 		case type
@@ -234,17 +234,30 @@ class Elevator < GameObject
 			when 2 then w = 64; cols = 4; rows = 1
 		end
 		super x, y, w, 1, "sprite_Elevator#{type}", Vector.new(0, 0), cols, rows
+		@passable = true
 		
 		@speed_m = a[1].to_i
 		@moving = false
 		@point = 0
 		@points = []
+		min_x = x; min_y = y
+		max_x = x; max_y = y
 		ps = a[2..-1]
 		ps.each do |p|
 			coords = p.split ','
-			@points << [coords[0].to_i * C::TileSize, coords[1].to_i * C::TileSize]
+			p_x = coords[0].to_i * C::TileSize; p_y = coords[1].to_i * C::TileSize
+			
+			min_x = p_x if p_x < min_x
+			min_y = p_y if p_y < min_y
+			max_x = p_x if p_x > max_x
+			max_y = p_y if p_y > max_y
+			
+			@points << [p_x, p_y]
 		end
 		@points << [x, y]
+		@active_bounds = Rectangle.new min_x, min_y, (max_x - min_x + w), (max_y - min_y + @img[0].height)
+		
+		obstacles << self
 	end
 	
 	def move_to x, y, obst
@@ -289,12 +302,8 @@ class Elevator < GameObject
 	end
 	
 	def update section
-		obst = [section.bomb]
+		obst = [section.bomb] #verificar...
 		cycle obst
-	end
-	
-	def is_visible map
-		true
 	end
 end
 
@@ -326,7 +335,7 @@ class SaveBombie < GameObject
 end
 
 class Pin < GameObject
-	def initialize x, y, args
+	def initialize x, y, args, obstacles
 		
 	end
 end
