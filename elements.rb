@@ -307,12 +307,6 @@ class Elevator < GameObject
 	end
 end
 
-class Fureel < GameObject
-	def initialize x, y, args
-		
-	end
-end
-
 class SaveBombie < GameObject
 	def initialize x, y, args
 		super x - 16, y, 64, 32, :sprite_Bombie2, Vector.new(-16, -26), 4, 2
@@ -377,32 +371,8 @@ class BallReceptor < GameObject
 	end
 end
 
-class Yaw < GameObject
-	def initialize x, y, args
-		
-	end
-end
-
-class Ekips < GameObject
-	def initialize x, y, args
-		
-	end
-end
-
 class Spec < GameObject
 	def initialize x, y, args, index
-		
-	end
-end
-
-class Faller < GameObject
-	def initialize x, y, args
-		
-	end
-end
-
-class Turner < GameObject
-	def initialize x, y, args
 		
 	end
 end

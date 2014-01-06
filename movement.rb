@@ -2,7 +2,7 @@ require './global'
 
 module Movement
 	attr_reader :speed, :w, :h, :passable, :top, :bottom, :left, :right
-	attr_accessor :x, :y
+	attr_accessor :x, :y, :stored_forces
 	
 	def bounds
 		Rectangle.new @x, @y, @w, @h

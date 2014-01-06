@@ -5,10 +5,11 @@ Vector = Struct.new :x, :y
 
 module C
 	TileSize = 32
-	TilesetSize = 8
 	ScreenWidth = 800
 	ScreenHeight = 600
 	PlayerOverTolerance = 10
+	InvulnerableTime = 40
+	BounceForce = 15
 	TopMargin = -200
 end
 

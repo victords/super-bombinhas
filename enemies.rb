@@ -1,10 +1,12 @@
 class Enemy < GameObject
-	def initialize x, y, w, h, img, img_gap, sprite_cols, sprite_rows, indices, interval, score
+	def initialize x, y, w, h, img, img_gap, sprite_cols, sprite_rows, indices, interval, score, hp = 1
 		super x, y, w, h, img, img_gap, sprite_cols, sprite_rows
 		
 		@indices = indices
 		@interval = interval
 		@score = score
+		@hp = hp
+		@timer = 0
 		
 		@active_bounds = Rectangle.new x + img_gap.x, y + img_gap.y, @img[0].width, @img[0].height
 	end
@@ -35,8 +37,11 @@ class Enemy < GameObject
 	
 	def update section
 		if section.player_over? self
-			G.player.score += @score
-			@dead = true
+			if @invulnerable			
+				section.bomb.stored_forces.y -= C::BounceForce
+			else
+				hit section.bomb
+			end
 		elsif section.bomb.explode? self
 			G.player.score += @score
 			@dead = true
@@ -44,19 +49,39 @@ class Enemy < GameObject
 			G.player.die
 		end
 		
+		if @invulnerable
+			@timer += 1
+			if @timer == C::InvulnerableTime
+				@invulnerable = false
+				@timer = 0
+			end
+		end
+		
 		yield
 		
 		set_active_bounds section
 		animate @indices, @interval
 	end
+	
+	def hit bomb
+		@hp -= 1
+		if @hp == 0
+			G.player.score += @score
+			@dead = true
+		else
+			@invulnerable = true
+			bomb.stored_forces.y -= C::BounceForce
+		end
+	end
 end
 
-class Wheeliam < Enemy
-	def initialize x, y, args
-		super x, y, 32, 32, :sprite_Wheeliam, Vector.new(-4, -3), 4, 1, [0, 1], 8, 100
+class FloorEnemy < Enemy
+	def initialize x, y, args, w, h, img, img_gap, sprite_cols, sprite_rows, indices, interval, score, hp = 1, speed = 3
+		super x, y, w, h, img, img_gap, sprite_cols, sprite_rows, indices, interval, score, hp
 		
 		@dont_fall = args.nil?
-		@forces = Vector.new -4, 0
+		@speed_m = speed
+		@forces = Vector.new -@speed_m, 0
 		@facing_right = false
 	end
 	
@@ -81,13 +106,30 @@ class Wheeliam < Enemy
 	def set_direction dir
 		@speed.x = 0
 		if dir == :left
-			@forces.x = -3
+			@forces.x = -@speed_m
 			@facing_right = false
 			@indices[0] = 0; @indices[1] = 1
 			set_animation 0
 		else
-			@forces.x = 3
+			@forces.x = @speed_m
 			@facing_right = true
+			@indices[0] = 2; @indices[1] = 3
+			set_animation 2
+		end
+		change_animation dir
+	end
+end
+
+class Wheeliam < FloorEnemy
+	def initialize x, y, args
+		super x, y, args, 32, 32, :sprite_Wheeliam, Vector.new(-4, -3), 4, 1, [0, 1], 8, 100
+	end
+	
+	def change_animation dir
+		if dir == :left
+			@indices[0] = 0; @indices[1] = 1
+			set_animation 0
+		else
 			@indices[0] = 2; @indices[1] = 3
 			set_animation 2
 		end
@@ -127,5 +169,45 @@ class Sprinny < Enemy
 			end
 			move forces, section.get_obstacles(@x, @y), section.ramps
 		end
+	end
+end
+
+class Fureel < FloorEnemy
+	def initialize x, y, args
+		super x - 4, y - 4, args, 40, 36, :sprite_Fureel, Vector.new(-10, -3), 6, 1, [0, 1], 8, 300, 2, 4
+	end
+	
+	def change_animation dir
+		if dir == :left
+			@indices[0] = 0; @indices[1] = 1
+			set_animation 0
+		else
+			@indices[0] = 3; @indices[1] = 4
+			set_animation 3
+		end
+	end
+end
+
+class Yaw < GameObject
+	def initialize x, y, args
+		
+	end
+end
+
+class Ekips < GameObject
+	def initialize x, y, args
+		
+	end
+end
+
+class Faller < GameObject
+	def initialize x, y, args
+		
+	end
+end
+
+class Turner < GameObject
+	def initialize x, y, args
+		
 	end
 end
