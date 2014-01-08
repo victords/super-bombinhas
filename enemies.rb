@@ -36,7 +36,7 @@ class Enemy < GameObject
 	end
 	
 	def update section
-		if section.player_over? self
+		if section.bomb.over? self
 			if @invulnerable			
 				section.bomb.stored_forces.y -= C::BounceForce
 			else
@@ -45,7 +45,7 @@ class Enemy < GameObject
 		elsif section.bomb.explode? self
 			G.player.score += @score
 			@dead = true
-		elsif section.collide_with_player? self
+		elsif section.bomb.collide? self
 			G.player.die
 		end
 		

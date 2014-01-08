@@ -1,5 +1,7 @@
 require './game_object'
 
+############################### classes abstratas ##############################
+
 class FloatingItem < GameObject
 	def initialize x, y, w, h, img, img_gap = nil, sprite_cols = nil, sprite_rows = nil, indices = nil, interval = nil
 		super x, y, w, h, img, img_gap, sprite_cols, sprite_rows
@@ -15,7 +17,7 @@ class FloatingItem < GameObject
 	end
 	
 	def update section
-		if section.collide_with_player? self
+		if section.bomb.collide? self
 			yield
 			@dead = true
 		end
@@ -30,6 +32,63 @@ class FloatingItem < GameObject
 		animate @indices, @interval if @indices
 	end
 end
+
+class TwoStateObject < GameObject
+	def initialize x, y, w, h, img, img_gap, sprite_cols, sprite_rows,
+		change_interval, anim_interval, change_anim_interval, s1_indices, s2_indices, s1_s2_indices, s2_s1_indices, s2_first = false
+		super x, y, w, h, img, img_gap, sprite_cols, sprite_rows
+		
+		@timer = 0
+		@changing = false
+		@change_interval = change_interval
+		@anim_interval = anim_interval
+		@change_anim_interval = change_anim_interval
+		@s1_indices = s1_indices
+		@s2_indices = s2_indices
+		@s1_s2_indices = s1_s2_indices
+		@s2_s1_indices = s2_s1_indices
+		@state2 = s2_first
+		set_animation s2_indices[0] if s2_first
+	end
+	
+	def update section
+		@timer += 1
+		if @timer == @change_interval
+			@state2 = (not @state2)
+			if @state2
+				s1_to_s2 section
+				set_animation @s1_s2_indices[0]
+			else
+				s2_to_s1 section
+				set_animation @s2_s1_indices[0]
+			end
+			@changing = true
+			@timer = 0
+		end
+		
+		if @changing
+			if @state2
+				animate @s1_s2_indices, @change_anim_interval
+				if @img_index == @s1_s2_indices[-1]
+					set_animation @s1_s2_indices[-2]
+					@changing = false
+				end
+			else
+				animate @s2_s1_indices, @change_anim_interval
+				if @img_index == @s2_s1_indices[-1]
+					set_animation @s2_s1_indices[-2]
+					@changing = false
+				end
+			end
+		elsif @state2
+			animate @s2_indices, @anim_interval if @anim_interval > 0
+		else
+			animate @s1_indices, @anim_interval if @anim_interval > 0
+		end
+	end
+end
+
+################################################################################
 
 class FireRock < FloatingItem
 	def initialize x, y, args
@@ -57,7 +116,7 @@ class Bombie < GameObject
 	end
 	
 	def update section
-		if section.collide_with_player? self
+		if section.bomb.collide? self
 			if not @facing_right and section.bomb.bounds.x > @x + @w / 2
 				@facing_right = true
 				@indices = [3, 4, 5]
@@ -141,7 +200,7 @@ class Door < GameObject
 	end
 	
 	def update section
-		collide = section.collide_with_player? self
+		collide = section.bomb.collide? self
 		if @locked and collide
 			section.locked_door = self
 		end
@@ -191,7 +250,7 @@ class GunPowder < GameObject
 				end
 				@counter = 0
 			end
-		elsif section.collide_with_player? self
+		elsif section.bomb.collide? self
 			@active = true
 		end
 	end
@@ -316,7 +375,7 @@ class SaveBombie < GameObject
 	end
 	
 	def update section
-		if not @saved and section.collide_with_player? self
+		if not @saved and section.bomb.collide? self
 			section.save_check_point @id
 			@saved = true
 			@indices = [1, 2, 3]
@@ -328,15 +387,67 @@ class SaveBombie < GameObject
 	end
 end
 
-class Pin < GameObject
+class Pin < TwoStateObject
 	def initialize x, y, args, obstacles
+		super x, y, 32, 32, :sprite_Pin, Vector.new(0, 0), 5, 1,
+			60, 0, 3, [0], [4], [1, 2, 3, 4, 0], [3, 2, 1, 0, 4], (not args.nil?)
 		
+		if args
+			obstacles << Block.new(x, y, 32, 32, true)
+		end
+		
+		@active_bounds = Rectangle.new x, y, 32, 32
+	end
+	
+	def s1_to_s2 section
+		section.on_obstacles do |o|
+			o << Block.new(@x, @y, @w, @h, true)
+		end
+	end
+	
+	def s2_to_s1 section
+		section.on_obstacles do |o|
+			o.each do |b|
+				if b.x == @x and b.y == @y
+					o.delete b
+					break
+				end
+			end
+		end
 	end
 end
 
-class Spikes < GameObject
-	def initialize x, y, args
+class Spikes < TwoStateObject
+	def initialize x, y, args, obstacles
+		super x, y, 32, 32, :sprite_Spikes, Vector.new(0, 0), 5, 1,
+			120, 0, 2, [0], [4], [1, 2, 3, 4, 0], [3, 2, 1, 0, 4]
 		
+		@active_bounds = Rectangle.new x, y, 32, 33
+	end
+	
+	def s1_to_s2 section
+		section.on_obstacles do |o|
+			o << Block.new(@x, @y + 30, @w, @h, false)
+		end
+	end
+	
+	def s2_to_s1 section
+		section.on_obstacles do |o|
+			o.each do |b|
+				if b.x == @x and b.y == @y + 30
+					o.delete b
+					break
+				end
+			end
+		end
+	end
+	
+	def update section
+		super section
+		
+		if section.bomb.collide? self and @state2
+			G.player.die
+		end
 	end
 end
 

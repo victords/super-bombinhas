@@ -100,6 +100,16 @@ class Bomb < GameObject
 		sq_dist <= radius**2
 	end
 	
+	def collide? obj
+		bounds.intersects obj.bounds
+	end
+	
+	def over? obj
+		@x + @w > obj.x and obj.x + obj.w > @x and
+			@y < obj.y - C::PlayerOverTolerance and @y + @h > obj.y and
+			@speed.y > 0
+	end
+	
 	def is_visible map
 		true
 	end

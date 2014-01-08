@@ -243,16 +243,6 @@ class Section
 		@tiles[i] and @tiles[i][j] and @tiles[i][j].pass + @tiles[i][j].wall >= 0
 	end
 	
-	def player_over? obj
-		@bomb.x + @bomb.w > obj.x and obj.x + obj.w > @bomb.x and
-			@bomb.y < obj.y - C::PlayerOverTolerance and @bomb.y + @bomb.h > obj.y and
-			@bomb.speed.y > 0
-	end
-	
-	def collide_with_player? obj
-		@bomb.bounds.intersects obj.bounds
-	end
-	
 	def take_item index, type, once, store
 		if once
 			@temp_taken_items << {index: index, type: type}
@@ -279,10 +269,12 @@ class Section
 	
 	def on_locked_door
 		yield @locked_door
-	end
-	
+	end	
 	def on_tiles
 		yield @tiles
+	end	
+	def on_obstacles
+		yield @obstacles
 	end
 	
 	def update
