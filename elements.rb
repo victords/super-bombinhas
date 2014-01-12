@@ -191,9 +191,8 @@ end
 class Door < GameObject
 	def initialize x, y, args
 		super x + 15, y + 63, 2, 1, :sprite_Door, Vector.new(-15, -63), 5, 1
-		s = args.split ','
-		@id = s[0].to_i
-		@locked = (not s[1].nil?)
+		@id = args.to_i
+		@locked = args.split(',').length == 2
 		@open = false
 		@active_bounds = Rectangle.new x, y, 32, 64
 		@lock = Res.img(:sprite_Lock) if @locked
@@ -371,14 +370,15 @@ class SaveBombie < GameObject
 		super x - 16, y, 64, 32, :sprite_Bombie2, Vector.new(-16, -26), 4, 2
 		@id = args.to_i
 		@active_bounds = Rectangle.new x - 32, y - 26, 96, 58
-		@saved = false
+		@saved = args.split(',').length == 2
+		@indices = [1, 2, 3]
+		set_animation 1 if @saved
 	end
 	
 	def update section
 		if not @saved and section.bomb.collide? self
-			section.save_check_point @id
+			section.save_check_point @id, self
 			@saved = true
-			@indices = [1, 2, 3]
 		end
 		
 		if @saved

@@ -23,9 +23,8 @@ class Bomb < GameObject
 	end
 	
 	def update section
-		if KB.key_pressed? Gosu::KbLeftShift or KB.key_pressed? Gosu::KbRightShift
-			G.player.change_item
-		end
+		G.player.change_item if KB.key_pressed? Gosu::KbLeftShift or KB.key_pressed? Gosu::KbRightShift
+		G.player.use_item section if KB.key_pressed? Gosu::KbA
 		
 		forces = Vector.new 0, 0
 		if @exploding

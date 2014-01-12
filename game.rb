@@ -16,7 +16,7 @@ class Game < Gosu::Window
 		
 		@frame = 0
 		
-		@stage = Stage.new 100
+		@stage = Stage.new 2
 	end
 
 	def update

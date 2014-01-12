@@ -13,14 +13,19 @@ end
 class KeyItem < Item
 	def use section
 		section.on_locked_door do |d|
-			d.unlock if d
+			if d
+				d.unlock
+				return true
+			end
 		end
+		false
 	end
 end
 
 class LifeItem
 	def use section
 		G.player.lives += 1
+		true
 	end
 end
 

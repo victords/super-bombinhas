@@ -8,8 +8,8 @@ require './map'
 Tile = Struct.new :back, :fore, :pass, :wall, :hide
 
 class Section
-	attr_reader :entrance, :reload, :ramps, :bomb, :size
-	attr_accessor :warp, :locked_door
+	attr_reader :reload, :ramps, :bomb, :size
+	attr_accessor :entrance, :warp, :loaded, :locked_door
 	
 	def initialize file, entrances
 		parts = File.read(file).chomp.split('#', -1)
@@ -198,10 +198,10 @@ class Section
 		@margin = Vector.new((C::ScreenWidth - @bomb.w) / 2, (C::ScreenHeight - @bomb.h) / 2)
 		@map.set_camera @bomb.x - @margin.x, @bomb.y - @margin.y
 		
-		@reload = false
-		@entrance = nil
 		@warp = nil
-		@locked_door = false
+		@locked_door = nil
+		@reload = false
+		@loaded = true
 	end
 	
 	def get_obstacles x, y
@@ -251,17 +251,18 @@ class Section
 		else; Object.const_get("#{type}Item").new.use self; end
 	end
 	
-	def save_check_point id
+	def save_check_point id, bombie
 		@temp_taken_items.each do |i|
 			@element_info[i[:index]] = nil
 			@taken_items << i
 		end
 		@temp_taken_items.clear
 		@entrance = id
+		ind = @elements.index bombie
+		@element_info[ind][:args] += ",."
 	end
 	
 	def do_warp x, y
-		@reload = false
 		@bomb.do_warp x, y
 		@map.set_camera @bomb.x - @margin.x, @bomb.y - @margin.y
 		@warp = nil
@@ -279,7 +280,6 @@ class Section
 	
 	def update
 		@reload = true if G.player.dead? or KB.key_pressed? Gosu::KbEscape
-		G.player.use_item self if KB.key_pressed? Gosu::KbA
 		
 		@showing_tiles = false
 		@locked_door = nil
