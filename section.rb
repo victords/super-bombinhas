@@ -60,9 +60,14 @@ class Section
 							t, a = element_type e[(i+1)..-1]
 							if t != :none # teste poderá ser removido no final
 								el = {x: x * C::TileSize, y: y * C::TileSize, type: t, args: a}
-								el[:index] = @element_info.length if e[i] == '$'
-								el[:obst] = true if e[i] == '%'
-								@element_info << el
+								if e[i] == '$'
+									el[:state] = :normal
+									el[:section] = self
+									G.items << el
+								else
+									el[:obst] = true if e[i] == '%'
+									@element_info << el
+								end
 							end           # teste poderá ser removido no final
 						end
 						i += 1000
@@ -167,19 +172,25 @@ class Section
 	#end initialization
 	
 	def load bomb_x, bomb_y
-		G.player.reset
-		@taken_items.each do |i|
-			G.player.add_item i[:type]
-		end
-		@temp_taken_items = []
-		
 		@elements = []
 		@obstacles = []
+		@warp = nil
+		@locked_door = nil
+		@reload = false
+		@loaded = true
+		
+		G.items.each do |i|
+			if i[:state] == :normal and i[:section] == self
+				type = Object.const_get i[:type]
+				i[:obj] = type.new(i[:x], i[:y], i[:args])
+				@elements << i[:obj]
+			end
+		end
+		
 		@element_info.each do |e|
 			if e
 				type = Object.const_get e[:type]
-				if e[:index]; @elements << type.new(e[:x], e[:y], e[:args], e[:index])
-				elsif e[:obst]; @elements << type.new(e[:x], e[:y], e[:args], @obstacles)
+				if e[:obst]; @elements << type.new(e[:x], e[:y], e[:args], @obstacles)
 				else; @elements << type.new(e[:x], e[:y], e[:args]); end
 			end
 		end
@@ -197,11 +208,12 @@ class Section
 		@elements << (@bomb = Bomb.new(bomb_x, bomb_y, :azul))
 		@margin = Vector.new((C::ScreenWidth - @bomb.w) / 2, (C::ScreenHeight - @bomb.h) / 2)
 		@map.set_camera @bomb.x - @margin.x, @bomb.y - @margin.y
-		
+	end
+	
+	def do_warp x, y
+		@bomb.do_warp x, y
+		@map.set_camera @bomb.x - @margin.x, @bomb.y - @margin.y
 		@warp = nil
-		@locked_door = nil
-		@reload = false
-		@loaded = true
 	end
 	
 	def get_obstacles x, y
@@ -243,34 +255,34 @@ class Section
 		@tiles[i] and @tiles[i][j] and @tiles[i][j].pass + @tiles[i][j].wall >= 0
 	end
 	
-	def take_item index, type, once, store
-		if once
-			@temp_taken_items << {index: index, type: type}
-		end
-		if store; G.player.add_item type
-		else; Object.const_get("#{type}Item").new.use self; end
-	end
-	
-	def save_check_point id, bombie
-		@temp_taken_items.each do |i|
-			@element_info[i[:index]] = nil
-			@taken_items << i
-		end
-		@temp_taken_items.clear
+	def save_check_point id
+		G.save_items
 		@entrance = id
-		ind = @elements.index bombie
-		@element_info[ind][:args] += ",."
+		@element_info.each do |e|
+			if e[:type] == :SaveBombie and e[:args] == id.to_s
+				e[:args] += ",."
+				break
+			end
+		end
 	end
 	
-	def do_warp x, y
-		@bomb.do_warp x, y
-		@map.set_camera @bomb.x - @margin.x, @bomb.y - @margin.y
-		@warp = nil
+	def unlock_door
+		if @locked_door
+			puts "unlock"
+			@locked_door.unlock
+			@element_info.each do |e|
+				puts "#{e[:type]} #{e[:args]}"
+				if e[:type] == :Door and e[:args] == "#{@locked_door.id},."					
+					puts "achou"
+					e[:args].chomp! ",."
+					break
+				end
+			end
+			return true
+		end
+		false
 	end
 	
-	def on_locked_door
-		yield @locked_door
-	end	
 	def on_tiles
 		yield @tiles
 	end	
@@ -279,21 +291,22 @@ class Section
 	end
 	
 	def update
-		@reload = true if G.player.dead? or KB.key_pressed? Gosu::KbEscape
-		
 		@showing_tiles = false
 		@locked_door = nil
-		@elements.each_with_index do |e, i|
-			if e
+		@elements.each do |e|
+			#if e
 				e.update self if e.is_visible @map
-				@elements[i] = nil if e.dead?
-			end
+				@elements.delete e if e.dead?
+				#@elements[i] = nil if e.dead?
+			#end
 		end
 		@hide_tiles.each do |t|
 			t.update self if t.is_visible @map
 		end
 		
 		@map.set_camera @bomb.x - @margin.x, @bomb.y - @margin.y
+		
+		@reload = true if G.player.dead? or KB.key_pressed? Gosu::KbEscape
 	end
 	
 	def draw
@@ -307,9 +320,9 @@ class Section
 		end
 		
 		@elements.each do |e|
-			if e
+			#if e
 				e.draw @map if e.is_visible @map
-			end
+			#end
 		end
 		
 		@map.foreach do |i, j, x, y|

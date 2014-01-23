@@ -2,37 +2,6 @@ require './game_object'
 
 ############################### classes abstratas ##############################
 
-class FloatingItem < GameObject
-	def initialize x, y, w, h, img, img_gap = nil, sprite_cols = nil, sprite_rows = nil, indices = nil, interval = nil
-		super x, y, w, h, img, img_gap, sprite_cols, sprite_rows
-		if img_gap
-			@active_bounds = Rectangle.new x + img_gap.x, y - img_gap.y, @img[0].width, @img[0].height
-		else
-			@active_bounds = Rectangle.new x, y, @img[0].width, @img[0].height
-		end
-		@state = 3
-		@counter = 0
-		@indices = indices
-		@interval = interval
-	end
-	
-	def update section
-		if section.bomb.collide? self
-			yield
-			@dead = true
-		end
-		@counter += 1
-		if @counter == 10
-			if @state == 0 or @state == 1; @y -= 1
-			else; @y += 1; end
-			@state += 1
-			@state = 0 if @state == 4
-			@counter = 0
-		end
-		animate @indices, @interval if @indices
-	end
-end
-
 class TwoStateObject < GameObject
 	def initialize x, y, w, h, img, img_gap, sprite_cols, sprite_rows,
 		change_interval, anim_interval, change_anim_interval, s1_indices, s2_indices, s1_s2_indices, s2_s1_indices, s2_first = false
@@ -89,18 +58,6 @@ class TwoStateObject < GameObject
 end
 
 ################################################################################
-
-class FireRock < FloatingItem
-	def initialize x, y, args
-		super x + 6, y + 7, 20, 20, :sprite_FireRock, Vector.new(-2, -17), 4, 1, [0, 1, 2, 3], 5
-	end
-	
-	def update section
-		super section do
-			G.player.score += 10
-		end
-	end
-end
 
 class Bombie < GameObject
 	def initialize x, y, args
@@ -161,34 +118,9 @@ class Bombie < GameObject
 	end
 end
 
-class Life < FloatingItem
-	def initialize x, y, args, index
-		super x + 3, y + 3, 26, 26, :sprite_Life, Vector.new(-3, -3), 8, 1,
-			[0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7], 6
-		@index = index
-	end
-	
-	def update section
-		super section do
-			section.take_item @index, :Life, true, false
-		end
-	end
-end
-
-class Key < FloatingItem
-	def initialize x, y, args, index
-		super x + 3, y + 3, 26, 26, :sprite_Key, Vector.new(-3, -3)
-		@index = index
-	end
-	
-	def update section
-		super section do
-			section.take_item @index, :Key, true, true
-		end
-	end
-end
-
 class Door < GameObject
+	attr_reader :id
+	
 	def initialize x, y, args
 		super x + 15, y + 63, 2, 1, :sprite_Door, Vector.new(-15, -63), 5, 1
 		@id = args.to_i
@@ -377,7 +309,7 @@ class SaveBombie < GameObject
 	
 	def update section
 		if not @saved and section.bomb.collide? self
-			section.save_check_point @id, self
+			section.save_check_point @id
 			@saved = true
 		end
 		
@@ -447,19 +379,6 @@ class Spikes < TwoStateObject
 		
 		if section.bomb.collide? self and @state2
 			G.player.die
-		end
-	end
-end
-
-class Attack1 < FloatingItem
-	def initialize x, y, args, index
-		super x + 3, y + 3, 26, 26, :sprite_Attack1, Vector.new(-3, -3), 8, 1,
-			[0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7], 6
-	end
-	
-	def update section
-		super section do
-			section.take_item -1, :Attack1, false, true
 		end
 	end
 end

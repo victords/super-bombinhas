@@ -26,8 +26,11 @@ class Stage
 			@sections.each do |s|
 				s.loaded = false
 			end
+			
 			@cur_section = @cur_entrance[:section]
 			@cur_section.load @cur_entrance[:x], @cur_entrance[:y]
+			G.player.reset
+			G.reset_items
 		end
 	end
 	

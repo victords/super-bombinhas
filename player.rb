@@ -17,24 +17,31 @@ class Player
 	end
 	
 	def die
-		@dead = true
+		if not @dead
+			@lives -= 1
+			@dead = true
+		end
 	end
 	
-	def add_item type
-		if @items[type]
-			@items[type].amount += 1
-		else
-			@items[type] = Object.const_get("#{type}Item").new type
-		end
-		@cur_item_type = type if @cur_item_type.nil?
+	def add_item item
+		@items[item[:type]] = [] if @items[item[:type]].nil?
+		@items[item[:type]] << item
+		@cur_item_type = item[:type] if @cur_item_type.nil?
 	end
 	
 	def use_item section
-		item = @items[@cur_item_type]
-		return if item.nil?
-		if item.use section
-			item.amount -= 1
-			if item.amount == 0
+		return if @cur_item_type.nil?
+		item_set = @items[@cur_item_type]
+		item = item_set[0]
+		if item[:obj].use section
+			if item[:state] == :temp_taken
+				item[:state] = :temp_taken_used
+			else
+				item[:state] = :temp_used
+			end
+			
+			item_set.delete item
+			if item_set.length == 0
 				@items.delete @cur_item_type
 				@item_index = 0 if @item_index >= @items.length
 				@cur_item_type = @items.keys[@item_index]
@@ -67,10 +74,10 @@ class Player
 		                   795, 55, 0x80abcdef,
 		                   745, 55, 0x80abcdef, 0
 		
-		item = @items[@cur_item_type]
-		if not item.nil?
-			item.icon.draw 695, 10, 0
-			G.font.draw item.amount.to_s, 725, 36, 0, 1, 1, 0xff000000
+		if not @cur_item_type.nil?
+			item_set = @items[@cur_item_type]
+			item_set[0][:obj].icon.draw 695, 10, 0
+			G.font.draw item_set.length.to_s, 725, 36, 0, 1, 1, 0xff000000
 		end
 		if @items.length > 1
 			G.window.draw_triangle 690, 30, 0x80123456,

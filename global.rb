@@ -14,34 +14,20 @@ module C
 end
 
 class G
-	def self.window
-		@@window
-	end
-	def self.player
-		@@player
-	end
-	def self.gravity
-		@@gravity
-	end
-	def self.gravity= value
-		@@gravity = value
-	end
-	def self.lang
-		@@lang
-	end
-	def self.lang= value
-		@@lang = value
-	end
-	def self.font
-		@@font
-	end
-	def self.texts
-		@@texts
-	end
+	def self.window; @@window; end
+	def self.player; @@player; end
+	def self.items; @@items; end
+	def self.gravity; @@gravity; end
+	def self.gravity= value; @@gravity = value; end
+	def self.lang; @@lang; end
+	def self.lang= value; @@lang = value; end
+	def self.font; @@font; end
+	def self.texts; @@texts; end
 	
 	def self.initialize window
 		@@window = window
 		@@player = Player.new
+		@@items = []
 		@@gravity = Vector.new 0, 0.9
 		@@lang = :spanish
 		@@font = Font.new window, "data/font/BankGothicMedium.ttf", 20
@@ -53,6 +39,36 @@ class G
 			File.open(f).each do |l|
 				parts = l.split "\t"
 				@@texts[lang][parts[0].to_sym] = parts[-1].chomp
+			end
+		end
+	end
+	
+	def self.find_item item
+		@@items.each do |i|
+			return i if i[:obj] == item
+		end
+		nil
+	end
+	
+	def self.reset_items
+		@@items.each do |i|
+			if i[:state] == :temp_taken or i[:state] == :temp_taken_used
+				i[:state] = :normal
+			elsif i[:state] == :temp_used
+				i[:state] = :taken
+				@@player.add_item i
+			elsif i[:state] == :taken
+				@@player.add_item i
+			end
+		end
+	end
+	
+	def self.save_items
+		@@items.each do |i|
+			if i[:state] == :temp_taken
+				i[:state] = :taken
+			elsif i[:state] == :temp_used or i[:state] == :temp_taken_used
+				i[:state] = :used
 			end
 		end
 	end
