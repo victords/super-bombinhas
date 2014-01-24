@@ -268,12 +268,9 @@ class Section
 	
 	def unlock_door
 		if @locked_door
-			puts "unlock"
 			@locked_door.unlock
 			@element_info.each do |e|
-				puts "#{e[:type]} #{e[:args]}"
-				if e[:type] == :Door and e[:args] == "#{@locked_door.id},."					
-					puts "achou"
+				if e[:type] == :Door and e[:args] == "#{@locked_door.id},."
 					e[:args].chomp! ",."
 					break
 				end
