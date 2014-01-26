@@ -1,3 +1,5 @@
+############################### classes abstratas ##############################
+
 class Enemy < GameObject
 	def initialize x, y, w, h, img, img_gap, sprite_cols, sprite_rows, indices, interval, score, hp = 1
 		super x, y, w, h, img, img_gap, sprite_cols, sprite_rows
@@ -119,6 +121,8 @@ class FloorEnemy < Enemy
 		change_animation dir
 	end
 end
+
+################################################################################
 
 class Wheeliam < FloorEnemy
 	def initialize x, y, args

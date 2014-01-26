@@ -384,14 +384,89 @@ class Spikes < TwoStateObject
 end
 
 class MovingWall < GameObject
-	def initialize x, y, args
-		
+	def initialize x, y, args, obstacles
+		super x + 2, y, 28, 32, :sprite_MovingWall, Vector.new(0, 0), 1, 2
+		@set = false
+		@id = args.to_i
+		@active_bounds = Rectangle.new @x, @y, @w, @h
+		obstacles << self
+	end
+	
+	def update section
+		if not @set
+			if section.obstacle_at? @x, @y - 1
+				@set = true
+			else
+				@y -= C::TileSize
+				@h += C::TileSize
+				@active_bounds = Rectangle.new @x, @y, @w, @h
+			end
+		end
+	end
+	
+	def draw map
+		y = 16
+		@img[0].draw @x - map.cam.x, @y - map.cam.y, 0
+		while y < @h
+			@img[1].draw @x - map.cam.x, @y + y - map.cam.y, 0
+			y += 16
+		end
 	end
 end
 
 class Ball < GameObject
 	def initialize x, y, args
-		
+		super x, y, 32, 32, :sprite_Ball
+		@set = false
+		@start_x = x
+		@rotation = 0
+		@active_bounds = Rectangle.new x, y, 32, 32
+	end
+	
+	def update section
+		if @set
+			@x += (0.1 * (@bottom.x - @x)) if @x.round(2) != @bottom.x
+		else
+			forces = Vector.new 0, 0
+			if section.bomb.collide? self
+				if section.bomb.x < @x; forces.x = (section.bomb.x + section.bomb.w - @x) * 0.15
+				else; forces.x = -(@x + @w - section.bomb.x) * 0.15; end
+			end
+			if @bottom
+				if @speed.x != 0
+					forces.x -= 0.15 * @speed.x
+				end
+			end
+#			if (collidesOnBottom())
+#			{
+#				Ramp *ramp = dynamic_cast<Ramp *>(getObjectOnBottom());
+#				if (ramp != NULL)
+#				{
+#					if (ramp->isLeftToRight()) forces.x -= 0.2f;
+#					else forces.x += 0.2f;
+#				}
+#				else
+#				{
+#					BallReceptor *br = dynamic_cast<BallReceptor*>(getObjectOnBottom());
+#					if (br != NULL)
+#					{
+#						br->activate();
+#						set = true;
+#						return;
+#					}
+#					else if (getSpeed().x > 0) forces.x -= 0.5f;
+#					else if (getSpeed().x < 0) forces.x += 0.5f;
+#				}
+#			}
+			move forces, section.get_obstacles(@x, @y), section.ramps
+			
+			@active_bounds = Rectangle.new @x, @y, @w, @h
+			@rotation = 3 * (@x - @start_x)
+		end
+	end
+	
+	def draw map
+		@img[0].draw_rot @x + (@w / 2) - map.cam.x, @y + (@h / 2) - map.cam.y, 0, @rotation
 	end
 end
 

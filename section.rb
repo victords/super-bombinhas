@@ -188,11 +188,9 @@ class Section
 		end
 		
 		@element_info.each do |e|
-			if e
-				type = Object.const_get e[:type]
-				if e[:obst]; @elements << type.new(e[:x], e[:y], e[:args], @obstacles)
-				else; @elements << type.new(e[:x], e[:y], e[:args]); end
-			end
+			type = Object.const_get e[:type]
+			if e[:obst]; @elements << type.new(e[:x], e[:y], e[:args], @obstacles)
+			else; @elements << type.new(e[:x], e[:y], e[:args]); end
 		end
 		
 		index = 1
@@ -240,10 +238,10 @@ class Section
 		end
 		
 		@obstacles.each do |o|
-			if o.x > x - 2 * C::TileSize and o.x < x + 2 * C::TileSize and
-			   o.y > y - 2 * C::TileSize and o.y < y + 2 * C::TileSize
+#			if o.x > x - 2 * C::TileSize and o.x < x + 2 * C::TileSize and
+#			   o.y > y - 2 * C::TileSize and o.y < y + 2 * C::TileSize
 				obstacles << o
-			end
+#			end
 		end
 		
 		obstacles
@@ -291,11 +289,8 @@ class Section
 		@showing_tiles = false
 		@locked_door = nil
 		@elements.each do |e|
-			#if e
-				e.update self if e.is_visible @map
-				@elements.delete e if e.dead?
-				#@elements[i] = nil if e.dead?
-			#end
+			e.update self if e.is_visible @map
+			@elements.delete e if e.dead?
 		end
 		@hide_tiles.each do |t|
 			t.update self if t.is_visible @map
@@ -317,9 +312,7 @@ class Section
 		end
 		
 		@elements.each do |e|
-			#if e
-				e.draw @map if e.is_visible @map
-			#end
+			e.draw @map if e.is_visible @map
 		end
 		
 		@map.foreach do |i, j, x, y|
