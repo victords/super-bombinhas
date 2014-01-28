@@ -64,6 +64,10 @@ class Section
 									el[:state] = :normal
 									el[:section] = self
 									G.items << el
+								elsif e[i] == '&'
+									el[:state] = :normal
+									el[:section] = self
+									G.switches << el
 								else
 									el[:obst] = true if e[i] == '%'
 									@element_info << el
@@ -179,11 +183,11 @@ class Section
 		@reload = false
 		@loaded = true
 		
-		G.items.each do |i|
-			if i[:state] == :normal and i[:section] == self
-				type = Object.const_get i[:type]
-				i[:obj] = type.new(i[:x], i[:y], i[:args])
-				@elements << i[:obj]
+		G.switches.each do |s|
+			if s[:section] == self
+				type = Object.const_get s[:type]
+				s[:obj] = type.new(s[:x], s[:y], s[:args], s[:state])
+				@elements << s[:obj]
 			end
 		end
 		
@@ -223,8 +227,8 @@ class Section
 			obstacles << Block.new(-1, 0, 1, @size.y, false)
 		end
 		
-		i = (x / @map.tile_size.x).round
-		j = (y / @map.tile_size.y).round
+		i = (x / C::TileSize).round
+		j = (y / C::TileSize).round
 		for k in (i-2)..(i+2)
 			for l in (j-2)..(j+2)
 				if @tiles[k] and @tiles[k][l]
@@ -248,34 +252,34 @@ class Section
 	end
 	
 	def obstacle_at? x, y
-		i = x / @map.tile_size.x
-		j = y / @map.tile_size.y
+		i = x / C::TileSize
+		j = y / C::TileSize
 		@tiles[i] and @tiles[i][j] and @tiles[i][j].pass + @tiles[i][j].wall >= 0
 	end
 	
-	def save_check_point id
-		G.save_items
-		@entrance = id
-		@element_info.each do |e|
-			if e[:type] == :SaveBombie and e[:args] == id.to_s
-				e[:args] += ",."
-				break
-			end
-		end
+	def save_check_point obj
+		G.set_switch obj
+		G.save_switches
 	end
 	
 	def unlock_door
 		if @locked_door
 			@locked_door.unlock
-			@element_info.each do |e|
-				if e[:type] == :Door and e[:args] == "#{@locked_door.id},."
-					e[:args].chomp! ",."
-					break
-				end
-			end
+			G.set_switch @locked_door
 			return true
 		end
 		false
+	end
+	
+	def activate_switch s
+		G.set_switch s
+		@elements.each do |e|
+			if e.class == MovingWall and e.id == s.id
+				e.open
+				G.set_switch e
+				break
+			end
+		end
 	end
 	
 	def on_tiles
@@ -283,6 +287,9 @@ class Section
 	end	
 	def on_obstacles
 		yield @obstacles
+	end
+	def on_switches
+		yield @switches
 	end
 	
 	def update

@@ -17,6 +17,7 @@ class G
 	def self.window; @@window; end
 	def self.player; @@player; end
 	def self.items; @@items; end
+	def self.switches; @@items; end
 	def self.gravity; @@gravity; end
 	def self.gravity= value; @@gravity = value; end
 	def self.lang; @@lang; end
@@ -27,7 +28,7 @@ class G
 	def self.initialize window
 		@@window = window
 		@@player = Player.new
-		@@items = []
+		@@switches = []
 		@@gravity = Vector.new 0, 0.9
 		@@lang = :spanish
 		@@font = Font.new window, "data/font/BankGothicMedium.ttf", 20
@@ -43,32 +44,34 @@ class G
 		end
 	end
 	
-	def self.find_item item
-		@@items.each do |i|
-			return i if i[:obj] == item
+	def self.find_switch obj
+		@@switches.each do |s|
+			return s if s[:obj] == obj
 		end
 		nil
 	end
 	
-	def self.reset_items
-		@@items.each do |i|
-			if i[:state] == :temp_taken or i[:state] == :temp_taken_used
-				i[:state] = :normal
-			elsif i[:state] == :temp_used
-				i[:state] = :taken
-				@@player.add_item i
-			elsif i[:state] == :taken
-				@@player.add_item i
+	def self.set_switch obj
+		switch = self.find_switch obj
+		switch[:state] = :temp_taken
+	end
+	
+	def self.reset_switches
+		@@switches.each do |s|
+			if s[:state] == :temp_taken or s[:state] == :temp_taken_used
+				s[:state] = :normal
+			elsif s[:state] == :temp_used
+				s[:state] = :taken
 			end
 		end
 	end
 	
-	def self.save_items
-		@@items.each do |i|
-			if i[:state] == :temp_taken
-				i[:state] = :taken
-			elsif i[:state] == :temp_used or i[:state] == :temp_taken_used
-				i[:state] = :used
+	def self.save_switches
+		@@switches.each do |s|
+			if s[:state] == :temp_taken
+				s[:state] = :taken
+			elsif i[:state] == :temp_used or s[:state] == :temp_taken_used
+				s[:state] = :used
 			end
 		end
 	end

@@ -436,28 +436,17 @@ class Ball < GameObject
 				if @speed.x != 0
 					forces.x -= 0.15 * @speed.x
 				end
+				
+				my_bounds = bounds
+				section.on_switches do |ss|
+					ss.each do |s|
+						if my_bounds.intersects s.bounds
+							section.activate_switch s
+							break
+						end
+					end
+				end
 			end
-#			if (collidesOnBottom())
-#			{
-#				Ramp *ramp = dynamic_cast<Ramp *>(getObjectOnBottom());
-#				if (ramp != NULL)
-#				{
-#					if (ramp->isLeftToRight()) forces.x -= 0.2f;
-#					else forces.x += 0.2f;
-#				}
-#				else
-#				{
-#					BallReceptor *br = dynamic_cast<BallReceptor*>(getObjectOnBottom());
-#					if (br != NULL)
-#					{
-#						br->activate();
-#						set = true;
-#						return;
-#					}
-#					else if (getSpeed().x > 0) forces.x -= 0.5f;
-#					else if (getSpeed().x < 0) forces.x += 0.5f;
-#				}
-#			}
 			move forces, section.get_obstacles(@x, @y), section.ramps
 			
 			@active_bounds = Rectangle.new @x, @y, @w, @h
@@ -471,7 +460,7 @@ class Ball < GameObject
 end
 
 class BallReceptor < GameObject
-	def initialize x, y, args
+	def initialize x, y, args, switches
 		
 	end
 end

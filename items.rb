@@ -5,12 +5,22 @@ require './game_object'
 module Item
 	attr_reader :icon
 	
+	def check info
+		if state == :taken
+			G.player.add_item(G.find_switch self)
+			return false
+		elsif state == :used
+			return false
+		end
+		true
+	end
+	
 	def set_icon type
 		@icon = Res.img "icon_#{type}"
 	end
 	
 	def take section, store
-		info = G.find_item self
+		info = G.find_switch self
 		if store
 			G.player.add_item info
 			info[:state] = :temp_taken
@@ -70,7 +80,7 @@ end
 class Life < FloatingItem
 	include Item
 	
-	def initialize x, y, args
+	def initialize x, y, args, state
 		super x + 3, y + 3, 26, 26, :sprite_Life, Vector.new(-3, -3), 8, 1,
 			[0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7], 6
 	end
@@ -90,9 +100,10 @@ end
 class Key < FloatingItem
 	include Item
 	
-	def initialize x, y, args
+	def initialize x, y, args, state
 		super x + 3, y + 3, 26, 26, :sprite_Key, Vector.new(-3, -3)
 		set_icon :Key
+		check state
 	end
 	
 	def update section
@@ -109,10 +120,11 @@ end
 class Attack1 < FloatingItem
 	include Item
 	
-	def initialize x, y, args
+	def initialize x, y, args, state
 		super x + 3, y + 3, 26, 26, :sprite_Attack1, Vector.new(-3, -3), 8, 1,
 			[0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7], 6
 		set_icon :Attack1
+		check state
 	end
 	
 	def update section
