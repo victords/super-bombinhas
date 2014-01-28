@@ -9,7 +9,6 @@ class Player
 		@bomb = bomb		
 		@lives = lives
 		@items = items
-		@item_index = 0
 	end
 	
 	def dead?

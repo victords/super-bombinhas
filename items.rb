@@ -5,14 +5,14 @@ require './game_object'
 module Item
 	attr_reader :icon
 	
-	def check info
-		if state == :taken
-			G.player.add_item(G.find_switch self)
-			return false
-		elsif state == :used
-			return false
+	def check switch
+		if switch[:state] == :taken
+			G.player.add_item switch
+			return true
+		elsif switch[:state] == :used
+			return true
 		end
-		true
+		false
 	end
 	
 	def set_icon type
@@ -80,7 +80,8 @@ end
 class Life < FloatingItem
 	include Item
 	
-	def initialize x, y, args, state
+	def initialize x, y, args, switch
+		return if check switch
 		super x + 3, y + 3, 26, 26, :sprite_Life, Vector.new(-3, -3), 8, 1,
 			[0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7], 6
 	end
@@ -100,10 +101,10 @@ end
 class Key < FloatingItem
 	include Item
 	
-	def initialize x, y, args, state
-		super x + 3, y + 3, 26, 26, :sprite_Key, Vector.new(-3, -3)
+	def initialize x, y, args, switch
 		set_icon :Key
-		check state
+		return if check switch
+		super x + 3, y + 3, 26, 26, :sprite_Key, Vector.new(-3, -3)
 	end
 	
 	def update section
@@ -120,11 +121,11 @@ end
 class Attack1 < FloatingItem
 	include Item
 	
-	def initialize x, y, args, state
+	def initialize x, y, args, switch
+		set_icon :Attack1
+		return if check switch
 		super x + 3, y + 3, 26, 26, :sprite_Attack1, Vector.new(-3, -3), 8, 1,
 			[0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7], 6
-		set_icon :Attack1
-		check state
 	end
 	
 	def update section
@@ -136,5 +137,11 @@ class Attack1 < FloatingItem
 	def use section
 		puts "usou ataque"
 		true
+	end
+end
+
+class Spec < GameObject
+	def initialize x, y, args, switch
+		
 	end
 end

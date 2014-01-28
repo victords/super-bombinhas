@@ -9,6 +9,9 @@ class Stage
 		sections.sort.each do |s|
 			@sections << Section.new(s, @entrances)
 		end
+		
+		G.player.reset
+		G.reset_switches
 		@cur_section = @sections[0]
 		@cur_entrance = @entrances[0]
 		@cur_section.load @cur_entrance[:x], @cur_entrance[:y]
@@ -28,7 +31,6 @@ class Stage
 			end
 			
 			G.player.reset
-			G.reset_items
 			G.reset_switches
 			@cur_section = @cur_entrance[:section]
 			@cur_section.load @cur_entrance[:x], @cur_entrance[:y]

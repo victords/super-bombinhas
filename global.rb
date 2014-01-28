@@ -16,8 +16,7 @@ end
 class G
 	def self.window; @@window; end
 	def self.player; @@player; end
-	def self.items; @@items; end
-	def self.switches; @@items; end
+	def self.switches; @@switches; end
 	def self.gravity; @@gravity; end
 	def self.gravity= value; @@gravity = value; end
 	def self.lang; @@lang; end
@@ -63,6 +62,8 @@ class G
 			elsif s[:state] == :temp_used
 				s[:state] = :taken
 			end
+			type = Object.const_get s[:type]
+			s[:obj] = type.new(s[:x], s[:y], s[:args], s)
 		end
 	end
 	
@@ -70,7 +71,7 @@ class G
 		@@switches.each do |s|
 			if s[:state] == :temp_taken
 				s[:state] = :taken
-			elsif i[:state] == :temp_used or s[:state] == :temp_taken_used
+			elsif s[:state] == :temp_used or s[:state] == :temp_taken_used
 				s[:state] = :used
 			end
 		end

@@ -119,12 +119,10 @@ class Bombie < GameObject
 end
 
 class Door < GameObject
-	attr_reader :id
-	
-	def initialize x, y, args
+	def initialize x, y, args, switch
 		super x + 15, y + 63, 2, 1, :sprite_Door, Vector.new(-15, -63), 5, 1
 		@id = args.to_i
-		@locked = args.split(',').length == 2
+		@locked = (switch[:state] != :taken and args.split(',').length == 2)
 		@open = false
 		@active_bounds = Rectangle.new x, y, 32, 64
 		@lock = Res.img(:sprite_Lock) if @locked
@@ -162,7 +160,8 @@ class Door < GameObject
 end
 
 class GunPowder < GameObject
-	def initialize x, y, args, index
+	def initialize x, y, args, switch
+		return if switch[:state] == :taken
 		super x + 3, y + 19, 26, 13, :sprite_GunPowder, Vector.new(-2, -2)
 		@life = 10
 		@counter = 0
@@ -183,7 +182,14 @@ class GunPowder < GameObject
 			end
 		elsif section.bomb.collide? self
 			@active = true
+			G.set_switch self
+			@active_bounds = Rectangle.new -1, -1, 0, 0
 		end
+	end
+	
+	def is_visible map
+		return true if @active
+		super map
 	end
 	
 	def draw map
@@ -197,19 +203,20 @@ class GunPowder < GameObject
 end
 
 class Crack < GameObject
-	def initialize x, y, args
+	def initialize x, y, args, switch
 		super x + 32, y, 32, 32, :sprite_Crack
 		@active_bounds = Rectangle.new x + 32, y, 32, 32
+		@broken = switch[:state] == :taken
 	end
 	
 	def update section
-		if section.bomb.explode? self
+		if @broken or section.bomb.explode? self
 			i = (@x / C::TileSize).floor
 			j = (@y / C::TileSize).floor
 			section.on_tiles do |t|
-				t[i][j].wall = -1
-				t[i][j].pass = -1
+				t[i][j].broken = true
 			end
+			G.set_switch self
 			@dead = true
 		end
 	end
@@ -298,18 +305,18 @@ class Elevator < GameObject
 end
 
 class SaveBombie < GameObject
-	def initialize x, y, args
+	def initialize x, y, args, switch
 		super x - 16, y, 64, 32, :sprite_Bombie2, Vector.new(-16, -26), 4, 2
 		@id = args.to_i
 		@active_bounds = Rectangle.new x - 32, y - 26, 96, 58
-		@saved = args.split(',').length == 2
+		@saved = switch[:state] == :taken
 		@indices = [1, 2, 3]
 		set_animation 1 if @saved
 	end
 	
 	def update section
 		if not @saved and section.bomb.collide? self
-			section.save_check_point @id
+			section.save_check_point @id, self
 			@saved = true
 		end
 		
@@ -415,7 +422,7 @@ class MovingWall < GameObject
 end
 
 class Ball < GameObject
-	def initialize x, y, args
+	def initialize x, y, args, switch
 		super x, y, 32, 32, :sprite_Ball
 		@set = false
 		@start_x = x
@@ -437,15 +444,7 @@ class Ball < GameObject
 					forces.x -= 0.15 * @speed.x
 				end
 				
-				my_bounds = bounds
-				section.on_switches do |ss|
-					ss.each do |s|
-						if my_bounds.intersects s.bounds
-							section.activate_switch s
-							break
-						end
-					end
-				end
+				#my_bounds = bounds
 			end
 			move forces, section.get_obstacles(@x, @y), section.ramps
 			
@@ -460,13 +459,7 @@ class Ball < GameObject
 end
 
 class BallReceptor < GameObject
-	def initialize x, y, args, switches
-		
-	end
-end
-
-class Spec < GameObject
-	def initialize x, y, args, index
+	def initialize x, y, args, switch
 		
 	end
 end

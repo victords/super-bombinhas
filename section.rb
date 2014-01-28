@@ -5,7 +5,7 @@ require './enemies'
 require './bomb'
 require './map'
 
-Tile = Struct.new :back, :fore, :pass, :wall, :hide
+Tile = Struct.new :back, :fore, :pass, :wall, :hide, :broken
 
 class Section
 	attr_reader :reload, :ramps, :bomb, :size
@@ -27,7 +27,7 @@ class Section
 		t_x_count = s[0].to_i; t_y_count = s[1].to_i
 		@tiles = Array.new(t_x_count) {
 			Array.new(t_y_count) {
-				Tile.new -1, -1, -1, -1, -1
+				Tile.new -1, -1, -1, -1, -1, false
 			}
 		}
 		@border_exit = s[2].to_i # 0: top, 1: right, 2: down, 3: left, 4: none
@@ -61,10 +61,6 @@ class Section
 							if t != :none # teste poderá ser removido no final
 								el = {x: x * C::TileSize, y: y * C::TileSize, type: t, args: a}
 								if e[i] == '$'
-									el[:state] = :normal
-									el[:section] = self
-									G.items << el
-								elsif e[i] == '&'
 									el[:state] = :normal
 									el[:section] = self
 									G.switches << el
@@ -185,8 +181,6 @@ class Section
 		
 		G.switches.each do |s|
 			if s[:section] == self
-				type = Object.const_get s[:type]
-				s[:obj] = type.new(s[:x], s[:y], s[:args], s[:state])
 				@elements << s[:obj]
 			end
 		end
@@ -203,6 +197,8 @@ class Section
 				if @tiles[i][j].hide == 0
 					@hide_tiles << HideTile.new(i, j, index, @tiles, @tileset_num)
 					index += 1
+				elsif @tiles[i][j].broken
+					@tiles[i][j].broken = false
 				end
 			end
 		end
@@ -234,7 +230,7 @@ class Section
 				if @tiles[k] and @tiles[k][l]
 					if @tiles[k][l].pass >= 0
 						obstacles << Block.new(k * C::TileSize, l * C::TileSize, C::TileSize, C::TileSize, true)
-					elsif @tiles[k][l].wall >= 0
+					elsif not @tiles[k][l].broken and @tiles[k][l].wall >= 0
 						obstacles << Block.new(k * C::TileSize, l * C::TileSize, C::TileSize, C::TileSize, false)
 					end
 				end
@@ -257,7 +253,8 @@ class Section
 		@tiles[i] and @tiles[i][j] and @tiles[i][j].pass + @tiles[i][j].wall >= 0
 	end
 	
-	def save_check_point obj
+	def save_check_point id, obj
+		@entrance = id
 		G.set_switch obj
 		G.save_switches
 	end
@@ -284,12 +281,9 @@ class Section
 	
 	def on_tiles
 		yield @tiles
-	end	
+	end
 	def on_obstacles
 		yield @obstacles
-	end
-	def on_switches
-		yield @switches
 	end
 	
 	def update
@@ -315,7 +309,7 @@ class Section
 		@map.foreach do |i, j, x, y|
 			@tileset[@tiles[i][j].back].draw x, y, 0 if @tiles[i][j].back >= 0
 			@tileset[@tiles[i][j].pass].draw x, y, 0 if @tiles[i][j].pass >= 0
-			@tileset[@tiles[i][j].wall].draw x, y, 0 if @tiles[i][j].wall >= 0
+			@tileset[@tiles[i][j].wall].draw x, y, 0 if @tiles[i][j].wall >= 0 and not @tiles[i][j].broken
 		end
 		
 		@elements.each do |e|
