@@ -391,6 +391,8 @@ class Spikes < TwoStateObject
 end
 
 class MovingWall < GameObject
+	attr_reader :id
+	
 	def initialize x, y, args, obstacles
 		super x + 2, y, 28, 32, :sprite_MovingWall, Vector.new(0, 0), 1, 2
 		@set = false
@@ -400,15 +402,30 @@ class MovingWall < GameObject
 	end
 	
 	def update section
-		if not @set
-			if section.obstacle_at? @x, @y - 1
-				@set = true
-			else
+		if @opening
+			@timer += 1
+			if @timer == 30
+				@y += 16
+				@h -= 16
+				@active_bounds = Rectangle.new @x, @y, @w, @h
+				@timer = 0
+				if @h == 0
+					@dead = true
+				end
+			end
+		elsif not @set
+			while not section.obstacle_at? @x, @y - 1
 				@y -= C::TileSize
 				@h += C::TileSize
-				@active_bounds = Rectangle.new @x, @y, @w, @h
 			end
+			@set = true
+			@active_bounds = Rectangle.new @x, @y, @w, @h
 		end
+	end
+	
+	def open
+		@opening = true
+		@timer = 0
 	end
 	
 	def draw map
@@ -424,15 +441,20 @@ end
 class Ball < GameObject
 	def initialize x, y, args, switch
 		super x, y, 32, 32, :sprite_Ball
-		@set = false
+		if switch[:state] == :taken
+			@x = switch[:extra].x
+			@y = switch[:extra].y - 31
+			@rec = switch[:extra]
+			@set = true
+		end
 		@start_x = x
 		@rotation = 0
-		@active_bounds = Rectangle.new x, y, 32, 32
+		@active_bounds = Rectangle.new @x, @y, @w, @h
 	end
 	
 	def update section
 		if @set
-			@x += (0.1 * (@bottom.x - @x)) if @x.round(2) != @bottom.x
+			@x += (0.1 * (@rec.x - @x)) if @x.round(2) != @rec.x
 		else
 			forces = Vector.new 0, 0
 			if section.bomb.collide? self
@@ -444,7 +466,16 @@ class Ball < GameObject
 					forces.x -= 0.15 * @speed.x
 				end
 				
-				#my_bounds = bounds
+				G.switches.each do |s|
+					if s[:type] == :BallReceptor and bounds.intersects s[:obj].bounds
+						s[:obj].set section
+						s2 = G.find_switch self
+						s2[:extra] = @rec = s[:obj]
+						s2[:state] = :temp_taken
+						@set = true
+						break
+					end
+				end
 			end
 			move forces, section.get_obstacles(@x, @y), section.ramps
 			
@@ -459,8 +490,27 @@ class Ball < GameObject
 end
 
 class BallReceptor < GameObject
+	attr_reader :id
+	
 	def initialize x, y, args, switch
-		
+		super x, y + 31, 32, 1, :sprite_BallReceptor, Vector.new(0, -8), 1, 2
+		@id = args.to_i
+		@will_set = switch[:state] == :taken
+		@active_bounds = Rectangle.new x, y + 23, 32, 13
+	end
+	
+	def update section
+		if @will_set
+			section.open_wall @id
+			@img_index = 1
+			@will_set = false
+		end
+	end
+	
+	def set section
+		G.set_switch self
+		section.open_wall @id
+		@img_index = 1
 	end
 end
 

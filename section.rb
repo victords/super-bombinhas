@@ -268,12 +268,10 @@ class Section
 		false
 	end
 	
-	def activate_switch s
-		G.set_switch s
+	def open_wall id
 		@elements.each do |e|
-			if e.class == MovingWall and e.id == s.id
+			if e.class == MovingWall and e.id == id
 				e.open
-				G.set_switch e
 				break
 			end
 		end
