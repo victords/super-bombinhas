@@ -235,7 +235,7 @@ class Elevator < GameObject
 		
 		@speed_m = a[1].to_i
 		@moving = false
-		@point = 0
+		@cur_point = 0
 		@points = []
 		min_x = x; min_y = y
 		max_x = x; max_y = y
@@ -249,58 +249,17 @@ class Elevator < GameObject
 			max_x = p_x if p_x > max_x
 			max_y = p_y if p_y > max_y
 			
-			@points << [p_x, p_y]
+			@points << Vector.new(p_x, p_y)
 		end
-		@points << [x, y]
+		@points << Vector.new(x, y)
 		@active_bounds = Rectangle.new min_x, min_y, (max_x - min_x + w), (max_y - min_y + @img[0].height)
 		
 		obstacles << self
 	end
 	
-	def move_to x, y, obst
-		if not @moving
-			x_dist = x - @x; y_dist = y - @y
-			freq = @speed_m / Math.sqrt(x_dist * x_dist + y_dist * y_dist)
-			@speed.x = x_dist * freq
-			@speed.y = y_dist * freq
-			@moving = true
-		end
-		x_aim = @x + @speed.x; y_aim = @y + @speed.y
-		passengers = []
-		obst.each do |o|
-			if @x + @w > o.x && o.x + o.w > @x
-				foot = o.y + o.h
-				if foot.round(6) == @y.round(6) || @speed.y < 0 && foot < @y && foot > y_aim
-					passengers << o
-				end
-			end
-		end
-		
-		if @speed.x > 0 && x_aim >= x || @speed.x < 0 && x_aim <= x
-			passengers.each do |p| p.x += x - @x end
-			@x = x; @speed.x = 0
-		else
-			passengers.each do |p| p.x += @speed.x end
-			@x = x_aim
-		end
-		if @speed.y > 0 && y_aim >= y || @speed.y < 0 && y_aim <= y
-			@y = y; @speed.y = 0
-		else; @y = y_aim; end
-		passengers.each do |p| p.y = @y - p.h end
-		@moving = false if @speed.x == 0 && @speed.y == 0
-	end
-	
-	def cycle obst
-		move_to @points[@point][0], @points[@point][1], obst
-		if not @moving
-			if @point == @points.length - 1; @point = 0
-			else; @point += 1; end
-		end
-	end
-	
 	def update section
 		obst = [section.bomb] #verificar...
-		cycle obst
+		@cur_point = cycle @points, @cur_point, @speed_m, obst
 	end
 end
 

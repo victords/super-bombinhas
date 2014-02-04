@@ -280,8 +280,50 @@ class Ekips < GameObject
 end
 
 class Faller < GameObject
-	def initialize x, y, args
+	def initialize x, y, args, obstacles
+		super x, y, 32, 32, :sprite_Faller1, Vector.new(0, 0), 4, 1
+		@range = args.to_i
+		@bottom = Res.img :sprite_Faller2
+		@start_y = y
+		@up_y = y - @range * 32
+		@active_bounds = Rectangle.new x, @up_y, 32, (@range + 1) * 32
+		obstacles << self
 		
+		@indices = [0, 1, 2, 3, 2, 1]
+		@interval = 8
+		@step = 0
+		@act_timer = 0
+	end
+	
+	def update section
+		animate @indices, @interval
+		
+		if @step == 0 or @step == 2 # parado
+			@act_timer += 1
+			if @act_timer >= 90
+				@step += 1
+				@act_timer = 0
+			end
+		elsif @step == 1 # subindo
+			diff = ((@y - @up_y) / 5).round
+			if diff == 0
+				@y = @up_y
+				@step += 1
+			else
+				@y -= diff
+			end
+		else # descendo
+			@y += 8
+			if @y >= @start_y
+				@y = @start_y
+				@step = 0
+			end
+		end
+	end
+	
+	def draw map
+		@img[@img_index].draw @x - map.cam.x, @y - map.cam.y, 0
+		@bottom.draw @x - map.cam.x, @start_y + 15 - map.cam.y, 0
 	end
 end
 
