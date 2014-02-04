@@ -148,4 +148,36 @@ module Movement
 		end
 		limit
 	end
+	
+	def move_free aim, speed
+		if @speed.x != 0 or @speed.y != 0 # já está em movimento
+			if (@speed.x < 0 and @x + @speed.x <= aim.x) or (@speed.x >= 0 and @x + @speed.x >= aim.x)
+				@x = aim.x;
+			else
+				@x += @speed.x;
+			end
+
+			if (@speed.y < 0 and @y + @speed.y <= aim.y) or (@speed.y >= 0 and @y + @speed.y >= aim.y)
+				@y = aim.y;
+			else
+				@y += @speed.y;
+			end
+			
+			@speed.x = @speed.y = 0 if @x == aim.x and @y == aim.y
+		else # iniciou o movimento agora
+			x_d = aim.x - @x; y_d = aim.y - @y
+			distance = Math.sqrt(x_d**2 + y_d**2)
+			@speed.x = 1.0 * x_d * speed / distance
+			@speed.y = 1.0 * y_d * speed / distance
+		end
+	end
+	
+	def cycle points, cur_point, speed
+		move_free points[cur_point], speed
+		if @speed.x == 0 and @speed.y == 0
+			if cur_point == points.length - 1; cur_point = 0
+			else; cur_point += 1; end
+		end
+		cur_point
+	end
 end

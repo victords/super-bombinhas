@@ -192,15 +192,90 @@ class Fureel < FloorEnemy
 	end
 end
 
-class Yaw < GameObject
+class Yaw < Enemy
 	def initialize x, y, args
-		
+		super x, y, 32, 32, :sprite_Yaw, Vector.new(-4, -4), 8, 1, [0, 1, 2], 6, 500
+		@moving_eye = false
+		@eye_timer = 0
+		@points = [
+			Vector.new(x + 64, y),
+			Vector.new(x + 96, y + 32),
+			Vector.new(x + 96, y + 96),
+			Vector.new(x + 64, y + 128),
+			Vector.new(x, y + 128),
+			Vector.new(x - 32, y + 96),
+			Vector.new(x - 32, y + 32),
+			Vector.new(x, y)
+		]
+		@cur_point = 0
+	end
+	
+	def update section
+		super section do
+			@cur_point = cycle @points, @cur_point, 3
+		end
+	end
+	
+	def hit bomb
+		G.player.die
 	end
 end
 
 class Ekips < GameObject
 	def initialize x, y, args
+		super x + 10, y - 10, 12, 25, :sprite_Ekips, Vector.new(-42, -8), 2, 3
 		
+		@act_timer = 0
+		@active_bounds = Rectangle.new x - 32, y - 18, 96, 50
+		@attack_bounds = Rectangle.new x - 32, y + 10, 96, 12
+	end
+	
+	def update section
+		if not @attacking
+#			int pInd = checkProjectile();
+#			if (pInd != -1)
+#			{
+#				Projectile *p = dynamic_cast<Projectile*>((*Control::currentStage->elements)[pInd]);
+#				p->destroy();
+#				disposing = true;
+#				return;
+#			}
+		end
+		
+		if section.bomb.over? self
+			if @attacking
+				G.player.score += 240
+				@dead = true
+			else
+				G.player.die
+			end
+		elsif @attacking and section.bomb.bounds.intersects @attack_bounds
+			G.player.die
+		elsif section.bomb.collide? self
+			G.player.die
+		end
+		
+		@act_timer += 1
+		if @preparing and @act_timer >= 60
+			animate [2, 3, 4, 5], 5
+			if @img_index == 5
+				@attacking = true
+				@preparing = false
+				set_animation 5
+				@act_timer = 0
+			end
+		elsif @attacking and @act_timer >= 150
+			animate [4, 3, 2, 1, 0], 5
+			if @img_index == 0
+				@attacking = false
+				set_animation 0
+				@act_timer = 0
+			end
+		elsif @act_timer >= 150
+			@preparing = true
+			set_animation 1
+			@act_timer = 0
+		end
 	end
 end
 
