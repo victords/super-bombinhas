@@ -150,60 +150,56 @@ module Movement
 	end
 	
 	def move_carrying aim, speed, obstacles
-		if @speed.x != 0 or @speed.y != 0 # já está em movimento
-			x_aim = @x + @speed.x; y_aim = @y + @speed.y
-			passengers = []
-			obstacles.each do |o|
-				if @x + @w > o.x && o.x + o.w > @x
-					foot = o.y + o.h
-					if foot.round(6) == @y.round(6) || @speed.y < 0 && foot < @y && foot > y_aim
-						passengers << o
-					end
+		x_d = aim.x - @x; y_d = aim.y - @y
+		distance = Math.sqrt(x_d**2 + y_d**2)
+		@speed.x = 1.0 * x_d * speed / distance
+		@speed.y = 1.0 * y_d * speed / distance
+		
+		x_aim = @x + @speed.x; y_aim = @y + @speed.y
+		passengers = []
+		obstacles.each do |o|
+			if @x + @w > o.x && o.x + o.w > @x
+				foot = o.y + o.h
+				if foot.round(6) == @y.round(6) || @speed.y < 0 && foot < @y && foot > y_aim
+					passengers << o
 				end
 			end
-			
-			if @speed.x > 0 && x_aim >= aim.x || @speed.x < 0 && x_aim <= aim.x
-				passengers.each do |p| p.x += aim.x - @x end
-				@x = aim.x; @speed.x = 0
-			else
-				passengers.each do |p| p.x += @speed.x end
-				@x = x_aim
-			end
-			if @speed.y > 0 && y_aim >= aim.y || @speed.y < 0 && y_aim <= aim.y
-				@y = aim.y; @speed.y = 0
-			else
-				@y = y_aim
-			end
-			
-			passengers.each do |p| p.y = @y - p.h end
-		else # iniciou o movimento agora
-			x_d = aim.x - @x; y_d = aim.y - @y
-			distance = Math.sqrt(x_d**2 + y_d**2)
-			@speed.x = 1.0 * x_d * speed / distance
-			@speed.y = 1.0 * y_d * speed / distance
 		end
+		
+		if @speed.x > 0 && x_aim >= aim.x || @speed.x < 0 && x_aim <= aim.x
+			passengers.each do |p| p.x += aim.x - @x end
+			@x = aim.x; @speed.x = 0
+		else
+			passengers.each do |p| p.x += @speed.x end
+			@x = x_aim
+		end
+		if @speed.y > 0 && y_aim >= aim.y || @speed.y < 0 && y_aim <= aim.y
+			@y = aim.y; @speed.y = 0
+		else
+			@y = y_aim
+		end
+		
+		passengers.each do |p| p.y = @y - p.h end
 	end
 	
 	def move_free aim, speed
-		if @speed.x != 0 or @speed.y != 0 # já está em movimento
-			if (@speed.x < 0 and @x + @speed.x <= aim.x) or (@speed.x >= 0 and @x + @speed.x >= aim.x)
-				@x = aim.x
-				@speed.x = 0
-			else
-				@x += @speed.x
-			end
+		x_d = aim.x - @x; y_d = aim.y - @y
+		distance = Math.sqrt(x_d**2 + y_d**2)
+		@speed.x = 1.0 * x_d * speed / distance
+		@speed.y = 1.0 * y_d * speed / distance
+		
+		if (@speed.x < 0 and @x + @speed.x <= aim.x) or (@speed.x >= 0 and @x + @speed.x >= aim.x)
+			@x = aim.x
+			@speed.x = 0
+		else
+			@x += @speed.x
+		end
 
-			if (@speed.y < 0 and @y + @speed.y <= aim.y) or (@speed.y >= 0 and @y + @speed.y >= aim.y)
-				@y = aim.y
-				@speed.y = 0
-			else
-				@y += @speed.y
-			end
-		else # iniciou o movimento agora
-			x_d = aim.x - @x; y_d = aim.y - @y
-			distance = Math.sqrt(x_d**2 + y_d**2)
-			@speed.x = 1.0 * x_d * speed / distance
-			@speed.y = 1.0 * y_d * speed / distance
+		if (@speed.y < 0 and @y + @speed.y <= aim.y) or (@speed.y >= 0 and @y + @speed.y >= aim.y)
+			@y = aim.y
+			@speed.y = 0
+		else
+			@y += @speed.y
 		end
 	end
 	

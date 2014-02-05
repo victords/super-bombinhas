@@ -51,6 +51,8 @@ class Enemy < GameObject
 			G.player.die
 		end
 		
+		return if @dead
+		
 		if @invulnerable
 			@timer += 1
 			if @timer == C::InvulnerableTime
@@ -283,11 +285,15 @@ class Faller < GameObject
 	def initialize x, y, args, obstacles
 		super x, y, 32, 32, :sprite_Faller1, Vector.new(0, 0), 4, 1
 		@range = args.to_i
-		@bottom = Res.img :sprite_Faller2
-		@start_y = y
-		@up_y = y - @range * 32
-		@active_bounds = Rectangle.new x, @up_y, 32, (@range + 1) * 32
+		@start = Vector.new x, y
+		@up = Vector.new x, y - @range * 32
+		@active_bounds = Rectangle.new x, @up.y, 32, (@range + 1) * 32
+		@passable = true
 		obstacles << self
+		
+		@bottom = Block.new x, y + 20, 32, 12, false
+		@bottom_img = Res.img :sprite_Faller2
+		obstacles << @bottom
 		
 		@indices = [0, 1, 2, 3, 2, 1]
 		@interval = 8
@@ -296,6 +302,16 @@ class Faller < GameObject
 	end
 	
 	def update section
+		if section.bomb.explode? self
+			G.player.score += 300
+			@dead = true
+			return
+		elsif section.bomb.bottom == @bottom
+			G.player.die
+		elsif section.bomb.collide? self
+			G.player.die
+		end
+		
 		animate @indices, @interval
 		
 		if @step == 0 or @step == 2 # parado
@@ -305,25 +321,18 @@ class Faller < GameObject
 				@act_timer = 0
 			end
 		elsif @step == 1 # subindo
-			diff = ((@y - @up_y) / 5).round
-			if diff == 0
-				@y = @up_y
-				@step += 1
-			else
-				@y -= diff
-			end
+			diff = ((@y - @up.y) / 5).ceil
+			move_carrying @up, diff, [section.bomb]
+			@step += 1 if @speed.y == 0
 		else # descendo
-			@y += 8
-			if @y >= @start_y
-				@y = @start_y
-				@step = 0
-			end
+			move_carrying @start, 2, [section.bomb]
+			@step = 0 if @speed.y == 0
 		end
 	end
 	
 	def draw map
 		@img[@img_index].draw @x - map.cam.x, @y - map.cam.y, 0
-		@bottom.draw @x - map.cam.x, @start_y + 15 - map.cam.y, 0
+		@bottom_img.draw @x - map.cam.x, @start.y + 15 - map.cam.y, 0
 	end
 end
 
