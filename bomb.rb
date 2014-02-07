@@ -1,7 +1,7 @@
 require './game_object'
 
 class Bomb < GameObject
-	def initialize x, y, type
+	def initialize type
 		t_img_gap = -10
 		case type
 		when :azul then @name = "Bomba Azul"; img = :sprite_BombaAzul; l_img_gap = -5; r_img_gap = -5
@@ -11,7 +11,7 @@ class Bomb < GameObject
 		when :aldan then @name = "Aldan"; img = :sprite_Aldan; l_img_gap = -6; r_img_gap = -14; t_img_gap = -26
 		end
 		
-		super x + 6, y + 2, 20, 30, img, Vector.new(r_img_gap, t_img_gap), 5, 2
+		super -1000, -1000, 20, 30, img, Vector.new(r_img_gap, t_img_gap), 5, 2
 		@max_speed.x = 5
 		@indices = [0, 1, 0, 2]
 		@facing_right = true
@@ -19,7 +19,8 @@ class Bomb < GameObject
 		@type = type
 		
 		@explosion = Sprite.new 0, 0, :fx_Explosion, 2, 2
-		@explosion_counter = 0
+		@explosion_timer = 0
+		@explosion_counter = 10
 	end
 	
 	def update section
@@ -30,12 +31,17 @@ class Bomb < GameObject
 		if @exploding
 			@explosion.animate [0, 1, 2, 3], 5
 			@explosion_counter += 1
-			if @explosion_counter == 90
-				@exploding = false
-				@explosion_counter = 0
-			end
+			@exploding = false if @explosion_counter == 90
 			forces.x -= 0.15 * @speed.x if @speed.x != 0
 		else
+			if @will_explode
+				@explosion_timer += 1
+				if @explosion_timer == 60
+					@explosion_counter -= 1
+					explode if @explosion_counter == 0
+					@explosion_timer = 0
+				end
+			end
 			if KB.key_down? Gosu::KbLeft
 				set_direction :left if @facing_right
 				forces.x -= 0.15
@@ -83,8 +89,16 @@ class Bomb < GameObject
 		set_animation 0
 	end
 	
+	def set_exploding
+		@will_explode = true
+		@explosion_timer = 0
+		@explosion_counter = 10
+	end
+	
 	def explode
+		@will_explode = false
 		@exploding = true
+		@explosion_timer = 0
 		@explosion.x = @x - 80
 		@explosion.y = @y - 75
 		set_animation (@facing_right ? 4 : 9)
@@ -115,6 +129,10 @@ class Bomb < GameObject
 	
 	def draw map
 		super map
+		if @will_explode
+			G.font.draw_rel Res.text(:count_down), 400, 200, 0, 0.5, 0.5, 1, 1, 0xff000000 if @explosion_counter > 6
+			G.font.draw_rel @explosion_counter.to_s, 400, 220, 0, 0.5, 0.5, 1, 1, 0xff000000
+		end
 		@explosion.draw map if @exploding
 	end
 end

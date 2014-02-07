@@ -10,12 +10,12 @@ class Game < Gosu::Window
 	def initialize
 		super C::ScreenWidth, C::ScreenHeight, false
 		self.caption = "Super Bombinhas"
+		
+		Res.initialize
 		G.initialize(self)
 		KB.initialize
-		Res.initialize
 		
-		@frame = 0
-		
+		@frame = 0		
 		@stage = Stage.new 100
 	end
 

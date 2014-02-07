@@ -73,12 +73,12 @@ class Bombie < GameObject
 	end
 	
 	def update section
-		if section.bomb.collide? self
-			if not @facing_right and section.bomb.bounds.x > @x + @w / 2
+		if G.player.bomb.collide? self
+			if not @facing_right and G.player.bomb.bounds.x > @x + @w / 2
 				@facing_right = true
 				@indices = [3, 4, 5]
 				set_animation 3
-			elsif @facing_right and section.bomb.bounds.x < @x - @w / 2
+			elsif @facing_right and G.player.bomb.bounds.x < @x - @w / 2
 				@facing_right = false
 				@indices = [0, 1, 2]
 				set_animation 0
@@ -129,7 +129,7 @@ class Door < GameObject
 	end
 	
 	def update section
-		collide = section.bomb.collide? self
+		collide = G.player.bomb.collide? self
 		if @locked and collide
 			section.locked_door = self
 		end
@@ -170,34 +170,10 @@ class GunPowder < GameObject
 	end
 	
 	def update section
-		if @active
-			@counter += 1
-			if @counter == 60
-				@life -= 1
-				if @life == 0
-					section.bomb.explode
-					@dead = true
-				end
-				@counter = 0
-			end
-		elsif section.bomb.collide? self
-			@active = true
+		if G.player.bomb.collide? self
+			G.player.bomb.set_exploding
 			G.set_switch self
-			@active_bounds = Rectangle.new -1, -1, 0, 0
-		end
-	end
-	
-	def is_visible map
-		return true if @active
-		super map
-	end
-	
-	def draw map
-		if @active
-			G.font.draw_rel Res.text(:count_down), 400, 200, 0, 0.5, 0.5, 1, 1, 0xff000000 if @life > 6
-			G.font.draw_rel @life.to_s, 400, 220, 0, 0.5, 0.5, 1, 1, 0xff000000
-		else
-			super map
+			@dead = true
 		end
 	end
 end
@@ -210,7 +186,7 @@ class Crack < GameObject
 	end
 	
 	def update section
-		if @broken or section.bomb.explode? self
+		if @broken or G.player.bomb.explode? self
 			i = (@x / C::TileSize).floor
 			j = (@y / C::TileSize).floor
 			section.on_tiles do |t|
@@ -258,7 +234,7 @@ class Elevator < GameObject
 	end
 	
 	def update section
-		obst = [section.bomb] #verificar...
+		obst = [G.player.bomb] #verificar...
 		@cur_point = cycle @points, @cur_point, @speed_m, obst
 	end
 end
@@ -274,7 +250,7 @@ class SaveBombie < GameObject
 	end
 	
 	def update section
-		if not @saved and section.bomb.collide? self
+		if not @saved and G.player.bomb.collide? self
 			section.save_check_point @id, self
 			@saved = true
 		end
@@ -343,7 +319,7 @@ class Spikes < TwoStateObject
 	def update section
 		super section
 		
-		if section.bomb.collide? self and @state2
+		if G.player.bomb.collide? self and @state2
 			G.player.die
 		end
 	end
@@ -416,9 +392,9 @@ class Ball < GameObject
 			@x += (0.1 * (@rec.x - @x)) if @x.round(2) != @rec.x
 		else
 			forces = Vector.new 0, 0
-			if section.bomb.collide? self
-				if section.bomb.x < @x; forces.x = (section.bomb.x + section.bomb.w - @x) * 0.15
-				else; forces.x = -(@x + @w - section.bomb.x) * 0.15; end
+			if G.player.bomb.collide? self
+				if G.player.bomb.x < @x; forces.x = (G.player.bomb.x + G.player.bomb.w - @x) * 0.15
+				else; forces.x = -(@x + @w - G.player.bomb.x) * 0.15; end
 			end
 			if @bottom
 				if @speed.x != 0
@@ -511,7 +487,7 @@ class HideTile
 		will_show = false
 		@points.each do |p|
 			rect = Rectangle.new p[:x], p[:y], C::TileSize, C::TileSize
-			if section.bomb.bounds.intersects rect
+			if G.player.bomb.bounds.intersects rect
 				will_show = true
 				break
 			end

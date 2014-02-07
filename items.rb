@@ -46,7 +46,7 @@ class FloatingItem < GameObject
 	end
 	
 	def update section
-		if section.bomb.collide? self
+		if G.player.bomb.collide? self
 			yield
 			@dead = true
 			return

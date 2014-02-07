@@ -2,13 +2,12 @@ require './global'
 require './ramp'
 require './elements'
 require './enemies'
-require './bomb'
 require './map'
 
 Tile = Struct.new :back, :fore, :pass, :wall, :hide, :broken
 
 class Section
-	attr_reader :reload, :ramps, :bomb, :size
+	attr_reader :reload, :ramps, :size
 	attr_accessor :entrance, :warp, :loaded, :locked_door
 	
 	def initialize file, entrances
@@ -203,7 +202,8 @@ class Section
 			end
 		end
 		
-		@elements << (@bomb = Bomb.new(bomb_x, bomb_y, :azul))
+		@elements << (@bomb = G.player.bomb)
+		G.player.bomb.do_warp bomb_x, bomb_y
 		@margin = Vector.new((C::ScreenWidth - @bomb.w) / 2, (C::ScreenHeight - @bomb.h) / 2)
 		@map.set_camera @bomb.x - @margin.x, @bomb.y - @margin.y
 	end

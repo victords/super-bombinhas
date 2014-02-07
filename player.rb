@@ -1,12 +1,14 @@
 require './items'
+require './bomb'
 
 class Player
+	attr_reader :bomb
 	attr_accessor :score, :lives
 	
 	def initialize score = 0, stage = 0, bomb = :azul, lives = 5, items = {}
 		@score = score
 		@stage = stage
-		@bomb = bomb		
+		@bomb = Bomb.new bomb		
 		@lives = lives
 		@items = items
 	end

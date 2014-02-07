@@ -38,16 +38,16 @@ class Enemy < GameObject
 	end
 	
 	def update section
-		if section.bomb.over? self
+		if G.player.bomb.over? self
 			if @invulnerable			
-				section.bomb.stored_forces.y -= C::BounceForce
+				G.player.bomb.stored_forces.y -= C::BounceForce
 			else
-				hit section.bomb
+				hit G.player.bomb
 			end
-		elsif section.bomb.explode? self
+		elsif G.player.bomb.explode? self
 			G.player.score += @score
 			@dead = true
-		elsif section.bomb.collide? self
+		elsif G.player.bomb.collide? self
 			G.player.die
 		end
 		
@@ -244,16 +244,16 @@ class Ekips < GameObject
 #			}
 		end
 		
-		if section.bomb.over? self
+		if G.player.bomb.over? self
 			if @attacking
 				G.player.score += 240
 				@dead = true
 			else
 				G.player.die
 			end
-		elsif @attacking and section.bomb.bounds.intersects @attack_bounds
+		elsif @attacking and G.player.bomb.bounds.intersects @attack_bounds
 			G.player.die
-		elsif section.bomb.collide? self
+		elsif G.player.bomb.collide? self
 			G.player.die
 		end
 		
@@ -302,13 +302,17 @@ class Faller < GameObject
 	end
 	
 	def update section
-		if section.bomb.explode? self
+		if G.player.bomb.explode? self
 			G.player.score += 300
+			section.on_obstacles do |o|
+				o.delete self
+				o.delete @bottom
+			end
 			@dead = true
 			return
-		elsif section.bomb.bottom == @bottom
+		elsif G.player.bomb.bottom == @bottom
 			G.player.die
-		elsif section.bomb.collide? self
+		elsif G.player.bomb.collide? self
 			G.player.die
 		end
 		
@@ -321,11 +325,11 @@ class Faller < GameObject
 				@act_timer = 0
 			end
 		elsif @step == 1 # subindo
-			diff = ((@y - @up.y) / 5).ceil
-			move_carrying @up, diff, [section.bomb]
+			move_carrying @up, 2, [G.player.bomb]
 			@step += 1 if @speed.y == 0
 		else # descendo
-			move_carrying @start, 2, [section.bomb]
+			diff = ((@start.y - @y) / 5).ceil
+			move_carrying @start, diff, [G.player.bomb]
 			@step = 0 if @speed.y == 0
 		end
 	end
