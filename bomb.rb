@@ -1,6 +1,8 @@
 require './game_object'
 
 class Bomb < GameObject
+	attr_reader :facing_right
+	
 	def initialize type
 		t_img_gap = -10
 		case type

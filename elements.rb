@@ -524,3 +524,35 @@ class HideTile
 	end
 end
 
+class Projectile < GameObject
+	def initialize x, y, type, angle
+		case type
+		when 1 then w = 20; h = 12; img = :sprite_Projectile1; x_g = -2; y_g = -2; cols = 3; rows = 1; @speed_m = 3
+		end
+		
+		super x - x_g, y - y_g, w, h, img, Vector.new(x_g, y_g), cols, rows
+		@aim = Vector.new @x + (1000000 * Math.cos(angle)), @y - (1000000 * Math.sin(angle))
+		@active_bounds = Rectangle.new @x + @img_gap.x, @y + @img_gap.y, @img[0].width, @img[0].height
+		@angle = angle
+		puts angle
+	end
+	
+	def update section
+		move_free @aim, @speed_m
+		
+		t = (@y + @img_gap.y).floor
+		r = (@x + @img_gap.x + @img[0].width).ceil
+		b = (@y + @img_gap.y + @img[0].height).ceil
+		l = (@x + @img_gap.x).floor
+		if t > section.size.y; @dead = true
+		elsif r < 0; @dead = true
+		elsif b < C::TopMargin; @dead = true #para sumir por cima, a margem deve ser maior
+		elsif l > section.size.x; @dead = true
+		end
+	end
+	
+	def draw map
+		@img[@img_index].draw_rot @x + (@w / 2) - map.cam.x, @y + (@h / 2) - map.cam.y, 0, (@angle * 180 / Math::PI)
+	end
+end
+

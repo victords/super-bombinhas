@@ -248,6 +248,10 @@ class Section
 		@tiles[i] and @tiles[i][j] and not @tiles[i][j].broken and @tiles[i][j].pass + @tiles[i][j].wall >= 0
 	end
 	
+	def add element
+		@elements << element
+	end
+	
 	def save_check_point id, obj
 		@entrance = id
 		G.set_switch obj
@@ -284,7 +288,7 @@ class Section
 		@locked_door = nil
 		@elements.each do |e|
 			e.update self if e.is_visible @map
-			@elements.delete e if e.dead?
+			begin @elements.delete e; puts "elim" end if e.dead?
 		end
 		@hide_tiles.each do |t|
 			t.update self if t.is_visible @map

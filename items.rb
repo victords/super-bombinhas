@@ -135,7 +135,9 @@ class Attack1 < FloatingItem
 	end
 	
 	def use section
-		puts "usou ataque"
+		if G.player.bomb.facing_right; angle = 0
+		else; angle = Math::PI; end
+		section.add Projectile.new G.player.bomb.x, G.player.bomb.y, 1, angle
 		true
 	end
 end

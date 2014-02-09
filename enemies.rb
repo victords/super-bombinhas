@@ -340,33 +340,55 @@ class Faller < GameObject
 	end
 end
 
-class Turner < FloorEnemy
+class Turner < Enemy
 	def initialize x, y, args, section
 		super x + 2, y - 7, 60, 39, :sprite_Turner, Vector.new(-2, -25), 3, 2, [0, 1, 2, 1], 8, 300
 		@harmful = true
+		@passable = true
+		
+		@aim1 = Vector.new(@x, @y)		
+		while not section.obstacle_at? @aim1.x - 3, @aim1.y and
+			not section.obstacle_at? @aim1.x - 3, @aim1.y + 8
+			@aim1.x -= C::TileSize
+		end
+		
+		@aim2 = Vector.new(@x, @y)
+		while not section.obstacle_at? @aim2.x + 63, @aim2.y and
+			not section.obstacle_at? @aim2.x + 63, @aim2.y + 8
+			@aim2.x += C::TileSize
+		end
 	end
 	
 	def update section
-#		super section do
-#			if @harmful
-#				
-#			else
-#			end
-#		end
+		@harm_bounds = Rectangle.new @x, @y - 23, 60, 62
+		super section do
+			if @harmful
+				G.player.die if G.player.bomb.bounds.intersects @harm_bounds
+				move_free @aim1, 2
+				if @speed.x == 0 and @speed.y == 0
+					@harmful = false
+					@indices = [3, 4, 5, 4]
+					set_animation 3
+					section.on_obstacles do |o|
+						o << self
+					end
+				end
+			else
+				move_carrying @aim2, 2, [G.player.bomb]
+				if @speed.x == 0 and @speed.y == 0
+					@harmful = true
+					@indices = [0, 1, 2, 1]
+					set_animation 0
+					section.on_obstacles do |o|
+						o.delete self
+					end
+				end
+			end
+		end
 	end
 	
 	def hit bomb
-		G.player.die if @harmful
-	end
-	
-	def change_animation dir
-		if dir == :left
-			@indices = [0, 1, 2, 1]
-			set_animation 0
-		else
-			@indices = [3, 4, 5, 4]
-			set_animation 3
-		end
+		G.player.die
 	end
 end
 
