@@ -7,7 +7,7 @@ require './map'
 Tile = Struct.new :back, :fore, :pass, :wall, :hide, :broken
 
 class Section
-	attr_reader :reload, :ramps, :size
+	attr_reader :reload, :obstacles, :ramps, :size
 	attr_accessor :entrance, :warp, :loaded, :locked_door
 	
 	def initialize file, entrances
@@ -64,7 +64,6 @@ class Section
 									el[:section] = self
 									G.switches << el
 								else
-									el[:obst] = true if e[i] == '%'
 									@element_info << el
 								end
 							end           # teste poderá ser removido no final
@@ -95,39 +94,39 @@ class Section
 		if i; n = s[0..i].to_i
 		else; n = s.to_i; end
 		type = case n
-			when  1 then :Wheeliam
-			when  2 then :FireRock
-			when  3 then :Bombie
-			when  4 then :Sprinny
-			####  5       Sprinny dois pulos
-			####  6       Sprinny três pulos
-			when  7 then :Life
-			when  8 then :Key
-			when  9 then :Door
-			#### 10       Door locked
-			#### 11       warp (virou entrance)
-			when 12 then :GunPowder
-			when 13 then :Crack
-			#### 14       gambiarra da rampa, eliminada!
-			#### 15       gambiarra da rampa, eliminada!
-			#### 16       Wheeliam dont_fall false
-			when 17 then :Elevator
-			when 18 then :Fureel
-			#### 19       Fureel dont_fall false
-			when 20 then :SaveBombie
-			when 21 then :Pin
-			#### 22       Pin com obstáculo
-			when 23 then :Spikes
-			when 24 then :Attack1
-			when 25 then :MovingWall
-			when 26 then :Ball
-			when 27 then :BallReceptor
-			when 28 then :Yaw
-			when 29 then :Ekips
-			#### 30       ForeWall
-			when 31 then :Spec
-			when 32 then :Faller
-			when 33 then :Turner
+			when  1 then Wheeliam
+			when  2 then FireRock
+			when  3 then Bombie
+			when  4 then Sprinny
+			####  5      Sprinny dois pulos
+			####  6      Sprinny três pulos
+			when  7 then Life
+			when  8 then Key
+			when  9 then Door
+			#### 10      Door locked
+			#### 11      warp (virou entrance)
+			when 12 then GunPowder
+			when 13 then Crack
+			#### 14      gambiarra da rampa, eliminada!
+			#### 15      gambiarra da rampa, eliminada!
+			#### 16      Wheeliam dont_fall false
+			when 17 then Elevator
+			when 18 then Fureel
+			#### 19      Fureel dont_fall false
+			when 20 then SaveBombie
+			when 21 then Pin
+			#### 22      Pin com obstáculo
+			when 23 then Spikes
+			when 24 then Attack1
+			when 25 then MovingWall
+			when 26 then Ball
+			when 27 then BallReceptor
+			when 28 then Yaw
+			when 29 then Ekips
+			#### 30      ForeWall
+			when 31 then Spec
+			when 32 then Faller
+			when 33 then Turner
 			else :none
 		end
 		args = s[(i+1)..-1] if i
@@ -172,8 +171,7 @@ class Section
 	
 	def load bomb_x, bomb_y
 		@elements = []
-		@obstacles = []
-		@warp = nil
+		@obstacles = [] #vetor de obstáculos não-tile
 		@locked_door = nil
 		@reload = false
 		@loaded = true
@@ -185,9 +183,7 @@ class Section
 		end
 		
 		@element_info.each do |e|
-			type = Object.const_get e[:type]
-			if e[:obst]; @elements << type.new(e[:x], e[:y], e[:args], @obstacles)
-			else; @elements << type.new(e[:x], e[:y], e[:args]); end
+			@elements << e[:type].new(e[:x], e[:y], e[:args], self)
 		end
 		
 		index = 1
@@ -203,9 +199,8 @@ class Section
 		end
 		
 		@elements << (@bomb = G.player.bomb)
-		G.player.bomb.do_warp bomb_x, bomb_y
 		@margin = Vector.new((C::ScreenWidth - @bomb.w) / 2, (C::ScreenHeight - @bomb.h) / 2)
-		@map.set_camera @bomb.x - @margin.x, @bomb.y - @margin.y
+		do_warp bomb_x, bomb_y
 	end
 	
 	def do_warp x, y
@@ -250,7 +245,7 @@ class Section
 	def obstacle_at? x, y
 		i = x / C::TileSize
 		j = y / C::TileSize
-		@tiles[i] and @tiles[i][j] and @tiles[i][j].pass + @tiles[i][j].wall >= 0
+		@tiles[i] and @tiles[i][j] and not @tiles[i][j].broken and @tiles[i][j].pass + @tiles[i][j].wall >= 0
 	end
 	
 	def save_check_point id, obj

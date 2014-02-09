@@ -21,6 +21,7 @@ class Player
 		if not @dead
 			@lives -= 1
 			@dead = true
+			@bomb.reset
 		end
 	end
 	

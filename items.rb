@@ -66,7 +66,7 @@ end
 ################################################################################
 
 class FireRock < FloatingItem
-	def initialize x, y, args
+	def initialize x, y, args, section
 		super x + 6, y + 7, 20, 20, :sprite_FireRock, Vector.new(-2, -17), 4, 1, [0, 1, 2, 3], 5
 	end
 	
@@ -80,7 +80,7 @@ end
 class Life < FloatingItem
 	include Item
 	
-	def initialize x, y, args, switch
+	def initialize x, y, args, section, switch
 		return if check switch
 		super x + 3, y + 3, 26, 26, :sprite_Life, Vector.new(-3, -3), 8, 1,
 			[0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7], 6
@@ -101,7 +101,7 @@ end
 class Key < FloatingItem
 	include Item
 	
-	def initialize x, y, args, switch
+	def initialize x, y, args, section, switch
 		set_icon :Key
 		return if check switch
 		super x + 3, y + 3, 26, 26, :sprite_Key, Vector.new(-3, -3)
@@ -121,7 +121,7 @@ end
 class Attack1 < FloatingItem
 	include Item
 	
-	def initialize x, y, args, switch
+	def initialize x, y, args, section, switch
 		set_icon :Attack1
 		return if check switch
 		super x + 3, y + 3, 26, 26, :sprite_Attack1, Vector.new(-3, -3), 8, 1,
@@ -141,7 +141,7 @@ class Attack1 < FloatingItem
 end
 
 class Spec < GameObject
-	def initialize x, y, args, switch
+	def initialize x, y, args, section, switch
 		
 	end
 end

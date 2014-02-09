@@ -123,6 +123,13 @@ class Bomb < GameObject
 			@speed.y > 0
 	end
 	
+	def reset
+		@will_explode = false
+		@exploding = false
+		@speed.x = @speed.y = 0
+		set_direction :right
+	end
+	
 	def is_visible map
 		true
 	end

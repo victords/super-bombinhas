@@ -60,7 +60,7 @@ end
 ################################################################################
 
 class Bombie < GameObject
-	def initialize x, y, args
+	def initialize x, y, args, section
 		super x, y, 32, 32, :sprite_Bombie, Vector.new(1, -2), 6, 1
 		@msg_id = "msg#{args.to_i}".to_sym
 		@balloon = Res.img :fx_Balloon1
@@ -119,7 +119,7 @@ class Bombie < GameObject
 end
 
 class Door < GameObject
-	def initialize x, y, args, switch
+	def initialize x, y, args, section, switch
 		super x + 15, y + 63, 2, 1, :sprite_Door, Vector.new(-15, -63), 5, 1
 		@id = args.to_i
 		@locked = (switch[:state] != :taken and args.split(',').length == 2)
@@ -160,7 +160,7 @@ class Door < GameObject
 end
 
 class GunPowder < GameObject
-	def initialize x, y, args, switch
+	def initialize x, y, args, section, switch
 		return if switch[:state] == :taken
 		super x + 3, y + 19, 26, 13, :sprite_GunPowder, Vector.new(-2, -2)
 		@life = 10
@@ -179,7 +179,7 @@ class GunPowder < GameObject
 end
 
 class Crack < GameObject
-	def initialize x, y, args, switch
+	def initialize x, y, args, section, switch
 		super x + 32, y, 32, 32, :sprite_Crack
 		@active_bounds = Rectangle.new x + 32, y, 32, 32
 		@broken = switch[:state] == :taken
@@ -199,7 +199,7 @@ class Crack < GameObject
 end
 
 class Elevator < GameObject
-	def initialize x, y, args, obstacles
+	def initialize x, y, args, section
 		a = args.split(':')
 		type = a[0].to_i
 		case type
@@ -230,7 +230,7 @@ class Elevator < GameObject
 		@points << Vector.new(x, y)
 		@active_bounds = Rectangle.new min_x, min_y, (max_x - min_x + w), (max_y - min_y + @img[0].height)
 		
-		obstacles << self
+		section.obstacles << self
 	end
 	
 	def update section
@@ -240,7 +240,7 @@ class Elevator < GameObject
 end
 
 class SaveBombie < GameObject
-	def initialize x, y, args, switch
+	def initialize x, y, args, section, switch
 		super x - 16, y, 64, 32, :sprite_Bombie2, Vector.new(-16, -26), 4, 2
 		@id = args.to_i
 		@active_bounds = Rectangle.new x - 32, y - 26, 96, 58
@@ -262,15 +262,12 @@ class SaveBombie < GameObject
 end
 
 class Pin < TwoStateObject
-	def initialize x, y, args, obstacles
+	def initialize x, y, args, section
 		super x, y, 32, 32, :sprite_Pin, Vector.new(0, 0), 5, 1,
 			60, 0, 3, [0], [4], [1, 2, 3, 4, 0], [3, 2, 1, 0, 4], (not args.nil?)
-		
-		if args
-			obstacles << Block.new(x, y, 32, 32, true)
-		end
-		
+				
 		@active_bounds = Rectangle.new x, y, 32, 32
+		section.obstacles << Block.new(x, y, 32, 32, true) if args
 	end
 	
 	def s1_to_s2 section
@@ -292,7 +289,7 @@ class Pin < TwoStateObject
 end
 
 class Spikes < TwoStateObject
-	def initialize x, y, args, obstacles
+	def initialize x, y, args, section
 		super x, y, 32, 32, :sprite_Spikes, Vector.new(0, 0), 5, 1,
 			120, 0, 2, [0], [4], [1, 2, 3, 4, 0], [3, 2, 1, 0, 4]
 		
@@ -328,12 +325,15 @@ end
 class MovingWall < GameObject
 	attr_reader :id
 	
-	def initialize x, y, args, obstacles
+	def initialize x, y, args, section
 		super x + 2, y, 28, 32, :sprite_MovingWall, Vector.new(0, 0), 1, 2
-		@set = false
 		@id = args.to_i
+		while not section.obstacle_at? @x, @y - 1
+			@y -= C::TileSize
+			@h += C::TileSize
+		end
 		@active_bounds = Rectangle.new @x, @y, @w, @h
-		obstacles << self
+		section.obstacles << self
 	end
 	
 	def update section
@@ -348,13 +348,6 @@ class MovingWall < GameObject
 					@dead = true
 				end
 			end
-		elsif not @set
-			while not section.obstacle_at? @x, @y - 1
-				@y -= C::TileSize
-				@h += C::TileSize
-			end
-			@set = true
-			@active_bounds = Rectangle.new @x, @y, @w, @h
 		end
 	end
 	
@@ -374,7 +367,7 @@ class MovingWall < GameObject
 end
 
 class Ball < GameObject
-	def initialize x, y, args, switch
+	def initialize x, y, args, section, switch
 		super x, y, 32, 32, :sprite_Ball
 		if switch[:state] == :taken
 			@x = switch[:extra].x
@@ -402,7 +395,7 @@ class Ball < GameObject
 				end
 				
 				G.switches.each do |s|
-					if s[:type] == :BallReceptor and bounds.intersects s[:obj].bounds
+					if s[:type] == BallReceptor and bounds.intersects s[:obj].bounds
 						s[:obj].set section
 						s2 = G.find_switch self
 						s2[:extra] = @rec = s[:obj]
@@ -427,7 +420,7 @@ end
 class BallReceptor < GameObject
 	attr_reader :id
 	
-	def initialize x, y, args, switch
+	def initialize x, y, args, section, switch
 		super x, y + 31, 32, 1, :sprite_BallReceptor, Vector.new(0, -8), 1, 2
 		@id = args.to_i
 		@will_set = switch[:state] == :taken

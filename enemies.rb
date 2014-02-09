@@ -127,7 +127,7 @@ end
 ################################################################################
 
 class Wheeliam < FloorEnemy
-	def initialize x, y, args
+	def initialize x, y, args, section
 		super x, y, args, 32, 32, :sprite_Wheeliam, Vector.new(-4, -3), 4, 1, [0, 1], 8, 100
 	end
 	
@@ -143,7 +143,7 @@ class Wheeliam < FloorEnemy
 end
 
 class Sprinny < Enemy
-	def initialize x, y, args
+	def initialize x, y, args, section
 		super x + 3, y - 4, 26, 36, :sprite_Sprinny, Vector.new(-2, -5), 6, 1, [0], 5, 350
 		
 		@leaps = 1000
@@ -179,7 +179,7 @@ class Sprinny < Enemy
 end
 
 class Fureel < FloorEnemy
-	def initialize x, y, args
+	def initialize x, y, args, section
 		super x - 4, y - 4, args, 40, 36, :sprite_Fureel, Vector.new(-10, -3), 6, 1, [0, 1], 8, 300, 2, 4
 	end
 	
@@ -195,7 +195,7 @@ class Fureel < FloorEnemy
 end
 
 class Yaw < Enemy
-	def initialize x, y, args
+	def initialize x, y, args, section
 		super x, y, 32, 32, :sprite_Yaw, Vector.new(-4, -4), 8, 1, [0, 1, 2], 6, 500
 		@moving_eye = false
 		@eye_timer = 0
@@ -224,7 +224,7 @@ class Yaw < Enemy
 end
 
 class Ekips < GameObject
-	def initialize x, y, args
+	def initialize x, y, args, section
 		super x + 10, y - 10, 12, 25, :sprite_Ekips, Vector.new(-42, -8), 2, 3
 		
 		@act_timer = 0
@@ -282,18 +282,18 @@ class Ekips < GameObject
 end
 
 class Faller < GameObject
-	def initialize x, y, args, obstacles
+	def initialize x, y, args, section
 		super x, y, 32, 32, :sprite_Faller1, Vector.new(0, 0), 4, 1
 		@range = args.to_i
 		@start = Vector.new x, y
 		@up = Vector.new x, y - @range * 32
 		@active_bounds = Rectangle.new x, @up.y, 32, (@range + 1) * 32
 		@passable = true
-		obstacles << self
+		section.obstacles << self
 		
 		@bottom = Block.new x, y + 20, 32, 12, false
 		@bottom_img = Res.img :sprite_Faller2
-		obstacles << @bottom
+		section.obstacles << @bottom
 		
 		@indices = [0, 1, 2, 3, 2, 1]
 		@interval = 8
@@ -340,8 +340,33 @@ class Faller < GameObject
 	end
 end
 
-class Turner < GameObject
-	def initialize x, y, args
-		
+class Turner < FloorEnemy
+	def initialize x, y, args, section
+		super x + 2, y - 7, 60, 39, :sprite_Turner, Vector.new(-2, -25), 3, 2, [0, 1, 2, 1], 8, 300
+		@harmful = true
+	end
+	
+	def update section
+#		super section do
+#			if @harmful
+#				
+#			else
+#			end
+#		end
+	end
+	
+	def hit bomb
+		G.player.die if @harmful
+	end
+	
+	def change_animation dir
+		if dir == :left
+			@indices = [0, 1, 2, 1]
+			set_animation 0
+		else
+			@indices = [3, 4, 5, 4]
+			set_animation 3
+		end
 	end
 end
+

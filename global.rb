@@ -62,8 +62,7 @@ class G
 			elsif s[:state] == :temp_used
 				s[:state] = :taken
 			end
-			type = Object.const_get s[:type]
-			s[:obj] = type.new(s[:x], s[:y], s[:args], s)
+			s[:obj] = s[:type].new(s[:x], s[:y], s[:args], s[:section], s)
 		end
 	end
 	
