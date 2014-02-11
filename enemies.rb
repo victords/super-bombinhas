@@ -38,15 +38,15 @@ class Enemy < GameObject
 	end
 	
 	def update section
-		if G.player.bomb.over? self
-			if @invulnerable			
-				G.player.bomb.stored_forces.y -= C::BounceForce
-			else
-				hit G.player.bomb
-			end
+		if G.player.bomb.over? self			
+			hit_by_bomb if not @invulnerable
+			G.player.bomb.stored_forces.y -= C::BounceForce
+			G.player.bomb.stored_forces.x -= @speed.x
 		elsif G.player.bomb.explode? self
 			G.player.score += @score
 			@dead = true
+		elsif section.projectile_hit? self
+			hit if not @invulnerable
 		elsif G.player.bomb.collide? self
 			G.player.die
 		end
@@ -55,27 +55,36 @@ class Enemy < GameObject
 		
 		if @invulnerable
 			@timer += 1
-			if @timer == C::InvulnerableTime
-				@invulnerable = false
-				@timer = 0
-			end
+			return_vulnerable if @timer == C::InvulnerableTime
 		end
 		
-		yield
+		yield if block_given?
 		
 		set_active_bounds section
 		animate @indices, @interval
 	end
 	
-	def hit bomb
+	def hit_by_bomb
+		hit
+	end
+	
+	def hit
 		@hp -= 1
 		if @hp == 0
 			G.player.score += @score
 			@dead = true
 		else
-			@invulnerable = true
-			bomb.stored_forces.y -= C::BounceForce
+			get_invulnerable
 		end
+	end
+	
+	def get_invulnerable
+		@invulnerable = true
+	end
+	
+	def return_vulnerable
+		@invulnerable = false
+		@timer = 0
 	end
 end
 
@@ -90,18 +99,22 @@ class FloorEnemy < Enemy
 	end
 	
 	def update section
-		super section do
-			move @forces, section.get_obstacles(@x, @y), section.ramps
-			@forces.x = 0
-			if @left
-				set_direction :right
-			elsif @right
-				set_direction :left
-			elsif @dont_fall
-				if @facing_right
-					set_direction :left if not section.obstacle_at? @x + @w, @y + @h
-				elsif not section.obstacle_at? @x - 1, @y + @h
+		if @invulnerable
+			super section
+		else
+			super section do
+				move @forces, section.get_obstacles(@x, @y), section.ramps
+				@forces.x = 0
+				if @left
 					set_direction :right
+				elsif @right
+					set_direction :left
+				elsif @dont_fall
+					if @facing_right
+						set_direction :left if not section.obstacle_at? @x + @w, @y + @h
+					elsif not section.obstacle_at? @x - 1, @y + @h
+						set_direction :right
+					end
 				end
 			end
 		end
@@ -192,6 +205,19 @@ class Fureel < FloorEnemy
 			set_animation 3
 		end
 	end
+	
+	def get_invulnerable
+		@invulnerable = true
+		if @facing_right; @indices = [5]; set_animation 5
+		else; @indices = [2]; set_animation 2; end
+	end
+	
+	def return_vulnerable
+		@invulnerable = false
+		@timer = 0
+		if @facing_right; @indices = [3, 4]; set_animation 3
+		else; @indices = [0, 1]; set_animation 0; end
+	end
 end
 
 class Yaw < Enemy
@@ -218,7 +244,7 @@ class Yaw < Enemy
 		end
 	end
 	
-	def hit bomb
+	def hit_by_bomb
 		G.player.die
 	end
 end
@@ -233,21 +259,17 @@ class Ekips < GameObject
 	end
 	
 	def update section
-		if not @attacking
-#			int pInd = checkProjectile();
-#			if (pInd != -1)
-#			{
-#				Projectile *p = dynamic_cast<Projectile*>((*Control::currentStage->elements)[pInd]);
-#				p->destroy();
-#				disposing = true;
-#				return;
-#			}
+		if section.projectile_hit? self and not @attacking
+			G.player.score += 240
+			@dead = true
+			return
 		end
 		
 		if G.player.bomb.over? self
 			if @attacking
 				G.player.score += 240
 				@dead = true
+				return
 			else
 				G.player.die
 			end
@@ -387,8 +409,7 @@ class Turner < Enemy
 		end
 	end
 	
-	def hit bomb
-		G.player.die
+	def hit_by_bomb
 	end
 end
 

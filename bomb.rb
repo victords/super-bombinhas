@@ -46,26 +46,29 @@ class Bomb < GameObject
 			end
 			if KB.key_down? Gosu::KbLeft
 				set_direction :left if @facing_right
-				forces.x -= 0.15
+				forces.x -= @bottom ? 0.15 : 0.05
 			elsif @speed.x < 0
 				forces.x -= 0.15 * @speed.x
 			end
 			if KB.key_down? Gosu::KbRight
 				set_direction :right if not @facing_right
-				forces.x += 0.15
+				forces.x += @bottom ? 0.15 : 0.05
 			elsif @speed.x > 0
 				forces.x -= 0.15 * @speed.x
 			end
-			if KB.key_pressed? Gosu::KbSpace and @bottom
-				forces.y -= 13.7 + 0.4 * @speed.x.abs
-			end
-		
-			if @speed.x != 0
-				animate @indices, 30 / @speed.x.abs
-			elsif @facing_right
-				set_animation 0
-			else
-				set_animation 5
+			if @bottom
+				if @speed.x != 0
+					animate @indices, 30 / @speed.x.abs
+				elsif @facing_right
+					set_animation 0
+				else
+					set_animation 5
+				end
+				if KB.key_pressed? Gosu::KbSpace
+					forces.y -= 13.7 + 0.4 * @speed.x.abs
+					if @facing_right; set_animation 3
+					else; set_animation 8; end
+				end
 			end
 		end
 		move forces, section.get_obstacles(@x, @y), section.ramps
