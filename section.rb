@@ -7,7 +7,7 @@ require './map'
 Tile = Struct.new :back, :fore, :pass, :wall, :hide, :broken
 
 class Section
-	attr_reader :reload, :obstacles, :ramps, :size
+	attr_reader :reload, :tiles, :obstacles, :ramps, :size
 	attr_accessor :entrance, :warp, :loaded, :locked_door
 	
 	def initialize file, entrances
@@ -286,13 +286,6 @@ class Section
 				break
 			end
 		end
-	end
-	
-	def on_tiles
-		yield @tiles
-	end
-	def on_obstacles
-		yield @obstacles
 	end
 	
 	def update

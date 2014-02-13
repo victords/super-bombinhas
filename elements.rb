@@ -189,9 +189,7 @@ class Crack < GameObject
 		if @broken or G.player.bomb.explode? self
 			i = (@x / C::TileSize).floor
 			j = (@y / C::TileSize).floor
-			section.on_tiles do |t|
-				t[i][j].broken = true
-			end
+			section.tiles[i][j].broken = true
 			G.set_switch self
 			@dead = true
 		end
@@ -271,18 +269,14 @@ class Pin < TwoStateObject
 	end
 	
 	def s1_to_s2 section
-		section.on_obstacles do |o|
-			o << Block.new(@x, @y, @w, @h, true)
-		end
+		section.obstacles << Block.new(@x, @y, @w, @h, true)
 	end
 	
 	def s2_to_s1 section
-		section.on_obstacles do |o|
-			o.each do |b|
-				if b.x == @x and b.y == @y
-					o.delete b
-					break
-				end
+		section.obstacles.each do |o|
+			if o.x == @x and o.y == @y
+				section.obstacles.delete o
+				break
 			end
 		end
 	end
@@ -297,18 +291,14 @@ class Spikes < TwoStateObject
 	end
 	
 	def s1_to_s2 section
-		section.on_obstacles do |o|
-			o << Block.new(@x, @y + 30, @w, @h, false)
-		end
+		section.obstacles << Block.new(@x, @y + 30, @w, @h, false)
 	end
 	
 	def s2_to_s1 section
-		section.on_obstacles do |o|
-			o.each do |b|
-				if b.x == @x and b.y == @y + 30
-					o.delete b
-					break
-				end
+		section.obstacles.each do |o|
+			if o.x == @x and o.y == @y + 30
+				section.obstacles.delete o
+				break
 			end
 		end
 	end

@@ -37,13 +37,15 @@ class Sprite
 end
 
 class Block
-	include Movement
+	attr_reader :x, :y, :w, :h, :passable
 	
 	def initialize x, y, w, h, passable
 		@x = x; @y = y; @w = w; @h = h
 		@passable = passable
-		@min_speed = Vector.new 0, 0
-		@max_speed = Vector.new 0, 0
+	end
+	
+	def bounds
+		Rectangle.new @x, @y, @w, @h
 	end
 end
 
@@ -86,5 +88,27 @@ class GameObject < Sprite
 	def draw map
 		@img[@img_index].draw @x.round + @img_gap.x - map.cam.x,
 		                      @y.round + @img_gap.y - map.cam.y, 0 if @img
+	end
+end
+
+class Effect < Sprite
+	def initialize x, y, life_time, img, sprite_cols = nil, sprite_rows = nil, indices = nil, interval = 1
+		super x, y, img, sprite_cols, sprite_rows
+		@life_time = life_time
+		@timer = 0
+		if indices
+			@indices = indices
+		else
+			@indices = *(0..(@img.length - 1))
+		end
+		@interval = interval
+	end
+	
+	def update
+		animate @indices, @interval
+		@timer += 1
+		if @timer == @life_time
+			@dead = true
+		end
 	end
 end

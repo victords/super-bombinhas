@@ -326,10 +326,8 @@ class Faller < GameObject
 	def update section
 		if G.player.bomb.explode? self
 			G.player.score += 300
-			section.on_obstacles do |o|
-				o.delete self
-				o.delete @bottom
-			end
+			section.obstacles.delete self
+			section.obstacles.delete @bottom
 			@dead = true
 			return
 		elsif G.player.bomb.bottom == @bottom
@@ -391,9 +389,7 @@ class Turner < Enemy
 					@harmful = false
 					@indices = [3, 4, 5, 4]
 					set_animation 3
-					section.on_obstacles do |o|
-						o << self
-					end
+					section.obstacles << self
 				end
 			else
 				move_carrying @aim2, 2, [G.player.bomb]
@@ -401,9 +397,7 @@ class Turner < Enemy
 					@harmful = true
 					@indices = [0, 1, 2, 1]
 					set_animation 0
-					section.on_obstacles do |o|
-						o.delete self
-					end
+					section.obstacles.delete self
 				end
 			end
 		end
