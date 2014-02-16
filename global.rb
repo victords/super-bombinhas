@@ -1,5 +1,4 @@
 require 'joystick'
-require './player'
 
 Vector = Struct.new :x, :y
 
@@ -16,6 +15,7 @@ end
 class G
 	def self.window; @@window; end
 	def self.player; @@player; end
+	def self.player= value; @@player = value; end
 	def self.switches; @@switches; end
 	def self.gravity; @@gravity; end
 	def self.gravity= value; @@gravity = value; end
@@ -26,7 +26,6 @@ class G
 	
 	def self.initialize window
 		@@window = window
-		@@player = Player.new
 		@@switches = []
 		@@gravity = Vector.new 0, 0.9
 		@@lang = :spanish

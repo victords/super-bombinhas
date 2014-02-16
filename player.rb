@@ -1,4 +1,3 @@
-require './items'
 require './bomb'
 
 class Player

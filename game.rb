@@ -2,6 +2,7 @@
 #encoding: UTF-8
 
 require 'gosu'
+require './world'
 require './stage'
 
 class Game < Gosu::Window
@@ -16,7 +17,8 @@ class Game < Gosu::Window
 		KB.initialize
 		
 		@frame = 0		
-		@stage = Stage.new 100
+#		@stage = Stage.new 100
+		@world = World.new
 	end
 
 	def update
@@ -27,11 +29,13 @@ class Game < Gosu::Window
 		end
 		
 		KB.update
-		@stage.update
+#		@stage.update
+		@world.update
 	end
 
 	def draw
-		@stage.draw
+#		@stage.draw
+		@world.draw
 	end
 end
 

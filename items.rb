@@ -1,5 +1,3 @@
-require './game_object'
-
 ############################### classes abstratas ##############################
 
 module Item
