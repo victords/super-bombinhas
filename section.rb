@@ -2,6 +2,7 @@ require './global'
 require './ramp'
 require './elements'
 require './enemies'
+require './items'
 require './map'
 
 Tile = Struct.new :back, :fore, :pass, :wall, :hide, :broken

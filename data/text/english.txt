@@ -1,6 +1,12 @@
+lang_name	English
 loading		Loading
 lives			Lives
 score			Score
 msg1			Testing message
 msg2			Second test message
 count_down	Countdown to explosion!
+world_1		Tars Island
+stage_1_1	Exploring the|Tars Beach
+stage_1_2	Sand, Wind and Wilderness
+stage_1_3	Test for the Name of the Third Stage
+stage_1_4	Finally! Chamal's Fortress

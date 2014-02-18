@@ -1,6 +1,12 @@
+lang_name	Português
 loading		Carregando
 lives			Vidas
 score			Pontos
 msg1			Testando mensagem...
 msg2			Segunda mensagem de teste
 count_down	Contagem regressiva para explodir!
+world_1		Ilha de Tars
+stage_1_1	Explorando a|Praia de Tars
+stage_1_2	Areia, Vento e Deserto
+stage_1_3	Teste de Nome para a Terceira Fase
+stage_1_4	Finalmente! A Fortaleza de Chamal

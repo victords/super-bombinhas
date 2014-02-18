@@ -1,11 +1,10 @@
 require './section'
 
 class Stage
-	def initialize num
-		@name = File.read "data/stage/#{num}.sbs"
+	def initialize world, num
 		@sections = []
 		@entrances = []
-		sections = Dir["data/stage/#{num}-*.sbs"]
+		sections = Dir["data/stage/#{world}/#{num}-*.sbs"]
 		sections.sort.each do |s|
 			@sections << Section.new(s, @entrances)
 		end

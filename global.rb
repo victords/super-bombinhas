@@ -6,9 +6,9 @@ module C
 	TileSize = 32
 	ScreenWidth = 800
 	ScreenHeight = 600
-	PlayerOverTolerance = 10
+	PlayerOverTolerance = 20
 	InvulnerableTime = 40
-	BounceForce = 15
+	BounceForce = 10
 	TopMargin = -200
 end
 

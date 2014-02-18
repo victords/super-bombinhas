@@ -4,6 +4,7 @@
 require 'gosu'
 require './world'
 require './stage'
+require './player'
 
 class Game < Gosu::Window
 	attr_reader :frame
@@ -14,6 +15,7 @@ class Game < Gosu::Window
 		
 		Res.initialize
 		G.initialize(self)
+		G.player = Player.new
 		KB.initialize
 		
 		@frame = 0		

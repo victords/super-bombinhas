@@ -50,7 +50,7 @@ class Res
 	end
 	
 	def self.text id
-		G.texts[G.lang][id]
+		G.texts[G.lang][id.to_sym]
 	end
 	
 	def self.clear
