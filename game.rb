@@ -19,10 +19,10 @@ class Game < Gosu::Window
 		KB.initialize
 		
 		@frame = 0		
-#		@stage = Stage.new 100
+#		@stage = Stage.new 1, 100
 		@world = World.new
 	end
-
+	
 	def update
 		@frame += 1
 		if @frame == 60
@@ -34,7 +34,7 @@ class Game < Gosu::Window
 #		@stage.update
 		@world.update
 	end
-
+	
 	def draw
 #		@stage.draw
 		@world.draw
