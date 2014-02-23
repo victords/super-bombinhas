@@ -3,7 +3,6 @@
 
 require 'gosu'
 require './world'
-require './stage'
 require './player'
 
 class Game < Gosu::Window
@@ -14,13 +13,11 @@ class Game < Gosu::Window
 		self.caption = "Super Bombinhas"
 		
 		Res.initialize
-		G.initialize(self)
-		G.player = Player.new
+		G.initialize self
+		G.set World.new, Player.new
 		KB.initialize
 		
-		@frame = 0		
-#		@stage = Stage.new 1, 100
-		@world = World.new
+		@frame = 0
 	end
 	
 	def update
@@ -29,15 +26,25 @@ class Game < Gosu::Window
 			puts G.window.send(:fps)
 			@frame = 0
 		end
-		
 		KB.update
-#		@stage.update
-		@world.update
+		
+		if G.state == :presentation
+			
+		elsif G.state == :map
+			G.world.update
+		elsif G.state == :main
+			G.stage.update
+		end
 	end
 	
-	def draw
-#		@stage.draw
-		@world.draw
+	def draw		
+		if G.state == :presentation
+			
+		elsif G.state == :map
+			G.world.draw
+		elsif G.state == :main
+			G.stage.draw
+		end
 	end
 end
 

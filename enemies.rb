@@ -39,14 +39,13 @@ class Enemy < GameObject
 	
 	def update section
 		if G.player.bomb.over? self			
-			hit_by_bomb if not @invulnerable
+			hit_by_bomb unless @invulnerable
 			G.player.bomb.stored_forces.y -= C::BounceForce
 			G.player.bomb.stored_forces.x -= @speed.x
 		elsif G.player.bomb.explode? self
-			G.player.score += @score
-			@dead = true
+			hit_by_explosion unless @invulnerable
 		elsif section.projectile_hit? self
-			hit if not @invulnerable
+			hit unless @invulnerable
 		elsif G.player.bomb.collide? self
 			G.player.die
 		end
@@ -66,6 +65,11 @@ class Enemy < GameObject
 	
 	def hit_by_bomb
 		hit
+	end
+	
+	def hit_by_explosion
+		G.player.score += @score
+		@dead = true
 	end
 	
 	def hit
@@ -377,6 +381,8 @@ class Turner < Enemy
 			not section.obstacle_at? @aim2.x + 63, @aim2.y + 8
 			@aim2.x += C::TileSize
 		end
+		
+		@obst = section.obstacles
 	end
 	
 	def update section
@@ -389,7 +395,7 @@ class Turner < Enemy
 					@harmful = false
 					@indices = [3, 4, 5, 4]
 					set_animation 3
-					section.obstacles << self
+					@obst << self
 				end
 			else
 				move_carrying @aim2, 2, [G.player.bomb]
@@ -397,13 +403,19 @@ class Turner < Enemy
 					@harmful = true
 					@indices = [0, 1, 2, 1]
 					set_animation 0
-					section.obstacles.delete self
+					@obst.delete self
 				end
 			end
 		end
 	end
 	
 	def hit_by_bomb
+	end
+	
+	def hit_by_explosion
+		G.player.score += @score
+		@obst.delete self unless @harmful
+		@dead = true
 	end
 end
 

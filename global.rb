@@ -6,29 +6,33 @@ module C
 	TileSize = 32
 	ScreenWidth = 800
 	ScreenHeight = 600
-	PlayerOverTolerance = 20
+	PlayerOverTolerance = 10
 	InvulnerableTime = 40
 	BounceForce = 10
 	TopMargin = -200
 end
 
 class G
+	def self.state; @@state; end
+	def self.state= value; @@state = value; end
+	
 	def self.window; @@window; end
 	def self.player; @@player; end
-	def self.player= value; @@player = value; end
-	def self.switches; @@switches; end
+	def self.world; @@world; end
+	def self.stage; @@stage; end
+	def self.stage= value; @@stage = value; end
+	def self.font; @@font; end
+	def self.texts; @@texts; end
+	
 	def self.gravity; @@gravity; end
 	def self.gravity= value; @@gravity = value; end
 	def self.lang; @@lang; end
 	def self.lang= value; @@lang = value; end
-	def self.font; @@font; end
-	def self.texts; @@texts; end
 	
 	def self.initialize window
+		@@state = :map		
 		@@window = window
-		@@switches = []
-		@@gravity = Vector.new 0, 0.9
-		@@lang = :spanish
+		
 		@@font = Font.new window, "data/font/BankGothicMedium.ttf", 20
 		@@texts = {}
 		files = Dir["data/text/*.txt"]
@@ -40,39 +44,14 @@ class G
 				@@texts[lang][parts[0].to_sym] = parts[-1].chomp
 			end
 		end
+		
+		@@gravity = Vector.new 0, 0.9
+		@@lang = :portuguese
 	end
 	
-	def self.find_switch obj
-		@@switches.each do |s|
-			return s if s[:obj] == obj
-		end
-		nil
-	end
-	
-	def self.set_switch obj
-		switch = self.find_switch obj
-		switch[:state] = :temp_taken
-	end
-	
-	def self.reset_switches
-		@@switches.each do |s|
-			if s[:state] == :temp_taken or s[:state] == :temp_taken_used
-				s[:state] = :normal
-			elsif s[:state] == :temp_used
-				s[:state] = :taken
-			end
-			s[:obj] = s[:type].new(s[:x], s[:y], s[:args], s[:section], s)
-		end
-	end
-	
-	def self.save_switches
-		@@switches.each do |s|
-			if s[:state] == :temp_taken
-				s[:state] = :taken
-			elsif s[:state] == :temp_used or s[:state] == :temp_taken_used
-				s[:state] = :used
-			end
-		end
+	def self.set world, player
+		@@world = world
+		@@player = player
 	end
 end
 

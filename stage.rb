@@ -1,19 +1,22 @@
 require './section'
 
 class Stage
+	attr_reader :switches
+	
 	def initialize world, num
 		@sections = []
 		@entrances = []
+		@switches = []
 		sections = Dir["data/stage/#{world}/#{num}-*.sbs"]
 		sections.sort.each do |s|
-			@sections << Section.new(s, @entrances)
+			@sections << Section.new(s, @entrances, @switches)
 		end
 		
 		G.player.reset
-		G.reset_switches
+		reset_switches
 		@cur_section = @sections[0]
 		@cur_entrance = @entrances[0]
-		@cur_section.load @cur_entrance[:x], @cur_entrance[:y]
+		@cur_section.load @switches, @cur_entrance[:x], @cur_entrance[:y]
 	end
 	
 	def update
@@ -30,9 +33,9 @@ class Stage
 			end
 			
 			G.player.reset
-			G.reset_switches
+			reset_switches
 			@cur_section = @cur_entrance[:section]
-			@cur_section.load @cur_entrance[:x], @cur_entrance[:y]
+			@cur_section.load @switches, @cur_entrance[:x], @cur_entrance[:y]
 		end
 	end
 	
@@ -50,7 +53,40 @@ class Stage
 			if @cur_section.loaded
 				@cur_section.do_warp entrance[:x], entrance[:y]
 			else
-				@cur_section.load entrance[:x], entrance[:y]
+				@cur_section.load @switches, entrance[:x], entrance[:y]
+			end
+		end
+	end
+	
+	def find_switch obj
+		@switches.each do |s|
+			return s if s[:obj] == obj
+		end
+		nil
+	end
+	
+	def set_switch obj
+		switch = self.find_switch obj
+		switch[:state] = :temp_taken
+	end
+	
+	def reset_switches
+		@switches.each do |s|
+			if s[:state] == :temp_taken or s[:state] == :temp_taken_used
+				s[:state] = :normal
+			elsif s[:state] == :temp_used
+				s[:state] = :taken
+			end
+			s[:obj] = s[:type].new(s[:x], s[:y], s[:args], s[:section], s)
+		end
+	end
+	
+	def save_switches
+		@switches.each do |s|
+			if s[:state] == :temp_taken
+				s[:state] = :taken
+			elsif s[:state] == :temp_used or s[:state] == :temp_taken_used
+				s[:state] = :used
 			end
 		end
 	end

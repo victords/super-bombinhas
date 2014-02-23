@@ -11,15 +11,14 @@ class Section
 	attr_reader :reload, :tiles, :obstacles, :ramps, :size
 	attr_accessor :entrance, :warp, :loaded, :locked_door
 	
-	def initialize file, entrances
+	def initialize file, entrances, switches
 		parts = File.read(file).chomp.split('#', -1)
 		p1 = parts[0].split ','
 		set_map_tileset_bg p1
 		p2 = parts[1].split ';'
-		set_elements p2, entrances
+		set_elements p2, entrances, switches
 		p3 = parts[2].split ';'
 		set_ramps p3
-		@taken_items = []
 	end
 	
 	# initialization
@@ -40,7 +39,7 @@ class Section
 		@size = @map.get_absolute_size
 	end
 	
-	def set_elements s, entrances
+	def set_elements s, entrances, switches
 		x = 0; y = 0
 		@element_info = []
 		@hide_tiles = []
@@ -63,7 +62,7 @@ class Section
 								if e[i] == '$'
 									el[:state] = :normal
 									el[:section] = self
-									G.switches << el
+									switches << el
 								else
 									@element_info << el
 								end
@@ -170,14 +169,14 @@ class Section
 	end
 	#end initialization
 	
-	def load bomb_x, bomb_y
+	def load switches, bomb_x, bomb_y
 		@elements = []
 		@obstacles = [] #vetor de obstáculos não-tile
 		@locked_door = nil
 		@reload = false
 		@loaded = true
 		
-		G.switches.each do |s|
+		switches.each do |s|
 			if s[:section] == self
 				@elements << s[:obj]
 			end
@@ -267,14 +266,14 @@ class Section
 	
 	def save_check_point id, obj
 		@entrance = id
-		G.set_switch obj
-		G.save_switches
+		G.stage.set_switch obj
+		G.stage.save_switches
 	end
 	
 	def unlock_door
 		if @locked_door
 			@locked_door.unlock
-			G.set_switch @locked_door
+			G.stage.set_switch @locked_door
 			return true
 		end
 		false

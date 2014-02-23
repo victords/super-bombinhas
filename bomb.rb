@@ -124,7 +124,7 @@ class Bomb < GameObject
 	
 	def over? obj
 		@x + @w > obj.x and obj.x + obj.w > @x and
-			@y < obj.y - C::PlayerOverTolerance and @y + @h > obj.y
+			@y + @h > obj.y and @y < obj.y - C::PlayerOverTolerance
 	end
 	
 	def reset

@@ -18,7 +18,7 @@ module Item
 	end
 	
 	def take section, store
-		info = G.find_switch self
+		info = G.stage.find_switch self
 		if store
 			G.player.add_item info
 			info[:state] = :temp_taken

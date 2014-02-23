@@ -6,7 +6,7 @@ msg1			Testando mensaje
 msg2			Segunda mensaje de teste
 count_down	¡Cuenta regresiva para explodir!
 world_1		Isla de Tars
-stage_1_1	Explorando la|Playa de Tars
+stage_1_1	Explorando la Playa de Tars
 stage_1_2	Arena, Viento y Desierto
 stage_1_3	Teste para el Nombre de la Tercera Fase
 stage_1_4	¡Por Fin! La Fortaleza de Chamal

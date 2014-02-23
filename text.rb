@@ -4,7 +4,7 @@ class TextHelper
 		@line_spacing = line_spacing
 	end
 	
-	def write_line text, x, y, mode = :left
+	def write_line text, x, y, mode = :left, color = 0xffffffff
 		rel =
 			case mode
 			when :left then 0
@@ -12,13 +12,13 @@ class TextHelper
 			when :right then 1
 			else 0
 			end
-		@font.draw_rel text, x, y, 0, rel, 0
+		@font.draw_rel text, x, y, 0, rel, 0, 1, 1, color
 	end
 	
-	def write_breaking text, x, y, width, mode = :left
+	def write_breaking text, x, y, width, mode = :left, color = 0xffffffff
 		text.split("\n").each do |p|
 			if mode == :justified
-				y = write_paragraph_justified p, x, y, width
+				y = write_paragraph_justified p, x, y, width, color
 			else
 				rel =
 					case mode
@@ -27,18 +27,18 @@ class TextHelper
 					when :right then 1
 					else 0
 					end
-				y = write_paragraph p, x, y, width, rel
+				y = write_paragraph p, x, y, width, rel, color
 			end
 		end
 	end
 	
-	def write_paragraph text, x, y, width, rel
+	def write_paragraph text, x, y, width, rel, color
 		line = ""
 		line_width = 0
 		text.split(' ').each do |word|
 			w = @font.text_width word
 			if line_width + w > width
-				@font.draw_rel line.chop, x, y, 0, rel, 0
+				@font.draw_rel line.chop, x, y, 0, rel, 0, 1, 1, color
 				line = ""
 				line_width = 0
 				y += @font.height + @line_spacing
@@ -46,11 +46,11 @@ class TextHelper
 			line += "#{word} "
 			line_width += @font.text_width "#{word} "
 		end
-		@font.draw_rel line.chop, x, y, 0, rel, 0 if not line.empty?
+		@font.draw_rel line.chop, x, y, 0, rel, 0, 1, 1, color if not line.empty?
 		y + @font.height + @line_spacing
 	end
 	
-	def write_paragraph_justified text, x, y, width
+	def write_paragraph_justified text, x, y, width, color
 		space_width = @font.text_width " "
 		spaces = [[]]
 		line_index = 0
@@ -81,7 +81,7 @@ class TextHelper
 		spaces.each do |line|
 			new_x = x
 			line.each do |s|
-				@font.draw words[index], new_x, y, 0
+				@font.draw words[index], new_x, y, 0, 1, 1, color
 				new_x += @font.text_width(words[index]) + s
 				index += 1
 			end

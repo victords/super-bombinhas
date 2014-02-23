@@ -172,7 +172,7 @@ class GunPowder < GameObject
 	def update section
 		if G.player.bomb.collide? self
 			G.player.bomb.set_exploding
-			G.set_switch self
+			G.stage.set_switch self
 			@dead = true
 		end
 	end
@@ -190,7 +190,7 @@ class Crack < GameObject
 			i = (@x / C::TileSize).floor
 			j = (@y / C::TileSize).floor
 			section.tiles[i][j].broken = true
-			G.set_switch self
+			G.stage.set_switch self
 			@dead = true
 		end
 	end
@@ -384,10 +384,10 @@ class Ball < GameObject
 					forces.x -= 0.15 * @speed.x
 				end
 				
-				G.switches.each do |s|
+				G.stage.switches.each do |s|
 					if s[:type] == BallReceptor and bounds.intersects s[:obj].bounds
 						s[:obj].set section
-						s2 = G.find_switch self
+						s2 = G.stage.find_switch self
 						s2[:extra] = @rec = s[:obj]
 						s2[:state] = :temp_taken
 						@set = true
@@ -426,7 +426,7 @@ class BallReceptor < GameObject
 	end
 	
 	def set section
-		G.set_switch self
+		G.stage.set_switch self
 		section.open_wall @id
 		@img_index = 1
 	end
