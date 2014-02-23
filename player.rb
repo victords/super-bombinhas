@@ -92,6 +92,7 @@ class Player
 	
 	def reset
 		@items.clear
+		@bomb.reset
 		@cur_item_type = nil
 		@item_index = 0
 		@dead = false

@@ -17,22 +17,26 @@ class G
 	def self.state= value; @@state = value; end
 	
 	def self.window; @@window; end
-	def self.player; @@player; end
-	def self.world; @@world; end
-	def self.stage; @@stage; end
-	def self.stage= value; @@stage = value; end
 	def self.font; @@font; end
 	def self.texts; @@texts; end
-	
-	def self.gravity; @@gravity; end
-	def self.gravity= value; @@gravity = value; end
 	def self.lang; @@lang; end
 	def self.lang= value; @@lang = value; end
+	def self.gravity; @@gravity; end
+	def self.gravity= value; @@gravity = value; end
+	
+	def self.menu; @@menu; end
+	def self.menu= value; @@menu = value; end
+	def self.player; @@player; end
+	def self.player= value; @@player = value; end
+	def self.world; @@world; end
+	def self.world= value; @@world = value; end
+	def self.stage; @@stage; end
+	def self.stage= value; @@stage = value; end
 	
 	def self.initialize window
-		@@state = :map		
-		@@window = window
+		@@state = :menu
 		
+		@@window = window		
 		@@font = Font.new window, "data/font/BankGothicMedium.ttf", 20
 		@@texts = {}
 		files = Dir["data/text/*.txt"]
@@ -44,14 +48,8 @@ class G
 				@@texts[lang][parts[0].to_sym] = parts[-1].chomp
 			end
 		end
-		
-		@@gravity = Vector.new 0, 0.9
 		@@lang = :portuguese
-	end
-	
-	def self.set world, player
-		@@world = world
-		@@player = player
+		@@gravity = Vector.new 0, 0.9
 	end
 end
 

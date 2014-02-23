@@ -2,8 +2,7 @@
 #encoding: UTF-8
 
 require 'gosu'
-require './world'
-require './player'
+require './menu'
 
 class Game < Gosu::Window
 	attr_reader :frame
@@ -13,9 +12,9 @@ class Game < Gosu::Window
 		self.caption = "Super Bombinhas"
 		
 		Res.initialize
-		G.initialize self
-		G.set World.new, Player.new
 		KB.initialize
+		G.initialize self
+		G.menu = Menu.new
 		
 		@frame = 0
 	end
@@ -30,6 +29,8 @@ class Game < Gosu::Window
 		
 		if G.state == :presentation
 			
+		elsif G.state == :menu
+			G.menu.update
 		elsif G.state == :map
 			G.world.update
 		elsif G.state == :main
@@ -40,6 +41,8 @@ class Game < Gosu::Window
 	def draw		
 		if G.state == :presentation
 			
+		elsif G.state == :menu
+			G.menu.draw
 		elsif G.state == :map
 			G.world.draw
 		elsif G.state == :main
