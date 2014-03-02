@@ -13,10 +13,15 @@ class Game < Gosu::Window
 		
 		Res.initialize
 		KB.initialize
+		Mouse.initialize
 		G.initialize self
 		G.menu = Menu.new
 		
 		@frame = 0
+	end
+	
+	def needs_cursor?
+		true
 	end
 	
 	def update
@@ -26,6 +31,7 @@ class Game < Gosu::Window
 			@frame = 0
 		end
 		KB.update
+		Mouse.update
 		
 		if G.state == :presentation
 			

@@ -191,3 +191,39 @@ class KB
 		@@prev_down.index(key) and @@down.index(key).nil?
 	end
 end
+
+class Mouse
+	def self.initialize
+		@@down = {}
+		@@prev_down = {}
+	end
+	
+	def self.update
+		@@prev_down = @@down.clone
+		@@down.clear
+		if G.window.button_down? Gosu::MsLeft
+			@@down[:left] = true
+		elsif G.window.button_down? Gosu::MsMiddle
+			@@down[:middle] = true
+		elsif G.window.button_down? Gosu::MsRight
+			@@down[:right] = true
+		end
+		@@x = G.window.mouse_x.round
+		@@y = G.window.mouse_y.round
+	end
+	
+	def self.x; @@x; end
+	def self.y; @@y; end
+	
+	def self.button_pressed? btn
+		@@down[btn] and not @@prev_down[btn]
+	end
+	
+	def self.button_down? btn
+		@@down[btn]
+	end
+	
+	def self.button_released? btn
+		@@prev_down[btn] and not @@down[btn]
+	end
+end

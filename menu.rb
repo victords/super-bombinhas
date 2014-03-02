@@ -1,5 +1,6 @@
 require './world'
 require './player'
+require './forms'
 
 class Menu
 	def initialize
@@ -9,9 +10,17 @@ class Menu
 		@cursor_indices = [0, 1, 2, 3, 4, 5, 6, 7]
 		@cursor_timer = 0
 		@cursor_state = 0
+		
+		@btn = TestButton.new(400, 400, "Play", :other_btn1) do
+			G.world = World.new
+			G.player = Player.new
+			G.state = :map
+		end
 	end
 	
 	def update
+		@btn.update
+		
 		if KB.key_pressed? Gosu::KbA
 			G.world = World.new
 			G.player = Player.new
@@ -33,5 +42,6 @@ class Menu
 		@title.draw 0, 0, 0
 		@cursor.draw
 		G.font.draw_rel "Press 'A' to start", 400, 300, 0, 0.5, 0.5, 2, 2, 0xff000000
+		@btn.draw
 	end
 end
