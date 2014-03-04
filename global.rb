@@ -163,18 +163,40 @@ class KB
 			Gosu::KbUp, Gosu::KbRight, Gosu::KbDown, Gosu::KbLeft,
 			Gosu::KbSpace, Gosu::KbReturn, Gosu::KbBackspace, Gosu::KbEscape,
 			Gosu::KbLeftControl, Gosu::KbRightControl, Gosu::KbLeftShift, Gosu::KbRightShift,
-			Gosu::KbA
+			Gosu::KbA,
+			Gosu::KbBacktick, Gosu::KbMinus, Gosu::KbEqual, Gosu::KbBracketLeft,
+			Gosu::KbBracketRight, Gosu::KbBackslash, Gosu::KbSemicolon,
+			Gosu::KbApostrophe, Gosu::KbComma, Gosu::KbPeriod, Gosu::KbSlash
 		]
 		@@down = []
 		@@prev_down = []
+		@@held_timer = {}
+		@@held_interval = {}
 	end
 	
 	def self.update
+		@@held_timer.each do |k, v|
+			if v < 40; @@held_timer[k] += 1
+			else
+				@@held_interval[k] = 0
+				@@held_timer.delete k
+			end
+		end
+		
+		@@held_interval.each do |k, v|
+			if v < 5; @@held_interval[k] += 1
+			else; @@held_interval[k] = 0; end
+		end
+		
 		@@prev_down = @@down.clone
 		@@down.clear
 		@@keys.each do |k|
 			if G.window.button_down? k
 				@@down << k
+				@@held_timer[k] = 0 if @@prev_down.index(k).nil?
+			elsif @@prev_down.index(k)
+				@@held_timer.delete k
+				@@held_interval.delete k
 			end
 		end
 	end
@@ -190,24 +212,42 @@ class KB
 	def self.key_released? key
 		@@prev_down.index(key) and @@down.index(key).nil?
 	end
+	
+	def self.key_held? key
+		@@held_interval[key] == 5
+	end
 end
 
 class Mouse
 	def self.initialize
 		@@down = {}
 		@@prev_down = {}
+		@@dbl_click = {}
+		@@dbl_click_timer = {}
 	end
 	
 	def self.update
 		@@prev_down = @@down.clone
 		@@down.clear
-		if G.window.button_down? Gosu::MsLeft
-			@@down[:left] = true
-		elsif G.window.button_down? Gosu::MsMiddle
-			@@down[:middle] = true
-		elsif G.window.button_down? Gosu::MsRight
-			@@down[:right] = true
+		@@dbl_click.clear
+		
+		@@dbl_click_timer.each do |k, v|
+			if v < 8; @@dbl_click_timer[k] += 1
+			else; @@dbl_click_timer.delete k; end
 		end
+		
+		k1 = [Gosu::MsLeft, Gosu::MsMiddle, Gosu::MsRight]
+		k2 = [:left, :middle, :right]
+		for i in 0..2
+			if G.window.button_down? k1[i]
+				@@down[k2[i]] = true
+				@@dbl_click[k2[i]] = true if @@dbl_click_timer[k2[i]]
+				@@dbl_click_timer.delete k2[i]
+			elsif @@prev_down[k2[i]]
+				@@dbl_click_timer[k2[i]] = 0
+			end
+		end
+		
 		@@x = G.window.mouse_x.round
 		@@y = G.window.mouse_y.round
 	end
@@ -225,5 +265,13 @@ class Mouse
 	
 	def self.button_released? btn
 		@@prev_down[btn] and not @@down[btn]
+	end
+	
+	def self.double_click? btn
+		@@dbl_click[btn]
+	end
+	
+	def self.over? x, y, w, h
+		@@x >= x and @@x < x + w and @@y >= y and @@y < y + h
 	end
 end

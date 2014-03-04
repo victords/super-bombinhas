@@ -11,21 +11,26 @@ class Menu
 		@cursor_timer = 0
 		@cursor_state = 0
 		
-		@btn = TestButton.new(400, 400, "Play", :other_btn1) do
+		@btn = AGL::Button.new(300, 350, "Play", :other_button1) do
 			G.world = World.new
 			G.player = Player.new
 			G.state = :map
 		end
+		
+#		@txt = AGL::TextField.new 1, 1, nil, nil
 	end
 	
 	def update
 		@btn.update
-		
-		if KB.key_pressed? Gosu::KbA
-			G.world = World.new
-			G.player = Player.new
-			G.state = :map
-		end
+		puts "a" if KB.key_held? Gosu::KbA
+		puts "l" if Mouse.double_click? :left
+		puts "r" if Mouse.double_click? :right
+#		@txt.update
+#		if KB.key_pressed? Gosu::KbA
+#			G.world = World.new
+#			G.player = Player.new
+#			G.state = :map
+#		end
 		@cursor.animate @cursor_indices, 5
 		@cursor_timer += 1
 		if @cursor_timer == 10
