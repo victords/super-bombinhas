@@ -160,13 +160,23 @@ end
 class KB
 	def self.initialize
 		@@keys = [
-			Gosu::KbUp, Gosu::KbRight, Gosu::KbDown, Gosu::KbLeft,
-			Gosu::KbSpace, Gosu::KbReturn, Gosu::KbBackspace, Gosu::KbEscape,
-			Gosu::KbLeftControl, Gosu::KbRightControl, Gosu::KbLeftShift, Gosu::KbRightShift,
-			Gosu::KbA,
+			Gosu::KbUp, Gosu::KbDown,
+			Gosu::KbReturn, Gosu::KbEscape,
+			Gosu::KbLeftControl, Gosu::KbRightControl,
+			Gosu::KbA, Gosu::KbB, Gosu::KbC, Gosu::KbD, Gosu::KbE, Gosu::KbF,
+			Gosu::KbG, Gosu::KbH, Gosu::KbI, Gosu::KbJ, Gosu::KbK, Gosu::KbL,
+			Gosu::KbM, Gosu::KbN, Gosu::KbO, Gosu::KbP, Gosu::KbQ, Gosu::KbR,
+			Gosu::KbS, Gosu::KbT, Gosu::KbU, Gosu::KbV, Gosu::KbW, Gosu::KbX,
+			Gosu::KbY, Gosu::KbZ, Gosu::Kb1, Gosu::Kb2, Gosu::Kb3, Gosu::Kb4,
+			Gosu::Kb5, Gosu::Kb6, Gosu::Kb7, Gosu::Kb8, Gosu::Kb9, Gosu::Kb0,
+			Gosu::KbNumpad1, Gosu::KbNumpad2, Gosu::KbNumpad3, Gosu::KbNumpad4,
+			Gosu::KbNumpad5, Gosu::KbNumpad6, Gosu::KbNumpad7, Gosu::KbNumpad8,
+			Gosu::KbNumpad9, Gosu::KbNumpad0, Gosu::KbSpace, Gosu::KbBackspace,
+			Gosu::KbDelete, Gosu::KbLeft, Gosu::KbRight, Gosu::KbHome,
+			Gosu::KbEnd, Gosu::KbLeftShift, Gosu::KbRightShift,
 			Gosu::KbBacktick, Gosu::KbMinus, Gosu::KbEqual, Gosu::KbBracketLeft,
-			Gosu::KbBracketRight, Gosu::KbBackslash, Gosu::KbSemicolon,
-			Gosu::KbApostrophe, Gosu::KbComma, Gosu::KbPeriod, Gosu::KbSlash
+			Gosu::KbBracketRight, Gosu::KbBackslash, Gosu::KbApostrophe,
+			Gosu::KbComma, Gosu::KbPeriod, Gosu::KbSlash
 		]
 		@@down = []
 		@@prev_down = []

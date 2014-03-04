@@ -17,15 +17,12 @@ class Menu
 			G.state = :map
 		end
 		
-#		@txt = AGL::TextField.new 1, 1, nil, nil
+		@txt = AGL::TextField.new 10, 10, :other_field1
 	end
 	
 	def update
-		@btn.update
-		puts "a" if KB.key_held? Gosu::KbA
-		puts "l" if Mouse.double_click? :left
-		puts "r" if Mouse.double_click? :right
-#		@txt.update
+		@btn.update		
+		@txt.update
 #		if KB.key_pressed? Gosu::KbA
 #			G.world = World.new
 #			G.player = Player.new
@@ -48,5 +45,6 @@ class Menu
 		@cursor.draw
 		G.font.draw_rel "Press 'A' to start", 400, 300, 0, 0.5, 0.5, 2, 2, 0xff000000
 		@btn.draw
+		@txt.draw
 	end
 end
