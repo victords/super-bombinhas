@@ -1,4 +1,4 @@
-require './game_object'
+require_relative 'lib/game_object'
 
 class Bomb < GameObject
 	attr_reader :facing_right
@@ -141,7 +141,7 @@ class Bomb < GameObject
 	def draw map
 		super map
 		if @will_explode
-			G.font.draw_rel Res.text(:count_down), 400, 200, 0, 0.5, 0.5, 1, 1, 0xff000000 if @explosion_counter > 6
+			G.font.draw_rel G.text(:count_down), 400, 200, 0, 0.5, 0.5, 1, 1, 0xff000000 if @explosion_counter > 6
 			G.font.draw_rel @explosion_counter.to_s, 400, 220, 0, 0.5, 0.5, 1, 1, 0xff000000
 		end
 		@explosion.draw map if @exploding

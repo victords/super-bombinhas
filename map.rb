@@ -1,4 +1,4 @@
-require './global.rb'
+require_relative 'lib/global'
 
 class Map
 	attr_reader :tile_size, :size, :cam

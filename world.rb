@@ -1,6 +1,6 @@
 require './stage'
-require './game_object'
-require './text'
+require_relative 'lib/text'
+require_relative 'lib/game_object'
 
 class MapStage < Sprite
 	attr_reader :name
@@ -16,7 +16,7 @@ class MapStage < Sprite
 		@color = 0x00ffffff | (@alpha << 24)
 		@glows = glows
 		
-		@name = Res.text("stage_#{world}_#{num}")
+		@name = G.text("stage_#{world}_#{num}")
 		@world = world
 		@num = num
 	end
@@ -51,7 +51,7 @@ end
 class World
 	def initialize
 		@num = 1
-		@name = Res.text "world_#{@num}"
+		@name = G.text "world_#{@num}"
 		
 		@water = Sprite.new 0, 0, :other_water, 2, 2
 		@parchment = Res.img :other_parchment

@@ -1,5 +1,4 @@
 require './global'
-require './ramp'
 require './elements'
 require './enemies'
 require './items'

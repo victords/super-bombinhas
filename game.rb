@@ -4,32 +4,28 @@
 require 'gosu'
 require './menu'
 
-class Game < Gosu::Window
-	attr_reader :frame
-	
+class SBGame < Gosu::Window
 	def initialize
 		super C::ScreenWidth, C::ScreenHeight, false
 		self.caption = "Super Bombinhas"
 		
-		Res.initialize
-		KB.initialize
-		Mouse.initialize
-		G.initialize self
+		Game.initialize self, Vector.new(0, 0.9)
+		G.initialize
 		G.menu = Menu.new
 		
-		@frame = 0
+#		@frame = 0
 	end
 	
 	def needs_cursor?
-		true
+		G.state != :main
 	end
 	
 	def update
-		@frame += 1
-		if @frame == 60
-			puts G.window.send(:fps)
-			@frame = 0
-		end
+#		@frame += 1
+#		if @frame == 60
+#			puts @fps
+#			@frame = 0
+#		end
 		KB.update
 		Mouse.update
 		
@@ -57,5 +53,11 @@ class Game < Gosu::Window
 	end
 end
 
-game = Game.new
+class AGL::GameObject
+	def dead?
+		@dead
+	end
+end
+
+game = SBGame.new
 game.show

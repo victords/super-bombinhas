@@ -1,4 +1,5 @@
-require './game_object'
+require_relative 'lib/game_object'
+include AGL
 
 ############################### classes abstratas ##############################
 
@@ -113,7 +114,7 @@ class Bombie < GameObject
 			                   795, 495, 0x80abcdef,
 			                   795, 595, 0x80abcdef,
 			                   5, 595, 0x80abcdef, 0
-			G.font.draw Res.text(@msg_id), 10, 500, 0, 1, 1, 0xff000000
+			G.font.draw G.text(@msg_id), 10, 500, 0, 1, 1, 0xff000000
 		end
 	end
 end
