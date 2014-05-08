@@ -1,6 +1,6 @@
 require './world'
 require './player'
-require './forms'
+require_relative 'lib/forms'
 
 class Menu
 	def initialize
@@ -11,13 +11,13 @@ class Menu
 		@cursor_timer = 0
 		@cursor_state = 0
 		
-		@btn = AGL::Button.new(300, 350, "Play", :other_button1) do
+		@btn = AGL::Button.new(300, 350, G.font, "Play", :other_button1) do
 			G.world = World.new
 			G.player = Player.new
 			G.state = :map
 		end
 		
-		@txt = AGL::TextField.new 10, 10, :other_field1
+		@txt = AGL::TextField.new 10, 10, G.font, :other_field1
 	end
 	
 	def update
