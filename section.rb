@@ -34,8 +34,10 @@ class Section
 		@tileset_num = s[5].to_i
 		@tileset = Res.tileset s[5]
 		@map = Map.new C::TileSize, C::TileSize, t_x_count, t_y_count
-		@map.set_camera 4500, 1200
+		# @map.set_camera 4500, 1200
 		@size = @map.get_absolute_size
+		
+		@bgm = Gosu::Song.new G.window, "data/sound/bgm/01.ogg"
 	end
 	
 	def set_elements s, entrances, switches
@@ -200,6 +202,8 @@ class Section
 		@elements << (@bomb = G.player.bomb)
 		@margin = Vector.new((C::ScreenWidth - @bomb.w) / 2, (C::ScreenHeight - @bomb.h) / 2)
 		do_warp bomb_x, bomb_y
+		
+		@bgm.play true
 	end
 	
 	def do_warp x, y
