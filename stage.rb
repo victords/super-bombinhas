@@ -1,4 +1,4 @@
-require './section'
+require_relative 'section'
 
 class Stage
 	attr_reader :switches

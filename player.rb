@@ -1,4 +1,4 @@
-require './bomb'
+require_relative 'bomb'
 
 class Player
 	attr_reader :bomb

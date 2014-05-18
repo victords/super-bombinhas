@@ -1,5 +1,5 @@
-require './world'
-require './player'
+require_relative 'world'
+require_relative 'player'
 require_relative 'lib/forms'
 
 class Menu

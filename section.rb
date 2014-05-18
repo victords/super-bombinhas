@@ -1,8 +1,8 @@
-require './global'
-require './elements'
-require './enemies'
-require './items'
-require './map'
+require_relative 'global'
+require_relative 'elements'
+require_relative 'enemies'
+require_relative 'items'
+require_relative 'lib/map'
 
 Tile = Struct.new :back, :fore, :pass, :wall, :hide, :broken
 

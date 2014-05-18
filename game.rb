@@ -2,7 +2,7 @@
 #encoding: UTF-8
 
 require 'gosu'
-require './menu'
+require_relative 'menu'
 
 class SBGame < Gosu::Window
 	def initialize
