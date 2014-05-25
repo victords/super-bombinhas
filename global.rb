@@ -1,5 +1,5 @@
 require 'joystick'
-require_relative 'lib/global'
+require 'minigl'
 
 module C
 	TileSize = 32

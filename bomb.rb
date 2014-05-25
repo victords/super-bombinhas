@@ -1,4 +1,4 @@
-require_relative 'lib/game_object'
+require 'minigl'
 
 class Bomb < GameObject
 	attr_reader :facing_right

@@ -1,6 +1,6 @@
+require 'minigl'
 require_relative 'world'
 require_relative 'player'
-require_relative 'lib/forms'
 
 class Menu
 	def initialize

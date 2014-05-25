@@ -1,6 +1,5 @@
+require 'minigl'
 require_relative 'stage'
-require_relative 'lib/text'
-require_relative 'lib/game_object'
 
 class MapStage < Sprite
 	attr_reader :name

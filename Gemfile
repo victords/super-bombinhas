@@ -3,3 +3,4 @@ ruby '2.0.0'
 
 gem 'gosu'
 gem 'joystick'
+gem 'minigl'

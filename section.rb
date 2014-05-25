@@ -1,8 +1,8 @@
+require 'minigl'
 require_relative 'global'
 require_relative 'elements'
 require_relative 'enemies'
 require_relative 'items'
-require_relative 'lib/map'
 
 Tile = Struct.new :back, :fore, :pass, :wall, :hide, :broken
 
@@ -304,7 +304,7 @@ class Section
 		
 		@map.set_camera @bomb.x - @margin.x, @bomb.y - @margin.y
 		
-		@reload = true if G.player.dead? or KB.key_pressed? Gosu::KbEscape
+		@reload = true if G.player.dead? or KB.key_pressed? Gosu::KbBackspace
 	end
 	
 	def draw

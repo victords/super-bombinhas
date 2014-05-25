@@ -1,4 +1,4 @@
-require_relative 'lib/game_object'
+require 'minigl'
 include AGL
 
 ############################### classes abstratas ##############################

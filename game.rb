@@ -1,12 +1,12 @@
 #!/home/victor/.rvm/rubies/ruby-2.0.0-p353/bin/ruby
 #encoding: UTF-8
 
-require 'gosu'
 require_relative 'menu'
 
 class SBGame < Gosu::Window
 	def initialize
-		super C::ScreenWidth, C::ScreenHeight, false
+		super 1366, 768, true
+		#super C::ScreenWidth, C::ScreenHeight, true
 		self.caption = "Super Bombinhas"
 		
 		Game.initialize self, Vector.new(0, 0.9)
@@ -28,6 +28,8 @@ class SBGame < Gosu::Window
 #		end
 		KB.update
 		Mouse.update
+		
+		close if KB.key_pressed? Gosu::KbEscape
 		
 		if G.state == :presentation
 			
