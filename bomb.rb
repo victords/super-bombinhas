@@ -2,33 +2,33 @@ require 'minigl'
 
 class Bomb < GameObject
 	attr_reader :facing_right
-	
+
 	def initialize type
 		t_img_gap = -10
 		case type
-		when :azul then @name = "Bomba Azul"; img = :sprite_BombaAzul; l_img_gap = -5; r_img_gap = -5
-		when :vermelha then @name = "Bomba Vermelha"; img = :sprite_BombaVermelha; l_img_gap = -4; r_img_gap = -6
-		when :amarela then @name = "Bomba Amarela"; img = :sprite_BombaAmarela; l_img_gap = -6; r_img_gap = -14
-		when :verde then @name = "Bomba Verde"; img = :sprite_BombaVerde; l_img_gap = -6; r_img_gap = -14
-		when :aldan then @name = "Aldan"; img = :sprite_Aldan; l_img_gap = -6; r_img_gap = -14; t_img_gap = -26
+		when :azul then @name = 'Bomba Azul'; img = :sprite_BombaAzul; l_img_gap = -5; r_img_gap = -5
+		when :vermelha then @name = 'Bomba Vermelha'; img = :sprite_BombaVermelha; l_img_gap = -4; r_img_gap = -6
+		when :amarela then @name = 'Bomba Amarela'; img = :sprite_BombaAmarela; l_img_gap = -6; r_img_gap = -14
+		when :verde then @name = 'Bomba Verde'; img = :sprite_BombaVerde; l_img_gap = -6; r_img_gap = -14
+		when :aldan then @name = 'Aldan'; img = :sprite_Aldan; l_img_gap = -6; r_img_gap = -14; t_img_gap = -26
 		end
-		
+
 		super -1000, -1000, 20, 30, img, Vector.new(r_img_gap, t_img_gap), 5, 2
 		@max_speed.x = 5
 		@indices = [0, 1, 0, 2]
 		@facing_right = true
 		@ready = true
 		@type = type
-		
+
 		@explosion = Sprite.new 0, 0, :fx_Explosion, 2, 2
 		@explosion_timer = 0
 		@explosion_counter = 10
 	end
-	
+
 	def update section
 		G.player.change_item if KB.key_pressed? Gosu::KbLeftShift or KB.key_pressed? Gosu::KbRightShift
 		G.player.use_item section if KB.key_pressed? Gosu::KbA
-		
+
 		forces = Vector.new 0, 0
 		if @exploding
 			@explosion.animate [0, 1, 2, 3], 5
@@ -51,7 +51,7 @@ class Bomb < GameObject
 				forces.x -= 0.15 * @speed.x
 			end
 			if KB.key_down? Gosu::KbRight
-				set_direction :right if not @facing_right
+				set_direction :right unless @facing_right
 				forces.x += @bottom ? 0.15 : 0.05
 			elsif @speed.x > 0
 				forces.x -= 0.15 * @speed.x
@@ -73,7 +73,7 @@ class Bomb < GameObject
 		end
 		move forces, section.get_obstacles(@x, @y), section.ramps
 	end
-	
+
 	def set_direction dir
 		if dir == :left
 			@facing_right = false
@@ -85,7 +85,7 @@ class Bomb < GameObject
 			set_animation 0
 		end
 	end
-	
+
 	def do_warp x, y
 		@speed.x = @speed.y = 0
 		@x = x + 6; @y = y + 2
@@ -93,13 +93,13 @@ class Bomb < GameObject
 		@indices = [0, 1, 0, 2]
 		set_animation 0
 	end
-	
+
 	def set_exploding
 		@will_explode = true
 		@explosion_timer = 0
 		@explosion_counter = 10
 	end
-	
+
 	def explode
 		@will_explode = false
 		@exploding = true
@@ -108,36 +108,36 @@ class Bomb < GameObject
 		@explosion.y = @y - 75
 		set_animation (@facing_right ? 4 : 9)
 	end
-	
+
 	def explode? obj
-		return false if not @exploding
+		return false unless @exploding
 		radius = @type == :verde ? 120 : 90
 		c_x = @x + @w / 2; c_y = @y + @h / 2
 		o_c_x = obj.x + obj.w / 2; o_c_y = obj.y + obj.h / 2
 		sq_dist = (o_c_x - c_x)**2 + (o_c_y - c_y)**2
 		sq_dist <= radius**2
 	end
-	
+
 	def collide? obj
 		bounds.intersects obj.bounds
 	end
-	
+
 	def over? obj
 		@x + @w > obj.x and obj.x + obj.w > @x and
-			@y + @h > obj.y and @y < obj.y - C::PlayerOverTolerance
+			@y + @h > obj.y and @y < obj.y - C::PLAYER_OVER_TOLERANCE
 	end
-	
+
 	def reset
 		@will_explode = false
 		@exploding = false
 		@speed.x = @speed.y = 0
 		set_direction :right
 	end
-	
+
 	def is_visible map
 		true
 	end
-	
+
 	def draw map
 		super map
 		if @will_explode

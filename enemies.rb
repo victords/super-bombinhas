@@ -3,25 +3,25 @@
 class Enemy < GameObject
 	def initialize x, y, w, h, img, img_gap, sprite_cols, sprite_rows, indices, interval, score, hp = 1
 		super x, y, w, h, img, img_gap, sprite_cols, sprite_rows
-		
+
 		@indices = indices
 		@interval = interval
 		@score = score
 		@hp = hp
 		@timer = 0
-		
+
 		@active_bounds = Rectangle.new x + img_gap.x, y + img_gap.y, @img[0].width, @img[0].height
 	end
-	
+
 	def set_active_bounds section
 		t = (@y + @img_gap.y).floor
 		r = (@x + @img_gap.x + @img[0].width).ceil
 		b = (@y + @img_gap.y + @img[0].height).ceil
 		l = (@x + @img_gap.x).floor
-		
+
 		if t > section.size.y; @dead = true
 		elsif r < 0; @dead = true
-		elsif b < C::TopMargin; @dead = true #para sumir por cima, a margem deve ser maior
+		elsif b < C::TOP_MARGIN; @dead = true #para sumir por cima, a margem deve ser maior
 		elsif l > section.size.x; @dead = true
 		else
 			if t < @active_bounds.y
@@ -36,11 +36,11 @@ class Enemy < GameObject
 			end
 		end
 	end
-	
+
 	def update section
-		if G.player.bomb.over? self			
+		if G.player.bomb.over? self
 			hit_by_bomb unless @invulnerable
-			G.player.bomb.stored_forces.y -= C::BounceForce
+			G.player.bomb.stored_forces.y -= C::BOUNCE_FORCE
 			G.player.bomb.stored_forces.x -= @speed.x
 		elsif G.player.bomb.explode? self
 			hit_by_explosion unless @invulnerable
@@ -49,29 +49,29 @@ class Enemy < GameObject
 		elsif G.player.bomb.collide? self
 			G.player.die
 		end
-		
+
 		return if @dead
-		
+
 		if @invulnerable
 			@timer += 1
-			return_vulnerable if @timer == C::InvulnerableTime
+			return_vulnerable if @timer == C::INVULNERABLE_TIME
 		end
-		
+
 		yield if block_given?
-		
+
 		set_active_bounds section
 		animate @indices, @interval
 	end
-	
+
 	def hit_by_bomb
 		hit
 	end
-	
+
 	def hit_by_explosion
 		G.player.score += @score
 		@dead = true
 	end
-	
+
 	def hit
 		@hp -= 1
 		if @hp == 0
@@ -81,11 +81,11 @@ class Enemy < GameObject
 			get_invulnerable
 		end
 	end
-	
+
 	def get_invulnerable
 		@invulnerable = true
 	end
-	
+
 	def return_vulnerable
 		@invulnerable = false
 		@timer = 0
@@ -95,13 +95,13 @@ end
 class FloorEnemy < Enemy
 	def initialize x, y, args, w, h, img, img_gap, sprite_cols, sprite_rows, indices, interval, score, hp = 1, speed = 3
 		super x, y, w, h, img, img_gap, sprite_cols, sprite_rows, indices, interval, score, hp
-		
+
 		@dont_fall = args.nil?
 		@speed_m = speed
 		@forces = Vector.new -@speed_m, 0
 		@facing_right = false
 	end
-	
+
 	def update section
 		if @invulnerable
 			super section
@@ -115,7 +115,7 @@ class FloorEnemy < Enemy
 					set_direction :left
 				elsif @dont_fall
 					if @facing_right
-						set_direction :left if not section.obstacle_at? @x + @w, @y + @h
+						set_direction :left unless section.obstacle_at? @x + @w, @y + @h
 					elsif not section.obstacle_at? @x - 1, @y + @h
 						set_direction :right
 					end
@@ -123,7 +123,7 @@ class FloorEnemy < Enemy
 			end
 		end
 	end
-	
+
 	def set_direction dir
 		@speed.x = 0
 		if dir == :left
@@ -147,7 +147,7 @@ class Wheeliam < FloorEnemy
 	def initialize x, y, args, section
 		super x, y, args, 32, 32, :sprite_Wheeliam, Vector.new(-4, -3), 4, 1, [0, 1], 8, 100
 	end
-	
+
 	def change_animation dir
 		if dir == :left
 			@indices[0] = 0; @indices[1] = 1
@@ -162,12 +162,12 @@ end
 class Sprinny < Enemy
 	def initialize x, y, args, section
 		super x + 3, y - 4, 26, 36, :sprite_Sprinny, Vector.new(-2, -5), 6, 1, [0], 5, 350
-		
+
 		@leaps = 1000
 		@max_leaps = args.to_i
 		@facing_right = true
 	end
-	
+
 	def update section
 		super section do
 			forces = Vector.new 0, 0
@@ -199,7 +199,7 @@ class Fureel < FloorEnemy
 	def initialize x, y, args, section
 		super x - 4, y - 4, args, 40, 36, :sprite_Fureel, Vector.new(-10, -3), 6, 1, [0, 1], 8, 300, 2, 4
 	end
-	
+
 	def change_animation dir
 		if dir == :left
 			@indices[0] = 0; @indices[1] = 1
@@ -209,13 +209,13 @@ class Fureel < FloorEnemy
 			set_animation 3
 		end
 	end
-	
+
 	def get_invulnerable
 		@invulnerable = true
 		if @facing_right; @indices = [5]; set_animation 5
 		else; @indices = [2]; set_animation 2; end
 	end
-	
+
 	def return_vulnerable
 		@invulnerable = false
 		@timer = 0
@@ -241,13 +241,13 @@ class Yaw < Enemy
 		]
 		@cur_point = 0
 	end
-	
+
 	def update section
 		super section do
 			@cur_point = cycle @points, @cur_point, 3
 		end
 	end
-	
+
 	def hit_by_bomb
 		G.player.die
 	end
@@ -256,19 +256,19 @@ end
 class Ekips < GameObject
 	def initialize x, y, args, section
 		super x + 10, y - 10, 12, 25, :sprite_Ekips, Vector.new(-42, -8), 2, 3
-		
+
 		@act_timer = 0
 		@active_bounds = Rectangle.new x - 32, y - 18, 96, 50
 		@attack_bounds = Rectangle.new x - 32, y + 10, 96, 12
 	end
-	
+
 	def update section
 		if section.projectile_hit? self and not @attacking
 			G.player.score += 240
 			@dead = true
 			return
 		end
-		
+
 		if G.player.bomb.over? self
 			if @attacking
 				G.player.score += 240
@@ -282,7 +282,7 @@ class Ekips < GameObject
 		elsif G.player.bomb.collide? self
 			G.player.die
 		end
-		
+
 		@act_timer += 1
 		if @preparing and @act_timer >= 60
 			animate [2, 3, 4, 5], 5
@@ -316,17 +316,17 @@ class Faller < GameObject
 		@active_bounds = Rectangle.new x, @up.y, 32, (@range + 1) * 32
 		@passable = true
 		section.obstacles << self
-		
+
 		@bottom = Block.new x, y + 20, 32, 12, false
 		@bottom_img = Res.img :sprite_Faller2
 		section.obstacles << @bottom
-		
+
 		@indices = [0, 1, 2, 3, 2, 1]
 		@interval = 8
 		@step = 0
 		@act_timer = 0
 	end
-	
+
 	def update section
 		if G.player.bomb.explode? self
 			G.player.score += 300
@@ -339,9 +339,9 @@ class Faller < GameObject
 		elsif G.player.bomb.collide? self
 			G.player.die
 		end
-		
+
 		animate @indices, @interval
-		
+
 		if @step == 0 or @step == 2 # parado
 			@act_timer += 1
 			if @act_timer >= 90
@@ -357,7 +357,7 @@ class Faller < GameObject
 			@step = 0 if @speed.y == 0
 		end
 	end
-	
+
 	def draw map
 		@img[@img_index].draw @x - map.cam.x, @y - map.cam.y, 0
 		@bottom_img.draw @x - map.cam.x, @start.y + 15 - map.cam.y, 0
@@ -369,22 +369,22 @@ class Turner < Enemy
 		super x + 2, y - 7, 60, 39, :sprite_Turner, Vector.new(-2, -25), 3, 2, [0, 1, 2, 1], 8, 300
 		@harmful = true
 		@passable = true
-		
-		@aim1 = Vector.new(@x, @y)		
+
+		@aim1 = Vector.new(@x, @y)
 		while not section.obstacle_at? @aim1.x - 3, @aim1.y and
 			not section.obstacle_at? @aim1.x - 3, @aim1.y + 8
-			@aim1.x -= C::TileSize
+			@aim1.x -= C::TILE_SIZE
 		end
-		
+
 		@aim2 = Vector.new(@x, @y)
 		while not section.obstacle_at? @aim2.x + 63, @aim2.y and
 			not section.obstacle_at? @aim2.x + 63, @aim2.y + 8
-			@aim2.x += C::TileSize
+			@aim2.x += C::TILE_SIZE
 		end
-		
+
 		@obst = section.obstacles
 	end
-	
+
 	def update section
 		@harm_bounds = Rectangle.new @x, @y - 23, 60, 62
 		super section do
@@ -408,14 +408,13 @@ class Turner < Enemy
 			end
 		end
 	end
-	
+
 	def hit_by_bomb
 	end
-	
+
 	def hit_by_explosion
 		G.player.score += @score
 		@obst.delete self unless @harmful
 		@dead = true
 	end
 end
-

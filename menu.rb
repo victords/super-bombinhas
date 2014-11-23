@@ -4,24 +4,24 @@ require_relative 'player'
 
 class Menu
 	def initialize
-		@bg = Res.img :bg_start1, true, false, ".jpg"
+		@bg = Res.img :bg_start1, true, false, '.jpg'
 		@title = Res.img :other_title, true
 		@cursor = Sprite.new 180, 288, :other_cursor, 4, 2
 		@cursor_indices = [0, 1, 2, 3, 4, 5, 6, 7]
 		@cursor_timer = 0
 		@cursor_state = 0
-		
-		@btn = AGL::Button.new(300, 350, G.font, "Play", :other_button1) do
+
+		@btn = AGL::Button.new(300, 350, G.font, 'Play', :other_button1) do
 			G.world = World.new
 			G.player = Player.new
 			G.state = :map
 		end
-		
+
 		@txt = AGL::TextField.new 10, 10, G.font, :other_field1
 	end
-	
+
 	def update
-		@btn.update		
+		@btn.update
 		@txt.update
 #		if KB.key_pressed? Gosu::KbA
 #			G.world = World.new
@@ -38,7 +38,7 @@ class Menu
 			@cursor_timer = 0
 		end
 	end
-	
+
 	def draw
 		@bg.draw 0, 0, 0
 		@title.draw 0, 0, 0

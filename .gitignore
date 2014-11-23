@@ -1,0 +1,3 @@
+data/save/*
+Gemfile.lock
+.idea/*
