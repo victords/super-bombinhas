@@ -15,6 +15,7 @@ class Bomb < GameObject
 
     super -1000, -1000, 20, 30, img, Vector.new(r_img_gap, t_img_gap), 5, 2
     @max_speed.x = 5
+    @max_speed.y = 30
     @indices = [0, 1, 0, 2]
     @facing_right = true
     @ready = true

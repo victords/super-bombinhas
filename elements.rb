@@ -4,8 +4,8 @@ include AGL
 ############################### classes abstratas ##############################
 
 class TwoStateObject < GameObject
-  def initialize x, y, w, h, img, img_gap, sprite_cols, sprite_rows,
-    change_interval, anim_interval, change_anim_interval, s1_indices, s2_indices, s1_s2_indices, s2_s1_indices, s2_first = false
+  def initialize(x, y, w, h, img, img_gap, sprite_cols, sprite_rows,
+    change_interval, anim_interval, change_anim_interval, s1_indices, s2_indices, s1_s2_indices, s2_s1_indices, s2_first = false)
     super x, y, w, h, img, img_gap, sprite_cols, sprite_rows
 
     @timer = 0
@@ -21,7 +21,7 @@ class TwoStateObject < GameObject
     set_animation s2_indices[0] if s2_first
   end
 
-  def update section
+  def update(section)
     @timer += 1
     if @timer == @change_interval
       @state2 = (not @state2)
@@ -61,7 +61,7 @@ end
 ################################################################################
 
 class Bombie < GameObject
-  def initialize x, y, args, section
+  def initialize(x, y, args, section)
     super x, y, 32, 32, :sprite_Bombie, Vector.new(1, -2), 6, 1
     @msg_id = "msg#{args.to_i}".to_sym
     @balloon = Res.img :fx_Balloon1
@@ -73,7 +73,7 @@ class Bombie < GameObject
     @active_bounds = Rectangle.new x, y, 32, 32
   end
 
-  def update section
+  def update(section)
     if G.player.bomb.collide? self
       if not @facing_right and G.player.bomb.bounds.x > @x + @w / 2
         @facing_right = true
@@ -106,7 +106,7 @@ class Bombie < GameObject
     animate @indices, @interval if @speaking
   end
 
-  def draw map
+  def draw(map)
     super map
     @balloon.draw @x - map.cam.x, @y - map.cam.y - 32, 0 if @active
     if @speaking
@@ -120,7 +120,7 @@ class Bombie < GameObject
 end
 
 class Door < GameObject
-  def initialize x, y, args, section, switch
+  def initialize(x, y, args, section, switch)
     super x + 15, y + 63, 2, 1, :sprite_Door, Vector.new(-15, -63), 5, 1
     @id = args.to_i
     @locked = (switch[:state] != :taken and args.split(',').length == 2)
@@ -129,7 +129,7 @@ class Door < GameObject
     @lock = Res.img(:sprite_Lock) if @locked
   end
 
-  def update section
+  def update(section)
     collide = G.player.bomb.collide? self
     if @locked and collide
       section.locked_door = self
@@ -154,14 +154,14 @@ class Door < GameObject
     @lock = nil
   end
 
-  def draw map
+  def draw(map)
     super map
     @lock.draw(@x + 4 - map.cam.x, @y - 38 - map.cam.y, 0) if @lock
   end
 end
 
 class GunPowder < GameObject
-  def initialize x, y, args, section, switch
+  def initialize(x, y, args, section, switch)
     return if switch[:state] == :taken
     super x + 3, y + 19, 26, 13, :sprite_GunPowder, Vector.new(-2, -2)
     @life = 10
@@ -170,7 +170,7 @@ class GunPowder < GameObject
     @active_bounds = Rectangle.new x + 1, y + 17, 30, 15
   end
 
-  def update section
+  def update(section)
     if G.player.bomb.collide? self
       G.player.bomb.set_exploding
       G.stage.set_switch self
@@ -180,13 +180,13 @@ class GunPowder < GameObject
 end
 
 class Crack < GameObject
-  def initialize x, y, args, section, switch
+  def initialize(x, y, args, section, switch)
     super x + 32, y, 32, 32, :sprite_Crack
     @active_bounds = Rectangle.new x + 32, y, 32, 32
     @broken = switch[:state] == :taken
   end
 
-  def update section
+  def update(section)
     if @broken or G.player.bomb.explode? self
       i = (@x / C::TILE_SIZE).floor
       j = (@y / C::TILE_SIZE).floor
@@ -198,7 +198,7 @@ class Crack < GameObject
 end
 
 class Elevator < GameObject
-  def initialize x, y, args, section
+  def initialize(x, y, args, section)
     a = args.split(':')
     type = a[0].to_i
     case type
@@ -232,14 +232,14 @@ class Elevator < GameObject
     section.obstacles << self
   end
 
-  def update section
+  def update(section)
     obst = [G.player.bomb] #verificar...
     @cur_point = cycle @points, @cur_point, @speed_m, obst
   end
 end
 
 class SaveBombie < GameObject
-  def initialize x, y, args, section, switch
+  def initialize(x, y, args, section, switch)
     super x - 16, y, 64, 32, :sprite_Bombie2, Vector.new(-16, -26), 4, 2
     @id = args.to_i
     @active_bounds = Rectangle.new x - 32, y - 26, 96, 58
@@ -248,7 +248,7 @@ class SaveBombie < GameObject
     set_animation 1 if @saved
   end
 
-  def update section
+  def update(section)
     if not @saved and G.player.bomb.collide? self
       section.save_check_point @id, self
       @saved = true
@@ -261,7 +261,7 @@ class SaveBombie < GameObject
 end
 
 class Pin < TwoStateObject
-  def initialize x, y, args, section
+  def initialize(x, y, args, section)
     super x, y, 32, 32, :sprite_Pin, Vector.new(0, 0), 5, 1,
       60, 0, 3, [0], [4], [1, 2, 3, 4, 0], [3, 2, 1, 0, 4], (not args.nil?)
 
@@ -269,11 +269,11 @@ class Pin < TwoStateObject
     section.obstacles << Block.new(x, y, 32, 32, true) if args
   end
 
-  def s1_to_s2 section
+  def s1_to_s2(section)
     section.obstacles << Block.new(@x, @y, @w, @h, true)
   end
 
-  def s2_to_s1 section
+  def s2_to_s1(section)
     section.obstacles.each do |o|
       if o.x == @x and o.y == @y
         section.obstacles.delete o
@@ -284,18 +284,18 @@ class Pin < TwoStateObject
 end
 
 class Spikes < TwoStateObject
-  def initialize x, y, args, section
+  def initialize(x, y, args, section)
     super x, y, 32, 32, :sprite_Spikes, Vector.new(0, 0), 5, 1,
       120, 0, 2, [0], [4], [1, 2, 3, 4, 0], [3, 2, 1, 0, 4]
 
     @active_bounds = Rectangle.new x, y, 32, 33
   end
 
-  def s1_to_s2 section
+  def s1_to_s2(section)
     section.obstacles << Block.new(@x, @y + 30, @w, @h, false)
   end
 
-  def s2_to_s1 section
+  def s2_to_s1(section)
     section.obstacles.each do |o|
       if o.x == @x and o.y == @y + 30
         section.obstacles.delete o
@@ -304,7 +304,7 @@ class Spikes < TwoStateObject
     end
   end
 
-  def update section
+  def update(section)
     super section
 
     if G.player.bomb.collide? self and @state2
@@ -316,7 +316,7 @@ end
 class MovingWall < GameObject
   attr_reader :id
 
-  def initialize x, y, args, section
+  def initialize(x, y, args, section)
     super x + 2, y, 28, 32, :sprite_MovingWall, Vector.new(0, 0), 1, 2
     @id = args.to_i
     until section.obstacle_at? @x, @y - 1
@@ -327,7 +327,7 @@ class MovingWall < GameObject
     section.obstacles << self
   end
 
-  def update section
+  def update(section)
     if @opening
       @timer += 1
       if @timer == 30
@@ -347,7 +347,7 @@ class MovingWall < GameObject
     @timer = 0
   end
 
-  def draw map
+  def draw(map)
     y = 16
     @img[0].draw @x - map.cam.x, @y - map.cam.y, 0
     while y < @h
@@ -358,7 +358,7 @@ class MovingWall < GameObject
 end
 
 class Ball < GameObject
-  def initialize x, y, args, section, switch
+  def initialize(x, y, args, section, switch)
     super x, y, 32, 32, :sprite_Ball
     if switch[:state] == :taken
       @x = switch[:extra].x
@@ -371,7 +371,7 @@ class Ball < GameObject
     @active_bounds = Rectangle.new @x, @y, @w, @h
   end
 
-  def update section
+  def update(section)
     if @set
       @x += (0.1 * (@rec.x - @x)) if @x.round(2) != @rec.x
     else
@@ -403,7 +403,7 @@ class Ball < GameObject
     end
   end
 
-  def draw map
+  def draw(map)
     @img[0].draw_rot @x + (@w / 2) - map.cam.x, @y + (@h / 2) - map.cam.y, 0, @rotation
   end
 end
@@ -411,14 +411,14 @@ end
 class BallReceptor < GameObject
   attr_reader :id
 
-  def initialize x, y, args, section, switch
+  def initialize(x, y, args, section, switch)
     super x, y + 31, 32, 1, :sprite_BallReceptor, Vector.new(0, -8), 1, 2
     @id = args.to_i
     @will_set = switch[:state] == :taken
     @active_bounds = Rectangle.new x, y + 23, 32, 13
   end
 
-  def update section
+  def update(section)
     if @will_set
       section.open_wall @id
       @img_index = 1
@@ -426,7 +426,7 @@ class BallReceptor < GameObject
     end
   end
 
-  def set section
+  def set(section)
     G.stage.set_switch self
     section.open_wall @id
     @img_index = 1
@@ -434,7 +434,7 @@ class BallReceptor < GameObject
 end
 
 class HideTile
-  def initialize i, j, group, tiles, num
+  def initialize(i, j, group, tiles, num)
     @state = 0
     @alpha = 0xff
     @color = 0xffffffff
@@ -446,7 +446,7 @@ class HideTile
     @img = Res.imgs "sprite_ForeWall#{num}".to_sym, 5, 1
   end
 
-  def check_tile i, j, tiles, dir
+  def check_tile(i, j, tiles, dir)
     return -1 if tiles[i].nil? or tiles[i][j].nil?
     return tiles[i][j].wall if tiles[i][j].hide < 0
     return 0 if tiles[i][j].hide == @group
@@ -467,7 +467,7 @@ class HideTile
     0
   end
 
-  def update section
+  def update(section)
     will_show = false
     @points.each do |p|
       rect = Rectangle.new p[:x], p[:y], C::TILE_SIZE, C::TILE_SIZE
@@ -504,11 +504,11 @@ class HideTile
     end
   end
 
-  def is_visible map
+  def is_visible(map)
     true
   end
 
-  def draw map
+  def draw(map)
     @points.each do |p|
       @img[p[:img]].draw p[:x] - map.cam.x, p[:y] - map.cam.y, 0, 1, 1, @color
     end
@@ -516,7 +516,7 @@ class HideTile
 end
 
 class Projectile < GameObject
-  def initialize x, y, type, angle
+  def initialize(x, y, type, angle)
     case type
     when 1 then w = 20; h = 12; img = :sprite_Projectile1; x_g = -2; y_g = -2; cols = 3; rows = 1; @speed_m = 3
     end
@@ -528,7 +528,7 @@ class Projectile < GameObject
     puts angle
   end
 
-  def update section
+  def update(section)
     move_free @aim, @speed_m
 
     t = (@y + @img_gap.y).floor
@@ -542,7 +542,61 @@ class Projectile < GameObject
     end
   end
 
-  def draw map
+  def draw(map)
     @img[@img_index].draw_rot @x + (@w / 2) - map.cam.x, @y + (@h / 2) - map.cam.y, 0, (@angle * 180 / Math::PI)
+  end
+end
+
+class Spring < GameObject
+  def initialize(x, y, args, section)
+    super x, y, 32, 1, :sprite_Spring, Vector.new(-2, -16), 3, 2
+    @active_bounds = Rectangle.new x, y - 16, 32, 48
+    @start_y = y
+    @state = 0
+    @timer = 0
+    @indices = [0, 4, 4, 5, 0, 5, 0, 5, 0, 5]
+    @passable = true
+    section.obstacles << self
+  end
+
+  def update(section)
+    if G.player.bomb.bottom == self
+      reset if @state == 4
+      @timer += 1
+      if @timer == 10
+        case @state
+          when 0 then @y += 8; @img_gap.y -= 8; G.player.bomb.y += 8
+          when 1 then @y += 6; @img_gap.y -= 6; G.player.bomb.y += 6
+          when 2 then @y += 4; @img_gap.y -= 4; G.player.bomb.y += 4
+        end
+        @state += 1
+        if @state == 4
+          G.player.bomb.stored_forces.y = -18
+        else
+          set_animation @state
+        end
+        @timer = 0
+      end
+    elsif @state > 0 and @state < 4
+      reset
+    end
+
+    if @state == 4
+      animate @indices, 7
+      @timer += 1
+      if @timer == 70
+        reset
+      elsif @timer == 7
+        @y = @start_y
+        @img_gap.y = -16
+      end
+    end
+  end
+
+  def reset
+    set_animation 0
+    @state = @timer = 0
+    @y = @start_y
+    @img_gap.y = -16
   end
 end

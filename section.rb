@@ -111,7 +111,7 @@ class Section
       when  2 then FireRock
       when  3 then Bombie
       when  4 then Sprinny
-      ####  5      Sprinny dois pulos
+      when  5 then Spring
       ####  6      Sprinny três pulos
       when  7 then Life
       when  8 then Key
