@@ -4,7 +4,7 @@ require_relative 'stage'
 class MapStage
   attr_reader :name, :x, :y
 
-  def initialize world, num, x, y, img, glows = true
+  def initialize(world, num, x, y, img, glows = true)
     @x = x
     @y = y
     @img = Res.img "icon_#{img}"
@@ -55,10 +55,10 @@ class World
     @num = 1
     @name = G.text "world_#{@num}"
 
-    @water = Sprite.new 0, 0, :other_water, 2, 2
-    @parchment = Res.img :other_parchment
-    @mark = Res.img :other_mark
-    @map = Res.img :other_world1
+    @water = Sprite.new 0, 0, :ui_water, 2, 2
+    @parchment = Res.img :ui_parchment
+    @mark = Res.img :ui_mark
+    @map = Res.img :ui_world1
 
     @stages = []
     File.open("data/stage/#{@num}/world").each_with_index do |l, i|
