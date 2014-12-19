@@ -3,42 +3,94 @@ require_relative 'world'
 require_relative 'player'
 include AGL
 
+class MenuButton < Button
+  def initialize(y, text, &action)
+    super 306, y, G.font, text, :ui_button1, 0, 0x808080, true, false, 0, 7, &action
+  end
+end
+
+class MenuText
+  def initialize(text, x, y, width = 760, mode = :justified)
+    @text = text
+    @x = x
+    @y = y
+    @width = width
+    @mode = mode
+    @writer = TextHelper.new G.font, 5
+  end
+
+  def draw
+    @writer.write_breaking(@text, @x, @y, @width, @mode)
+  end
+end
+
 class Menu
   def initialize
     @bg = Res.img :bg_start1, true, false, '.jpg'
     @title = Res.img :ui_title, true
 
-    @btns = [
-      Button.new(306, 320, G.font, 'Play', :ui_button1, 0, 0x808080, true, false, 0, 7) {
+    @btns = [[
+      MenuButton.new(295, 'Play') {
+        set_button_group 1
+      },
+      MenuButton.new(345, 'Options') {
+        puts 'options'
+      },
+      MenuButton.new(395, 'Credits') {
+        set_button_group 2
+      },
+      MenuButton.new(445, 'Exit') {
+        exit
+      }
+    ], [
+      MenuButton.new(320, 'New Game') {
         G.world = World.new
         G.player = Player.new
         G.state = :map
       },
-      Button.new(306, 370, G.font, 'Options', :ui_button1, 0, 0x808080, true, false, 0, 7) {
-        puts 'options'
+      MenuButton.new(370, 'Continue') {
+        puts 'continue'
       },
-      Button.new(306, 420, G.font, 'Exit', :ui_button1, 0, 0x808080, true, false, 0, 7) {
-        exit
+      MenuButton.new(420, 'Back') {
+        set_button_group 0
       }
-    ]
-    # @btn.enabled = false
+    ], [
+      MenuButton.new(550, 'Back') {
+        set_button_group 0
+      }
+    ]]
+    @texts = [[
+    ], [
+    ], [
+      MenuText.new(
+        "Texto dos créditos aqui. Texto bem longo, podendo quebrar linha. "\
+        "Texto bem longo, podendo quebrar linha. Pode também ter quebras de "\
+        "linha explícitas.\nAqui tem uma quebra de linha explícita.\n\n"\
+        "Duas quebras seguidas.", 400, 200, 600, :center)
+    ]]
     @highlight = Sprite.new(0, 0, :ui_highlight1, 1, 3)
+
+    set_button_group 0
+  end
+
+  def set_button_group(group)
+    @cur_btn_group = group
     @cur_btn = 0
     set_highlight_position
   end
 
   def set_highlight_position
-    @highlight.x = @btns[@cur_btn].instance_eval('@x') + 3
-    @highlight.y = @btns[@cur_btn].instance_eval('@y') - 5
+    @highlight.x = @btns[@cur_btn_group][@cur_btn].instance_eval('@x') + 3
+    @highlight.y = @btns[@cur_btn_group][@cur_btn].instance_eval('@y') - 5
   end
 
   def update
     mouse_moved = (Mouse.x != @mouse_prev_x or Mouse.y != @mouse_prev_y)
 
-    @btns.each_with_index do |b, i|
+    @btns[@cur_btn_group].each_with_index do |b, i|
       b.update
       state = b.instance_eval('@state')
-      if mouse_moved and (state == :over or state == :down)
+      if state == :down or (mouse_moved and state == :over)
         @cur_btn = i
         set_highlight_position
       end
@@ -47,14 +99,14 @@ class Menu
 
     if KB.key_pressed? Gosu::KbDown
       @cur_btn += 1
-      @cur_btn = 0 if @cur_btn == @btns.length
+      @cur_btn = 0 if @cur_btn == @btns[@cur_btn_group].length
       set_highlight_position
     elsif KB.key_pressed? Gosu::KbUp
       @cur_btn -= 1
-      @cur_btn = @btns.length - 1 if @cur_btn < 0
+      @cur_btn = @btns[@cur_btn_group].length - 1 if @cur_btn < 0
       set_highlight_position
     elsif KB.key_pressed?(Gosu::KbReturn) or KB.key_pressed?(Gosu::KbSpace)
-      @btns[@cur_btn].click
+      @btns[@cur_btn_group][@cur_btn].click
     end
 
     @mouse_prev_x = Mouse.x
@@ -64,8 +116,11 @@ class Menu
   def draw
     @bg.draw 0, 0, 0
     @title.draw 0, 0, 0
-    @btns.each do |b|
+    @btns[@cur_btn_group].each do |b|
       b.draw
+    end
+    @texts[@cur_btn_group].each do |t|
+      t.draw
     end
     @highlight.draw
   end

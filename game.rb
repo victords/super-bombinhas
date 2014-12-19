@@ -65,5 +65,4 @@ class AGL::GameObject
   end
 end
 
-game = SBGame.new
-game.show
+SBGame.new.show
