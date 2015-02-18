@@ -27,8 +27,8 @@ class Bomb < GameObject
   end
 
   def update section
-    G.player.change_item if KB.key_pressed? Gosu::KbLeftShift or KB.key_pressed? Gosu::KbRightShift
-    G.player.use_item section if KB.key_pressed? Gosu::KbA
+    SB.player.change_item if KB.key_pressed? Gosu::KbLeftShift or KB.key_pressed? Gosu::KbRightShift
+    SB.player.use_item section if KB.key_pressed? Gosu::KbA
 
     forces = Vector.new 0, 0
     if @exploding
@@ -142,8 +142,8 @@ class Bomb < GameObject
   def draw map
     super map
     if @will_explode
-      G.font.draw_rel G.text(:count_down), 400, 200, 0, 0.5, 0.5, 1, 1, 0xff000000 if @explosion_counter > 6
-      G.font.draw_rel @explosion_counter.to_s, 400, 220, 0, 0.5, 0.5, 1, 1, 0xff000000
+      SB.font.draw_rel SB.text(:count_down), 400, 200, 0, 0.5, 0.5, 1, 1, 0xff000000 if @explosion_counter > 6
+      SB.font.draw_rel @explosion_counter.to_s, 400, 220, 0, 0.5, 0.5, 1, 1, 0xff000000
     end
     @explosion.draw map if @exploding
   end

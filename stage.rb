@@ -12,7 +12,7 @@ class Stage
       @sections << Section.new(s, @entrances, @switches)
     end
 
-    G.player.reset
+    SB.player.reset
     reset_switches
     @cur_section = @sections[0]
     @cur_entrance = @entrances[0]
@@ -32,7 +32,7 @@ class Stage
         s.loaded = false
       end
 
-      G.player.reset
+      SB.player.reset
       reset_switches
       @cur_section = @cur_entrance[:section]
       @cur_section.start @switches, @cur_entrance[:x], @cur_entrance[:y]

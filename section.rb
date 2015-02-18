@@ -210,8 +210,8 @@ class Section
       end
     end
 
-    @elements << (@bomb = G.player.bomb)
-    @margin = AGL::Vector.new((C::SCREEN_WIDTH - @bomb.w) / 2, (C::SCREEN_HEIGHT - @bomb.h) / 2)
+    @elements << (@bomb = SB.player.bomb)
+    @margin = MiniGL::Vector.new((C::SCREEN_WIDTH - @bomb.w) / 2, (C::SCREEN_HEIGHT - @bomb.h) / 2)
     do_warp bomb_x, bomb_y
 
     # @bgm.play true
@@ -280,14 +280,14 @@ class Section
 
   def save_check_point(id, obj)
     @entrance = id
-    G.stage.set_switch obj
-    G.stage.save_switches
+    SB.stage.set_switch obj
+    SB.stage.save_switches
   end
 
   def unlock_door
     if @locked_door
       @locked_door.unlock
-      G.stage.set_switch @locked_door
+      SB.stage.set_switch @locked_door
       return true
     end
     false
@@ -315,7 +315,7 @@ class Section
 
     @map.set_camera (@bomb.x - @margin.x).round, (@bomb.y - @margin.y).round
 
-    @reload = true if G.player.dead? or KB.key_pressed? Gosu::KbBackspace
+    @reload = true if SB.player.dead? or KB.key_pressed? Gosu::KbBackspace
   end
 
   def draw
@@ -339,7 +339,7 @@ class Section
       t.draw @map if t.is_visible @map
     end
 
-    G.player.draw_stats
+    SB.player.draw_stats
   end
 
   def draw_bgs

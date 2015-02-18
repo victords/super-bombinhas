@@ -5,7 +5,7 @@ module Item
 
   def check switch
     if switch[:state] == :taken
-      G.player.add_item switch
+      SB.player.add_item switch
       return true
     elsif switch[:state] == :used
       return true
@@ -18,9 +18,9 @@ module Item
   end
 
   def take section, store
-    info = G.stage.find_switch self
+    info = SB.stage.find_switch self
     if store
-      G.player.add_item info
+      SB.player.add_item info
       info[:state] = :temp_taken
     else
       use section
@@ -44,7 +44,7 @@ class FloatingItem < GameObject
   end
 
   def update section
-    if G.player.bomb.collide? self
+    if SB.player.bomb.collide? self
       yield
       @dead = true
       return
@@ -70,7 +70,7 @@ class FireRock < FloatingItem
 
   def update section
     super section do
-      G.player.score += 10
+      SB.player.score += 10
     end
   end
 end
@@ -91,7 +91,7 @@ class Life < FloatingItem
   end
 
   def use section
-    G.player.lives += 1
+    SB.player.lives += 1
     true
   end
 end
@@ -133,9 +133,9 @@ class Attack1 < FloatingItem
   end
 
   def use section
-    if G.player.bomb.facing_right; angle = 0
+    if SB.player.bomb.facing_right; angle = 0
     else; angle = Math::PI; end
-    section.add Projectile.new G.player.bomb.x, G.player.bomb.y, 1, angle
+    section.add Projectile.new SB.player.bomb.x, SB.player.bomb.y, 1, angle
     true
   end
 end

@@ -1,11 +1,11 @@
 require 'minigl'
 require_relative 'world'
 require_relative 'player'
-include AGL
+include MiniGL
 
 class MenuButton < Button
   def initialize(y, text, &action)
-    super 306, y, G.font, text, :ui_button1, 0, 0x808080, true, false, 0, 7, &action
+    super(306, y, SB.font, text, :ui_button1, 0, 0x808080, 0, 0, true, true, 0, 0, 0, 0, 0, &action)
   end
 end
 
@@ -16,7 +16,7 @@ class MenuText
     @y = y
     @width = width
     @mode = mode
-    @writer = TextHelper.new G.font, 5
+    @writer = TextHelper.new SB.font, 5
   end
 
   def draw
@@ -44,9 +44,9 @@ class Menu
       }
     ], [
       MenuButton.new(320, 'New Game') {
-        G.world = World.new
-        G.player = Player.new
-        G.state = :map
+        SB.world = World.new
+        SB.player = Player.new
+        SB.state = :map
       },
       MenuButton.new(370, 'Continue') {
         puts 'continue'
@@ -63,10 +63,10 @@ class Menu
     ], [
     ], [
       MenuText.new(
-        "Texto dos créditos aqui. Texto bem longo, podendo quebrar linha. "\
-        "Texto bem longo, podendo quebrar linha. Pode também ter quebras de "\
+        'Texto dos créditos aqui. Texto bem longo, podendo quebrar linha. '\
+        'Texto bem longo, podendo quebrar linha. Pode também ter quebras de '\
         "linha explícitas.\nAqui tem uma quebra de linha explícita.\n\n"\
-        "Duas quebras seguidas.", 400, 200, 600, :center)
+        'Duas quebras seguidas.', 400, 200, 600, :center)
     ]]
     @highlight = Sprite.new(0, 0, :ui_highlight1, 1, 3)
 

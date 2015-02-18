@@ -11,7 +11,7 @@ module C
   TOP_MARGIN = -200
 end
 
-class G
+class SB
   def self.state; @@state; end
   def self.state= value; @@state = value; end
 
@@ -33,7 +33,7 @@ class G
   def self.initialize
     @@state = :menu
 
-    @@window = Game.window
+    @@window = G.window
     @@font = Res.font :BankGothicMedium, 20
     @@texts = {}
     files = Dir['data/text/*.txt']

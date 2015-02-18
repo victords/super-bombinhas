@@ -18,7 +18,7 @@ class MapStage
     @color = 0x00ffffff | (@alpha << 24)
     @glows = glows
 
-    @name = G.text("stage_#{world}_#{num}")
+    @name = SB.text("stage_#{world}_#{num}")
     @world = world
     @num = num
   end
@@ -41,8 +41,8 @@ class MapStage
   end
 
   def select
-    G.stage = Stage.new @world, @num
-    G.state = :main
+    SB.stage = Stage.new @world, @num
+    SB.state = :main
   end
 
   def draw
@@ -53,7 +53,7 @@ end
 class World
   def initialize
     @num = 1
-    @name = G.text "world_#{@num}"
+    @name = SB.text "world_#{@num}"
 
     @water = Sprite.new 0, 0, :ui_water, 2, 2
     @parchment = Res.img :ui_parchment
@@ -68,7 +68,7 @@ class World
     @cur = 0
     @bomb = Sprite.new @stages[@cur].x + 1, @stages[@cur].y - 15, :sprite_BombaAzul, 5, 2
 
-    @font = TextHelper.new G.font, 5
+    @font = TextHelper.new SB.font, 5
   end
 
   def update
@@ -90,7 +90,7 @@ class World
   end
 
   def draw
-    G.window.draw_quad 0, 0, 0xff6ab8ff,
+    SB.window.draw_quad 0, 0, 0xff6ab8ff,
                        800, 0, 0xff6ab8ff,
                        800, 600, 0xff6ab8ff,
                        0, 600, 0xff6ab8ff, 0
@@ -111,7 +111,7 @@ class World
     @stages.each { |s| s.draw }
     @bomb.draw
 
-    G.font.draw_rel 'Choose your destiny!', 525, 20, 0, 0.5, 0, 2, 2, 0xff000000
+    SB.font.draw_rel 'Choose your destiny!', 525, 20, 0, 0.5, 0, 2, 2, 0xff000000
     @font.write_breaking "#{@name}\n*** Stage #{@num}-#{@cur+1} ***\n#{@stages[@cur].name}", 125, 100, 200, :center, 0xff3d361f
   end
 end

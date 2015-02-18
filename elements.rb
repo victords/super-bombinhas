@@ -1,5 +1,5 @@
 require 'minigl'
-include AGL
+include MiniGL
 
 ############################### classes abstratas ##############################
 
@@ -74,12 +74,12 @@ class Bombie < GameObject
   end
 
   def update(section)
-    if G.player.bomb.collide? self
-      if not @facing_right and G.player.bomb.bounds.x > @x + @w / 2
+    if SB.player.bomb.collide? self
+      if not @facing_right and SB.player.bomb.bounds.x > @x + @w / 2
         @facing_right = true
         @indices = [3, 4, 5]
         set_animation 3
-      elsif @facing_right and G.player.bomb.bounds.x < @x - @w / 2
+      elsif @facing_right and SB.player.bomb.bounds.x < @x - @w / 2
         @facing_right = false
         @indices = [0, 1, 2]
         set_animation 0
@@ -110,11 +110,11 @@ class Bombie < GameObject
     super map
     @balloon.draw @x - map.cam.x, @y - map.cam.y - 32, 0 if @active
     if @speaking
-      G.window.draw_quad 5, 495, 0x80abcdef,
+      SB.window.draw_quad 5, 495, 0x80abcdef,
                          795, 495, 0x80abcdef,
                          795, 595, 0x80abcdef,
                          5, 595, 0x80abcdef, 0
-      G.font.draw G.text(@msg_id), 10, 500, 0, 1, 1, 0xff000000
+      SB.font.draw SB.text(@msg_id), 10, 500, 0, 1, 1, 0xff000000
     end
   end
 end
@@ -130,7 +130,7 @@ class Door < GameObject
   end
 
   def update(section)
-    collide = G.player.bomb.collide? self
+    collide = SB.player.bomb.collide? self
     if @locked and collide
       section.locked_door = self
     end
@@ -171,9 +171,9 @@ class GunPowder < GameObject
   end
 
   def update(section)
-    if G.player.bomb.collide? self
-      G.player.bomb.set_exploding
-      G.stage.set_switch self
+    if SB.player.bomb.collide? self
+      SB.player.bomb.set_exploding
+      SB.stage.set_switch self
       @dead = true
     end
   end
@@ -187,11 +187,11 @@ class Crack < GameObject
   end
 
   def update(section)
-    if @broken or G.player.bomb.explode? self
+    if @broken or SB.player.bomb.explode? self
       i = (@x / C::TILE_SIZE).floor
       j = (@y / C::TILE_SIZE).floor
       section.tiles[i][j].broken = true
-      G.stage.set_switch self
+      SB.stage.set_switch self
       @dead = true
     end
   end
@@ -210,7 +210,6 @@ class Elevator < GameObject
 
     @speed_m = a[1].to_i
     @moving = false
-    @cur_point = 0
     @points = []
     min_x = x; min_y = y
     max_x = x; max_y = y
@@ -233,8 +232,8 @@ class Elevator < GameObject
   end
 
   def update(section)
-    obst = [G.player.bomb] #verificar...
-    @cur_point = cycle @points, @cur_point, @speed_m, obst
+    obst = [SB.player.bomb] #verificar...
+    cycle @points, @speed_m, obst
   end
 end
 
@@ -249,7 +248,7 @@ class SaveBombie < GameObject
   end
 
   def update(section)
-    if not @saved and G.player.bomb.collide? self
+    if not @saved and SB.player.bomb.collide? self
       section.save_check_point @id, self
       @saved = true
     end
@@ -307,8 +306,8 @@ class Spikes < TwoStateObject
   def update(section)
     super section
 
-    if G.player.bomb.collide? self and @state2
-      G.player.die
+    if SB.player.bomb.collide? self and @state2
+      SB.player.die
     end
   end
 end
@@ -376,19 +375,19 @@ class Ball < GameObject
       @x += (0.1 * (@rec.x - @x)) if @x.round(2) != @rec.x
     else
       forces = Vector.new 0, 0
-      if G.player.bomb.collide? self
-        if G.player.bomb.x < @x; forces.x = (G.player.bomb.x + G.player.bomb.w - @x) * 0.15
-        else; forces.x = -(@x + @w - G.player.bomb.x) * 0.15; end
+      if SB.player.bomb.collide? self
+        if SB.player.bomb.x < @x; forces.x = (SB.player.bomb.x + SB.player.bomb.w - @x) * 0.15
+        else; forces.x = -(@x + @w - SB.player.bomb.x) * 0.15; end
       end
       if @bottom
         if @speed.x != 0
           forces.x -= 0.15 * @speed.x
         end
 
-        G.stage.switches.each do |s|
+        SB.stage.switches.each do |s|
           if s[:type] == BallReceptor and bounds.intersects s[:obj].bounds
             s[:obj].set section
-            s2 = G.stage.find_switch self
+            s2 = SB.stage.find_switch self
             s2[:extra] = @rec = s[:obj]
             s2[:state] = :temp_taken
             @set = true
@@ -427,7 +426,7 @@ class BallReceptor < GameObject
   end
 
   def set(section)
-    G.stage.set_switch self
+    SB.stage.set_switch self
     section.open_wall @id
     @img_index = 1
   end
@@ -471,7 +470,7 @@ class HideTile
     will_show = false
     @points.each do |p|
       rect = Rectangle.new p[:x], p[:y], C::TILE_SIZE, C::TILE_SIZE
-      if G.player.bomb.bounds.intersects rect
+      if SB.player.bomb.bounds.intersects rect
         will_show = true
         break
       end
@@ -560,18 +559,18 @@ class Spring < GameObject
   end
 
   def update(section)
-    if G.player.bomb.bottom == self
+    if SB.player.bomb.bottom == self
       reset if @state == 4
       @timer += 1
       if @timer == 10
         case @state
-          when 0 then @y += 8; @img_gap.y -= 8; G.player.bomb.y += 8
-          when 1 then @y += 6; @img_gap.y -= 6; G.player.bomb.y += 6
-          when 2 then @y += 4; @img_gap.y -= 4; G.player.bomb.y += 4
+          when 0 then @y += 8; @img_gap.y -= 8; SB.player.bomb.y += 8
+          when 1 then @y += 6; @img_gap.y -= 6; SB.player.bomb.y += 6
+          when 2 then @y += 4; @img_gap.y -= 4; SB.player.bomb.y += 4
         end
         @state += 1
         if @state == 4
-          G.player.bomb.stored_forces.y = -18
+          SB.player.bomb.stored_forces.y = -18
         else
           set_animation @state
         end

@@ -38,16 +38,16 @@ class Enemy < GameObject
   end
 
   def update section
-    if G.player.bomb.over? self
+    if SB.player.bomb.over? self
       hit_by_bomb unless @invulnerable
-      G.player.bomb.stored_forces.y -= C::BOUNCE_FORCE
-      G.player.bomb.stored_forces.x -= @speed.x
-    elsif G.player.bomb.explode? self
+      SB.player.bomb.stored_forces.y -= C::BOUNCE_FORCE
+      SB.player.bomb.stored_forces.x -= @speed.x
+    elsif SB.player.bomb.explode? self
       hit_by_explosion unless @invulnerable
     elsif section.projectile_hit? self
       hit unless @invulnerable
-    elsif G.player.bomb.collide? self
-      G.player.die
+    elsif SB.player.bomb.collide? self
+      SB.player.die
     end
 
     return if @dead
@@ -68,14 +68,14 @@ class Enemy < GameObject
   end
 
   def hit_by_explosion
-    G.player.score += @score
+    SB.player.score += @score
     @dead = true
   end
 
   def hit
     @hp -= 1
     if @hp == 0
-      G.player.score += @score
+      SB.player.score += @score
       @dead = true
     else
       get_invulnerable
@@ -249,7 +249,7 @@ class Yaw < Enemy
   end
 
   def hit_by_bomb
-    G.player.die
+    SB.player.die
   end
 end
 
@@ -264,23 +264,23 @@ class Ekips < GameObject
 
   def update section
     if section.projectile_hit? self and not @attacking
-      G.player.score += 240
+      SB.player.score += 240
       @dead = true
       return
     end
 
-    if G.player.bomb.over? self
+    if SB.player.bomb.over? self
       if @attacking
-        G.player.score += 240
+        SB.player.score += 240
         @dead = true
         return
       else
-        G.player.die
+        SB.player.die
       end
-    elsif @attacking and G.player.bomb.bounds.intersects @attack_bounds
-      G.player.die
-    elsif G.player.bomb.collide? self
-      G.player.die
+    elsif @attacking and SB.player.bomb.bounds.intersects @attack_bounds
+      SB.player.die
+    elsif SB.player.bomb.collide? self
+      SB.player.die
     end
 
     @act_timer += 1
@@ -328,16 +328,16 @@ class Faller < GameObject
   end
 
   def update section
-    if G.player.bomb.explode? self
-      G.player.score += 300
+    if SB.player.bomb.explode? self
+      SB.player.score += 300
       section.obstacles.delete self
       section.obstacles.delete @bottom
       @dead = true
       return
-    elsif G.player.bomb.bottom == @bottom
-      G.player.die
-    elsif G.player.bomb.collide? self
-      G.player.die
+    elsif SB.player.bomb.bottom == @bottom
+      SB.player.die
+    elsif SB.player.bomb.collide? self
+      SB.player.die
     end
 
     animate @indices, @interval
@@ -349,11 +349,11 @@ class Faller < GameObject
         @act_timer = 0
       end
     elsif @step == 1 # subindo
-      move_carrying @up, 2, [G.player.bomb]
+      move_carrying @up, 2, [SB.player.bomb]
       @step += 1 if @speed.y == 0
     else # descendo
       diff = ((@start.y - @y) / 5).ceil
-      move_carrying @start, diff, [G.player.bomb]
+      move_carrying @start, diff, [SB.player.bomb]
       @step = 0 if @speed.y == 0
     end
   end
@@ -389,7 +389,7 @@ class Turner < Enemy
     @harm_bounds = Rectangle.new @x, @y - 23, 60, 62
     super section do
       if @harmful
-        G.player.die if G.player.bomb.bounds.intersects @harm_bounds
+        SB.player.die if SB.player.bomb.bounds.intersects @harm_bounds
         move_free @aim1, 2
         if @speed.x == 0 and @speed.y == 0
           @harmful = false
@@ -398,7 +398,7 @@ class Turner < Enemy
           @obst << self
         end
       else
-        move_carrying @aim2, 2, [G.player.bomb]
+        move_carrying @aim2, 2, [SB.player.bomb]
         if @speed.x == 0 and @speed.y == 0
           @harmful = true
           @indices = [0, 1, 2, 1]
@@ -413,7 +413,7 @@ class Turner < Enemy
   end
 
   def hit_by_explosion
-    G.player.score += @score
+    SB.player.score += @score
     @obst.delete self unless @harmful
     @dead = true
   end
