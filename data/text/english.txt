@@ -1,9 +1,18 @@
 lang_name	English
+play		Play
+options		Options
+credits		Credits
+exit		Exit
+new_game	New Game
+continue	Continue
+back		Back
+save		Save
+cancel		Cancel
 loading		Loading
-lives			Lives
-score			Score
-msg1			Testing message
-msg2			Second test message
+lives		Lives
+score		Score
+msg1		Testing message
+msg2		Second test message
 count_down	Countdown to explosion!
 world_1		Tars Island
 stage_1_1	Exploring the Tars Beach

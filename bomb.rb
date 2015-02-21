@@ -3,7 +3,7 @@ require 'minigl'
 class Bomb < GameObject
   attr_reader :facing_right
 
-  def initialize type
+  def initialize(type)
     t_img_gap = -10
     case type
     when :azul then @name = 'Bomba Azul'; img = :sprite_BombaAzul; l_img_gap = -5; r_img_gap = -5
@@ -26,7 +26,7 @@ class Bomb < GameObject
     @explosion_counter = 10
   end
 
-  def update section
+  def update(section)
     SB.player.change_item if KB.key_pressed? Gosu::KbLeftShift or KB.key_pressed? Gosu::KbRightShift
     SB.player.use_item section if KB.key_pressed? Gosu::KbA
 
@@ -75,7 +75,7 @@ class Bomb < GameObject
     move forces, section.get_obstacles(@x, @y), section.ramps
   end
 
-  def set_direction dir
+  def set_direction(dir)
     if dir == :left
       @facing_right = false
       @indices = [5, 6, 5, 7]
@@ -87,7 +87,7 @@ class Bomb < GameObject
     end
   end
 
-  def do_warp x, y
+  def do_warp(x, y)
     @speed.x = @speed.y = 0
     @x = x + 6; @y = y + 2
     @facing_right = true
@@ -110,7 +110,7 @@ class Bomb < GameObject
     set_animation (@facing_right ? 4 : 9)
   end
 
-  def explode? obj
+  def explode?(obj)
     return false unless @exploding
     radius = @type == :verde ? 120 : 90
     c_x = @x + @w / 2; c_y = @y + @h / 2
@@ -119,11 +119,11 @@ class Bomb < GameObject
     sq_dist <= radius**2
   end
 
-  def collide? obj
-    bounds.intersects obj.bounds
+  def collide?(obj)
+    bounds.intersect? obj.bounds
   end
 
-  def over? obj
+  def over?(obj)
     @x + @w > obj.x and obj.x + obj.w > @x and
       @y + @h > obj.y and @y < obj.y - C::PLAYER_OVER_TOLERANCE
   end
@@ -135,11 +135,11 @@ class Bomb < GameObject
     set_direction :right
   end
 
-  def is_visible map
+  def is_visible(map)
     true
   end
 
-  def draw map
+  def draw(map)
     super map
     if @will_explode
       SB.font.draw_rel SB.text(:count_down), 400, 200, 0, 0.5, 0.5, 1, 1, 0xff000000 if @explosion_counter > 6

@@ -4,8 +4,8 @@ require_relative 'player'
 include MiniGL
 
 class MenuButton < Button
-  def initialize(y, text, &action)
-    super(306, y, SB.font, text, :ui_button1, 0, 0x808080, 0, 0, true, true, 0, 0, 0, 0, 0, &action)
+  def initialize(y, text_id, x = 306, &action)
+    super(x, y, SB.font, SB.text(text_id), :ui_button1, 0, 0x808080, 0, 0, true, false, 0, 7, 0, 0, 0, &action)
   end
 end
 
@@ -30,37 +30,49 @@ class Menu
     @title = Res.img :ui_title, true
 
     @btns = [[
-      MenuButton.new(295, 'Play') {
+      MenuButton.new(295, :play) {
         set_button_group 1
       },
-      MenuButton.new(345, 'Options') {
-        puts 'options'
-      },
-      MenuButton.new(395, 'Credits') {
+      MenuButton.new(345, :options) {
         set_button_group 2
       },
-      MenuButton.new(445, 'Exit') {
+      MenuButton.new(395, :credits) {
+        set_button_group 3
+      },
+      MenuButton.new(445, :exit) {
         exit
       }
     ], [
-      MenuButton.new(320, 'New Game') {
+      MenuButton.new(320, :new_game) {
         SB.world = World.new
         SB.player = Player.new
         SB.state = :map
       },
-      MenuButton.new(370, 'Continue') {
+      MenuButton.new(370, :continue) {
         puts 'continue'
       },
-      MenuButton.new(420, 'Back') {
+      MenuButton.new(420, :back) {
         set_button_group 0
       }
     ], [
-      MenuButton.new(550, 'Back') {
+      MenuButton.new(550, :save, 207) {
+        puts 'save options'
+      },
+      MenuButton.new(550, :cancel, 405) {
+        set_button_group 0
+      }
+    ], [
+      MenuButton.new(550, :back) {
         set_button_group 0
       }
     ]]
     @texts = [[
     ], [
+    ], [
+      MenuText.new('Primeira opção', 20, 200),
+      MenuText.new('Segunda opção', 20, 250),
+      MenuText.new('Mais uma opção aqui', 20, 300),
+      MenuText.new('Quarta opção', 20, 350)
     ], [
       MenuText.new(
         'Texto dos créditos aqui. Texto bem longo, podendo quebrar linha. '\

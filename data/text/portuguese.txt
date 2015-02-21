@@ -1,9 +1,18 @@
 lang_name	Português
+play		Jogar
+options		Opções
+credits		Créditos
+exit		Sair
+new_game	Novo Jogo
+continue	Continuar
+back		Voltar
+save		Salvar
+cancel		Cancelar
 loading		Carregando
-lives			Vidas
-score			Pontos
-msg1			Testando mensagem...
-msg2			Segunda mensagem de teste
+lives		Vidas
+score		Pontos
+msg1		Testando mensagem...
+msg2		Segunda mensagem de teste
 count_down	Contagem regressiva para explodir!
 world_1		Ilha de Tars
 stage_1_1	Explorando a Praia de Tars

@@ -3,11 +3,11 @@ require_relative 'section'
 class Stage
   attr_reader :switches
 
-  def initialize world, num
+  def initialize(world, num)
     @sections = []
     @entrances = []
     @switches = []
-    sections = Dir["data/stage/#{world}/#{num}-*.sbs"]
+    sections = Dir["#{Res.prefix}stage/#{world}/#{num}-*.sbs"]
     sections.sort.each do |s|
       @sections << Section.new(s, @entrances, @switches)
     end
@@ -58,14 +58,14 @@ class Stage
     end
   end
 
-  def find_switch obj
+  def find_switch(obj)
     @switches.each do |s|
       return s if s[:obj] == obj
     end
     nil
   end
 
-  def set_switch obj
+  def set_switch(obj)
     switch = self.find_switch obj
     switch[:state] = :temp_taken
   end

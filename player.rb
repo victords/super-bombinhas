@@ -57,7 +57,7 @@ class Player
   end
 
   def draw_stats
-    SB.window.draw_quad 5, 5, 0x80abcdef,
+    G.window.draw_quad 5, 5, 0x80abcdef,
                        205, 5, 0x80abcdef,
                        205, 55, 0x80abcdef,
                        5, 55, 0x80abcdef, 0
@@ -66,11 +66,11 @@ class Player
     SB.font.draw SB.text(:score), 10, 30, 0, 1, 1, 0xff000000
     SB.font.draw @score, 100, 30, 0, 1, 1, 0xff000000
 
-    SB.window.draw_quad 690, 5, 0x80abcdef,
+    G.window.draw_quad 690, 5, 0x80abcdef,
                        740, 5, 0x80abcdef,
                        740, 55, 0x80abcdef,
                        690, 55, 0x80abcdef, 0
-    SB.window.draw_quad 745, 5, 0x80abcdef,
+    G.window.draw_quad 745, 5, 0x80abcdef,
                        795, 5, 0x80abcdef,
                        795, 55, 0x80abcdef,
                        745, 55, 0x80abcdef, 0
@@ -81,10 +81,10 @@ class Player
       SB.font.draw item_set.length.to_s, 725, 36, 0, 1, 1, 0xff000000
     end
     if @items.length > 1
-      SB.window.draw_triangle 690, 30, 0x80123456,
+      G.window.draw_triangle 690, 30, 0x80123456,
                              694, 26, 0x80123456,
                              694, 34, 0x80123456, 0
-      SB.window.draw_triangle 736, 25, 0x80123456,
+      G.window.draw_triangle 736, 25, 0x80123456,
                              741, 30, 0x80123456,
                              736, 35, 0x80123456, 0
     end

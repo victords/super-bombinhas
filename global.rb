@@ -12,51 +12,37 @@ module C
 end
 
 class SB
-  def self.state; @@state; end
-  def self.state= value; @@state = value; end
+  class << self
+    attr_reader :font, :texts
+    attr_accessor :state, :lang, :menu, :player, :world, :stage
 
-  def self.window; @@window; end
-  def self.font; @@font; end
-  def self.texts; @@texts; end
-  def self.lang; @@lang; end
-  def self.lang= value; @@lang = value; end
+    def initialize
+      @state = :menu
 
-  def self.menu; @@menu; end
-  def self.menu= value; @@menu = value; end
-  def self.player; @@player; end
-  def self.player= value; @@player = value; end
-  def self.world; @@world; end
-  def self.world= value; @@world = value; end
-  def self.stage; @@stage; end
-  def self.stage= value; @@stage = value; end
-
-  def self.initialize
-    @@state = :menu
-
-    @@window = G.window
-    @@font = Res.font :BankGothicMedium, 20
-    @@texts = {}
-    files = Dir['data/text/*.txt']
-    files.each do |f|
-      lang = (f.split('/')[-1].chomp '.txt').to_sym
-      @@texts[lang] = {}
-      File.open(f).each do |l|
-        parts = l.split "\t"
-        @@texts[lang][parts[0].to_sym] = parts[-1].chomp
+      @font = Res.font :BankGothicMedium, 20
+      @texts = {}
+      files = Dir["#{Res.prefix}text/*.txt"]
+      files.each do |f|
+        lang = f.split('/')[-1].chomp('.txt').to_sym
+        @texts[lang] = {}
+        File.open(f).each do |l|
+          parts = l.split "\t"
+          @texts[lang][parts[0].to_sym] = parts[-1].chomp
+        end
       end
+      @lang = :portuguese
     end
-    @@lang = :portuguese
-  end
 
-  def self.text id
-    @@texts[@@lang][id.to_sym]
+    def text(id)
+      @texts[@lang][id.to_sym]
+    end
   end
 end
 
 class JSHelper
   attr_reader :is_valid
 
-  def initialize index
+  def initialize(index)
     @j = Joystick::Device.new "/dev/input/js#{index}"
     @axes = {}
     @axes_prev = {}
@@ -101,22 +87,22 @@ class JSHelper
     end
   end
 
-  def button_down btn
+  def button_down(btn)
     return false unless @is_valid
     @btns[btn] == 1
   end
 
-  def button_pressed btn
+  def button_pressed(btn)
     return false unless @is_valid
     @btns[btn] == 1 && @btns_prev[btn] == 0
   end
 
-  def button_released btn
+  def button_released(btn)
     return false unless @is_valid
     @btns[btn] == 0 && @btns_prev[btn] == 1
   end
 
-  def axis_down axis, dir
+  def axis_down(axis, dir)
     return false unless @is_valid
     return @axes[axis+1] < 0 if dir == :up
     return @axes[axis] > 0 if dir == :right
@@ -125,7 +111,7 @@ class JSHelper
     false
   end
 
-  def axis_pressed axis, dir
+  def axis_pressed(axis, dir)
     return false unless @is_valid
     return @axes[axis+1] < 0 && @axes_prev[axis+1] >= 0 if dir == :up
     return @axes[axis] > 0 && @axes_prev[axis] <= 0 if dir == :right
@@ -134,7 +120,7 @@ class JSHelper
     false
   end
 
-  def axis_released axis, dir
+  def axis_released(axis, dir)
     return false unless @is_valid
     return @axes[axis+1] >= 0 && @axes_prev[axis+1] < 0 if dir == :up
     return @axes[axis] <= 0 && @axes_prev[axis] > 0 if dir == :right

@@ -61,7 +61,7 @@ class World
     @map = Res.img :ui_world1
 
     @stages = []
-    File.open("data/stage/#{@num}/world").each_with_index do |l, i|
+    File.open("#{Res.prefix}stage/#{@num}/world").each_with_index do |l, i|
       coords = l.split ','
       @stages << MapStage.new(@num, i+1, coords[0].to_i, coords[1].to_i, :unknown, false)
     end
@@ -90,7 +90,7 @@ class World
   end
 
   def draw
-    SB.window.draw_quad 0, 0, 0xff6ab8ff,
+    G.window.draw_quad 0, 0, 0xff6ab8ff,
                        800, 0, 0xff6ab8ff,
                        800, 600, 0xff6ab8ff,
                        0, 600, 0xff6ab8ff, 0
