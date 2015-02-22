@@ -6,8 +6,8 @@ class Stage
     @entrances = []
     @switches = []
 
-    taken_switches = eval "[#{SB.save_data[6]}]"
-    used_switches = eval "[#{SB.save_data[7]}]"
+    taken_switches = eval "[#{SB.save_data[7]}]"
+    used_switches = eval "[#{SB.save_data[8]}]"
 
     sections = Dir["#{Res.prefix}stage/#{world}/#{num}-*.sbs"]
     sections.sort.each do |s|

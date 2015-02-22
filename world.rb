@@ -72,7 +72,10 @@ class World
 
     @font = TextHelper.new SB.font, 5
 
-    @back_button = Button.new(600, 550, SB.font, SB.text(:back), :ui_button1, 0, 0, 0, 0, true, false, 0, 7) {
+    @play_button = Button.new(420, 550, SB.font, SB.text(:play), :ui_button1, 0, 0, 0, 0, true, false, 0, 7) {
+      @stages[@cur].select
+    }
+    @back_button = Button.new(610, 550, SB.font, SB.text(:back), :ui_button1, 0, 0, 0, 0, true, false, 0, 7) {
       SB.menu.set_button_group 0
       SB.state = :menu
     }
@@ -82,6 +85,7 @@ class World
     @water.animate [0, 1, 2, 3], 6
     @bomb.animate [0, 1, 0, 2], 8
     @stages.each { |i| i.update }
+    @play_button.update
     @back_button.update
 
     if KB.key_pressed? Gosu::KbSpace or KB.key_pressed? Gosu::KbA
@@ -117,6 +121,7 @@ class World
 
     @map.draw 250, 100, 0
     @stages.each { |s| s.draw }
+    @play_button.draw
     @back_button.draw
     @bomb.draw
 
