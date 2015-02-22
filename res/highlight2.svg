@@ -9,30 +9,17 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="182"
-   height="138"
+   width="260"
+   height="120"
    id="svg2"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="highlight1.svg"
-   inkscape:export-filename="/home/victor/aleva/super-bombinhas/data/img/ui/highlight1.png"
+   sodipodi:docname="highlight2.svg"
+   inkscape:export-filename="/home/victor/aleva/super-bombinhas/data/img/ui/highlight2.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
      id="defs4">
-    <filter
-       inkscape:collect="always"
-       id="filter3777"
-       x="-0.036176469"
-       width="1.0723529"
-       y="-0.17571428"
-       height="1.3514286"
-       color-interpolation-filters="sRGB">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="2.5625"
-         id="feGaussianBlur3779" />
-    </filter>
     <filter
        inkscape:collect="always"
        id="filter3770"
@@ -55,6 +42,28 @@
          id="path3781"
          inkscape:connector-curvature="0" />
     </clipPath>
+    <filter
+       inkscape:collect="always"
+       id="filter3773"
+       x="-0.026964143"
+       width="1.0539283"
+       y="-0.21832259"
+       height="1.4366452"
+       color-interpolation-filters="sRGB">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="2.8200002"
+         id="feGaussianBlur3775" />
+    </filter>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath3783">
+      <path
+         style="fill:#808080;fill-opacity:1;stroke:none"
+         d="m 0,1012.3622 0,40 260,0 0,-40 -260,0 z m 4,4 252,0 0,32 -252,0 0,-32 z"
+         id="path3785"
+         inkscape:connector-curvature="0" />
+    </clipPath>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -64,8 +73,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1"
-     inkscape:cx="74.337139"
-     inkscape:cy="50.157052"
+     inkscape:cx="121.35375"
+     inkscape:cy="9.6164863"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -82,7 +91,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -90,64 +99,64 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0,-914.3622)">
-    <g
-       id="g3783"
-       style="opacity:0.6">
-      <rect
-         y="1010.8622"
-         x="4.5"
-         height="37"
-         width="173"
-         id="rect3807"
-         style="fill:none;stroke:#ffff00;stroke-width:1;stroke-opacity:1" />
-      <rect
-         clip-path="url(#clipPath3779)"
-         style="fill:none;stroke:#ffff00;stroke-width:5;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter3770)"
-         id="rect3768"
-         width="173"
-         height="37"
-         x="4.5"
-         y="1010.8622" />
-    </g>
+     transform="translate(0,-932.3622)">
     <g
        id="g3787"
-       transform="translate(0,-46)"
-       style="opacity:0.8">
+       style="opacity:0.6">
       <rect
-         style="fill:none;stroke:#ffff00;stroke-width:1;stroke-opacity:1"
-         id="rect3789"
-         width="173"
-         height="37"
+         y="1016.8622"
          x="4.5"
-         y="1010.8622" />
-      <rect
-         y="1010.8622"
-         x="4.5"
-         height="37"
-         width="173"
-         id="rect3791"
-         style="fill:none;stroke:#ffff00;stroke-width:5;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter3770)"
-         clip-path="url(#clipPath3779)" />
-    </g>
-    <g
-       transform="translate(0,-92)"
-       id="g3793">
-      <rect
-         y="1010.8622"
-         x="4.5"
-         height="37"
-         width="173"
+         height="31"
+         width="251.00002"
          id="rect3795"
          style="fill:none;stroke:#ffff00;stroke-width:1;stroke-opacity:1" />
       <rect
-         clip-path="url(#clipPath3779)"
-         style="fill:none;stroke:#ffff00;stroke-width:5;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter3770)"
-         id="rect3797"
-         width="173"
-         height="37"
+         clip-path="url(#clipPath3783)"
+         style="fill:none;stroke:#ffff00;stroke-width:5;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter3773)"
+         id="rect3767"
+         width="251.00002"
+         height="31"
          x="4.5"
-         y="1010.8622" />
+         y="1016.8622" />
+    </g>
+    <g
+       id="g3791"
+       transform="translate(0,-40)"
+       style="opacity:0.8">
+      <rect
+         style="fill:none;stroke:#ffff00;stroke-width:1;stroke-opacity:1"
+         id="rect3793"
+         width="251.00002"
+         height="31"
+         x="4.5"
+         y="1016.8622" />
+      <rect
+         y="1016.8622"
+         x="4.5"
+         height="31"
+         width="251.00002"
+         id="rect3796"
+         style="fill:none;stroke:#ffff00;stroke-width:5;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter3773)"
+         clip-path="url(#clipPath3783)" />
+    </g>
+    <g
+       transform="translate(0,-80)"
+       id="g3798">
+      <rect
+         y="1016.8622"
+         x="4.5"
+         height="31"
+         width="251.00002"
+         id="rect3800"
+         style="fill:none;stroke:#ffff00;stroke-width:1;stroke-opacity:1" />
+      <rect
+         clip-path="url(#clipPath3783)"
+         style="fill:none;stroke:#ffff00;stroke-width:5;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter3773)"
+         id="rect3802"
+         width="251.00002"
+         height="31"
+         x="4.5"
+         y="1016.8622" />
     </g>
   </g>
 </svg>

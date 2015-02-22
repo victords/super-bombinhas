@@ -13,7 +13,7 @@ end
 
 class SB
   class << self
-    attr_reader :font
+    attr_reader :font, :save_data
     attr_accessor :state, :lang, :menu, :player, :world, :stage
 
     def initialize
@@ -31,6 +31,14 @@ class SB
         end
       end
       @lang = :portuguese
+    end
+
+    def load_game(name)
+      @save_data = IO.readlines("#{Res.prefix}save/#{name}.sbg").map { |l| l.chomp }
+      world_stage = @save_data[0].split('-')
+      @world = World.new(world_stage[0].to_i, world_stage[1].to_i)
+      @player = Player.new(name)
+      @state = :map
     end
 
     def text(id)

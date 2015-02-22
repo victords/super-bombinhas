@@ -4,13 +4,13 @@ class Player
   attr_reader :bomb, :name
   attr_accessor :score, :lives
 
-  def initialize(score = 0, stage = 0, bomb = :azul, lives = 5, items = {})
+  def initialize(name = nil, score = 0, stage = 0, bomb = :azul, lives = 5, items = {})
+    @name = name
     @score = score
     @stage = stage
     @bomb = Bomb.new bomb
     @lives = lives
     @items = items
-    @name = 'test'
   end
 
   def dead?

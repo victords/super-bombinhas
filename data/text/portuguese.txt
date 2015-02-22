@@ -1,21 +1,23 @@
-lang_name	Português
-play		Jogar
-options		Opções
-credits		Créditos
-exit		Sair
-new_game	Novo Jogo
-continue	Continuar
-back		Voltar
-save		Salvar
-cancel		Cancelar
-loading		Carregando
-lives		Vidas
-score		Pontos
-msg1		Testando mensagem...
-msg2		Segunda mensagem de teste
-count_down	Contagem regressiva para explodir!
-world_1		Ilha de Tars
-stage_1_1	Explorando a Praia de Tars
-stage_1_2	Areia, Vento e Deserto
-stage_1_3	Teste de Nome para a Terceira Fase
-stage_1_4	Finalmente! A Fortaleza de Chamal
+lang_name		Português
+play			Jogar
+options			Opções
+credits			Créditos
+exit			Sair
+new_game		Novo Jogo
+continue		Continuar
+back			Voltar
+save			Salvar
+cancel			Cancelar
+choose_stage	Escolha a fase
+stage			Fase
+loading			Carregando
+lives			Vidas
+score			Pontos
+msg1			Testando mensagem...
+msg2			Segunda mensagem de teste
+count_down		Contagem regressiva para explodir!
+world_1			Ilha de Tars
+stage_1_1		Explorando a Praia de Tars
+stage_1_2		Areia, Vento e Deserto
+stage_1_3		Teste de Nome para a Terceira Fase
+stage_1_4		Finalmente! A Fortaleza de Chamal

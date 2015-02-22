@@ -1,22 +1,23 @@
 require 'minigl'
 require_relative 'stage'
+include MiniGL
 
 class MapStage
   attr_reader :name, :x, :y
 
-  def initialize(world, num, x, y, img, glows = true)
+  def initialize(world, num, x, y, img)
     @x = x
     @y = y
     @img = Res.img "icon_#{img}"
+    @glows = img != :unknown
     @state = 0
     @alpha =
-      if glows
+      if @glows
         0xff
       else
         0x7f
       end
     @color = 0x00ffffff | (@alpha << 24)
-    @glows = glows
 
     @name = SB.text("stage_#{world}_#{num}")
     @world = world
@@ -26,13 +27,13 @@ class MapStage
   def update
     return unless @glows
     if @state == 0
-      @alpha -= 1
-      if @alpha == 51
+      @alpha -= 2
+      if @alpha == 0x7f
         @state = 1
       end
       @color = 0x00ffffff | (@alpha << 24)
     else
-      @alpha += 1
+      @alpha += 2
       if @alpha == 0xff
         @state = 0
       end
@@ -51,8 +52,8 @@ class MapStage
 end
 
 class World
-  def initialize
-    @num = 1
+  def initialize(num = 1, stage_num = 1)
+    @num = num
     @name = SB.text "world_#{@num}"
 
     @water = Sprite.new 0, 0, :ui_water, 2, 2
@@ -61,20 +62,27 @@ class World
     @map = Res.img :ui_world1
 
     @stages = []
+    @cur = stage_num - 1
     File.open("#{Res.prefix}stage/#{@num}/world").each_with_index do |l, i|
       coords = l.split ','
-      @stages << MapStage.new(@num, i+1, coords[0].to_i, coords[1].to_i, :unknown, false)
+      state = if i < @cur; :complete; else; i == @cur ? :current : :unknown; end
+      @stages << MapStage.new(@num, i+1, coords[0].to_i, coords[1].to_i, state)
     end
-    @cur = 0
     @bomb = Sprite.new @stages[@cur].x + 1, @stages[@cur].y - 15, :sprite_BombaAzul, 5, 2
 
     @font = TextHelper.new SB.font, 5
+
+    @back_button = Button.new(600, 550, SB.font, SB.text(:back), :ui_button1, 0, 0, 0, 0, true, false, 0, 7) {
+      SB.menu.set_button_group 0
+      SB.state = :menu
+    }
   end
 
   def update
     @water.animate [0, 1, 2, 3], 6
     @bomb.animate [0, 1, 0, 2], 8
     @stages.each { |i| i.update }
+    @back_button.update
 
     if KB.key_pressed? Gosu::KbSpace or KB.key_pressed? Gosu::KbA
       @stages[@cur].select
@@ -109,9 +117,10 @@ class World
 
     @map.draw 250, 100, 0
     @stages.each { |s| s.draw }
+    @back_button.draw
     @bomb.draw
 
-    SB.font.draw_rel 'Choose your destiny!', 525, 20, 0, 0.5, 0, 2, 2, 0xff000000
-    @font.write_breaking "#{@name}\n*** Stage #{@num}-#{@cur+1} ***\n#{@stages[@cur].name}", 125, 100, 200, :center, 0xff3d361f
+    SB.font.draw_rel SB.text(:choose_stage), 525, 20, 0, 0.5, 0, 2, 2, 0xff000000
+    @font.write_breaking "#{@name}\n*** #{SB.text(:stage)} #{@num}-#{@cur+1} ***\n#{@stages[@cur].name}", 125, 100, 200, :center, 0xff3d361f
   end
 end

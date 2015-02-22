@@ -6,9 +6,8 @@ class Stage
     @entrances = []
     @switches = []
 
-    save_file_lines = IO.readlines("#{Res.prefix}save/#{SB.player.name}.sbg")
-    taken_switches = eval "[#{save_file_lines[6].chomp}]"
-    used_switches = eval "[#{save_file_lines[7].chomp}]"
+    taken_switches = eval "[#{SB.save_data[6]}]"
+    used_switches = eval "[#{SB.save_data[7]}]"
 
     sections = Dir["#{Res.prefix}stage/#{world}/#{num}-*.sbs"]
     sections.sort.each do |s|
