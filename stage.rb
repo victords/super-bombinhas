@@ -1,15 +1,18 @@
 require_relative 'section'
 
 class Stage
-  attr_reader :switches
-
   def initialize(world, num)
     @sections = []
     @entrances = []
     @switches = []
+
+    save_file_lines = IO.readlines("#{Res.prefix}save/#{SB.player.name}.sbg")
+    taken_switches = eval "[#{save_file_lines[6].chomp}]"
+    used_switches = eval "[#{save_file_lines[7].chomp}]"
+
     sections = Dir["#{Res.prefix}stage/#{world}/#{num}-*.sbs"]
     sections.sort.each do |s|
-      @sections << Section.new(s, @entrances, @switches)
+      @sections << Section.new(s, @entrances, @switches, taken_switches, used_switches)
     end
 
     SB.player.reset

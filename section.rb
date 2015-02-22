@@ -10,11 +10,11 @@ class Section
   attr_reader :reload, :tiles, :obstacles, :ramps, :size
   attr_accessor :entrance, :warp, :loaded, :locked_door
 
-  def initialize(file, entrances, switches)
+  def initialize(file, entrances, switches, taken_switches, used_switches)
     parts = File.read(file).chomp.split('#', -1)
     set_map_tileset parts[0].split ','
     set_bgs parts[1].split ','
-    set_elements parts[2].split(';'), entrances, switches
+    set_elements parts[2].split(';'), entrances, switches, taken_switches, used_switches
     set_ramps parts[3].split ';'
   end
 
@@ -47,8 +47,8 @@ class Section
     end
   end
 
-  def set_elements(s, entrances, switches)
-    x = 0; y = 0
+  def set_elements(s, entrances, switches, taken_switches, used_switches)
+    x = 0; y = 0; s_index = 0
     @element_info = []
     @hide_tiles = []
     s.each do |e|
@@ -68,15 +68,24 @@ class Section
               if t != :none # teste poderá ser removido no final
                 el = {x: x * C::TILE_SIZE, y: y * C::TILE_SIZE, type: t, args: a}
                 if e[i] == '$'
-                  el[:state] = :normal
+                  if s_index == used_switches[0]
+                    used_switches.shift
+                    el[:state] = :used
+                  elsif s_index == taken_switches[0]
+                    taken_switches.shift
+                    el[:state] = :taken
+                  else
+                    el[:state] = :normal
+                  end
                   el[:section] = self
                   switches << el
+                  s_index += 1
                 else
                   @element_info << el
                 end
               end           # teste poderá ser removido no final
             end
-            i += 1000
+            i += 1000 # forçando e[i].nil? a retornar true
           end
           i += 3
         end until e[i].nil?
@@ -265,7 +274,7 @@ class Section
   def projectile_hit?(obj)
     @elements.each do |e|
       if e.is_a? Projectile
-        if e.bounds.intersects obj.bounds
+        if e.bounds.intersect? obj.bounds
           @elements.delete e
           return true
         end
@@ -303,7 +312,7 @@ class Section
   end
 
   def update
-    @showing_tiles = false
+    # @showing_tiles = false
     @locked_door = nil
     @elements.each do |e|
       e.update self if e.is_visible @map

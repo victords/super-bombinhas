@@ -1,15 +1,16 @@
 require_relative 'bomb'
 
 class Player
-  attr_reader :bomb
+  attr_reader :bomb, :name
   attr_accessor :score, :lives
 
-  def initialize score = 0, stage = 0, bomb = :azul, lives = 5, items = {}
+  def initialize(score = 0, stage = 0, bomb = :azul, lives = 5, items = {})
     @score = score
     @stage = stage
     @bomb = Bomb.new bomb
     @lives = lives
     @items = items
+    @name = 'test'
   end
 
   def dead?
@@ -24,13 +25,13 @@ class Player
     end
   end
 
-  def add_item item
+  def add_item(item)
     @items[item[:type]] = [] if @items[item[:type]].nil?
     @items[item[:type]] << item
     @cur_item_type = item[:type] if @cur_item_type.nil?
   end
 
-  def use_item section
+  def use_item(section)
     return if @cur_item_type.nil?
     item_set = @items[@cur_item_type]
     item = item_set[0]

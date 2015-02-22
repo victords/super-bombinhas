@@ -13,7 +13,7 @@ end
 
 class SB
   class << self
-    attr_reader :font, :texts
+    attr_reader :font
     attr_accessor :state, :lang, :menu, :player, :world, :stage
 
     def initialize

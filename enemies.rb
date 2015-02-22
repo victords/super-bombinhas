@@ -1,7 +1,7 @@
 ############################### classes abstratas ##############################
 
 class Enemy < GameObject
-  def initialize x, y, w, h, img, img_gap, sprite_cols, sprite_rows, indices, interval, score, hp = 1
+  def initialize(x, y, w, h, img, img_gap, sprite_cols, sprite_rows, indices, interval, score, hp = 1)
     super x, y, w, h, img, img_gap, sprite_cols, sprite_rows
 
     @indices = indices
@@ -13,7 +13,7 @@ class Enemy < GameObject
     @active_bounds = Rectangle.new x + img_gap.x, y + img_gap.y, @img[0].width, @img[0].height
   end
 
-  def set_active_bounds section
+  def set_active_bounds(section)
     t = (@y + @img_gap.y).floor
     r = (@x + @img_gap.x + @img[0].width).ceil
     b = (@y + @img_gap.y + @img[0].height).ceil
@@ -37,7 +37,7 @@ class Enemy < GameObject
     end
   end
 
-  def update section
+  def update(section)
     if SB.player.bomb.over? self
       hit_by_bomb unless @invulnerable
       SB.player.bomb.stored_forces.y -= C::BOUNCE_FORCE
@@ -93,7 +93,7 @@ class Enemy < GameObject
 end
 
 class FloorEnemy < Enemy
-  def initialize x, y, args, w, h, img, img_gap, sprite_cols, sprite_rows, indices, interval, score, hp = 1, speed = 3
+  def initialize(x, y, args, w, h, img, img_gap, sprite_cols, sprite_rows, indices, interval, score, hp = 1, speed = 3)
     super x, y, w, h, img, img_gap, sprite_cols, sprite_rows, indices, interval, score, hp
 
     @dont_fall = args.nil?
@@ -102,7 +102,7 @@ class FloorEnemy < Enemy
     @facing_right = false
   end
 
-  def update section
+  def update(section)
     if @invulnerable
       super section
     else
@@ -124,7 +124,7 @@ class FloorEnemy < Enemy
     end
   end
 
-  def set_direction dir
+  def set_direction(dir)
     @speed.x = 0
     if dir == :left
       @forces.x = -@speed_m
@@ -144,11 +144,11 @@ end
 ################################################################################
 
 class Wheeliam < FloorEnemy
-  def initialize x, y, args, section
+  def initialize(x, y, args, section)
     super x, y, args, 32, 32, :sprite_Wheeliam, Vector.new(-4, -3), 4, 1, [0, 1], 8, 100
   end
 
-  def change_animation dir
+  def change_animation(dir)
     if dir == :left
       @indices[0] = 0; @indices[1] = 1
       set_animation 0
@@ -160,7 +160,7 @@ class Wheeliam < FloorEnemy
 end
 
 class Sprinny < Enemy
-  def initialize x, y, args, section
+  def initialize(x, y, args, section)
     super x + 3, y - 4, 26, 36, :sprite_Sprinny, Vector.new(-2, -5), 6, 1, [0], 5, 350
 
     @leaps = 1000
@@ -168,7 +168,7 @@ class Sprinny < Enemy
     @facing_right = true
   end
 
-  def update section
+  def update(section)
     super section do
       forces = Vector.new 0, 0
       if @bottom
@@ -196,11 +196,11 @@ class Sprinny < Enemy
 end
 
 class Fureel < FloorEnemy
-  def initialize x, y, args, section
+  def initialize(x, y, args, section)
     super x - 4, y - 4, args, 40, 36, :sprite_Fureel, Vector.new(-10, -3), 6, 1, [0, 1], 8, 300, 2, 4
   end
 
-  def change_animation dir
+  def change_animation(dir)
     if dir == :left
       @indices[0] = 0; @indices[1] = 1
       set_animation 0
@@ -225,7 +225,7 @@ class Fureel < FloorEnemy
 end
 
 class Yaw < Enemy
-  def initialize x, y, args, section
+  def initialize(x, y, args, section)
     super x, y, 32, 32, :sprite_Yaw, Vector.new(-4, -4), 8, 1, [0, 1, 2], 6, 500
     @moving_eye = false
     @eye_timer = 0
@@ -242,7 +242,7 @@ class Yaw < Enemy
     @cur_point = 0
   end
 
-  def update section
+  def update(section)
     super section do
       @cur_point = cycle @points, @cur_point, 3
     end
@@ -254,7 +254,7 @@ class Yaw < Enemy
 end
 
 class Ekips < GameObject
-  def initialize x, y, args, section
+  def initialize(x, y, args, section)
     super x + 10, y - 10, 12, 25, :sprite_Ekips, Vector.new(-42, -8), 2, 3
 
     @act_timer = 0
@@ -262,7 +262,7 @@ class Ekips < GameObject
     @attack_bounds = Rectangle.new x - 32, y + 10, 96, 12
   end
 
-  def update section
+  def update(section)
     if section.projectile_hit? self and not @attacking
       SB.player.score += 240
       @dead = true
@@ -277,7 +277,7 @@ class Ekips < GameObject
       else
         SB.player.die
       end
-    elsif @attacking and SB.player.bomb.bounds.intersects @attack_bounds
+    elsif @attacking and SB.player.bomb.bounds.intersect? @attack_bounds
       SB.player.die
     elsif SB.player.bomb.collide? self
       SB.player.die
@@ -308,7 +308,7 @@ class Ekips < GameObject
 end
 
 class Faller < GameObject
-  def initialize x, y, args, section
+  def initialize(x, y, args, section)
     super x, y, 32, 32, :sprite_Faller1, Vector.new(0, 0), 4, 1
     @range = args.to_i
     @start = Vector.new x, y
@@ -327,7 +327,7 @@ class Faller < GameObject
     @act_timer = 0
   end
 
-  def update section
+  def update(section)
     if SB.player.bomb.explode? self
       SB.player.score += 300
       section.obstacles.delete self
@@ -358,14 +358,14 @@ class Faller < GameObject
     end
   end
 
-  def draw map
+  def draw(map)
     @img[@img_index].draw @x - map.cam.x, @y - map.cam.y, 0
     @bottom_img.draw @x - map.cam.x, @start.y + 15 - map.cam.y, 0
   end
 end
 
 class Turner < Enemy
-  def initialize x, y, args, section
+  def initialize(x, y, args, section)
     super x + 2, y - 7, 60, 39, :sprite_Turner, Vector.new(-2, -25), 3, 2, [0, 1, 2, 1], 8, 300
     @harmful = true
     @passable = true
@@ -385,11 +385,11 @@ class Turner < Enemy
     @obst = section.obstacles
   end
 
-  def update section
+  def update(section)
     @harm_bounds = Rectangle.new @x, @y - 23, 60, 62
     super section do
       if @harmful
-        SB.player.die if SB.player.bomb.bounds.intersects @harm_bounds
+        SB.player.die if SB.player.bomb.bounds.intersect? @harm_bounds
         move_free @aim1, 2
         if @speed.x == 0 and @speed.y == 0
           @harmful = false
