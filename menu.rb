@@ -24,6 +24,27 @@ class MenuText
   end
 end
 
+class SavedGame
+  def initialize(x, y, name, bomb, world_stage, specs)
+    @x = x
+    @y = y
+    @name = name
+    @bomb = Res.img("icon_Bomba#{bomb.capitalize}")
+    sp = specs.split(',').size
+    @detail = "     #{world_stage}       #{sp}"
+    @map = Res.img(:icon_map)
+    @spec = Res.img(:icon_spec)
+  end
+
+  def draw
+    @bomb.draw @x, @y, 0
+    SB.font.draw @name, @x + 30, @y, 0
+    SB.font.draw @detail, @x + 30, @y + 25, 0
+    @map.draw @x + 30, @y + 25, 0
+    @spec.draw @x + 120, @y + 25, 0
+  end
+end
+
 class Menu
   def initialize
     @bg = Res.img :bg_start1, true, false, '.jpg'
@@ -34,10 +55,13 @@ class Menu
         set_button_group 1
       }
     ]
+    @saved_games = []
     games = Dir["#{Res.prefix}save/*"][0..9].map { |x| x.split('/')[-1].chomp('.sbg') }.sort
     games.each_with_index do |g, i|
+      save_data = IO.readlines("#{Res.prefix}save/#{g}.sbg").map { |l| l.chomp }
+      @saved_games << SavedGame.new(100 + (i % 2) * 350, 300 + (i / 2) * 40, g, save_data[1], save_data[0], save_data[4])
       continue_screen_buttons <<
-        Button.new(100 + (i % 2) * 350, 300 + (i / 2) * 40, SB.font, g, nil, 0, 0, 0x666666, 0x666666, true, true, 0, 0, 250, 30) {
+        Button.new(100 + (i % 2) * 350, 300 + (i / 2) * 40, nil, nil, nil, 0, 0, 0x666666, 0x666666, true, true, 0, 0, 250, 30) {
           SB.load_game g
         }
     end
@@ -155,6 +179,11 @@ class Menu
     end
     @texts[@cur_btn_group].each do |t|
       t.draw
+    end
+    if @cur_btn_group == 2 # continue
+      @saved_games.each do |s|
+        s.draw
+      end
     end
     @highlight.draw
   end
