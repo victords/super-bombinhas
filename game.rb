@@ -53,7 +53,7 @@ class SBGame < MiniGL::GameWindow
 end
 
 class MiniGL::GameObject
-  def is_visible map
+  def is_visible(map)
     return map.cam.intersect? @active_bounds if @active_bounds
     false
   end

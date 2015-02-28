@@ -36,7 +36,7 @@ class SB
     def load_game(name)
       @save_data = IO.readlines("#{Res.prefix}save/#{name}.sbg").map { |l| l.chomp }
       world_stage = @save_data[0].split('-')
-      @world = World.new(world_stage[0].to_i, world_stage[1].to_i)
+      @world = World.new(world_stage[0].to_i, world_stage[1].to_i, true)
       @player = Player.new(name, save_data[1].to_sym, save_data[2].to_i, save_data[3].to_i)
       @state = :map
     end

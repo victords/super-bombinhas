@@ -6,6 +6,7 @@ exit			Salir
 new_game		Nuevo Juego
 continue		Continuar
 back			Volver
+choose_game		Elige un juego para cargar
 save			Guardar
 cancel			Cancelar
 choose_stage	Elige la etapa

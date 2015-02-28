@@ -52,7 +52,7 @@ class MapStage
 end
 
 class World
-  def initialize(num = 1, stage_num = 1)
+  def initialize(num = 1, stage_num = 1, loaded = false)
     @num = num
     @name = SB.text "world_#{@num}"
 
@@ -68,7 +68,7 @@ class World
       state = if i < @cur; :complete; else; i == @cur ? :current : :unknown; end
       @stages << MapStage.new(@num, i+1, coords[0].to_i, coords[1].to_i, state)
     end
-    @bomb = Sprite.new @stages[@cur].x + 1, @stages[@cur].y - 15, "sprite_Bomba#{SB.save_data[1].capitalize}", 5, 2
+    @bomb = Sprite.new @stages[@cur].x + 1, @stages[@cur].y - 15, "sprite_Bomba#{loaded ? SB.save_data[1].capitalize : 'Azul'}", 5, 2
 
     @font = TextHelper.new SB.font, 5
 

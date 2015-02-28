@@ -25,23 +25,32 @@ class MenuText
 end
 
 class SavedGame
-  def initialize(x, y, name, bomb, world_stage, specs)
+  def initialize(index, x, y, name, bomb, world_stage, specs, score)
+    @index = index
     @x = x
     @y = y
     @name = name
+    @world_stage = world_stage
+    @specs = specs.split(',').size
+    @score = score
+    @bg = Res.img(:ui_bgSavedGame)
     @bomb = Res.img("icon_Bomba#{bomb.capitalize}")
-    sp = specs.split(',').size
-    @detail = "     #{world_stage}       #{sp}"
-    @map = Res.img(:icon_map)
-    @spec = Res.img(:icon_spec)
+    @map_icon = Res.img(:icon_map)
+    @spec_icon = Res.img(:icon_spec)
+    @score_icon = Res.img(:icon_score)
   end
 
   def draw
-    @bomb.draw @x, @y, 0
-    SB.font.draw @name, @x + 30, @y, 0
-    SB.font.draw @detail, @x + 30, @y + 25, 0
-    @map.draw @x + 30, @y + 25, 0
-    @spec.draw @x + 120, @y + 25, 0
+    @bg.draw @x, @y, 0
+    @bomb.draw @x + 5, @y + 5, 0
+    @map_icon.draw @x + 45, @y + 40, 0
+    @spec_icon.draw @x + 135, @y + 40, 0
+    @score_icon.draw @x + 225, @y + 40, 0
+    SB.font.draw_rel @index.to_s, @x + 365, @y + 40, 0, 1, 0.5, 3, 3, 0x80000000
+    SB.font.draw @name, @x + 45, @y + 5, 0, 1, 1, 0xff000000
+    SB.font.draw @world_stage, @x + 75, @y + 40, 0, 1, 1, 0xff000000
+    SB.font.draw @specs.to_s, @x + 165, @y + 40, 0, 1, 1, 0xff000000
+    SB.font.draw @score, @x + 255, @y + 40, 0, 1, 1, 0xff000000
   end
 end
 
@@ -59,9 +68,9 @@ class Menu
     games = Dir["#{Res.prefix}save/*"][0..9].map { |x| x.split('/')[-1].chomp('.sbg') }.sort
     games.each_with_index do |g, i|
       save_data = IO.readlines("#{Res.prefix}save/#{g}.sbg").map { |l| l.chomp }
-      @saved_games << SavedGame.new(100 + (i % 2) * 350, 300 + (i / 2) * 40, g, save_data[1], save_data[0], save_data[4])
+      @saved_games << SavedGame.new((i+1), 20 + (i % 2) * 390, 95 + (i / 2) * 90, g, save_data[1], save_data[0], save_data[4], save_data[3])
       continue_screen_buttons <<
-        Button.new(100 + (i % 2) * 350, 300 + (i / 2) * 40, nil, nil, nil, 0, 0, 0x666666, 0x666666, true, true, 0, 0, 250, 30) {
+        Button.new(20 + (i % 2) * 390, 95 + (i / 2) * 90, nil, nil, nil, 0, 0, 0x666666, 0x666666, true, true, 0, 0, 370, 80) {
           SB.load_game g
         }
     end
@@ -106,7 +115,7 @@ class Menu
     @texts = [[
     ], [
     ], [
-      MenuText.new('Escolha o jogo:', 400, 250, 760, :center)
+      MenuText.new(SB.text(:choose_game), 780, 40, 380, :right)
     ], [
       MenuText.new('Primeira opção', 20, 200),
       MenuText.new('Segunda opção', 20, 250),
@@ -134,13 +143,17 @@ class Menu
 
   def set_highlight_position
     cur_btn = @btns[@cur_btn_group][@cur_btn]
+    x_off = -1
+    y_off = -5
     if cur_btn.is_a? MenuButton
       @highlight = @highlight1 if @highlight == @highlight2
-    elsif @highlight == @highlight1
-      @highlight = @highlight2
+    else
+      @highlight = @highlight2 if @highlight == @highlight1
+      x_off = -7
+      y_off = -7
     end
-    @highlight.x = cur_btn.x - 1
-    @highlight.y = cur_btn.y - 5
+    @highlight.x = cur_btn.x + x_off
+    @highlight.y = cur_btn.y + y_off
   end
 
   def update
@@ -173,7 +186,7 @@ class Menu
 
   def draw
     @bg.draw 0, 0, 0
-    @title.draw 0, 0, 0
+    @title.draw 0, 0, 0, @cur_btn_group == 2 ? 0.5 : 1, @cur_btn_group == 2 ? 0.5 : 1
     @btns[@cur_btn_group].each do |b|
       b.draw
     end

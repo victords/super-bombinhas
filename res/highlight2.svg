@@ -9,8 +9,8 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="260"
-   height="120"
+   width="384"
+   height="282"
    id="svg2"
    version="1.1"
    inkscape:version="0.48.4 r9939"
@@ -20,19 +20,6 @@
    inkscape:export-ydpi="90">
   <defs
      id="defs4">
-    <filter
-       inkscape:collect="always"
-       id="filter3770"
-       x="-0.036416184"
-       width="1.0728323"
-       y="-0.17027026"
-       height="1.3405405"
-       color-interpolation-filters="sRGB">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="2.625"
-         id="feGaussianBlur3772" />
-    </filter>
     <clipPath
        clipPathUnits="userSpaceOnUse"
        id="clipPath3779">
@@ -64,6 +51,28 @@
          id="path3785"
          inkscape:connector-curvature="0" />
     </clipPath>
+    <filter
+       inkscape:collect="always"
+       id="filter3779"
+       x="-0.02192992"
+       width="1.0438598"
+       y="-0.10044444"
+       height="1.2008889"
+       color-interpolation-filters="sRGB">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="3.39"
+         id="feGaussianBlur3781" />
+    </filter>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath3790">
+      <path
+         style="fill:#000000;fill-opacity:1;stroke:none"
+         d="m 0,770.3622 0,94 384,0 0,-94 -384,0 z m 7,7 370,0 0,80 -370,0 0,-80 z"
+         id="path3792"
+         inkscape:connector-curvature="0" />
+    </clipPath>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -73,8 +82,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1"
-     inkscape:cx="121.35375"
-     inkscape:cy="9.6164863"
+     inkscape:cx="31.5"
+     inkscape:cy="269.7131"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -91,7 +100,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -99,64 +108,64 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0,-932.3622)">
+     transform="translate(0,-770.3622)">
     <g
-       id="g3787"
-       style="opacity:0.6">
+       id="g3794">
       <rect
-         y="1016.8622"
-         x="4.5"
-         height="31"
-         width="251.00002"
-         id="rect3795"
-         style="fill:none;stroke:#ffff00;stroke-width:1;stroke-opacity:1" />
-      <rect
-         clip-path="url(#clipPath3783)"
-         style="fill:none;stroke:#ffff00;stroke-width:5;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter3773)"
-         id="rect3767"
-         width="251.00002"
-         height="31"
-         x="4.5"
-         y="1016.8622" />
-    </g>
-    <g
-       id="g3791"
-       transform="translate(0,-40)"
-       style="opacity:0.8">
-      <rect
-         style="fill:none;stroke:#ffff00;stroke-width:1;stroke-opacity:1"
-         id="rect3793"
-         width="251.00002"
-         height="31"
-         x="4.5"
-         y="1016.8622" />
-      <rect
-         y="1016.8622"
-         x="4.5"
-         height="31"
-         width="251.00002"
-         id="rect3796"
-         style="fill:none;stroke:#ffff00;stroke-width:5;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter3773)"
-         clip-path="url(#clipPath3783)" />
-    </g>
-    <g
-       transform="translate(0,-80)"
-       id="g3798">
-      <rect
-         y="1016.8622"
-         x="4.5"
-         height="31"
-         width="251.00002"
+         y="776.86218"
+         x="6.5000005"
+         height="81"
+         width="371"
          id="rect3800"
          style="fill:none;stroke:#ffff00;stroke-width:1;stroke-opacity:1" />
       <rect
-         clip-path="url(#clipPath3783)"
-         style="fill:none;stroke:#ffff00;stroke-width:5;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter3773)"
-         id="rect3802"
-         width="251.00002"
-         height="31"
-         x="4.5"
-         y="1016.8622" />
+         clip-path="url(#clipPath3790)"
+         style="fill:none;stroke:#ffff00;stroke-width:5;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter3779)"
+         id="rect3001"
+         width="371"
+         height="81"
+         x="6.5000005"
+         y="776.86218" />
+    </g>
+    <g
+       id="g3798"
+       transform="translate(0,94)"
+       style="opacity:0.8">
+      <rect
+         style="fill:none;stroke:#ffff00;stroke-width:1;stroke-opacity:1"
+         id="rect3801"
+         width="371"
+         height="81"
+         x="6.5000005"
+         y="776.86218" />
+      <rect
+         y="776.86218"
+         x="6.5000005"
+         height="81"
+         width="371"
+         id="rect3803"
+         style="fill:none;stroke:#ffff00;stroke-width:5;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter3779)"
+         clip-path="url(#clipPath3790)" />
+    </g>
+    <g
+       transform="translate(0,188)"
+       id="g3805"
+       style="opacity:0.6">
+      <rect
+         y="776.86218"
+         x="6.5000005"
+         height="81"
+         width="371"
+         id="rect3807"
+         style="fill:none;stroke:#ffff00;stroke-width:1;stroke-opacity:1" />
+      <rect
+         clip-path="url(#clipPath3790)"
+         style="fill:none;stroke:#ffff00;stroke-width:5;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter3779)"
+         id="rect3809"
+         width="371"
+         height="81"
+         x="6.5000005"
+         y="776.86218" />
     </g>
   </g>
 </svg>

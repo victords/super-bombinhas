@@ -6,6 +6,7 @@ exit			Exit
 new_game		New Game
 continue		Continue
 back			Back
+choose_game		Choose a game to load
 save			Save
 cancel			Cancel
 choose_stage	Choose the stage
