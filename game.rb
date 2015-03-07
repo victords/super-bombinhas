@@ -2,6 +2,7 @@
 #encoding: UTF-8
 
 require_relative 'menu'
+require_relative 'ui'
 
 class SBGame < MiniGL::GameWindow
   def initialize
@@ -26,7 +27,7 @@ class SBGame < MiniGL::GameWindow
     KB.update
     Mouse.update
 
-    close if KB.key_pressed? Gosu::KbEscape
+    close if KB.key_pressed? Gosu::KbTab
 
     if SB.state == :presentation
 
@@ -36,6 +37,8 @@ class SBGame < MiniGL::GameWindow
       SB.world.update
     elsif SB.state == :main
       SB.stage.update
+    elsif SB.state == :paused
+      UI.update
     end
   end
 
@@ -46,8 +49,9 @@ class SBGame < MiniGL::GameWindow
       SB.menu.draw
     elsif SB.state == :map
       SB.world.draw
-    elsif SB.state == :main
+    elsif SB.state == :main || SB.state == :paused
       SB.stage.draw
+      UI.draw
     end
   end
 end

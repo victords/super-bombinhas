@@ -35,7 +35,7 @@ class Bomb < GameObject
       @explosion.animate [0, 1, 2, 3], 5
       @explosion_counter += 1
       @exploding = false if @explosion_counter == 90
-      forces.x -= 0.15 * @speed.x if @speed.x != 0
+      forces.x -= 0.15 * @speed.x if @bottom and @speed.x != 0
     else
       if @will_explode
         @explosion_timer += 1
@@ -47,15 +47,11 @@ class Bomb < GameObject
       end
       if KB.key_down? Gosu::KbLeft
         set_direction :left if @facing_right
-        forces.x -= @bottom ? 0.15 : 0.05
-      elsif @speed.x < 0
-        forces.x -= 0.15 * @speed.x
+        forces.x -= @bottom ? 0.4 : 0.05
       end
       if KB.key_down? Gosu::KbRight
         set_direction :right unless @facing_right
-        forces.x += @bottom ? 0.15 : 0.05
-      elsif @speed.x > 0
-        forces.x -= 0.15 * @speed.x
+        forces.x += @bottom ? 0.4 : 0.05
       end
       if @bottom
         if @speed.x != 0
@@ -70,6 +66,7 @@ class Bomb < GameObject
           if @facing_right; set_animation 3
           else; set_animation 8; end
         end
+        forces.x -= @speed.x * 0.1
       end
     end
     move forces, section.get_obstacles(@x, @y), section.ramps

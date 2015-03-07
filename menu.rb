@@ -38,6 +38,7 @@ class SavedGame
     @map_icon = Res.img(:icon_map)
     @spec_icon = Res.img(:icon_spec)
     @score_icon = Res.img(:icon_score)
+    @writer = TextHelper.new SB.font
   end
 
   def draw
@@ -47,10 +48,10 @@ class SavedGame
     @spec_icon.draw @x + 135, @y + 40, 0
     @score_icon.draw @x + 225, @y + 40, 0
     SB.font.draw_rel @index.to_s, @x + 365, @y + 40, 0, 1, 0.5, 3, 3, 0x80000000
-    SB.font.draw @name, @x + 45, @y + 5, 0, 1, 1, 0xff000000
-    SB.font.draw @world_stage, @x + 75, @y + 40, 0, 1, 1, 0xff000000
-    SB.font.draw @specs.to_s, @x + 165, @y + 40, 0, 1, 1, 0xff000000
-    SB.font.draw @score, @x + 255, @y + 40, 0, 1, 1, 0xff000000
+    @writer.write_line @name, @x + 45, @y + 5, :left, 0xffffff, :border
+    @writer.write_line @world_stage, @x + 75, @y + 40
+    @writer.write_line @specs.to_s, @x + 165, @y + 40
+    @writer.write_line @score, @x + 255, @y + 40
   end
 end
 

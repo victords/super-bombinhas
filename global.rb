@@ -31,6 +31,8 @@ class SB
         end
       end
       @lang = :portuguese
+
+      UI.initialize
     end
 
     def load_game(name)

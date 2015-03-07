@@ -41,8 +41,8 @@ class MapStage
     end
   end
 
-  def select
-    SB.stage = Stage.new @world, @num
+  def select(loaded_stage)
+    SB.stage = Stage.new(@world, @num, @num == loaded_stage)
     SB.state = :main
   end
 
@@ -54,6 +54,7 @@ end
 class World
   def initialize(num = 1, stage_num = 1, loaded = false)
     @num = num
+    @loaded_stage = loaded ? stage_num : nil
     @name = SB.text "world_#{@num}"
 
     @water = Sprite.new 0, 0, :ui_water, 2, 2
@@ -73,7 +74,7 @@ class World
     @font = TextHelper.new SB.font, 5
 
     @play_button = Button.new(420, 550, SB.font, SB.text(:play), :ui_button1, 0, 0, 0, 0, true, false, 0, 7) {
-      @stages[@cur].select
+      @stages[@cur].select(@loaded_stage)
     }
     @back_button = Button.new(610, 550, SB.font, SB.text(:back), :ui_button1, 0, 0, 0, 0, true, false, 0, 7) {
       SB.menu.set_button_group 0
@@ -89,7 +90,7 @@ class World
     @back_button.update
 
     if KB.key_pressed? Gosu::KbSpace or KB.key_pressed? Gosu::KbA
-      @stages[@cur].select
+      @stages[@cur].select(@loaded_stage)
     elsif KB.key_pressed? Gosu::KbLeft or KB.key_pressed? Gosu::KbDown
       @cur -= 1
       @cur = @stages.size - 1 if @cur < 0

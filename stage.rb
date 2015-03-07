@@ -1,13 +1,13 @@
 require_relative 'section'
 
 class Stage
-  def initialize(world, num)
+  def initialize(world, num, loaded = false)
     @sections = []
     @entrances = []
     @switches = []
 
-    taken_switches = eval "[#{SB.save_data[7]}]"
-    used_switches = eval "[#{SB.save_data[8]}]"
+    taken_switches = loaded ? eval("[#{SB.save_data[7]}]") : []
+    used_switches = loaded ? eval("[#{SB.save_data[8]}]") : []
 
     sections = Dir["#{Res.prefix}stage/#{world}/#{num}-*.sbs"]
     sections.sort.each do |s|

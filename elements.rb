@@ -62,7 +62,7 @@ end
 
 class Bombie < GameObject
   def initialize(x, y, args, section)
-    super x, y, 32, 32, :sprite_Bombie, Vector.new(1, -2), 6, 1
+    super x - 16, y, 64, 32, :sprite_Bombie, Vector.new(17, -2), 6, 1
     @msg_id = "msg#{args.to_i}".to_sym
     @balloon = Res.img :fx_Balloon1
     @facing_right = false
@@ -70,7 +70,7 @@ class Bombie < GameObject
     @speaking = false
     @interval = 8
 
-    @active_bounds = Rectangle.new x, y, 32, 32
+    @active_bounds = Rectangle.new x - 16, y, 64, 32
   end
 
   def update(section)
@@ -108,9 +108,9 @@ class Bombie < GameObject
 
   def draw(map)
     super map
-    @balloon.draw @x - map.cam.x, @y - map.cam.y - 32, 0 if @active
+    @balloon.draw @x - map.cam.x + 16, @y - map.cam.y - 32, 0 if @active
     if @speaking
-      SB.window.draw_quad 5, 495, 0x80abcdef,
+      G.window.draw_quad 5, 495, 0x80abcdef,
                          795, 495, 0x80abcdef,
                          795, 595, 0x80abcdef,
                          5, 595, 0x80abcdef, 0
@@ -385,7 +385,7 @@ class Ball < GameObject
         end
 
         SB.stage.switches.each do |s|
-          if s[:type] == BallReceptor and bounds.intersects s[:obj].bounds
+          if s[:type] == BallReceptor and bounds.intersect? s[:obj].bounds
             s[:obj].set section
             s2 = SB.stage.find_switch self
             s2[:extra] = @rec = s[:obj]
@@ -470,7 +470,7 @@ class HideTile
     will_show = false
     @points.each do |p|
       rect = Rectangle.new p[:x], p[:y], C::TILE_SIZE, C::TILE_SIZE
-      if SB.player.bomb.bounds.intersects rect
+      if SB.player.bomb.bounds.intersect? rect
         will_show = true
         break
       end

@@ -325,6 +325,7 @@ class Section
     @map.set_camera (@bomb.x - @margin.x).round, (@bomb.y - @margin.y).round
 
     @reload = true if SB.player.dead? or KB.key_pressed? Gosu::KbBackspace
+    SB.state = :paused if KB.key_pressed? Gosu::KbEscape
   end
 
   def draw
@@ -347,8 +348,6 @@ class Section
     @hide_tiles.each do |t|
       t.draw @map if t.is_visible @map
     end
-
-    SB.player.draw_stats
   end
 
   def draw_bgs
