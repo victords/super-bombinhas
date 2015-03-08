@@ -77,7 +77,7 @@ class World
       @stages[@cur].select(@loaded_stage)
     }
     @back_button = Button.new(610, 550, SB.font, SB.text(:back), :ui_button1, 0, 0, 0, 0, true, false, 0, 7) {
-      SB.menu.set_button_group 0
+      SB.menu.reset
       SB.state = :menu
     }
   end
