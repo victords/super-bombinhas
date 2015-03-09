@@ -5,13 +5,23 @@ require_relative 'form'
 include MiniGL
 
 class MenuButton < Button
+  include FormElement
+
   def initialize(y, text_id, x = 310, &action)
     super(x, y, SB.font, SB.text(text_id), :ui_button1, 0, 0x808080, 0, 0, true, false, 0, 7, 0, 0, 0, &action)
   end
 end
 
+class SavedGameButton < Button
+  include FormElement
+
+  def initialize(x, y)
+    super x, y, nil, nil, nil, 0, 0, 0x666666, 0x666666, true, true, 0, 0, 370, 80
+  end
+end
+
 class MenuText
-  attr_reader :x, :y
+  include FormElement
 
   def initialize(text, x, y, width = 760, mode = :justified)
     @text = text
@@ -34,6 +44,8 @@ class MenuText
 end
 
 class SavedGame
+  include FormElement
+
   def initialize(index, x, y, name, bomb, world_stage, specs, score)
     @index = index
     @x = x
@@ -48,6 +60,12 @@ class SavedGame
     @spec_icon = Res.img(:icon_spec)
     @score_icon = Res.img(:icon_score)
     @writer = TextHelper.new SB.font
+  end
+
+  def update; end
+
+  def set_position(x, y)
+    @x = x; @y = y
   end
 
   def draw
@@ -74,9 +92,11 @@ class Menu
     games = Dir["#{Res.prefix}save/*"][0..9].map { |x| x.split('/')[-1].chomp('.sbg') }.sort
     games.each_with_index do |g, i|
       save_data = IO.readlines("#{Res.prefix}save/#{g}.sbg").map { |l| l.chomp }
-      @saved_games << SavedGame.new((i+1), 20 + (i % 2) * 390, 95 + (i / 2) * 90, g, save_data[1], save_data[0], save_data[4], save_data[3])
+      saved_game = SavedGame.new((i+1), 20 + (i % 2) * 390, 95 + (i / 2) * 90, g, save_data[1], save_data[0], save_data[4], save_data[3])
+      @saved_games << saved_game
+      continue_screen_elements << saved_game
       continue_screen_elements <<
-        Button.new(20 + (i % 2) * 390, 95 + (i / 2) * 90, nil, nil, nil, 0, 0, 0x666666, 0x666666, true, true, 0, 0, 370, 80) {
+        SavedGameButton.new(20 + (i % 2) * 390, 95 + (i / 2) * 90) {
           SB.load_game g
         }
     end
