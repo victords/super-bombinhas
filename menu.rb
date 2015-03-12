@@ -4,19 +4,11 @@ require_relative 'player'
 require_relative 'form'
 include MiniGL
 
-class MenuButton < Button
-  include FormElement
-
-  def initialize(y, text_id, x = 310, &action)
-    super(x, y, SB.font, SB.text(text_id), :ui_button1, 0, 0x808080, 0, 0, true, false, 0, 7, 0, 0, 0, &action)
-  end
-end
-
 class SavedGameButton < Button
   include FormElement
 
   def initialize(x, y)
-    super x, y, nil, nil, nil, 0, 0, 0x666666, 0x666666, true, true, 0, 0, 370, 80
+    super(x: x, y: y, width: 370, height: 80)
   end
 end
 
@@ -75,7 +67,7 @@ class SavedGame
     @spec_icon.draw @x + 135, @y + 40, 0
     @score_icon.draw @x + 225, @y + 40, 0
     SB.font.draw_rel @index.to_s, @x + 365, @y + 40, 0, 1, 0.5, 3, 3, 0x80000000
-    @writer.write_line @name, @x + 45, @y + 5, :left, 0xffffff, :border
+    @writer.write_line @name, @x + 45, @y + 5, :left, 0xffffff, 255, :border
     @writer.write_line @world_stage, @x + 75, @y + 40
     @writer.write_line @specs.to_s, @x + 165, @y + 40
     @writer.write_line @score, @x + 255, @y + 40
@@ -146,7 +138,7 @@ class Menu
         @form.go_to_section 0
       },
       MenuText.new(
-          'Texto dos créditos aqui. Texto bem longo, podendo quebrar linha. '\
+        'Texto dos créditos aqui. Texto bem longo, podendo quebrar linha. '\
         'Texto bem longo, podendo quebrar linha. Pode também ter quebras de '\
         "linha explícitas.\nAqui tem uma quebra de linha explícita.\n\n"\
         'Duas quebras seguidas.', 400, 200, 600, :center)

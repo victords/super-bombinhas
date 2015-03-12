@@ -2,7 +2,7 @@
 #encoding: UTF-8
 
 require_relative 'menu'
-require_relative 'ui'
+require_relative 'stage_menu'
 
 class SBGame < MiniGL::GameWindow
   def initialize
@@ -38,7 +38,7 @@ class SBGame < MiniGL::GameWindow
     elsif SB.state == :main
       SB.stage.update
     elsif SB.state == :paused
-      UI.update
+      StageMenu.update
     end
   end
 
@@ -51,7 +51,7 @@ class SBGame < MiniGL::GameWindow
       SB.world.draw
     elsif SB.state == :main || SB.state == :paused
       SB.stage.draw
-      UI.draw
+      StageMenu.draw
     end
   end
 end

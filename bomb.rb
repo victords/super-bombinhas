@@ -1,16 +1,16 @@
 require 'minigl'
 
 class Bomb < GameObject
-  attr_reader :facing_right
+  attr_reader :type, :hp, :facing_right
 
   def initialize(type)
     t_img_gap = -10
     case type
-    when :azul then @name = 'Bomba Azul'; img = :sprite_BombaAzul; l_img_gap = -5; r_img_gap = -5
-    when :vermelha then @name = 'Bomba Vermelha'; img = :sprite_BombaVermelha; l_img_gap = -4; r_img_gap = -6
-    when :amarela then @name = 'Bomba Amarela'; img = :sprite_BombaAmarela; l_img_gap = -6; r_img_gap = -14
-    when :verde then @name = 'Bomba Verde'; img = :sprite_BombaVerde; l_img_gap = -6; r_img_gap = -14
-    when :aldan then @name = 'Aldan'; img = :sprite_Aldan; l_img_gap = -6; r_img_gap = -14; t_img_gap = -26
+    when :azul then @name = 'Bomba Azul'; @hp = 1; img = :sprite_BombaAzul; l_img_gap = -5; r_img_gap = -5
+    when :vermelha then @name = 'Bomba Vermelha'; @hp = 2; img = :sprite_BombaVermelha; l_img_gap = -4; r_img_gap = -6
+    when :amarela then @name = 'Bomba Amarela'; @hp = 1; img = :sprite_BombaAmarela; l_img_gap = -6; r_img_gap = -14
+    when :verde then @name = 'Bomba Verde'; @hp = 2; img = :sprite_BombaVerde; l_img_gap = -6; r_img_gap = -14
+    when :branca then @name = 'Aldan'; @hp = 1; img = :sprite_Aldan; l_img_gap = -6; r_img_gap = -14; t_img_gap = -26
     end
 
     super -1000, -1000, 20, 30, img, Vector.new(r_img_gap, t_img_gap), 5, 2

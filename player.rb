@@ -1,7 +1,7 @@
 require_relative 'bomb'
 
 class Player
-  attr_reader :name, :bomb, :items, :cur_item_type
+  attr_reader :name, :bomb, :items, :cur_item_type, :specs
   attr_accessor :lives, :score
 
   def initialize(name = nil, bomb = :azul, lives = 5, score = 0)
@@ -10,6 +10,7 @@ class Player
     @lives = lives
     @score = score
     @items = {}
+    @specs = []
   end
 
   def dead?

@@ -1,15 +1,30 @@
 require_relative 'global'
+require_relative 'form'
 
-class UI
+class StageMenu
   class << self
     def initialize
-      @stage_menu = Res.img :ui_stageMenu
+      @stage_menu_bg = Res.img :ui_stageMenu
+      @stage_menu = Form.new([
+        MenuButton.new(210, :resume) {
+          SB.state = :main
+        },
+        MenuButton.new(280, :options) {
+          @stage_menu.go_to_section 1
+        },
+        MenuButton.new(350, :save_exit) {
+          SB.save_and_exit
+        }
+      ], [
+        MenuButton.new(550, :back) {
+          @stage_menu.go_to_section 0
+        }
+      ])
     end
 
     def update
       if SB.state == :paused
-        return SB.state = :main if KB.key_pressed? Gosu::KbEscape
-
+        @stage_menu.update
       end
     end
 
@@ -59,8 +74,9 @@ class UI
       G.window.draw_quad 0, 0, 0x80000000,
                          800, 0, 0x80000000,
                          0, 600, 0x80000000,
-                         800, 600, 0x80000000, 1
-      @stage_menu.draw 275, 180, 1
+                         800, 600, 0x80000000, 0
+      @stage_menu_bg.draw 275, 180, 0 if @stage_menu.cur_section_index == 0
+      @stage_menu.draw
     end
   end
 end

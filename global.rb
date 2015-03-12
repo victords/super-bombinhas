@@ -32,7 +32,11 @@ class SB
       end
       @lang = :portuguese
 
-      UI.initialize
+      StageMenu.initialize
+    end
+
+    def text(id)
+      @texts[@lang][id.to_sym]
     end
 
     def load_game(name)
@@ -43,8 +47,19 @@ class SB
       @state = :map
     end
 
-    def text(id)
-      @texts[@lang][id.to_sym]
+    def save_and_exit
+      name = @player.name || 'default'
+      File.open("#{Res.prefix}save/#{name}.sbg", 'w') do |f|
+        f.print "#{@world.num}-#{@stage.num}\n"\
+                "#{@player.bomb.type}\n"\
+                "#{@player.lives}\n"\
+                "#{@player.score}\n"\
+                "#{@player.specs.join(',')}\n"\
+                "#{@stage.cur_entrance[:index]}\n"\
+                "#{@player.bomb.hp}\n"
+        # TODO: itens pegos, itens usados
+      end
+      @state = :map
     end
   end
 end

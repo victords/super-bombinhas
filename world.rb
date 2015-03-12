@@ -52,6 +52,8 @@ class MapStage
 end
 
 class World
+  attr_reader :num
+
   def initialize(num = 1, stage_num = 1, loaded = false)
     @num = num
     @loaded_stage = loaded ? stage_num : nil

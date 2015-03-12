@@ -62,7 +62,8 @@ class Section
             set_tile x, y, t, e[i+1, 2]
           else
             if e[i] == '!'
-              entrances[e[(i+1)..-1].to_i] = {x: x * C::TILE_SIZE, y: y * C::TILE_SIZE, section: self}
+              index = e[(i+1)..-1].to_i
+              entrances[index] = {x: x * C::TILE_SIZE, y: y * C::TILE_SIZE, section: self, index: index}
             else
               t, a = element_type e[(i+1)..-1]
               if t != :none # teste poderá ser removido no final

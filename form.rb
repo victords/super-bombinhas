@@ -29,6 +29,14 @@ module FormElement
   end
 end
 
+class MenuButton < Button
+  include FormElement
+
+  def initialize(y, text_id, x = 310, &action)
+    super(x, y, SB.font, SB.text(text_id), :ui_button1, 0, 0x808080, 0, 0, true, false, 0, 7, 0, 0, 0, &action)
+  end
+end
+
 class FormSection
   attr_reader :cur_btn, :changing
 
@@ -101,7 +109,7 @@ class Form
     @highlight_alpha = 102
     @highlight_state = 0
     @cur_section = @sections[@cur_section_index = 0]
-    @cur_section.show
+    # @cur_section.show
   end
 
   def update

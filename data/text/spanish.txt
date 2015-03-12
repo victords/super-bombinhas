@@ -14,6 +14,8 @@ stage			Etapa
 loading			Cargando
 lives			Vidas
 score			Puntos
+resume			Reanudar
+save_exit		Guardar y Salir
 msg1			Testando mensaje
 msg2			Segunda mensaje de teste
 count_down		¡Cuenta regresiva para explodir!
