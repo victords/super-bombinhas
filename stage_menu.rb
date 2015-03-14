@@ -5,6 +5,7 @@ class StageMenu
   class << self
     def initialize
       @stage_menu_bg = Res.img :ui_stageMenu
+      @txt_name = MenuTextField.new(x: 314, y: 210, font: SB.font, img: :ui_textField, margin_x: 10, margin_y: 8, active: true)
       @stage_menu = Form.new([
         MenuButton.new(210, :resume) {
           SB.state = :main
@@ -13,10 +14,23 @@ class StageMenu
           @stage_menu.go_to_section 1
         },
         MenuButton.new(350, :save_exit) {
-          SB.save_and_exit
+          if SB.player.name
+            SB.save_and_exit
+          else
+            @stage_menu.go_to_section 2
+          end
         }
       ], [
         MenuButton.new(550, :back) {
+          @stage_menu.go_to_section 0
+        }
+      ], [
+        @txt_name,
+        MenuButton.new(280, :save) {
+          SB.player.name = @txt_name.text
+          SB.save_and_exit
+        },
+        MenuButton.new(350, :cancel) {
           @stage_menu.go_to_section 0
         }
       ])
@@ -75,7 +89,7 @@ class StageMenu
                          800, 0, 0x80000000,
                          0, 600, 0x80000000,
                          800, 600, 0x80000000, 0
-      @stage_menu_bg.draw 275, 180, 0 if @stage_menu.cur_section_index == 0
+      @stage_menu_bg.draw 275, 180, 0 if @stage_menu.cur_section_index != 1
       @stage_menu.draw
     end
   end

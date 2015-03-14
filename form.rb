@@ -37,6 +37,10 @@ class MenuButton < Button
   end
 end
 
+class MenuTextField < TextField
+  include FormElement
+end
+
 class FormSection
   attr_reader :cur_btn, :changing
 
@@ -75,7 +79,7 @@ class FormSection
       elsif KB.key_pressed? Gosu::KbUp or KB.key_pressed? Gosu::KbLeft
         @cur_btn_index -= 1
         @cur_btn_index = @buttons.length - 1 if @cur_btn_index < 0
-      elsif KB.key_pressed?(Gosu::KbReturn) or KB.key_pressed?(Gosu::KbSpace)
+      elsif KB.key_pressed?(Gosu::KbReturn)
         @cur_btn.click
       end
       @cur_btn = @buttons[@cur_btn_index]
@@ -91,6 +95,19 @@ class FormSection
   def hide
     @changing = 0
     @components.each { |c| c.move_to(c.x - C::SCREEN_WIDTH, c.y) }
+  end
+
+  def clear
+    @components.clear
+    @buttons.clear
+  end
+
+  def add(component)
+    @components << component
+    @buttons << component if component.is_a? Button
+    component.init_movement
+    component.set_position(component.x - C::SCREEN_WIDTH, component.y) unless @visible
+    @cur_btn = @buttons[@cur_btn_index = 0] if @cur_btn.nil?
   end
 
   def draw
@@ -135,6 +152,10 @@ class Form
     @cur_section.hide
     @cur_section = @sections[@cur_section_index = index]
     @cur_section.show
+  end
+
+  def section(index)
+    @sections[index]
   end
 
   def draw

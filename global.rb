@@ -48,16 +48,16 @@ class SB
     end
 
     def save_and_exit
-      name = @player.name || 'default'
-      File.open("#{Res.prefix}save/#{name}.sbg", 'w') do |f|
+      File.open("#{Res.prefix}save/#{@player.name}.sbg", 'w') do |f|
         f.print "#{@world.num}-#{@stage.num}\n"\
                 "#{@player.bomb.type}\n"\
                 "#{@player.lives}\n"\
                 "#{@player.score}\n"\
                 "#{@player.specs.join(',')}\n"\
                 "#{@stage.cur_entrance[:index]}\n"\
-                "#{@player.bomb.hp}\n"
-        # TODO: itens pegos, itens usados
+                "#{@player.bomb.hp}\n"\
+                "#{@stage.switches_by_state(:taken)}\n"\
+                "#{@stage.switches_by_state(:used)}\n"
       end
       @state = :map
     end

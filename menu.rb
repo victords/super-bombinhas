@@ -79,24 +79,6 @@ class Menu
     @bg = Res.img :bg_start1, true, false, '.jpg'
     @title = Res.img :ui_title, true
 
-    continue_screen_elements = []
-    @saved_games = []
-    games = Dir["#{Res.prefix}save/*"][0..9].map { |x| x.split('/')[-1].chomp('.sbg') }.sort
-    games.each_with_index do |g, i|
-      save_data = IO.readlines("#{Res.prefix}save/#{g}.sbg").map { |l| l.chomp }
-      saved_game = SavedGame.new((i+1), 20 + (i % 2) * 390, 95 + (i / 2) * 90, g, save_data[1], save_data[0], save_data[4], save_data[3])
-      @saved_games << saved_game
-      continue_screen_elements << saved_game
-      continue_screen_elements <<
-        SavedGameButton.new(20 + (i % 2) * 390, 95 + (i / 2) * 90) {
-          SB.load_game g
-        }
-    end
-    continue_screen_elements << MenuButton.new(550, :back) {
-      @form.go_to_section 1
-    }
-    continue_screen_elements << MenuText.new(SB.text(:choose_game), 780, 40, 380, :right)
-
     @form = Form.new([
       MenuButton.new(295, :play) {
         @form.go_to_section 1
@@ -122,7 +104,7 @@ class Menu
       MenuButton.new(420, :back) {
         @form.go_to_section 0
       }
-    ], continue_screen_elements, [
+    ], [], [
       MenuButton.new(550, :save, 215) {
         puts 'save options'
       },
@@ -143,6 +125,8 @@ class Menu
         "linha explícitas.\nAqui tem uma quebra de linha explícita.\n\n"\
         'Duas quebras seguidas.', 400, 200, 600, :center)
     ])
+
+    add_saved_games
   end
 
   def update
@@ -151,6 +135,30 @@ class Menu
 
   def reset
     @form.go_to_section 0
+    add_saved_games
+  end
+
+  def add_saved_games
+    components = []
+    @saved_games = []
+    games = Dir["#{Res.prefix}save/*"][0..9].map { |x| x.split('/')[-1].chomp('.sbg') }.sort
+    games.each_with_index do |g, i|
+      save_data = IO.readlines("#{Res.prefix}save/#{g}.sbg").map { |l| l.chomp }
+      saved_game = SavedGame.new((i+1), 20 + (i % 2) * 390, 95 + (i / 2) * 90, g, save_data[1], save_data[0], save_data[4], save_data[3])
+      @saved_games << saved_game
+      components << saved_game
+      components <<
+        SavedGameButton.new(20 + (i % 2) * 390, 95 + (i / 2) * 90) {
+          SB.load_game g
+        }
+    end
+    components << MenuButton.new(550, :back) {
+      @form.go_to_section 1
+    }
+    components << MenuText.new(SB.text(:choose_game), 780, 40, 380, :right)
+    section = @form.section(2)
+    section.clear
+    components.each { |c| section.add(c) }
   end
 
   def draw

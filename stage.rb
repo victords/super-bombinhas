@@ -96,6 +96,10 @@ class Stage
     end
   end
 
+  def switches_by_state(state)
+    @switches.select{ |s| s[:state] == state }.map{ |s| s[:index] }.join(',')
+  end
+
   def draw
     # cuidar das transições
     @cur_section.draw

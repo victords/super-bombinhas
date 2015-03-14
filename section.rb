@@ -79,6 +79,7 @@ class Section
                     el[:state] = :normal
                   end
                   el[:section] = self
+                  el[:index] = s_index
                   switches << el
                   s_index += 1
                 else
