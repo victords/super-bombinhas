@@ -6,6 +6,7 @@ class StageMenu
     def initialize
       @stage_menu_bg = Res.img :ui_stageMenu
       @txt_name = MenuTextField.new(x: 314, y: 210, font: SB.font, img: :ui_textField, margin_x: 10, margin_y: 8, active: true)
+      @lbl_overwrite = MenuText.new('', 400, 210, 220, :center)
       @stage_menu = Form.new([
         MenuButton.new(210, :resume) {
           SB.state = :main
@@ -27,11 +28,29 @@ class StageMenu
       ], [
         @txt_name,
         MenuButton.new(280, :save) {
-          SB.player.name = @txt_name.text
-          SB.save_and_exit
+          games = Dir["#{Res.prefix}save/*"].sort[0..9].map { |x| x.split('/')[-1].chomp('.sbg') }
+          if games.index(@txt_name.text)
+            @lbl_overwrite.text = SB.text(:overwrite).sub('$', @txt_name.text)
+            @stage_menu.go_to_section 3
+          elsif games.length == C::GAME_LIMIT
+            puts 'oi'
+          else
+            SB.player.name = @txt_name.text
+            SB.save_and_exit
+          end
         },
         MenuButton.new(350, :cancel) {
           @stage_menu.go_to_section 0
+        }
+      ], [
+        @lbl_overwrite,
+        MenuButton.new(280, :yes) {
+          SB.player.name = @txt_name.text
+          SB.save_and_exit
+        },
+        MenuButton.new(350, :no) {
+          @txt_name.text = ''
+          @stage_menu.go_to_section 2
         }
       ])
     end

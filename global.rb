@@ -10,6 +10,7 @@ module C
   BOUNCE_FORCE = 10
   TOP_MARGIN = -200
   EXIT_MARGIN = 16
+  GAME_LIMIT = 10
 end
 
 class SB

@@ -16,6 +16,9 @@ lives			Lives
 score			Score
 resume			Resume
 save_exit		Save and Exit
+overwrite		A game named '$' already exists. Do you want to replace it?
+yes				Yes
+no				No
 msg1			Testing message
 msg2			Second test message
 count_down		Countdown to explosion!

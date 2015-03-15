@@ -29,6 +29,31 @@ module FormElement
   end
 end
 
+class MenuText
+  include FormElement
+
+  attr_accessor :text
+
+  def initialize(text, x, y, width = 760, mode = :justified)
+    @text = text
+    @x = x
+    @y = y
+    @width = width
+    @mode = mode
+    @writer = TextHelper.new SB.font, 5
+  end
+
+  def update; end
+
+  def set_position(x, y)
+    @x = x; @y = y
+  end
+
+  def draw
+    @writer.write_breaking(@text, @x, @y, @width, @mode)
+  end
+end
+
 class MenuButton < Button
   include FormElement
 

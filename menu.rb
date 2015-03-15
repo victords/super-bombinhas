@@ -12,29 +12,6 @@ class SavedGameButton < Button
   end
 end
 
-class MenuText
-  include FormElement
-
-  def initialize(text, x, y, width = 760, mode = :justified)
-    @text = text
-    @x = x
-    @y = y
-    @width = width
-    @mode = mode
-    @writer = TextHelper.new SB.font, 5
-  end
-
-  def update; end
-
-  def set_position(x, y)
-    @x = x; @y = y
-  end
-
-  def draw
-    @writer.write_breaking(@text, @x, @y, @width, @mode)
-  end
-end
-
 class SavedGame
   include FormElement
 
@@ -141,7 +118,7 @@ class Menu
   def add_saved_games
     components = []
     @saved_games = []
-    games = Dir["#{Res.prefix}save/*"][0..9].map { |x| x.split('/')[-1].chomp('.sbg') }.sort
+    games = Dir["#{Res.prefix}save/*"].sort[0..9].map { |x| x.split('/')[-1].chomp('.sbg') }
     games.each_with_index do |g, i|
       save_data = IO.readlines("#{Res.prefix}save/#{g}.sbg").map { |l| l.chomp }
       saved_game = SavedGame.new((i+1), 20 + (i % 2) * 390, 95 + (i / 2) * 90, g, save_data[2], save_data[1], save_data[5], save_data[4])
