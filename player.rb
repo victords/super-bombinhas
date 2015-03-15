@@ -2,10 +2,12 @@ require_relative 'bomb'
 
 class Player
   attr_reader :bomb, :items, :cur_item_type, :specs
-  attr_accessor :name, :lives, :score
+  attr_accessor :name, :last_world, :last_stage, :lives, :score
 
-  def initialize(name = nil, bomb = :azul, lives = 5, score = 0)
+  def initialize(name = nil, last_world = 1, last_stage = 1, bomb = :azul, lives = 5, score = 0)
     @name = name
+    @last_world = last_world
+    @last_stage = last_stage
     @bomb = Bomb.new bomb
     @lives = lives
     @score = score

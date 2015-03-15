@@ -122,8 +122,9 @@ end
 class Door < GameObject
   def initialize(x, y, args, section, switch)
     super x + 15, y + 63, 2, 1, :sprite_Door, Vector.new(-15, -63), 5, 1
-    @id = args.to_i
-    @locked = (switch[:state] != :taken and args.split(',').length == 2)
+    args = args.split(',')
+    @entrance = args[0].to_i
+    @locked = (switch[:state] != :taken and args[1])
     @open = false
     @active_bounds = Rectangle.new x, y, 32, 64
     @lock = Res.img(:sprite_Lock) if @locked
@@ -143,7 +144,7 @@ class Door < GameObject
     if @opening
       animate [1, 2, 3, 4, 0], 5
       if @img_index == 0
-        section.warp = @id
+        section.warp = @entrance
         @opening = false
       end
     end

@@ -9,6 +9,7 @@ module C
   INVULNERABLE_TIME = 40
   BOUNCE_FORCE = 10
   TOP_MARGIN = -200
+  EXIT_MARGIN = 16
 end
 
 class SB
@@ -42,23 +43,28 @@ class SB
     def load_game(name)
       @save_data = IO.readlines("#{Res.prefix}save/#{name}.sbg").map { |l| l.chomp }
       world_stage = @save_data[0].split('-')
+      last_world_stage = @save_data[1].split('-')
       @world = World.new(world_stage[0].to_i, world_stage[1].to_i, true)
-      @player = Player.new(name, save_data[1].to_sym, save_data[2].to_i, save_data[3].to_i)
+      @player = Player.new(name, last_world_stage[0].to_i, last_world_stage[1].to_i, save_data[2].to_sym, save_data[3].to_i, save_data[4].to_i)
       @state = :map
     end
 
     def save_and_exit
+      @save_data = Array.new(10) if @save_data.nil?
+      @save_data[0] = "#{@world.num}-#{@stage.num}"
+      @save_data[1] = "#{@player.last_world}-#{@player.last_stage}"
+      @save_data[2] = "#{@player.bomb.type}"
+      @save_data[3] = "#{@player.lives}"
+      @save_data[4] = "#{@player.score}"
+      @save_data[5] = "#{@player.specs.join(',')}"
+      @save_data[6] = "#{@stage.cur_entrance[:index]}"
+      @save_data[7] = "#{@player.bomb.hp}"
+      @save_data[8] = "#{@stage.switches_by_state(:taken)}"
+      @save_data[9] = "#{@stage.switches_by_state(:used)}"
       File.open("#{Res.prefix}save/#{@player.name}.sbg", 'w') do |f|
-        f.print "#{@world.num}-#{@stage.num}\n"\
-                "#{@player.bomb.type}\n"\
-                "#{@player.lives}\n"\
-                "#{@player.score}\n"\
-                "#{@player.specs.join(',')}\n"\
-                "#{@stage.cur_entrance[:index]}\n"\
-                "#{@player.bomb.hp}\n"\
-                "#{@stage.switches_by_state(:taken)}\n"\
-                "#{@stage.switches_by_state(:used)}\n"
+        @save_data.each { |s| f.print(s + "\n") }
       end
+      @world.set_loaded @stage.num
       @state = :map
     end
   end

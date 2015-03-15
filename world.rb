@@ -71,7 +71,7 @@ class World
       state = if i < @cur; :complete; else; i == @cur ? :current : :unknown; end
       @stages << MapStage.new(@num, i+1, coords[0].to_i, coords[1].to_i, state)
     end
-    @bomb = Sprite.new @stages[@cur].x + 1, @stages[@cur].y - 15, "sprite_Bomba#{loaded ? SB.save_data[1].capitalize : 'Azul'}", 5, 2
+    @bomb = Sprite.new @stages[@cur].x + 1, @stages[@cur].y - 15, "sprite_Bomba#{loaded ? SB.save_data[2].capitalize : 'Azul'}", 5, 2
 
     @font = TextHelper.new SB.font, 5
 
@@ -102,6 +102,11 @@ class World
       @cur = 0 if @cur >= @stages.size
       @bomb.x = @stages[@cur].x + 1; @bomb.y = @stages[@cur].y - 15
     end
+  end
+
+  def set_loaded(stage_num)
+    @loaded_stage = stage_num
+    @bomb = Sprite.new @stages[@cur].x + 1, @stages[@cur].y - 15, "sprite_Bomba#{SB.save_data[2].capitalize}", 5, 2
   end
 
   def draw

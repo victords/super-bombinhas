@@ -7,7 +7,7 @@ require_relative 'items'
 Tile = Struct.new :back, :fore, :pass, :wall, :hide, :broken
 
 class Section
-  attr_reader :reload, :tiles, :obstacles, :ramps, :size
+  attr_reader :reload, :tiles, :obstacles, :ramps, :size, :default_entrance
   attr_accessor :entrance, :warp, :loaded, :locked_door
 
   def initialize(file, entrances, switches, taken_switches, used_switches)
@@ -64,6 +64,7 @@ class Section
             if e[i] == '!'
               index = e[(i+1)..-1].to_i
               entrances[index] = {x: x * C::TILE_SIZE, y: y * C::TILE_SIZE, section: self, index: index}
+              @default_entrance = index if e[-1] == '!'
             else
               t, a = element_type e[(i+1)..-1]
               if t != :none # teste poderá ser removido no final
@@ -324,8 +325,14 @@ class Section
       t.update self if t.is_visible @map
     end
 
-    @map.set_camera (@bomb.x - @margin.x).round, (@bomb.y - @margin.y).round
+    if @border_exit == 0 && @bomb.y + @bomb.h <= -C::EXIT_MARGIN ||
+       @border_exit == 1 && @bomb.x >= @size.x - C::EXIT_MARGIN ||
+       @border_exit == 2 && @bomb.y >= @size.x + C::EXIT_MARGIN ||
+       @border_exit == 3 && @bomb.x + @bomb.w <= C::EXIT_MARGIN
+      return :finish
+    end
 
+    @map.set_camera (@bomb.x - @margin.x).round, (@bomb.y - @margin.y).round
     @reload = true if SB.player.dead? or KB.key_pressed? Gosu::KbBackspace
     SB.state = :paused if KB.key_pressed? Gosu::KbEscape
   end

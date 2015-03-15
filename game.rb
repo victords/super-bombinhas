@@ -36,7 +36,8 @@ class SBGame < MiniGL::GameWindow
     elsif SB.state == :map
       SB.world.update
     elsif SB.state == :main
-      SB.stage.update
+      status = SB.stage.update
+      SB.next_stage if status == :finish
     elsif SB.state == :paused
       StageMenu.update
     end
