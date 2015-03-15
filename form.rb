@@ -102,12 +102,18 @@ class FormSection
     @buttons.clear
   end
 
+  def reset
+    @cur_btn = @buttons[@cur_btn_index = 0]
+  end
+
   def add(component)
     @components << component
-    @buttons << component if component.is_a? Button
+    if component.is_a? Button
+      @buttons << component
+      @cur_btn = @buttons[@cur_btn_index = 0] if @cur_btn.nil?
+    end
     component.init_movement
     component.set_position(component.x - C::SCREEN_WIDTH, component.y) unless @visible
-    @cur_btn = @buttons[@cur_btn_index = 0] if @cur_btn.nil?
   end
 
   def draw
@@ -156,6 +162,11 @@ class Form
 
   def section(index)
     @sections[index]
+  end
+
+  def reset
+    @sections.each { |s| s.reset }
+    go_to_section 0
   end
 
   def draw

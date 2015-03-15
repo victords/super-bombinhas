@@ -38,8 +38,17 @@ class StageMenu
 
     def update
       if SB.state == :paused
+        if KB.key_pressed? Gosu::KbEscape
+          SB.state = :main
+          return
+        end
         @stage_menu.update
       end
+    end
+
+    def reset
+      @txt_name.text = ''
+      @stage_menu.reset
     end
 
     def draw

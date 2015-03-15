@@ -134,7 +134,7 @@ class Menu
   end
 
   def reset
-    @form.go_to_section 0
+    @form.reset
     add_saved_games
   end
 

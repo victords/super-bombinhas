@@ -65,6 +65,7 @@ class SB
         @save_data.each { |s| f.print(s + "\n") }
       end
       @world.set_loaded @stage.num
+      StageMenu.reset
       @state = :map
     end
   end

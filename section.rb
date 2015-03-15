@@ -48,7 +48,7 @@ class Section
   end
 
   def set_elements(s, entrances, switches, taken_switches, used_switches)
-    x = 0; y = 0; s_index = 0
+    x = 0; y = 0; s_index = switches.length
     @element_info = []
     @hide_tiles = []
     s.each do |e|
