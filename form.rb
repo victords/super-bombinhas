@@ -64,6 +64,10 @@ end
 
 class MenuTextField < TextField
   include FormElement
+
+  def initialize(y, x = 314)
+    super x: x, y: y, font: SB.font, img: :ui_textField, margin_x: 10, margin_y: 8, active: true
+  end
 end
 
 class FormSection

@@ -9,8 +9,8 @@ class Stage
     @entrances = []
     @switches = []
 
-    taken_switches = loaded ? eval("[#{SB.save_data[8]}]") : []
-    used_switches = loaded ? eval("[#{SB.save_data[9]}]") : []
+    taken_switches = loaded ? eval("[#{SB.save_data[9]}]") : []
+    used_switches = loaded ? eval("[#{SB.save_data[10]}]") : []
 
     sections = Dir["#{Res.prefix}stage/#{world}/#{num}-*.sbs"]
     sections.sort.each do |s|
@@ -19,7 +19,7 @@ class Stage
 
     SB.player.reset
     reset_switches
-    @cur_entrance = @entrances[loaded ? SB.save_data[6].to_i : 0]
+    @cur_entrance = @entrances[loaded ? SB.save_data[7].to_i : 0]
     @cur_section = @cur_entrance[:section]
     @cur_section.start @switches, @cur_entrance[:x], @cur_entrance[:y]
   end

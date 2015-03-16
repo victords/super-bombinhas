@@ -3,10 +3,15 @@ play			Play
 options			Options
 credits			Credits
 exit			Exit
+choose_game		Choose a game to load or 'New Game'
 new_game		New Game
-continue		Continue
+what_name		What is your name?
 back			Back
-choose_game		Choose a game to load
+continue		Continue
+delete			Delete
+delete_confirm	Are you sure you want to delete this game?
+yes				Yes
+no				No
 save			Save
 cancel			Cancel
 choose_stage	Choose the stage
@@ -17,8 +22,6 @@ score			Score
 resume			Resume
 save_exit		Save and Exit
 overwrite		A game named '$' already exists. Do you want to replace it?
-yes				Yes
-no				No
 msg1			Testing message
 msg2			Second test message
 count_down		Countdown to explosion!

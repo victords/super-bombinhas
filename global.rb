@@ -38,31 +38,41 @@ class SB
     end
 
     def text(id)
-      @texts[@lang][id.to_sym]
+      @texts[@lang].fetch(id.to_sym, '<!>')
     end
 
-    def load_game(name)
-      @save_data = IO.readlines("#{Res.prefix}save/#{name}.sbg").map { |l| l.chomp }
-      world_stage = @save_data[0].split('-')
-      last_world_stage = @save_data[1].split('-')
-      @world = World.new(world_stage[0].to_i, world_stage[1].to_i, true)
-      @player = Player.new(name, last_world_stage[0].to_i, last_world_stage[1].to_i, save_data[2].to_sym, save_data[3].to_i, save_data[4].to_i)
+    def new_game(name, index)
+      @world = World.new
+      @player = Player.new name
+      @save_file_name = "#{Res.prefix}save/#{index}"
+      @save_data = Array.new(10)
+      @state = :map
+    end
+
+    def load_game(file_name)
+      data = IO.readlines(file_name).map { |l| l.chomp }
+      world_stage = data[1].split('-')
+      last_world_stage = data[2].split('-')
+      @world = World.new(world_stage[0].to_i, world_stage[1].to_i, true, data[3])
+      @player = Player.new(data[0], last_world_stage[0].to_i, last_world_stage[1].to_i, data[3].to_sym, data[4].to_i, data[5].to_i)
+      @save_file_name = file_name
+      @save_data = data
       @state = :map
     end
 
     def save_and_exit
-      @save_data = Array.new(10) if @save_data.nil?
-      @save_data[0] = "#{@world.num}-#{@stage.num}"
-      @save_data[1] = "#{@player.last_world}-#{@player.last_stage}"
-      @save_data[2] = "#{@player.bomb.type}"
-      @save_data[3] = "#{@player.lives}"
-      @save_data[4] = "#{@player.score}"
-      @save_data[5] = "#{@player.specs.join(',')}"
-      @save_data[6] = "#{@stage.cur_entrance[:index]}"
-      @save_data[7] = "#{@player.bomb.hp}"
-      @save_data[8] = "#{@stage.switches_by_state(:taken)}"
-      @save_data[9] = "#{@stage.switches_by_state(:used)}"
-      File.open("#{Res.prefix}save/#{@player.name}.sbg", 'w') do |f|
+      @save_data[0] = @player.name
+      @save_data[1] = "#{@world.num}-#{@stage.num}"
+      @save_data[2] = "#{@player.last_world}-#{@player.last_stage}"
+      @save_data[3] = @player.bomb.type.to_s
+      @save_data[4] = @player.lives.to_s
+      @save_data[5] = @player.score.to_s
+      @save_data[6] = @player.specs.join(',')
+      @save_data[7] = @stage.cur_entrance[:index].to_s
+      @save_data[8] = @player.bomb.hp.to_s
+      @save_data[9] = @stage.switches_by_state(:taken)
+      @save_data[10] = @stage.switches_by_state(:used)
+      File.open(@save_file_name, 'w') do |f|
         @save_data.each { |s| f.print(s + "\n") }
       end
       @world.set_loaded @stage.num

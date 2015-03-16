@@ -3,10 +3,15 @@ play			Jugar
 options			Opciones
 credits			Créditos
 exit			Salir
+choose_game		Elige un juego para cargar o 'Nuevo Juego'
 new_game		Nuevo Juego
-continue		Continuar
+what_name		¿Cómo te llamas?
 back			Volver
-choose_game		Elige un juego para cargar
+continue		Continuar
+delete			Borrar
+delete_confirm	¿Estás seguro que deseas borrar este juego?
+yes				Sí
+no				No
 save			Guardar
 cancel			Cancelar
 choose_stage	Elige la etapa
@@ -16,9 +21,7 @@ lives			Vidas
 score			Puntos
 resume			Reanudar
 save_exit		Guardar y Salir
-overwrite		Un juego con nombre '$' ya existe. ¿Desea sustituirlo?
-yes				Sí
-no				No
+overwrite		Un juego con nombre '$' ya existe. ¿Deseas sustituirlo?
 msg1			Testando mensaje
 msg2			Segunda mensaje de teste
 count_down		¡Cuenta regresiva para explodir!
