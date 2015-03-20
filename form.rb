@@ -57,8 +57,11 @@ end
 class MenuButton < Button
   include FormElement
 
-  def initialize(y, text_id, x = 310, &action)
+  attr_reader :back
+
+  def initialize(y, text_id, back = false, x = 310, &action)
     super(x, y, SB.font, SB.text(text_id), :ui_button1, 0, 0x808080, 0, 0, true, false, 0, 7, 0, 0, 0, &action)
+    @back = back
   end
 end
 
@@ -77,7 +80,10 @@ class FormSection
     @components = components
     @buttons = []
     @components.each do |c|
-      @buttons << c if c.is_a? Button
+      if c.is_a? Button
+        @buttons << c
+        @back_btn = c if c.respond_to?(:back) && c.back
+      end
       c.init_movement
       c.set_position(c.x - C::SCREEN_WIDTH, c.y) unless visible
     end
@@ -108,8 +114,10 @@ class FormSection
       elsif KB.key_pressed? Gosu::KbUp or KB.key_pressed? Gosu::KbLeft
         @cur_btn_index -= 1
         @cur_btn_index = @buttons.length - 1 if @cur_btn_index < 0
-      elsif KB.key_pressed?(Gosu::KbReturn)
+      elsif KB.key_pressed? Gosu::KbReturn
         @cur_btn.click
+      elsif @back_btn and (KB.key_pressed? Gosu::KbEscape or KB.key_pressed? Gosu::KbBackspace)
+        @back_btn.click
       end
       @cur_btn = @buttons[@cur_btn_index]
     end
@@ -140,6 +148,7 @@ class FormSection
     if component.is_a? Button
       @buttons << component
       @cur_btn = @buttons[@cur_btn_index = 0] if @cur_btn.nil?
+      @back_btn = component if component.respond_to?(:back) && component.back
     end
     component.init_movement
     component.set_position(component.x - C::SCREEN_WIDTH, component.y) unless @visible

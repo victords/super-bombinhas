@@ -16,7 +16,7 @@ class StageMenu
           SB.save_and_exit
         }
       ], [
-        MenuButton.new(550, :back) {
+        MenuButton.new(550, :back, true) {
           @stage_menu.go_to_section 0
         }
       ])

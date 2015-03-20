@@ -15,6 +15,7 @@ no				Não
 save			Salvar
 cancel			Cancelar
 choose_stage	Escolha a fase
+ch_st_instruct	Aperte 'Enter' ou 'Espaço' para começar.\nAperte 'Esc' ou 'Backspace' para voltar.
 stage			Fase
 loading			Carregando
 lives			Vidas

@@ -15,6 +15,7 @@ no				No
 save			Save
 cancel			Cancel
 choose_stage	Choose the stage
+ch_st_instruct	Press 'Enter' or 'Space' to start.\nPress 'Esc' or 'Backspace' to go back.
 stage			Stage
 loading			Loading
 lives			Lives

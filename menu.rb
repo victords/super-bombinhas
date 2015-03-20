@@ -96,7 +96,7 @@ class Menu
       MenuButton.new(395, :delete) {
         @form.go_to_section 4
       },
-      MenuButton.new(445, :back) {
+      MenuButton.new(445, :back, true) {
         @form.go_to_section 1
       }
     ], [
@@ -105,24 +105,24 @@ class Menu
       MenuButton.new(345, :play) {
         SB.new_game(@txt_name.text.downcase, @new_game_index)
       },
-      MenuButton.new(395, :back) {
+      MenuButton.new(395, :back, true) {
         @form.go_to_section 1
       }
     ], [
       MenuText.new(SB.text(:delete_confirm), 400, 270, 400, :center),
-      MenuButton.new(345, :yes) {
+      MenuButton.new(345, :no) {
+        @form.go_to_section 1
+      },
+      MenuButton.new(395, :yes) {
         File.delete(@selected_game)
         add_game_slots
         @form.go_to_section 1
-      },
-      MenuButton.new(395, :no) {
-        @form.go_to_section 1
       }
     ], [
-      MenuButton.new(550, :save, 215) {
+      MenuButton.new(550, :save, false, 215) {
         puts 'save options'
       },
-      MenuButton.new(550, :cancel, 405) {
+      MenuButton.new(550, :cancel, true, 405) {
         @form.go_to_section 0
       },
       MenuText.new('Primeira opção', 20, 200),
@@ -130,7 +130,7 @@ class Menu
       MenuText.new('Mais uma opção aqui', 20, 300),
       MenuText.new('Quarta opção', 20, 350)
     ], [
-      MenuButton.new(550, :back) {
+      MenuButton.new(550, :back, true) {
         @form.go_to_section 0
       },
       MenuText.new(
@@ -179,10 +179,10 @@ class Menu
     (next_index...10).each do |i|
       components << NewGameButton.new(i + 1, 20 + (i % 2) * 390, 95 + (i / 2) * 90, self)
     end
-    components << MenuButton.new(550, :back) {
+    components << MenuButton.new(550, :back, true) {
       @form.go_to_section 0
     }
-    components << MenuText.new(SB.text(:choose_game), 780, 40, 380, :right)
+    components << MenuText.new(SB.text(:choose_game), 780, 25, 380, :right)
     section = @form.section(1)
     section.clear
     components.each { |c| section.add(c) }

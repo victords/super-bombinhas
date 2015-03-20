@@ -75,23 +75,26 @@ class World
 
     @font = TextHelper.new SB.font, 5
 
-    @play_button = Button.new(420, 550, SB.font, SB.text(:play), :ui_button1, 0, 0, 0, 0, true, false, 0, 7) {
-      @stages[@cur].select(@loaded_stage)
-    }
-    @back_button = Button.new(610, 550, SB.font, SB.text(:back), :ui_button1, 0, 0, 0, 0, true, false, 0, 7) {
-      SB.menu.reset
-      SB.state = :menu
-    }
+    # @play_button = Button.new(420, 550, SB.font, SB.text(:play), :ui_button1, 0, 0, 0, 0, true, false, 0, 7) {
+    #   @stages[@cur].select(@loaded_stage)
+    # }
+    # @back_button = Button.new(610, 550, SB.font, SB.text(:back), :ui_button1, 0, 0, 0, 0, true, false, 0, 7) {
+    #   SB.menu.reset
+    #   SB.state = :menu
+    # }
   end
 
   def update
     @water.animate [0, 1, 2, 3], 6
     @bomb.animate [0, 1, 0, 2], 8
     @stages.each { |i| i.update }
-    @play_button.update
-    @back_button.update
+    # @play_button.update
+    # @back_button.update
 
-    if KB.key_pressed? Gosu::KbSpace or KB.key_pressed? Gosu::KbA
+    if KB.key_pressed? Gosu::KbEscape or KB.key_pressed? Gosu::KbBackspace
+      SB.menu.reset
+      SB.state = :menu
+    elsif KB.key_pressed? Gosu::KbSpace or KB.key_pressed? Gosu::KbReturn
       @stages[@cur].select(@loaded_stage)
     elsif KB.key_pressed? Gosu::KbLeft or KB.key_pressed? Gosu::KbDown
       @cur -= 1
@@ -129,11 +132,12 @@ class World
 
     @map.draw 250, 100, 0
     @stages.each { |s| s.draw }
-    @play_button.draw
-    @back_button.draw
+    # @play_button.draw
+    # @back_button.draw
     @bomb.draw
 
     SB.font.draw_rel SB.text(:choose_stage), 525, 20, 0, 0.5, 0, 2, 2, 0xff000000
+    @font.write_breaking(SB.text(:ch_st_instruct).gsub('\n', "\n"), 780, 545, 600, :right)
     @font.write_breaking "#{@name}\n*** #{SB.text(:stage)} #{@num}-#{@cur+1} ***\n#{@stages[@cur].name}", 125, 100, 200, :center, 0xff3d361f
   end
 end
