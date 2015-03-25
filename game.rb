@@ -9,9 +9,7 @@ class SBGame < MiniGL::GameWindow
     super(C::SCREEN_WIDTH, C::SCREEN_HEIGHT, false, Vector.new(0, 0.9))
 
     SB.initialize
-    SB.menu = Menu.new
-
-#    @frame = 0
+    Menu.initialize
   end
 
   def needs_cursor?
@@ -19,11 +17,6 @@ class SBGame < MiniGL::GameWindow
   end
 
   def update
-#    @frame += 1
-#    if @frame == 60
-#      puts @fps
-#      @frame = 0
-#    end
     KB.update
     Mouse.update
 
@@ -32,7 +25,7 @@ class SBGame < MiniGL::GameWindow
     if SB.state == :presentation
 
     elsif SB.state == :menu
-      SB.menu.update
+      Menu.update
     elsif SB.state == :map
       SB.world.update
     elsif SB.state == :main
@@ -47,7 +40,7 @@ class SBGame < MiniGL::GameWindow
     if SB.state == :presentation
 
     elsif SB.state == :menu
-      SB.menu.draw
+      Menu.draw
     elsif SB.state == :map
       SB.world.draw
     elsif SB.state == :main || SB.state == :paused

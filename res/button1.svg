@@ -10,8 +10,8 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="180"
-   height="160"
+   width="172"
+   height="144"
    id="svg2"
    version="1.1"
    inkscape:version="0.48.4 r9939"
@@ -32,45 +32,6 @@
          offset="1"
          id="stop3883" />
     </linearGradient>
-    <filter
-       inkscape:collect="always"
-       id="filter3759"
-       x="-0.036176469"
-       width="1.0723529"
-       y="-0.17571428"
-       height="1.3514286"
-       color-interpolation-filters="sRGB">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="2.5625"
-         id="feGaussianBlur3761" />
-    </filter>
-    <filter
-       inkscape:collect="always"
-       id="filter3771"
-       x="-0.035"
-       width="1.0700001"
-       y="-0.20999999"
-       height="1.42"
-       color-interpolation-filters="sRGB">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="2.3625"
-         id="feGaussianBlur3773" />
-    </filter>
-    <filter
-       inkscape:collect="always"
-       id="filter3825"
-       x="-0.050647058"
-       width="1.101294"
-       y="-0.24600001"
-       height="1.492"
-       color-interpolation-filters="sRGB">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="3.5875"
-         id="feGaussianBlur3827" />
-    </filter>
     <clipPath
        clipPathUnits="userSpaceOnUse"
        id="clipPath3834">
@@ -102,8 +63,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1"
-     inkscape:cx="90"
-     inkscape:cy="36.164384"
+     inkscape:cx="110.13807"
+     inkscape:cy="71.247534"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -128,24 +89,17 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0,-892.36218)">
-    <rect
-       y="894.36218"
-       x="0"
-       height="38"
-       width="180"
-       id="rect3796"
-       style="fill:#000000;fill-opacity:1;stroke:none;opacity:0.2" />
+     transform="translate(0,-908.36218)">
     <rect
        style="fill:#8080ff;fill-opacity:1;stroke:none"
        id="rect3767"
        width="172"
        height="36"
-       x="4"
-       y="892.36218" />
+       x="0"
+       y="908.36218" />
     <rect
-       y="910.36218"
-       x="8"
+       y="926.36218"
+       x="4"
        height="14"
        width="164"
        id="rect3755"
@@ -155,18 +109,11 @@
        id="rect3794"
        width="164"
        height="14"
-       x="8"
-       y="896.36218" />
-    <rect
-       style="opacity:0.2;fill:#000000;fill-opacity:1;stroke:none"
-       id="rect3798"
-       width="180"
-       height="38"
-       x="0"
-       y="934.36218" />
-    <rect
-       y="932.36218"
        x="4"
+       y="912.36218" />
+    <rect
+       y="944.36218"
+       x="0"
        height="36"
        width="172"
        id="rect3800"
@@ -176,25 +123,18 @@
        id="rect3802"
        width="164"
        height="14"
-       x="8"
-       y="950.36218" />
+       x="4"
+       y="962.36218" />
     <rect
-       y="936.36218"
-       x="8"
+       y="948.36218"
+       x="4"
        height="14"
        width="164"
        id="rect3804"
        style="fill:#ddddff;fill-opacity:1;stroke:none" />
     <rect
-       style="opacity:0.2;fill:#000000;fill-opacity:1;stroke:none"
-       id="rect3806"
-       width="180"
-       height="38"
+       y="980.36218"
        x="0"
-       y="974.36218" />
-    <rect
-       y="972.36218"
-       x="4"
        height="36"
        width="172"
        id="rect3808"
@@ -204,18 +144,18 @@
        id="rect3810"
        width="164"
        height="14"
-       x="8"
-       y="990.36218" />
+       x="4"
+       y="998.36218" />
     <rect
-       y="976.36218"
-       x="8"
+       y="984.36218"
+       x="4"
        height="14"
        width="164"
        id="rect3812"
        style="fill:#9999ff;fill-opacity:1;stroke:none" />
     <rect
-       y="1012.3622"
-       x="4"
+       y="1016.3622"
+       x="0"
        height="36"
        width="172"
        id="rect3824"
@@ -225,11 +165,11 @@
        id="rect3826"
        width="164"
        height="14"
-       x="8"
-       y="1030.3622" />
+       x="4"
+       y="1034.3622" />
     <rect
-       y="1016.3622"
-       x="8"
+       y="1020.3622"
+       x="4"
        height="14"
        width="164"
        id="rect3828"

@@ -92,7 +92,7 @@ class World
     # @back_button.update
 
     if KB.key_pressed? Gosu::KbEscape or KB.key_pressed? Gosu::KbBackspace
-      SB.menu.reset
+      Menu.reset
       SB.state = :menu
     elsif KB.key_pressed? Gosu::KbSpace or KB.key_pressed? Gosu::KbReturn
       @stages[@cur].select(@loaded_stage)

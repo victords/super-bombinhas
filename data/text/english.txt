@@ -1,4 +1,3 @@
-lang_name		English
 play			Play
 options			Options
 credits			Credits
@@ -14,6 +13,8 @@ yes				Yes
 no				No
 save			Save
 cancel			Cancel
+language		Language
+lang_name		English
 choose_stage	Choose the stage
 ch_st_instruct	Press 'Enter' or 'Space' to start.\nPress 'Esc' or 'Backspace' to go back.
 stage			Stage

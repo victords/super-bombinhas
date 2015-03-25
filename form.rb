@@ -32,10 +32,12 @@ end
 class MenuText
   include FormElement
 
-  attr_accessor :text
+  attr_reader :text_id
+  attr_writer :text
 
-  def initialize(text, x, y, width = 760, mode = :justified)
-    @text = text
+  def initialize(text_id, x, y, width = 760, mode = :justified)
+    @text_id = text_id
+    @text = SB.text(text_id)
     @x = x
     @y = y
     @width = width
@@ -57,11 +59,20 @@ end
 class MenuButton < Button
   include FormElement
 
-  attr_reader :back
+  attr_reader :back, :text_id
 
-  def initialize(y, text_id, back = false, x = 310, &action)
+  def initialize(y, text_id, back = false, x = 314, &action)
     super(x, y, SB.font, SB.text(text_id), :ui_button1, 0, 0x808080, 0, 0, true, false, 0, 7, 0, 0, 0, &action)
+    @text_id = text_id
     @back = back
+  end
+end
+
+class MenuArrowButton < Button
+  include FormElement
+
+  def initialize(x, y, type, &action)
+    super(x, y, nil, nil, "ui_button#{type}", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, &action)
   end
 end
 
@@ -143,6 +154,12 @@ class FormSection
     @cur_btn = @buttons[@cur_btn_index = 0]
   end
 
+  def update_lang
+    @components.each do |c|
+      c.text = SB.text(c.text_id) if c.respond_to? :text_id
+    end
+  end
+
   def add(component)
     @components << component
     if component.is_a? Button
@@ -205,6 +222,10 @@ class Form
   def reset
     @sections.each { |s| s.reset }
     go_to_section 0
+  end
+
+  def update_lang
+    @sections.each { |s| s.update_lang }
   end
 
   def draw

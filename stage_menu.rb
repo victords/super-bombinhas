@@ -36,6 +36,10 @@ class StageMenu
       @stage_menu.reset
     end
 
+    def update_lang
+      @stage_menu.update_lang
+    end
+
     def draw
       if SB.state == :main
         draw_player_stats

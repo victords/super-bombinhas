@@ -16,16 +16,18 @@ end
 class SB
   class << self
     attr_reader :font, :save_data
-    attr_accessor :state, :lang, :menu, :player, :world, :stage
+    attr_accessor :state, :player, :world, :stage
 
     def initialize
       @state = :menu
 
       @font = Res.font :BankGothicMedium, 20
+      @langs = []
       @texts = {}
       files = Dir["#{Res.prefix}text/*.txt"]
       files.each do |f|
         lang = f.split('/')[-1].chomp('.txt').to_sym
+        @langs << lang
         @texts[lang] = {}
         File.open(f).each do |l|
           parts = l.split "\t"
@@ -39,6 +41,15 @@ class SB
 
     def text(id)
       @texts[@lang].fetch(id.to_sym, '<!>')
+    end
+
+    def change_lang(d = 1)
+      ind = @langs.index(@lang) + d
+      ind = 0 if ind == @langs.length
+      ind = @langs.length - 1 if ind < 0
+      @lang = @langs[ind]
+      Menu.update_lang
+      StageMenu.update_lang
     end
 
     def new_game(name, index)

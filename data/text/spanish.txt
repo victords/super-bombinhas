@@ -1,4 +1,3 @@
-lang_name		Español
 play			Jugar
 options			Opciones
 credits			Créditos
@@ -14,6 +13,8 @@ yes				Sí
 no				No
 save			Guardar
 cancel			Cancelar
+language		Lenguaje
+lang_name		Español
 choose_stage	Elige la etapa
 ch_st_instruct	Pulsa 'Enter' o 'Espacio' para empezar.\nPulsa 'Esc' o 'Backspace' para volver.
 stage			Etapa
