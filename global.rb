@@ -15,13 +15,14 @@ end
 
 class SB
   class << self
-    attr_reader :font, :save_data
-    attr_accessor :state, :player, :world, :stage
+    attr_reader :font, :text_helper, :save_data, :lang
+    attr_accessor :state, :player, :world, :stage, :music_volume, :sound_volume
 
     def initialize
       @state = :menu
 
       @font = Res.font :BankGothicMedium, 20
+      @text_helper = TextHelper.new(@font, 5)
       @langs = []
       @texts = {}
       files = Dir["#{Res.prefix}text/*.txt"]
@@ -34,8 +35,21 @@ class SB
           @texts[lang][parts[0].to_sym] = parts[-1].chomp
         end
       end
-      @lang = :portuguese
 
+      options_path = "#{Res.prefix}save/options"
+      unless File.exist?(options_path)
+        File.open(options_path, 'w') do |f|
+          f.print 'english,10,10'
+        end
+      end
+      File.open(options_path) do |f|
+        data = f.readline.chomp.split ','
+        @lang = data[0].to_sym
+        @sound_volume = data[1].to_i
+        @music_volume = data[2].to_i
+      end
+
+      Menu.initialize
       StageMenu.initialize
     end
 
@@ -50,6 +64,25 @@ class SB
       @lang = @langs[ind]
       Menu.update_lang
       StageMenu.update_lang
+    end
+
+    def lang=(value)
+      @lang = value
+      Menu.update_lang
+      StageMenu.update_lang
+    end
+
+    def change_volume(type, d = 1)
+      vol = eval("@#{type}_volume") + d
+      vol = 0 if vol < 0
+      vol = 10 if vol > 10
+      instance_eval("@#{type}_volume = #{vol}")
+    end
+
+    def save_options
+      File.open("#{Res.prefix}save/options", 'w') do |f|
+        f.print("#{@lang},#{@sound_volume},#{@music_volume}")
+      end
     end
 
     def new_game(name, index)

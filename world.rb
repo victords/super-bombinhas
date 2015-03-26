@@ -73,8 +73,6 @@ class World
     end
     @bomb = Sprite.new @stages[@cur].x + 1, @stages[@cur].y - 15, "sprite_Bomba#{bomb.capitalize}", 5, 2
 
-    @font = TextHelper.new SB.font, 5
-
     # @play_button = Button.new(420, 550, SB.font, SB.text(:play), :ui_button1, 0, 0, 0, 0, true, false, 0, 7) {
     #   @stages[@cur].select(@loaded_stage)
     # }
@@ -137,7 +135,7 @@ class World
     @bomb.draw
 
     SB.font.draw_rel SB.text(:choose_stage), 525, 20, 0, 0.5, 0, 2, 2, 0xff000000
-    @font.write_breaking(SB.text(:ch_st_instruct).gsub('\n', "\n"), 780, 545, 600, :right)
-    @font.write_breaking "#{@name}\n*** #{SB.text(:stage)} #{@num}-#{@cur+1} ***\n#{@stages[@cur].name}", 125, 100, 200, :center, 0xff3d361f
+    SB.text_helper.write_breaking(SB.text(:ch_st_instruct).gsub('\n', "\n"), 780, 545, 600, :right)
+    SB.text_helper.write_breaking "#{@name}\n*** #{SB.text(:stage)} #{@num}-#{@cur+1} ***\n#{@stages[@cur].name}", 125, 100, 200, :center, 0xff3d361f
   end
 end

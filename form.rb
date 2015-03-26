@@ -42,7 +42,6 @@ class MenuText
     @y = y
     @width = width
     @mode = mode
-    @writer = TextHelper.new SB.font, 5
   end
 
   def update; end
@@ -52,7 +51,7 @@ class MenuText
   end
 
   def draw
-    @writer.write_breaking(@text, @x, @y, @width, @mode)
+    SB.text_helper.write_breaking(@text, @x, @y, @width, @mode)
   end
 end
 

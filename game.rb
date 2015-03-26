@@ -9,7 +9,6 @@ class SBGame < MiniGL::GameWindow
     super(C::SCREEN_WIDTH, C::SCREEN_HEIGHT, false, Vector.new(0, 0.9))
 
     SB.initialize
-    Menu.initialize
   end
 
   def needs_cursor?

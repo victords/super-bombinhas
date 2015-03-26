@@ -15,6 +15,8 @@ save			Guardar
 cancel			Cancelar
 language		Lenguaje
 lang_name		Español
+sound_volume	Volumen de los sonidos
+music_volume	Volumen de la música
 choose_stage	Elige la etapa
 ch_st_instruct	Pulsa 'Enter' o 'Espacio' para empezar.\nPulsa 'Esc' o 'Backspace' para volver.
 stage			Etapa
