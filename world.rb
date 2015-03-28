@@ -52,7 +52,7 @@ class MapStage
 end
 
 class World
-  attr_reader :num
+  attr_reader :num, :stage_count
 
   def initialize(num = 1, stage_num = 1, loaded = false, bomb = 'azul')
     @num = num
@@ -71,6 +71,7 @@ class World
       state = if i < @cur; :complete; else; i == @cur ? :current : :unknown; end
       @stages << MapStage.new(@num, i+1, coords[0].to_i, coords[1].to_i, state)
     end
+    @stage_count = @stages.count
     @bomb = Sprite.new @stages[@cur].x + 1, @stages[@cur].y - 15, "sprite_Bomba#{bomb.capitalize}", 5, 2
 
     # @play_button = Button.new(420, 550, SB.font, SB.text(:play), :ui_button1, 0, 0, 0, 0, true, false, 0, 7) {

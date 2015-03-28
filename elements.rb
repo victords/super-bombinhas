@@ -68,6 +68,7 @@ class Goal < GameObject
 
   def update(section)
     animate [0, 1, 2, 3], 7
+    section.finish if SB.player.bomb.bounds.intersect?(bounds)
   end
 end
 

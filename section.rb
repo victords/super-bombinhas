@@ -314,6 +314,10 @@ class Section
     end
   end
 
+  def finish
+    @finished = true
+  end
+
   def update
     # @showing_tiles = false
     @locked_door = nil
@@ -328,7 +332,8 @@ class Section
     if @border_exit == 0 && @bomb.y + @bomb.h <= -C::EXIT_MARGIN ||
        @border_exit == 1 && @bomb.x >= @size.x - C::EXIT_MARGIN ||
        @border_exit == 2 && @bomb.y >= @size.x + C::EXIT_MARGIN ||
-       @border_exit == 3 && @bomb.x + @bomb.w <= C::EXIT_MARGIN
+       @border_exit == 3 && @bomb.x + @bomb.w <= C::EXIT_MARGIN ||
+       @finished
       return :finish
     end
 

@@ -104,6 +104,17 @@ class SB
       @state = :map
     end
 
+    def next_stage
+      # Res.clear
+      num = @stage.num + 1
+      if num <= @world.stage_count
+        # deve ter alguma transicão, mostrar os pontos, etc.
+        @stage = Stage.new(@world.num, num)
+      else
+        # a definir...
+      end
+    end
+
     def save_and_exit
       @save_data[0] = @player.name
       @save_data[1] = "#{@world.num}-#{@stage.num}"
