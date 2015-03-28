@@ -60,6 +60,17 @@ end
 
 ################################################################################
 
+class Goal < GameObject
+  def initialize(x, y, args, section)
+    super x - 4, y - 118, 40, 150, :sprite_goal1, nil, 2, 2
+    @active_bounds = Rectangle.new x - 4, y - 118, 40, 150
+  end
+
+  def update(section)
+    animate [0, 1, 2, 3], 7
+  end
+end
+
 class Bombie < GameObject
   def initialize(x, y, args, section)
     super x - 16, y, 64, 32, :sprite_Bombie, Vector.new(17, -2), 6, 1
