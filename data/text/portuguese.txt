@@ -25,7 +25,7 @@ lives			Vidas
 score			Pontos
 resume			Continuar
 save_exit		Salvar e Sair
-overwrite		Um jogo com nome '$' já existe. Deseja substituí-lo?
+stage_complete	Fase completa!
 msg1			Testando mensagem...
 msg2			Segunda mensagem de teste
 count_down		Contagem regressiva para explodir!

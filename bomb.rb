@@ -6,14 +6,14 @@ class Bomb < GameObject
   def initialize(type)
     t_img_gap = -10
     case type
-    when :azul then @name = 'Bomba Azul'; @hp = 1; img = :sprite_BombaAzul; l_img_gap = -5; r_img_gap = -5
-    when :vermelha then @name = 'Bomba Vermelha'; @hp = 2; img = :sprite_BombaVermelha; l_img_gap = -4; r_img_gap = -6
-    when :amarela then @name = 'Bomba Amarela'; @hp = 1; img = :sprite_BombaAmarela; l_img_gap = -6; r_img_gap = -14
-    when :verde then @name = 'Bomba Verde'; @hp = 2; img = :sprite_BombaVerde; l_img_gap = -6; r_img_gap = -14
-    when :branca then @name = 'Aldan'; @hp = 1; img = :sprite_Aldan; l_img_gap = -6; r_img_gap = -14; t_img_gap = -26
+    when :azul then @name = 'Bomba Azul'; @hp = 1; l_img_gap = -5; r_img_gap = -5
+    when :vermelha then @name = 'Bomba Vermelha'; @hp = 2; l_img_gap = -4; r_img_gap = -6
+    when :amarela then @name = 'Bomba Amarela'; @hp = 1; l_img_gap = -6; r_img_gap = -14
+    when :verde then @name = 'Bomba Verde'; @hp = 2; l_img_gap = -6; r_img_gap = -14
+    when :branca then @name = 'Aldan'; @hp = 1; l_img_gap = -6; r_img_gap = -14; t_img_gap = -26
     end
 
-    super -1000, -1000, 20, 30, img, Vector.new(r_img_gap, t_img_gap), 5, 2
+    super -1000, -1000, 20, 30, "sprite_Bomba#{type.to_s.capitalize}", Vector.new(r_img_gap, t_img_gap), 8, 2
     @max_speed.x = 5
     @max_speed.y = 30
     @indices = [0, 1, 0, 2]
@@ -27,6 +27,17 @@ class Bomb < GameObject
   end
 
   def update(section)
+    if @celebrating
+      if @facing_right
+        return if @img_index == 7
+        animate [5, 6, 7], 8
+      else
+        return if @img_index == 15
+        animate [13, 14, 15], 8
+      end
+      return
+    end
+
     SB.player.change_item if KB.key_pressed? Gosu::KbLeftShift or KB.key_pressed? Gosu::KbRightShift
     SB.player.use_item section if KB.key_pressed? Gosu::KbA
 
@@ -59,12 +70,12 @@ class Bomb < GameObject
         elsif @facing_right
           set_animation 0
         else
-          set_animation 5
+          set_animation 8
         end
         if KB.key_pressed? Gosu::KbSpace
           forces.y -= 13.7 + 0.4 * @speed.x.abs
           if @facing_right; set_animation 3
-          else; set_animation 8; end
+          else; set_animation 11; end
         end
         forces.x -= @speed.x * 0.1
       end
@@ -75,8 +86,8 @@ class Bomb < GameObject
   def set_direction(dir)
     if dir == :left
       @facing_right = false
-      @indices = [5, 6, 5, 7]
-      set_animation 5
+      @indices = [8, 9, 8, 10]
+      set_animation 8
     else
       @facing_right = true
       @indices = [0, 1, 0, 2]
@@ -104,7 +115,7 @@ class Bomb < GameObject
     @explosion_timer = 0
     @explosion.x = @x - 80
     @explosion.y = @y - 75
-    set_animation (@facing_right ? 4 : 9)
+    set_animation (@facing_right ? 4 : 12)
   end
 
   def explode?(obj)
@@ -126,10 +137,14 @@ class Bomb < GameObject
   end
 
   def reset
-    @will_explode = false
-    @exploding = false
+    @will_explode = @exploding = @celebrating = false
     @speed.x = @speed.y = 0
     set_direction :right
+  end
+
+  def celebrate
+    @celebrating = true
+    set_animation(@facing_right ? 5 : 13)
   end
 
   def is_visible(map)

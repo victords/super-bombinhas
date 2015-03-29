@@ -29,7 +29,10 @@ class SBGame < MiniGL::GameWindow
       SB.world.update
     elsif SB.state == :main
       status = SB.stage.update
-      SB.next_stage if status == :finish
+      SB.end_stage if status == :finish
+    elsif SB.state == :stage_end
+      SB.player.bomb.update(nil)
+      SB.next_stage if KB.key_pressed? Gosu::KbReturn
     elsif SB.state == :paused
       StageMenu.update
     end
@@ -42,7 +45,7 @@ class SBGame < MiniGL::GameWindow
       Menu.draw
     elsif SB.state == :map
       SB.world.draw
-    elsif SB.state == :main || SB.state == :paused
+    elsif SB.state == :main || SB.state == :paused || SB.state == :stage_end
       SB.stage.draw
       StageMenu.draw
     end

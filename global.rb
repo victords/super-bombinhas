@@ -104,15 +104,22 @@ class SB
       @state = :map
     end
 
+    def end_stage
+      @player.bomb.celebrate
+      @state = :stage_end
+    end
+
     def next_stage
       # Res.clear
       num = @stage.num + 1
       if num <= @world.stage_count
-        # deve ter alguma transicão, mostrar os pontos, etc.
+        # deve ter alguma transição, mostrar os pontos, etc.
         @stage = Stage.new(@world.num, num)
+        @player.last_stage = @stage.num
       else
         # a definir...
       end
+      @state = :main
     end
 
     def save_and_exit

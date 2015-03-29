@@ -45,6 +45,8 @@ class StageMenu
         draw_player_stats
       elsif SB.state == :paused
         draw_menu
+      else # :stage_end
+        draw_stage_stats
       end
     end
 
@@ -89,6 +91,10 @@ class StageMenu
                          800, 600, 0x80000000, 0
       @stage_menu_bg.draw 275, 180, 0 if @stage_menu.cur_section_index != 1
       @stage_menu.draw
+    end
+
+    def draw_stage_stats
+      SB.font.draw_rel SB.text(:stage_complete), 400, 150, 0, 0.5, 0.5, 2, 2, 0xff000000
     end
   end
 end
