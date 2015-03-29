@@ -35,12 +35,37 @@ class MenuText
   attr_reader :text_id
   attr_writer :text
 
-  def initialize(text_id, x, y, width = 760, mode = :justified)
+  def initialize(text_id, x, y, width = 760, mode = :justified, big = false)
     @text_id = text_id
     @text = SB.text(text_id)
     @x = x
     @y = y
     @width = width
+    @mode = mode
+    @big = big
+  end
+
+  def update; end
+
+  def set_position(x, y)
+    @x = x; @y = y
+  end
+
+  def draw
+    helper = @big ? SB.big_text_helper : SB.text_helper
+    helper.write_breaking(@text, @x, @y, @width, @mode)
+  end
+end
+
+class MenuNumber
+  include FormElement
+
+  attr_accessor :num
+
+  def initialize num, x, y, mode
+    @num = num
+    @x = x
+    @y = y
     @mode = mode
   end
 
@@ -51,7 +76,7 @@ class MenuText
   end
 
   def draw
-    SB.text_helper.write_breaking(@text, @x, @y, @width, @mode)
+    SB.text_helper.write_line(@num.to_s, @x, @y, @mode)
   end
 end
 

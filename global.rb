@@ -11,18 +11,22 @@ module C
   TOP_MARGIN = -200
   EXIT_MARGIN = 16
   GAME_LIMIT = 10
+  PANEL_COLOR = 0x80aaaaff
+  ARROW_COLOR = 0x80000099
 end
 
 class SB
   class << self
-    attr_reader :font, :text_helper, :save_data, :lang
+    attr_reader :font, :big_font, :text_helper, :big_text_helper, :save_data, :lang
     attr_accessor :state, :player, :world, :stage, :music_volume, :sound_volume
 
     def initialize
       @state = :menu
 
       @font = Res.font :BankGothicMedium, 20
+      @big_font = Res.font :BankGothicMedium, 36
       @text_helper = TextHelper.new(@font, 5)
+      @big_text_helper = TextHelper.new(@big_font, 8)
       @langs = []
       @texts = {}
       files = Dir["#{Res.prefix}text/*.txt"]
@@ -98,7 +102,7 @@ class SB
       world_stage = data[1].split('-')
       last_world_stage = data[2].split('-')
       @world = World.new(world_stage[0].to_i, world_stage[1].to_i, true, data[3])
-      @player = Player.new(data[0], last_world_stage[0].to_i, last_world_stage[1].to_i, data[3].to_sym, data[4].to_i, data[5].to_i)
+      @player = Player.new(data[0], last_world_stage[0].to_i, last_world_stage[1].to_i, data[3].to_sym, data[4].to_i, data[5].to_i, data[6])
       @save_file_name = file_name
       @save_data = data
       @state = :map
@@ -106,6 +110,8 @@ class SB
 
     def end_stage
       @player.bomb.celebrate
+      @player.score += @player.stage_score
+      StageMenu.end_stage
       @state = :stage_end
     end
 
@@ -116,6 +122,7 @@ class SB
         # deve ter alguma transição, mostrar os pontos, etc.
         @stage = Stage.new(@world.num, num)
         @player.last_stage = @stage.num
+        @stage.start
       else
         # a definir...
       end

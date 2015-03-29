@@ -26,6 +26,8 @@ score			Score
 resume			Resume
 save_exit		Save and Exit
 stage_complete	Stage Complete!
+total			Total
+spec_taken		Spec found?
 msg1			Testing message
 msg2			Second test message
 count_down		Countdown to explosion!

@@ -43,6 +43,7 @@ class MapStage
 
   def select(loaded_stage)
     SB.stage = Stage.new(@world, @num, @num == loaded_stage)
+    SB.stage.start
     SB.state = :main
   end
 

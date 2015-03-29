@@ -2,17 +2,18 @@ require_relative 'bomb'
 
 class Player
   attr_reader :bomb, :items, :cur_item_type, :specs
-  attr_accessor :name, :last_world, :last_stage, :lives, :score
+  attr_accessor :name, :last_world, :last_stage, :lives, :score, :stage_score
 
-  def initialize(name, last_world = 1, last_stage = 1, bomb = :azul, lives = 5, score = 0)
+  def initialize(name, last_world = 1, last_stage = 1, bomb = :azul, lives = 5, score = 0, specs = '')
     @name = name
     @last_world = last_world
     @last_stage = last_stage
     @bomb = Bomb.new bomb
     @lives = lives
     @score = score
+    @stage_score = 0
+    @specs = eval("[#{specs}]")
     @items = {}
-    @specs = []
   end
 
   def dead?
@@ -64,6 +65,7 @@ class Player
     @bomb.reset
     @cur_item_type = nil
     @item_index = 0
+    @stage_score = 0
     @dead = false
   end
 end

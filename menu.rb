@@ -72,29 +72,6 @@ class SavedGame
   end
 end
 
-class NumericText
-  include FormElement
-
-  attr_accessor :num
-
-  def initialize num, x, y, mode
-    @num = num
-    @x = x
-    @y = y
-    @mode = mode
-  end
-
-  def update; end
-
-  def set_position(x, y)
-    @x = x; @y = y
-  end
-
-  def draw
-    SB.text_helper.write_line(@num.to_s, @x, @y, @mode)
-  end
-end
-
 class Menu
   class << self
     def initialize
@@ -166,7 +143,7 @@ class Menu
           SB.change_lang
         },
         MenuText.new(:sound_volume, 20, 300),
-        (@s_v_text = NumericText.new(SB.sound_volume, 590, 300, :center)),
+        (@s_v_text = MenuNumber.new(SB.sound_volume, 590, 300, :center)),
         MenuArrowButton.new(400, 292, 'Left') {
           SB.change_volume('sound', -1)
           @s_v_text.num = SB.sound_volume
@@ -176,7 +153,7 @@ class Menu
           @s_v_text.num = SB.sound_volume
         },
         MenuText.new(:music_volume, 20, 400),
-        (@m_v_text = NumericText.new(SB.music_volume, 590, 400, :center)),
+        (@m_v_text = MenuNumber.new(SB.music_volume, 590, 400, :center)),
         MenuArrowButton.new(400, 392, 'Left') {
           SB.change_volume('music', -1)
           @m_v_text.num = SB.music_volume

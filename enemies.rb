@@ -68,14 +68,14 @@ class Enemy < GameObject
   end
 
   def hit_by_explosion
-    SB.player.score += @score
+    SB.player.stage_score += @score
     @dead = true
   end
 
   def hit
     @hp -= 1
     if @hp == 0
-      SB.player.score += @score
+      SB.player.stage_score += @score
       @dead = true
     else
       get_invulnerable
@@ -264,14 +264,14 @@ class Ekips < GameObject
 
   def update(section)
     if section.projectile_hit? self and not @attacking
-      SB.player.score += 240
+      SB.player.stage_score += 240
       @dead = true
       return
     end
 
     if SB.player.bomb.over? self
       if @attacking
-        SB.player.score += 240
+        SB.player.stage_score += 240
         @dead = true
         return
       else
@@ -329,7 +329,7 @@ class Faller < GameObject
 
   def update(section)
     if SB.player.bomb.explode? self
-      SB.player.score += 300
+      SB.player.stage_score += 300
       section.obstacles.delete self
       section.obstacles.delete @bottom
       @dead = true
@@ -413,7 +413,7 @@ class Turner < Enemy
   end
 
   def hit_by_explosion
-    SB.player.score += @score
+    SB.player.stage_score += @score
     @obst.delete self unless @harmful
     @dead = true
   end

@@ -1,6 +1,26 @@
 require_relative 'global'
 require_relative 'form'
 
+class MenuPanel
+  include FormElement
+
+  def initialize x, y, w, h
+    @x = x
+    @y = y
+    @w = w
+    @h = h
+  end
+
+  def set_position(x, y); @x = x; @y = y; end
+
+  def draw
+    G.window.draw_quad @x, @y, C::PANEL_COLOR,
+                       @x + @w, @y, C::PANEL_COLOR,
+                       @x, @y + @h, C::PANEL_COLOR,
+                       @x + @w, @y + @h, C::PANEL_COLOR, 0
+  end
+end
+
 class StageMenu
   class << self
     def initialize
@@ -29,7 +49,41 @@ class StageMenu
           return
         end
         @stage_menu.update
+      elsif SB.state == :stage_end
+        @stage_end_timer += 1 if @stage_end_timer < 30 * @stage_end_comps.length
+        @stage_end_comps.each_with_index do |c, i|
+          c.update_movement if @stage_end_timer >= i * 30
+        end
       end
+    end
+
+    def end_stage
+      p = MenuPanel.new(-600, 150, 400, 300)
+      p.init_movement
+      p.move_to 200, 150
+      t1 = MenuText.new(:stage_complete, 1200, 160, 400, :center, true)
+      t1.init_movement
+      t1.move_to 400, 160
+      t2 = MenuText.new(:score, 210, 820)
+      t2.init_movement
+      t2.move_to 210, 220
+      t3 = MenuNumber.new(SB.player.stage_score, 590, 820, :right)
+      t3.init_movement
+      t3.move_to 590, 220
+      t4 = MenuText.new(:total, 210, 860)
+      t4.init_movement
+      t4.move_to 210, 260
+      t5 = MenuNumber.new(SB.player.score, 590, 860, :right)
+      t5.init_movement
+      t5.move_to 590, 260
+      t6 = MenuText.new(:spec_taken, 210, 900)
+      t6.init_movement
+      t6.move_to 210, 300
+      t7 = MenuText.new(SB.player.specs.index(SB.stage.id) ? :yes : :no, 590, 900, 300, :right)
+      t7.init_movement
+      t7.move_to 590, 300
+      @stage_end_comps = [p, t1, t2, t3, t4, t5, t6, t7]
+      @stage_end_timer = 0
     end
 
     def reset
@@ -51,23 +105,23 @@ class StageMenu
     end
 
     def draw_player_stats
-      G.window.draw_quad 5, 5, 0x80abcdef,
-                         205, 5, 0x80abcdef,
-                         205, 55, 0x80abcdef,
-                         5, 55, 0x80abcdef, 0
+      G.window.draw_quad 5, 5, C::PANEL_COLOR,
+                         205, 5, C::PANEL_COLOR,
+                         205, 55, C::PANEL_COLOR,
+                         5, 55, C::PANEL_COLOR, 0
       SB.font.draw SB.text(:lives), 10, 10, 0, 1, 1, 0xff000000
       SB.font.draw SB.player.lives, 100, 10, 0, 1, 1, 0xff000000
       SB.font.draw SB.text(:score), 10, 30, 0, 1, 1, 0xff000000
-      SB.font.draw SB.player.score, 100, 30, 0, 1, 1, 0xff000000
+      SB.font.draw SB.player.stage_score, 100, 30, 0, 1, 1, 0xff000000
 
-      G.window.draw_quad 690, 5, 0x80abcdef,
-                         740, 5, 0x80abcdef,
-                         740, 55, 0x80abcdef,
-                         690, 55, 0x80abcdef, 0
-      G.window.draw_quad 745, 5, 0x80abcdef,
-                         795, 5, 0x80abcdef,
-                         795, 55, 0x80abcdef,
-                         745, 55, 0x80abcdef, 0
+      G.window.draw_quad 690, 5, C::PANEL_COLOR,
+                         740, 5, C::PANEL_COLOR,
+                         740, 55, C::PANEL_COLOR,
+                         690, 55, C::PANEL_COLOR, 0
+      G.window.draw_quad 745, 5, C::PANEL_COLOR,
+                         795, 5, C::PANEL_COLOR,
+                         795, 55, C::PANEL_COLOR,
+                         745, 55, C::PANEL_COLOR, 0
 
       if SB.player.cur_item_type
         item_set = SB.player.items[SB.player.cur_item_type]
@@ -75,12 +129,12 @@ class StageMenu
         SB.font.draw item_set.length.to_s, 725, 36, 0, 1, 1, 0xff000000
       end
       if SB.player.items.length > 1
-        G.window.draw_triangle 690, 30, 0x80123456,
-                               694, 26, 0x80123456,
-                               694, 34, 0x80123456, 0
-        G.window.draw_triangle 736, 25, 0x80123456,
-                               741, 30, 0x80123456,
-                               736, 35, 0x80123456, 0
+        G.window.draw_triangle 690, 30, C::ARROW_COLOR,
+                               694, 26, C::ARROW_COLOR,
+                               694, 34, C::ARROW_COLOR, 0
+        G.window.draw_triangle 736, 25, C::ARROW_COLOR,
+                               741, 30, C::ARROW_COLOR,
+                               736, 35, C::ARROW_COLOR, 0
       end
     end
 
@@ -94,7 +148,7 @@ class StageMenu
     end
 
     def draw_stage_stats
-      SB.font.draw_rel SB.text(:stage_complete), 400, 150, 0, 0.5, 0.5, 2, 2, 0xff000000
+      @stage_end_comps.each { |c| c.draw }
     end
   end
 end

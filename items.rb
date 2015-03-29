@@ -32,11 +32,8 @@ end
 class FloatingItem < GameObject
   def initialize(x, y, w, h, img, img_gap = nil, sprite_cols = nil, sprite_rows = nil, indices = nil, interval = nil)
     super x, y, w, h, img, img_gap, sprite_cols, sprite_rows
-    if img_gap
-      @active_bounds = Rectangle.new x + img_gap.x, y - img_gap.y, @img[0].width, @img[0].height
-    else
-      @active_bounds = Rectangle.new x, y, @img[0].width, @img[0].height
-    end
+    img_gap = Vector.new(0, 0) if img_gap.nil?
+    @active_bounds = Rectangle.new x + img_gap.x, y - img_gap.y, @img[0].width, @img[0].height
     @state = 3
     @counter = 0
     @indices = indices
@@ -69,8 +66,8 @@ class FireRock < FloatingItem
   end
 
   def update(section)
-    super section do
-      SB.player.score += 10
+    super(section) do
+      SB.player.stage_score += 10
     end
   end
 end
@@ -85,7 +82,7 @@ class Life < FloatingItem
   end
 
   def update(section)
-    super section do
+    super(section) do
       take section, false
     end
   end
@@ -106,7 +103,7 @@ class Key < FloatingItem
   end
 
   def update(section)
-    super section do
+    super(section) do
       take section, true
     end
   end
@@ -127,7 +124,7 @@ class Attack1 < FloatingItem
   end
 
   def update(section)
-    super section do
+    super(section) do
       take section, true
     end
   end
@@ -140,8 +137,15 @@ class Attack1 < FloatingItem
   end
 end
 
-class Spec < GameObject
-  def initialize(x, y, args, section, switch)
+class Spec < FloatingItem
+  def initialize(x, y, args, section)
+    return if SB.player.specs.index(SB.stage.id)
+    super x - 1, y - 1, 34, 34, :sprite_Spec, Vector.new(-12, -12), 2, 2, [0,1,2,3], 5
+  end
 
+  def update(section)
+    super(section) do
+      SB.player.specs << SB.stage.id
+    end
   end
 end

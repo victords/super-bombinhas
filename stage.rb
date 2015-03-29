@@ -1,10 +1,11 @@
 require_relative 'section'
 
 class Stage
-  attr_reader :num, :cur_entrance
+  attr_reader :num, :id, :cur_entrance
 
   def initialize(world, num, loaded = false)
     @num = num
+    @id = (SB.world.num - 1) * 5 + num
     @sections = []
     @entrances = []
     @switches = []
@@ -21,6 +22,9 @@ class Stage
     reset_switches
     @cur_entrance = @entrances[loaded ? SB.save_data[7].to_i : 0]
     @cur_section = @cur_entrance[:section]
+  end
+
+  def start
     @cur_section.start @switches, @cur_entrance[:x], @cur_entrance[:y]
   end
 
