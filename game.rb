@@ -33,7 +33,6 @@ class SBGame < MiniGL::GameWindow
     elsif SB.state == :stage_end
       SB.player.bomb.update(nil)
       StageMenu.update
-      SB.next_stage if KB.key_pressed? Gosu::KbReturn
     elsif SB.state == :paused
       StageMenu.update
     end

@@ -39,6 +39,20 @@ class StageMenu
         MenuButton.new(550, :back, true) {
           @stage_menu.go_to_section 0
         }
+      ], [
+        MenuButton.new(350, :continue, false, 219) {
+          SB.next_stage
+        },
+        MenuButton.new(350, :save_exit, false, 409) {
+          num = SB.stage.num + 1
+          if num <= SB.world.stage_count
+            SB.player.last_stage = num
+          else
+            SB.player.last_world = SB.world.num + 1
+            SB.player.last_stage = 1
+          end
+          SB.save_and_exit
+        }
       ])
     end
 
@@ -51,6 +65,7 @@ class StageMenu
         @stage_menu.update
       elsif SB.state == :stage_end
         @stage_end_timer += 1 if @stage_end_timer < 30 * @stage_end_comps.length
+        @stage_menu.update
         @stage_end_comps.each_with_index do |c, i|
           c.update_movement if @stage_end_timer >= i * 30
         end
@@ -84,6 +99,7 @@ class StageMenu
       t7.move_to 590, 300
       @stage_end_comps = [p, t1, t2, t3, t4, t5, t6, t7]
       @stage_end_timer = 0
+      @stage_menu.go_to_section 2
     end
 
     def reset
@@ -149,6 +165,7 @@ class StageMenu
 
     def draw_stage_stats
       @stage_end_comps.each { |c| c.draw }
+      @stage_menu.draw if @stage_end_timer >= @stage_end_comps.length * 30
     end
   end
 end

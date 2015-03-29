@@ -126,6 +126,7 @@ class SB
       else
         # a definir...
       end
+      StageMenu.reset
       @state = :main
     end
 
