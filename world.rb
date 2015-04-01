@@ -47,6 +47,16 @@ class MapStage
     SB.state = :main
   end
 
+  def open
+    @img = Res.img :icon_current
+    @glows = true
+    @alpha = 0xff
+  end
+
+  def close
+    @img = Res.img :icon_complete
+  end
+
   def draw
     @img.draw @x, @y, 0, 1, 1, @color
   end
@@ -55,7 +65,7 @@ end
 class World
   attr_reader :num, :stage_count
 
-  def initialize(num = 1, stage_num = 1, loaded = false, bomb = 'azul')
+  def initialize(num = 1, stage_num = 1, last_stage_num = 1, loaded = false, bomb = 'azul')
     @num = num
     @loaded_stage = loaded ? stage_num : nil
     @name = SB.text "world_#{@num}"
@@ -67,9 +77,10 @@ class World
 
     @stages = []
     @cur = stage_num - 1
+    last = last_stage_num - 1
     File.open("#{Res.prefix}stage/#{@num}/world").each_with_index do |l, i|
       coords = l.split ','
-      state = if i < @cur; :complete; else; i == @cur ? :current : :unknown; end
+      state = if i < last; :complete; else; i == last ? :current : :unknown; end
       @stages << MapStage.new(@num, i+1, coords[0].to_i, coords[1].to_i, state)
     end
     @stage_count = @stages.count
@@ -110,6 +121,13 @@ class World
   def set_loaded(stage_num)
     @loaded_stage = stage_num
     @bomb = Sprite.new @stages[@cur].x + 1, @stages[@cur].y - 15, "sprite_Bomba#{SB.save_data[3].capitalize}", 5, 2
+  end
+
+  def open_stage
+    @stages[@cur].close
+    @cur += 1
+    @stages[@cur].open
+    @bomb.x = @stages[@cur].x + 1; @bomb.y = @stages[@cur].y - 15
   end
 
   def draw
