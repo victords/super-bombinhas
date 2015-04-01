@@ -104,7 +104,7 @@ class MenuTextField < TextField
   include FormElement
 
   def initialize(y, x = 314)
-    super x: x, y: y, font: SB.font, img: :ui_textField, margin_x: 10, margin_y: 8, active: true
+    super x: x, y: y, font: SB.font, img: :ui_textField, margin_x: 10, margin_y: 8, locale: (SB.lang == :portuguese ? 'pt-br' : 'en-us')
   end
 end
 
@@ -125,6 +125,7 @@ class FormSection
     @visible = visible
     @changing = nil
     @cur_btn = @buttons[@cur_btn_index = 0]
+    @cur_btn.focus if @cur_btn.respond_to? :focus
   end
 
   def update(mouse_moved)
@@ -154,7 +155,7 @@ class FormSection
         @cur_btn.unfocus if @cur_btn.respond_to? :unfocus
       elsif KB.key_pressed? Gosu::KbReturn or (KB.key_pressed? Gosu::KbSpace and @cur_btn.is_a? Button)
         @cur_btn.click if @cur_btn.respond_to? :click
-      elsif @back_btn and (KB.key_pressed? Gosu::KbEscape or (KB.key_pressed? Gosu::KbBackspace and not @cur_btn.is_a? TextField))
+      elsif @back_btn && (KB.key_pressed?(Gosu::KbEscape) || (KB.key_pressed?(Gosu::KbBackspace) && !@cur_btn.is_a?(TextField)))
         @back_btn.click
       end
       @cur_btn = @buttons[@cur_btn_index]
@@ -185,6 +186,7 @@ class FormSection
   def update_lang
     @components.each do |c|
       c.text = SB.text(c.text_id) if c.respond_to? :text_id
+      c.locale = (SB.lang == :portuguese ? 'pt-br' : 'en-us') if c.respond_to? :locale=
     end
   end
 
