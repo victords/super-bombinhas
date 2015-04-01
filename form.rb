@@ -115,7 +115,7 @@ class FormSection
     @components = components
     @buttons = []
     @components.each do |c|
-      if c.is_a? Button
+      if c.is_a? Button or c.is_a? TextField
         @buttons << c
         @back_btn = c if c.respond_to?(:back) && c.back
       end
@@ -138,23 +138,27 @@ class FormSection
     elsif @visible
       @components.each { |c| c.update }
       @buttons.each_with_index do |b, i|
+        next unless b.is_a? Button
         if b.state == :down || mouse_moved && b.state == :over
           @cur_btn_index = i
           break
         end
       end
-      if KB.key_pressed? Gosu::KbDown or KB.key_pressed? Gosu::KbRight
+      if KB.key_pressed? Gosu::KbDown or (KB.key_pressed? Gosu::KbRight and @cur_btn.is_a? Button)
         @cur_btn_index += 1
         @cur_btn_index = 0 if @cur_btn_index == @buttons.length
-      elsif KB.key_pressed? Gosu::KbUp or KB.key_pressed? Gosu::KbLeft
+        @cur_btn.unfocus if @cur_btn.respond_to? :unfocus
+      elsif KB.key_pressed? Gosu::KbUp or (KB.key_pressed? Gosu::KbLeft and @cur_btn.is_a? Button)
         @cur_btn_index -= 1
         @cur_btn_index = @buttons.length - 1 if @cur_btn_index < 0
-      elsif KB.key_pressed? Gosu::KbReturn
-        @cur_btn.click
-      elsif @back_btn and (KB.key_pressed? Gosu::KbEscape or KB.key_pressed? Gosu::KbBackspace)
+        @cur_btn.unfocus if @cur_btn.respond_to? :unfocus
+      elsif KB.key_pressed? Gosu::KbReturn or (KB.key_pressed? Gosu::KbSpace and @cur_btn.is_a? Button)
+        @cur_btn.click if @cur_btn.respond_to? :click
+      elsif @back_btn and (KB.key_pressed? Gosu::KbEscape or (KB.key_pressed? Gosu::KbBackspace and not @cur_btn.is_a? TextField))
         @back_btn.click
       end
       @cur_btn = @buttons[@cur_btn_index]
+      @cur_btn.focus if @cur_btn.respond_to? :focus
     end
   end
 

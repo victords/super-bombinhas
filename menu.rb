@@ -108,7 +108,7 @@ class Menu
         (@txt_name = MenuTextField.new(295)),
         MenuText.new(:what_name, 400, 220, 400, :center),
         MenuButton.new(345, :play) {
-          SB.new_game(@txt_name.text.downcase, @new_game_index)
+          SB.new_game(@txt_name.text.downcase, @new_game_index) unless @txt_name.text.empty?
         },
         MenuButton.new(395, :back, true) {
           @form.go_to_section 1
@@ -177,6 +177,9 @@ class Menu
     end
 
     def update
+      if @form.cur_section_index == 3 && @form.section(3).cur_btn == @txt_name && KB.key_pressed?(Gosu::KbReturn)
+        SB.new_game(@txt_name.text.downcase, @new_game_index) unless @txt_name.text.empty?
+      end
       @form.update
     end
 
