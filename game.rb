@@ -1,6 +1,3 @@
-#!/home/victor/.rvm/rubies/ruby-2.0.0-p353/bin/ruby
-#encoding: UTF-8
-
 require_relative 'menu'
 require_relative 'stage_menu'
 
@@ -12,7 +9,7 @@ class SBGame < MiniGL::GameWindow
   end
 
   def needs_cursor?
-    SB.state != :main
+    SB.state != :main && SB.state != :map
   end
 
   def update

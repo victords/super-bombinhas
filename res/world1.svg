@@ -11,13 +11,13 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="550"
-   height="400"
+   width="800"
+   height="600"
    id="svg4757"
    version="1.1"
    inkscape:version="0.48.4 r9939"
    sodipodi:docname="world1.svg"
-   inkscape:export-filename="/home/victor/aleva/super-bombinhas/data/img/other/world1.png"
+   inkscape:export-filename="/home/victor/aleva/super-bombinhas/data/img/bg/world1.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
@@ -496,7 +496,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="1"
      inkscape:cx="290.62332"
-     inkscape:cy="215.53135"
+     inkscape:cy="295.53135"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -521,10 +521,10 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0,-652.36218)">
+     transform="translate(0,-452.36218)">
     <g
        id="g4174"
-       transform="matrix(1.0206458,0,0,1.0206458,-5.3876048,97.928407)">
+       transform="matrix(1.0206458,0,0,1.0206458,244.6124,-2.0715935)">
       <path
          sodipodi:nodetypes="cccccccccccccccccccccccccccccccccccccccc"
          inkscape:connector-curvature="0"

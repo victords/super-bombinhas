@@ -17,7 +17,6 @@ language		Lenguaje
 lang_name		Español
 sound_volume	Volumen de los sonidos
 music_volume	Volumen de la música
-choose_stage	Elige la etapa
 ch_st_instruct	Pulsa 'Enter' o 'Espacio' para empezar.\nPulsa 'Esc' o 'Backspace' para volver.
 stage			Etapa
 loading			Cargando
@@ -36,3 +35,5 @@ stage_1_1		Explorando la Playa de Tars
 stage_1_2		Arena, Viento y Desierto
 stage_1_3		Teste para el Nombre de la Tercera Fase
 stage_1_4		¡Por Fin! La Fortaleza de Chamal
+world_2			Bosque de los sabios
+stage_2_1		El bosque de frontera

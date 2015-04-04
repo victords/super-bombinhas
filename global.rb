@@ -17,7 +17,7 @@ end
 
 class SB
   class << self
-    attr_reader :font, :big_font, :text_helper, :big_text_helper, :save_data, :lang
+    attr_reader :font, :big_font, :text_helper, :big_text_helper, :small_text_helper, :save_data, :lang
     attr_accessor :state, :player, :world, :stage, :music_volume, :sound_volume
 
     def initialize
@@ -27,6 +27,7 @@ class SB
       @big_font = Res.font :BankGothicMedium, 36
       @text_helper = TextHelper.new(@font, 5)
       @big_text_helper = TextHelper.new(@big_font, 8)
+      @small_text_helper = TextHelper.new(Res.font(:BankGothicMedium, 16), -4)
       @langs = []
       @texts = {}
       files = Dir["#{Res.prefix}text/*.txt"]
@@ -90,8 +91,8 @@ class SB
     end
 
     def new_game(name, index)
-      @world = World.new
       @player = Player.new name
+      @world = World.new
       @save_file_name = "#{Res.prefix}save/#{index}"
       @save_data = Array.new(10)
       @state = :map
@@ -101,8 +102,8 @@ class SB
       data = IO.readlines(file_name).map { |l| l.chomp }
       world_stage = data[1].split('-')
       last_world_stage = data[2].split('-')
-      @world = World.new(world_stage[0].to_i, last_world_stage[0].to_i, world_stage[1].to_i, last_world_stage[1].to_i, true, data[3])
       @player = Player.new(data[0], last_world_stage[0].to_i, last_world_stage[1].to_i, data[3].to_sym, data[4].to_i, data[5].to_i, data[6])
+      @world = World.new(world_stage[0].to_i, world_stage[1].to_i, true)
       @save_file_name = file_name
       @save_data = data
       @state = :map
@@ -158,7 +159,7 @@ class SB
         @save_data.each { |s| f.print(s + "\n") }
       end
       if next_world
-        @world = World.new(next_world, next_world, 1, 1, false, @player.bomb.type)
+        @world = World.new(next_world, 1, false)
       else
         @world.set_loaded @stage.num
       end

@@ -17,7 +17,6 @@ language		Language
 lang_name		English
 sound_volume	Sounds volume
 music_volume	Music volume
-choose_stage	Choose the stage
 ch_st_instruct	Press 'Enter' or 'Space' to start.\nPress 'Esc' or 'Backspace' to go back.
 stage			Stage
 loading			Loading
@@ -36,3 +35,5 @@ stage_1_1		Exploring the Tars Beach
 stage_1_2		Sand, Wind and Wilderness
 stage_1_3		Test for the Name of the Third Stage
 stage_1_4		Finally! Chamal's Fortress
+world_2			Wisemen's forest
+stage_2_1		The border woods

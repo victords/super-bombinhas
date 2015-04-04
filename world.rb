@@ -65,26 +65,27 @@ end
 class World
   attr_reader :num, :stage_count
 
-  def initialize(num = 1, last_num = 1, stage_num = 1, last_stage_num = 1, loaded = false, bomb = 'azul')
+  def initialize(num = 1, stage_num = 1, loaded = false)
     @num = num
     @loaded_stage = loaded ? stage_num : nil
     @name = SB.text "world_#{@num}"
 
     @water = Sprite.new 0, 0, :ui_water, 2, 2
     @mark = Sprite.new 0, 0, :ui_mark
+    @arrow = Res.img :ui_changeWorld
     @parchment = Res.img :ui_parchment
-    @map = Res.img "ui_world#{num}"
+    @map = Res.img "bg_world#{num}"
 
     @stages = []
     File.open("#{Res.prefix}stage/#{@num}/world").each_with_index do |l, i|
       coords = l.split ','
       begin @mark.x = coords[0].to_i; @mark.y = coords[1].to_i; next end if i == 0
       state =
-        if num < last_num
+        if num < SB.player.last_world
           :complete
-        elsif i < last_stage_num
+        elsif i < SB.player.last_stage
           :complete
-        elsif i == last_stage_num
+        elsif i == SB.player.last_stage
           :current
         else
           :unknown
@@ -92,8 +93,8 @@ class World
       @stages << MapStage.new(@num, i, coords[0].to_i, coords[1].to_i, state)
     end
     @stage_count = @stages.count
-    @cur = num < last_num ? @stage_count - 1 : stage_num - 1
-    @bomb = Sprite.new @stages[@cur].x + 1, @stages[@cur].y - 15, "sprite_Bomba#{bomb.capitalize}", 8, 2
+    @cur = num < SB.player.last_world ? @stage_count - 1 : stage_num - 1
+    @bomb = Sprite.new @stages[@cur].x + 1, @stages[@cur].y - 15, "sprite_Bomba#{SB.player.bomb.type.to_s.capitalize}", 8, 2
 
     # @play_button = Button.new(420, 550, SB.font, SB.text(:play), :ui_button1, 0, 0, 0, 0, true, false, 0, 7) {
     #   @stages[@cur].select(@loaded_stage)
@@ -124,6 +125,10 @@ class World
       @cur += 1
       @cur = 0 if @cur >= @stages.size
       @bomb.x = @stages[@cur].x + 1; @bomb.y = @stages[@cur].y - 15
+    elsif KB.key_pressed? Gosu::KbLeftShift and @num > 1
+      SB.world = World.new @num - 1
+    elsif KB.key_pressed? Gosu::KbRightShift and @num < SB.player.last_world
+      SB.world = World.new @num + 1
     end
   end
 
@@ -142,10 +147,7 @@ class World
   end
 
   def draw
-    G.window.draw_quad 0, 0, 0xff6ab8ff,
-                       800, 0, 0xff6ab8ff,
-                       800, 600, 0xff6ab8ff,
-                       0, 600, 0xff6ab8ff, 0
+    G.window.clear 0x6ab8ff
     y = 0
     while y < C::SCREEN_HEIGHT
       x = 0
@@ -156,17 +158,26 @@ class World
       end
       y += 40
     end
+    @map.draw 0, 0, 0
     @parchment.draw 0, 0, 0
     @mark.draw
 
-    @map.draw 250, 100, 0
     @stages.each { |s| s.draw }
     # @play_button.draw
     # @back_button.draw
     @bomb.draw
 
-    SB.font.draw_rel SB.text(:choose_stage), 525, 20, 0, 0.5, 0, 2, 2, 0xff000000
+    SB.big_text_helper.write_line @name, 525, 10, :center
+    SB.text_helper.write_breaking "#{SB.text(:stage)} #{@num}-#{@cur+1}: #{@stages[@cur].name}", 525, 45, 550, :center
     SB.text_helper.write_breaking(SB.text(:ch_st_instruct).gsub('\n', "\n"), 780, 545, 600, :right)
-    SB.text_helper.write_breaking "#{@name}\n*** #{SB.text(:stage)} #{@num}-#{@cur+1} ***\n#{@stages[@cur].name}", 125, 100, 200, :center, 0xff3d361f
+
+    if @num > 1
+      @arrow.draw 260, 10, 0
+      SB.small_text_helper.write_breaking 'left shift', 315, 13, 60, :right
+    end
+    if @num < SB.player.last_world
+      @arrow.draw 790, 10, 0, -1
+      SB.small_text_helper.write_breaking 'right shift', 735, 13, 60
+    end
   end
 end
