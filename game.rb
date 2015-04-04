@@ -6,7 +6,7 @@ require_relative 'stage_menu'
 
 class SBGame < MiniGL::GameWindow
   def initialize
-    super(C::SCREEN_WIDTH, C::SCREEN_HEIGHT, true, Vector.new(0, 0.9))
+    super(C::SCREEN_WIDTH, C::SCREEN_HEIGHT, false, Vector.new(0, 0.9))
 
     SB.initialize
   end

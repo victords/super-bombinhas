@@ -65,25 +65,34 @@ end
 class World
   attr_reader :num, :stage_count
 
-  def initialize(num = 1, stage_num = 1, last_stage_num = 1, loaded = false, bomb = 'azul')
+  def initialize(num = 1, last_num = 1, stage_num = 1, last_stage_num = 1, loaded = false, bomb = 'azul')
     @num = num
     @loaded_stage = loaded ? stage_num : nil
     @name = SB.text "world_#{@num}"
 
     @water = Sprite.new 0, 0, :ui_water, 2, 2
+    @mark = Sprite.new 0, 0, :ui_mark
     @parchment = Res.img :ui_parchment
-    @mark = Res.img :ui_mark
-    @map = Res.img :ui_world1
+    @map = Res.img "ui_world#{num}"
 
     @stages = []
-    @cur = stage_num - 1
-    last = last_stage_num - 1
     File.open("#{Res.prefix}stage/#{@num}/world").each_with_index do |l, i|
       coords = l.split ','
-      state = if i < last; :complete; else; i == last ? :current : :unknown; end
-      @stages << MapStage.new(@num, i+1, coords[0].to_i, coords[1].to_i, state)
+      begin @mark.x = coords[0].to_i; @mark.y = coords[1].to_i; next end if i == 0
+      state =
+        if num < last_num
+          :complete
+        elsif i < last_stage_num
+          :complete
+        elsif i == last_stage_num
+          :current
+        else
+          :unknown
+        end
+      @stages << MapStage.new(@num, i, coords[0].to_i, coords[1].to_i, state)
     end
     @stage_count = @stages.count
+    @cur = num < last_num ? @stage_count - 1 : stage_num - 1
     @bomb = Sprite.new @stages[@cur].x + 1, @stages[@cur].y - 15, "sprite_Bomba#{bomb.capitalize}", 8, 2
 
     # @play_button = Button.new(420, 550, SB.font, SB.text(:play), :ui_button1, 0, 0, 0, 0, true, false, 0, 7) {
@@ -125,9 +134,11 @@ class World
 
   def open_stage
     @stages[@cur].close
-    @cur += 1
-    @stages[@cur].open
-    @bomb.x = @stages[@cur].x + 1; @bomb.y = @stages[@cur].y - 15
+    if @cur < @stage_count - 1
+      @cur += 1
+      @stages[@cur].open
+      @bomb.x = @stages[@cur].x + 1; @bomb.y = @stages[@cur].y - 15
+    end
   end
 
   def draw
@@ -146,7 +157,7 @@ class World
       y += 40
     end
     @parchment.draw 0, 0, 0
-    @mark.draw 190, 510, 0
+    @mark.draw
 
     @map.draw 250, 100, 0
     @stages.each { |s| s.draw }

@@ -101,7 +101,7 @@ class SB
       data = IO.readlines(file_name).map { |l| l.chomp }
       world_stage = data[1].split('-')
       last_world_stage = data[2].split('-')
-      @world = World.new(world_stage[0].to_i, world_stage[1].to_i, last_world_stage[1].to_i, true, data[3])
+      @world = World.new(world_stage[0].to_i, last_world_stage[0].to_i, world_stage[1].to_i, last_world_stage[1].to_i, true, data[3])
       @player = Player.new(data[0], last_world_stage[0].to_i, last_world_stage[1].to_i, data[3].to_sym, data[4].to_i, data[5].to_i, data[6])
       @save_file_name = file_name
       @save_data = data
@@ -115,23 +115,34 @@ class SB
       @state = :stage_end
     end
 
-    def next_stage
+    def next_stage(continue = true)
       # Res.clear
+      @world.open_stage
       num = @stage.num + 1
       if num <= @world.stage_count
         # deve ter alguma transição, mostrar os pontos, etc.
-        @stage = Stage.new(@world.num, num)
-        @player.last_stage = @stage.num
-        @world.open_stage
-        @stage.start
+        @player.last_stage = num
+        if continue
+          StageMenu.reset
+          @stage = Stage.new(@world.num, num)
+          @stage.start
+          @state = :main
+        end
       else
-        # a definir...
+        world_num = @world.num + 1
+        @player.last_world = world_num
+        @player.last_stage = 1
+        if continue
+          save_and_exit world_num
+        end
       end
-      StageMenu.reset
-      @state = :main
+      unless continue
+        @stage = Stage.new(@world.num, @stage.num)
+        save_and_exit
+      end
     end
 
-    def save_and_exit
+    def save_and_exit(next_world = nil)
       @save_data[0] = @player.name
       @save_data[1] = "#{@world.num}-#{@stage.num}"
       @save_data[2] = "#{@player.last_world}-#{@player.last_stage}"
@@ -146,7 +157,11 @@ class SB
       File.open(@save_file_name, 'w') do |f|
         @save_data.each { |s| f.print(s + "\n") }
       end
-      @world.set_loaded @stage.num
+      if next_world
+        @world = World.new(next_world, next_world, 1, 1, false, @player.bomb.type)
+      else
+        @world.set_loaded @stage.num
+      end
       StageMenu.reset
       @state = :map
     end

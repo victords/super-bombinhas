@@ -44,16 +44,7 @@ class StageMenu
           SB.next_stage
         },
         MenuButton.new(350, :save_exit, false, 409) {
-          num = SB.stage.num + 1
-          if num <= SB.world.stage_count
-            SB.player.last_stage = num
-            SB.world.open_stage
-          else
-            SB.player.last_world = SB.world.num + 1
-            SB.player.last_stage = 1
-          end
-          SB.stage = Stage.new(SB.world.num, SB.stage.num)
-          SB.save_and_exit
+          SB.next_stage false
         }
       ])
     end

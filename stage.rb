@@ -5,7 +5,7 @@ class Stage
 
   def initialize(world, num, loaded = false)
     @num = num
-    @id = (SB.world.num - 1) * 5 + num
+    @id = "#{SB.world.num}-#{num}"
     @sections = []
     @entrances = []
     @switches = []

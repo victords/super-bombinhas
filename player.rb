@@ -12,7 +12,7 @@ class Player
     @lives = lives
     @score = score
     @stage_score = 0
-    @specs = eval("[#{specs}]")
+    @specs = specs.split(',')
     @items = {}
   end
 
