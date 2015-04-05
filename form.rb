@@ -29,9 +29,17 @@ module FormElement
   end
 end
 
-class MenuText
+class MenuElement
   include FormElement
 
+  def update; end
+
+  def set_position(x, y)
+    @x = x; @y = y
+  end
+end
+
+class MenuText < MenuElement
   attr_reader :text_id
   attr_writer :text
 
@@ -45,34 +53,20 @@ class MenuText
     @big = big
   end
 
-  def update; end
-
-  def set_position(x, y)
-    @x = x; @y = y
-  end
-
   def draw
     helper = @big ? SB.big_text_helper : SB.text_helper
     helper.write_breaking(@text, @x, @y, @width, @mode)
   end
 end
 
-class MenuNumber
-  include FormElement
-
+class MenuNumber < MenuElement
   attr_accessor :num
 
-  def initialize num, x, y, mode
+  def initialize(num, x, y, mode)
     @num = num
     @x = x
     @y = y
     @mode = mode
-  end
-
-  def update; end
-
-  def set_position(x, y)
-    @x = x; @y = y
   end
 
   def draw

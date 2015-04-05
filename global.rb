@@ -55,7 +55,6 @@ class SB
       end
 
       Menu.initialize
-      StageMenu.initialize
     end
 
     def text(id)
@@ -96,6 +95,7 @@ class SB
       @save_file_name = "#{Res.prefix}save/#{index}"
       @save_data = Array.new(10)
       @state = :map
+      StageMenu.initialize
     end
 
     def load_game(file_name)
@@ -107,6 +107,7 @@ class SB
       @save_file_name = file_name
       @save_data = data
       @state = :map
+      StageMenu.initialize
     end
 
     def end_stage
@@ -129,7 +130,6 @@ class SB
         # deve ter alguma transição, mostrar os pontos, etc.
         @player.last_stage = num
         if continue
-          StageMenu.reset
           @stage = Stage.new(@world.num, num)
           @stage.start
           @state = :main
@@ -168,7 +168,6 @@ class SB
       else
         @world.set_loaded @stage.num
       end
-      StageMenu.reset
       @state = :map
     end
   end

@@ -1,17 +1,25 @@
 require_relative 'global'
 require_relative 'options'
 
-class MenuPanel
-  include FormElement
+class MenuImage < MenuElement
+  def initialize(x, y, img)
+    @x = x
+    @y = y
+    @img = Res.img img
+  end
 
-  def initialize x, y, w, h
+  def draw
+    @img.draw @x, @y, 0
+  end
+end
+
+class MenuPanel < MenuElement
+  def initialize(x, y, w, h)
     @x = x
     @y = y
     @w = w
     @h = h
   end
-
-  def set_position(x, y); @x = x; @y = y; end
 
   def draw
     G.window.draw_quad @x, @y, C::PANEL_COLOR,
@@ -21,31 +29,81 @@ class MenuPanel
   end
 end
 
+class BombButton < Button
+  include FormElement
+
+  def initialize(x, bomb)
+    super(x: x, y: 240, width: 64, height: 64, params: bomb) { |b|
+      puts "selected #{b}"
+    }
+  end
+end
+
 class StageMenu
   class << self
+    attr_reader :ready
+
     def initialize
-      @stage_menu_bg = Res.img :ui_stageMenu
-      @options = Options.new
-      @stage_menu = Form.new([
-        MenuButton.new(210, :resume, true) {
-          SB.state = :main
-        },
-        MenuButton.new(280, :options) {
-          @options.set_temp
-          @stage_menu.go_to_section 1
-        },
-        MenuButton.new(350, :save_exit) {
-          SB.save_and_exit
-        }
-      ], @options.get_menu, [
-        MenuButton.new(350, :continue, false, 219) {
-          SB.next_stage
-        },
-        MenuButton.new(350, :save_exit, false, 409) {
-          SB.next_stage false
-        }
-      ])
-      @options.form = @stage_menu
+      if @ready
+        @stage_menu.reset
+        set_bomb_screen_comps
+      else
+        @options = Options.new
+        options_comps = [MenuPanel.new(10, 90, 780, 450)]
+        options_comps.concat(@options.get_menu)
+
+        @stage_menu = Form.new([
+          MenuImage.new(275, 180, :ui_stageMenu),
+          MenuButton.new(200, :resume, true) {
+            SB.state = :main
+          },
+          MenuButton.new(250, :change_bomb) {
+            @stage_menu.go_to_section 1
+          },
+          MenuButton.new(300, :options) {
+            @options.set_temp
+            @stage_menu.go_to_section 2
+          },
+          MenuButton.new(350, :save_exit) {
+            SB.save_and_exit
+          }
+        ], [], options_comps, [
+          MenuButton.new(350, :continue, false, 219) {
+            SB.next_stage
+          },
+          MenuButton.new(350, :save_exit, false, 409) {
+            SB.next_stage false
+          }
+        ])
+        @options.form = @stage_menu
+        set_bomb_screen_comps
+        @ready = true
+      end
+    end
+
+    def set_bomb_screen_comps
+      sec = @stage_menu.section(1)
+      sec.clear
+      sec.add(MenuButton.new(550, :back, true) {
+                @stage_menu.go_to_section 0
+              })
+      case SB.player.last_world
+      when 1 then sec.add(BombButton.new(368, :azul))
+      when 2 then sec.add(BombButton.new(326, :azul))
+                  sec.add(BombButton.new(410, :vermelha))
+      when 3 then sec.add(BombButton.new(54, :azul))
+                  sec.add(BombButton.new(54, :vermelha))
+                  sec.add(BombButton.new(54, :amarela))
+      when 4 then sec.add(BombButton.new(54, :azul))
+                  sec.add(BombButton.new(54, :vermelha))
+                  sec.add(BombButton.new(54, :amarela))
+                  sec.add(BombButton.new(54, :verde))
+      else        sec.add(BombButton.new(54, :azul))
+                  sec.add(BombButton.new(54, :vermelha))
+                  sec.add(BombButton.new(54, :amarela))
+                  sec.add(BombButton.new(54, :verde))
+                  sec.add(BombButton.new(54, :branca))
+      end
     end
 
     def update
@@ -88,10 +146,6 @@ class StageMenu
       @stage_end_comps = [p, t1, t2, t3, t4, t5, t6, t7]
       @stage_end_timer = 0
       @stage_menu.go_to_section 2
-    end
-
-    def reset
-      @stage_menu.reset
     end
 
     def update_lang
@@ -147,14 +201,6 @@ class StageMenu
                          800, 0, 0x80000000,
                          0, 600, 0x80000000,
                          800, 600, 0x80000000, 0
-      if @stage_menu.cur_section_index == 1
-        G.window.draw_quad 10, 90, C::PANEL_COLOR,
-                           790, 90, C::PANEL_COLOR,
-                           10, 540, C::PANEL_COLOR,
-                           790, 540, C::PANEL_COLOR, 0
-      else
-        @stage_menu_bg.draw 275, 180, 0
-      end
       @stage_menu.draw
     end
 
