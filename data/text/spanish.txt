@@ -20,6 +20,8 @@ music_volume	Volumen de la música
 ch_st_instruct	Pulsa 'Enter' o 'Espacio' para empezar.\nPulsa 'Esc' o 'Backspace' para volver.
 left_shift		shift izq.
 right_shift		shift der.
+left_arrow		flecha izq.
+right_arrow		flecha der.
 stage			Etapa
 loading			Cargando
 lives			Vidas

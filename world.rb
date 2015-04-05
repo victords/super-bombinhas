@@ -90,6 +90,7 @@ class World
       @stages << MapStage.new(@num, i, coords[0].to_i, coords[1].to_i, state)
     end
     @stage_count = @stages.count
+    @enabled_stage_count = num < SB.player.last_world ? @stage_count : SB.player.last_stage
     @cur = num < SB.player.last_world ? @stage_count - 1 : stage_num - 1
     @bomb = Sprite.new @stages[@cur].x + 1, @stages[@cur].y - 15, "sprite_Bomba#{SB.player.bomb.type.to_s.capitalize}", 8, 2
     @trans_alpha = 0
@@ -127,13 +128,11 @@ class World
       SB.state = :menu
     elsif KB.key_pressed? Gosu::KbSpace or KB.key_pressed? Gosu::KbReturn
       @stages[@cur].select(@loaded_stage)
-    elsif KB.key_pressed? Gosu::KbLeft or KB.key_pressed? Gosu::KbDown
+    elsif @cur > 0 and (KB.key_pressed? Gosu::KbLeft or KB.key_pressed? Gosu::KbDown)
       @cur -= 1
-      @cur = @stages.size - 1 if @cur < 0
       @bomb.x = @stages[@cur].x + 1; @bomb.y = @stages[@cur].y - 15
-    elsif KB.key_pressed? Gosu::KbRight or KB.key_pressed? Gosu::KbUp
+    elsif @cur < @enabled_stage_count - 1 and (KB.key_pressed? Gosu::KbRight or KB.key_pressed? Gosu::KbUp)
       @cur += 1
-      @cur = 0 if @cur >= @stages.size
       @bomb.x = @stages[@cur].x + 1; @bomb.y = @stages[@cur].y - 15
     elsif KB.key_pressed? Gosu::KbLeftShift and @num > 1
       change_world(@num - 1)
@@ -187,7 +186,7 @@ class World
     @bomb.draw nil, 1, 1, @trans_alpha
 
     SB.big_text_helper.write_line SB.text("world_#{@num}"), 525, 10, :center, 0, @trans_alpha
-    SB.text_helper.write_breaking "#{SB.text(:stage)} #{@num}-#{@cur+1}: #{@stages[@cur].name}", 525, 45, 550, :center, 0, @trans_alpha
+    SB.text_helper.write_breaking "#{@num}-#{@cur+1}: #{@stages[@cur].name}", 525, 55, 550, :center, 0, @trans_alpha
     SB.text_helper.write_breaking(SB.text(:ch_st_instruct).gsub('\n', "\n"), 780, 545, 600, :right, 0, @trans_alpha)
 
     if @num > 1
@@ -197,6 +196,14 @@ class World
     if @num < SB.player.last_world
       @arrow.draw 790, 10, 0, -1, 1, (@trans_alpha << 24) | 0xffffff
       SB.small_text_helper.write_breaking SB.text(:right_shift), 735, 13, 60, :left, 0, @trans_alpha
+    end
+    if @cur > 0
+      @arrow.draw 260, 47, 0, 1, 1, (@trans_alpha << 24) | 0xffffff
+      SB.small_text_helper.write_breaking SB.text(:left_arrow), 315, 50, 60, :right, 0, @trans_alpha
+    end
+    if @cur < @enabled_stage_count - 1
+      @arrow.draw 790, 47, 0, -1, 1, (@trans_alpha << 24) | 0xffffff
+      SB.small_text_helper.write_breaking SB.text(:right_arrow), 735, 50, 60, :left, 0, @trans_alpha
     end
   end
 end

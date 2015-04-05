@@ -20,6 +20,8 @@ music_volume	Music volume
 ch_st_instruct	Press 'Enter' or 'Space' to start.\nPress 'Esc' or 'Backspace' to go back.
 left_shift		left shift
 right_shift		right shift
+left_arrow		left arrow
+right_arrow		right arrow
 stage			Stage
 loading			Loading
 lives			Lives
