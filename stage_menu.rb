@@ -1,5 +1,5 @@
 require_relative 'global'
-require_relative 'form'
+require_relative 'options'
 
 class MenuPanel
   include FormElement
@@ -25,21 +25,19 @@ class StageMenu
   class << self
     def initialize
       @stage_menu_bg = Res.img :ui_stageMenu
+      @options = Options.new
       @stage_menu = Form.new([
-        MenuButton.new(210, :resume) {
+        MenuButton.new(210, :resume, true) {
           SB.state = :main
         },
         MenuButton.new(280, :options) {
+          @options.set_temp
           @stage_menu.go_to_section 1
         },
         MenuButton.new(350, :save_exit) {
           SB.save_and_exit
         }
-      ], [
-        MenuButton.new(550, :back, true) {
-          @stage_menu.go_to_section 0
-        }
-      ], [
+      ], @options.get_menu, [
         MenuButton.new(350, :continue, false, 219) {
           SB.next_stage
         },
@@ -47,14 +45,11 @@ class StageMenu
           SB.next_stage false
         }
       ])
+      @options.form = @stage_menu
     end
 
     def update
       if SB.state == :paused
-        if KB.key_pressed? Gosu::KbEscape
-          SB.state = :main
-          return
-        end
         @stage_menu.update
       elsif SB.state == :stage_end
         @stage_end_timer += 1 if @stage_end_timer < 30 * @stage_end_comps.length
@@ -152,7 +147,14 @@ class StageMenu
                          800, 0, 0x80000000,
                          0, 600, 0x80000000,
                          800, 600, 0x80000000, 0
-      @stage_menu_bg.draw 275, 180, 0 if @stage_menu.cur_section_index != 1
+      if @stage_menu.cur_section_index == 1
+        G.window.draw_quad 10, 90, C::PANEL_COLOR,
+                           790, 90, C::PANEL_COLOR,
+                           10, 540, C::PANEL_COLOR,
+                           790, 540, C::PANEL_COLOR, 0
+      else
+        @stage_menu_bg.draw 275, 180, 0
+      end
       @stage_menu.draw
     end
 

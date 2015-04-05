@@ -66,7 +66,6 @@ class World
   def initialize(num = 1, stage_num = 1, loaded = false)
     @num = num
     @loaded_stage = loaded ? stage_num : nil
-    @name = SB.text "world_#{@num}"
 
     @water = Sprite.new 0, 0, :ui_water, 2, 2
     @mark = GameObject.new 0, 0, 1, 1, :ui_mark
@@ -187,7 +186,7 @@ class World
     # @back_button.draw
     @bomb.draw nil, 1, 1, @trans_alpha
 
-    SB.big_text_helper.write_line @name, 525, 10, :center, 0, @trans_alpha
+    SB.big_text_helper.write_line SB.text("world_#{@num}"), 525, 10, :center, 0, @trans_alpha
     SB.text_helper.write_breaking "#{SB.text(:stage)} #{@num}-#{@cur+1}: #{@stages[@cur].name}", 525, 45, 550, :center, 0, @trans_alpha
     SB.text_helper.write_breaking(SB.text(:ch_st_instruct).gsub('\n', "\n"), 780, 545, 600, :right, 0, @trans_alpha)
 
