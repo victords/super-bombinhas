@@ -18,6 +18,8 @@ lang_name		English
 sound_volume	Sounds volume
 music_volume	Music volume
 ch_st_instruct	Press 'Enter' or 'Space' to start.\nPress 'Esc' or 'Backspace' to go back.
+left_shift		left shift
+right_shift		right shift
 stage			Stage
 loading			Loading
 lives			Lives

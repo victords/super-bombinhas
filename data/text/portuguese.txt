@@ -18,6 +18,8 @@ lang_name		Português
 sound_volume	Volume dos sons
 music_volume	Volume da música
 ch_st_instruct	Aperte 'Enter' ou 'Espaço' para começar.\nAperte 'Esc' ou 'Backspace' para voltar.
+left_shift		shift esq.
+right_shift		shift dir.
 stage			Fase
 loading			Carregando
 lives			Vidas

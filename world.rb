@@ -17,7 +17,6 @@ class MapStage
       else
         0x7f
       end
-    @color = 0x00ffffff | (@alpha << 24)
 
     @name = SB.text("stage_#{world}_#{num}")
     @world = world
@@ -31,13 +30,11 @@ class MapStage
       if @alpha == 0x7f
         @state = 1
       end
-      @color = 0x00ffffff | (@alpha << 24)
     else
       @alpha += 2
       if @alpha == 0xff
         @state = 0
       end
-      @color = 0x00ffffff | (@alpha << 24)
     end
   end
 
@@ -57,8 +54,9 @@ class MapStage
     @img = Res.img :icon_complete
   end
 
-  def draw
-    @img.draw @x, @y, 0, 1, 1, @color
+  def draw(alpha)
+    a = ((alpha / 255.0) * (@alpha / 255.0) * 255).round
+    @img.draw @x, @y, 0, 1, 1, (a << 24) | 0xffffff
   end
 end
 
@@ -71,7 +69,7 @@ class World
     @name = SB.text "world_#{@num}"
 
     @water = Sprite.new 0, 0, :ui_water, 2, 2
-    @mark = Sprite.new 0, 0, :ui_mark
+    @mark = GameObject.new 0, 0, 1, 1, :ui_mark
     @arrow = Res.img :ui_changeWorld
     @parchment = Res.img :ui_parchment
     @map = Res.img "bg_world#{num}"
@@ -95,6 +93,7 @@ class World
     @stage_count = @stages.count
     @cur = num < SB.player.last_world ? @stage_count - 1 : stage_num - 1
     @bomb = Sprite.new @stages[@cur].x + 1, @stages[@cur].y - 15, "sprite_Bomba#{SB.player.bomb.type.to_s.capitalize}", 8, 2
+    @trans_alpha = 0
 
     # @play_button = Button.new(420, 550, SB.font, SB.text(:play), :ui_button1, 0, 0, 0, 0, true, false, 0, 7) {
     #   @stages[@cur].select(@loaded_stage)
@@ -108,6 +107,18 @@ class World
   def update
     @water.animate [0, 1, 2, 3], 6
     @bomb.animate [0, 1, 0, 2], 8
+
+    if @next_world
+      @trans_alpha -= 17
+      @mark.move_free(@mark_aim, @mark_speed)
+      if @trans_alpha == 0
+        SB.world = World.new(@next_world)
+      end
+      return
+    elsif @trans_alpha < 0xff
+      @trans_alpha += 17
+    end
+
     @stages.each { |i| i.update }
     # @play_button.update
     # @back_button.update
@@ -126,9 +137,9 @@ class World
       @cur = 0 if @cur >= @stages.size
       @bomb.x = @stages[@cur].x + 1; @bomb.y = @stages[@cur].y - 15
     elsif KB.key_pressed? Gosu::KbLeftShift and @num > 1
-      SB.world = World.new @num - 1
+      change_world(@num - 1)
     elsif KB.key_pressed? Gosu::KbRightShift and @num < SB.player.last_world
-      SB.world = World.new @num + 1
+      change_world(@num + 1)
     end
   end
 
@@ -146,6 +157,15 @@ class World
     end
   end
 
+  def change_world(num)
+    @next_world = num
+    f = File.open("#{Res.prefix}stage/#{@next_world}/world")
+    coords = f.readline.split ','
+    @mark_aim = Vector.new(coords[0].to_i, coords[1].to_i)
+    @mark_speed = @mark_aim.distance(@mark.position) / 15
+    f.close
+  end
+
   def draw
     G.window.clear 0x6ab8ff
     y = 0
@@ -158,26 +178,26 @@ class World
       end
       y += 40
     end
-    @map.draw 0, 0, 0
+    @map.draw 0, 0, 0, 1, 1, (@trans_alpha << 24) | 0xffffff
     @parchment.draw 0, 0, 0
     @mark.draw
 
-    @stages.each { |s| s.draw }
+    @stages.each { |s| s.draw @trans_alpha }
     # @play_button.draw
     # @back_button.draw
-    @bomb.draw
+    @bomb.draw nil, 1, 1, @trans_alpha
 
-    SB.big_text_helper.write_line @name, 525, 10, :center
-    SB.text_helper.write_breaking "#{SB.text(:stage)} #{@num}-#{@cur+1}: #{@stages[@cur].name}", 525, 45, 550, :center
-    SB.text_helper.write_breaking(SB.text(:ch_st_instruct).gsub('\n', "\n"), 780, 545, 600, :right)
+    SB.big_text_helper.write_line @name, 525, 10, :center, 0, @trans_alpha
+    SB.text_helper.write_breaking "#{SB.text(:stage)} #{@num}-#{@cur+1}: #{@stages[@cur].name}", 525, 45, 550, :center, 0, @trans_alpha
+    SB.text_helper.write_breaking(SB.text(:ch_st_instruct).gsub('\n', "\n"), 780, 545, 600, :right, 0, @trans_alpha)
 
     if @num > 1
-      @arrow.draw 260, 10, 0
-      SB.small_text_helper.write_breaking 'left shift', 315, 13, 60, :right
+      @arrow.draw 260, 10, 0, 1, 1, (@trans_alpha << 24) | 0xffffff
+      SB.small_text_helper.write_breaking SB.text(:left_shift), 315, 13, 60, :right, 0, @trans_alpha
     end
     if @num < SB.player.last_world
-      @arrow.draw 790, 10, 0, -1
-      SB.small_text_helper.write_breaking 'right shift', 735, 13, 60
+      @arrow.draw 790, 10, 0, -1, 1, (@trans_alpha << 24) | 0xffffff
+      SB.small_text_helper.write_breaking SB.text(:right_shift), 735, 13, 60, :left, 0, @trans_alpha
     end
   end
 end

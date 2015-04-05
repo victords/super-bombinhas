@@ -18,6 +18,8 @@ lang_name		Español
 sound_volume	Volumen de los sonidos
 music_volume	Volumen de la música
 ch_st_instruct	Pulsa 'Enter' o 'Espacio' para empezar.\nPulsa 'Esc' o 'Backspace' para volver.
+left_shift		shift izq.
+right_shift		shift der.
 stage			Etapa
 loading			Cargando
 lives			Vidas

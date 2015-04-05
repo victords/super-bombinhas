@@ -216,7 +216,7 @@ class Menu
             @form.go_to_section 2
           }
       end
-      (next_index...10).each do |i|
+      (next_index...C::GAME_LIMIT).each do |i|
         components << NewGameButton.new(i + 1, 20 + (i % 2) * 390, 95 + (i / 2) * 90, self)
       end
       components << MenuButton.new(550, :back, true) {

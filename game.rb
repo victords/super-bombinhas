@@ -58,6 +58,10 @@ class MiniGL::GameObject
   def dead?
     @dead
   end
+
+  def position
+    Vector.new(@x, @y)
+  end
 end
 
 SBGame.new.show

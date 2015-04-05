@@ -118,6 +118,11 @@ class SB
 
     def next_stage(continue = true)
       # Res.clear
+      if @world.num < @player.last_world or @stage.num != @player.last_stage
+        @stage = Stage.new(@world.num, @stage.num)
+        save_and_exit
+        return
+      end
       @world.open_stage
       num = @stage.num + 1
       if num <= @world.stage_count
