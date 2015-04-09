@@ -33,15 +33,21 @@ class BombButton < Button
   include FormElement
 
   def initialize(x, bomb)
-    super(x: x, y: 240, width: 64, height: 64, params: bomb) { |b|
+    super(x: x, y: 240, width: 80, height: 80, params: bomb) { |b|
       SB.player.set_bomb(b)
       SB.state = :main
     }
+    @bomb = SB.player.bomb(bomb)
     @bomb_img = Res.img "icon_Bomba#{bomb.capitalize}"
   end
 
   def draw
-    @bomb_img.draw @x, @y, 0
+    G.window.draw_quad @x, @y, C::PANEL_COLOR,
+                       @x + @w, @y, C::PANEL_COLOR,
+                       @x, @y + @h, C::PANEL_COLOR,
+                       @x + @w, @y + @h, C::PANEL_COLOR, 0
+    @bomb_img.draw @x + 40 - @bomb_img.width / 2, @y + 30 - @bomb_img.height / 2, 0
+    SB.small_text_helper.write_breaking @bomb.name, @x + 40, @y + 52, 64, :center
   end
 end
 
@@ -94,21 +100,21 @@ class StageMenu
                 @stage_menu.go_to_section 0
               })
       case SB.player.last_world
-      when 1 then sec.add(BombButton.new(368, :azul))
-      when 2 then sec.add(BombButton.new(326, :azul))
+      when 1 then sec.add(BombButton.new(360, :azul))
+      when 2 then sec.add(BombButton.new(310, :azul))
                   sec.add(BombButton.new(410, :vermelha))
-      when 3 then sec.add(BombButton.new(54, :azul))
-                  sec.add(BombButton.new(54, :vermelha))
-                  sec.add(BombButton.new(54, :amarela))
-      when 4 then sec.add(BombButton.new(54, :azul))
-                  sec.add(BombButton.new(54, :vermelha))
-                  sec.add(BombButton.new(54, :amarela))
-                  sec.add(BombButton.new(54, :verde))
-      else        sec.add(BombButton.new(54, :azul))
-                  sec.add(BombButton.new(54, :vermelha))
-                  sec.add(BombButton.new(54, :amarela))
-                  sec.add(BombButton.new(54, :verde))
-                  sec.add(BombButton.new(54, :branca))
+      when 3 then sec.add(BombButton.new(260, :azul))
+                  sec.add(BombButton.new(360, :vermelha))
+                  sec.add(BombButton.new(460, :amarela))
+      when 4 then sec.add(BombButton.new(210, :azul))
+                  sec.add(BombButton.new(310, :vermelha))
+                  sec.add(BombButton.new(410, :amarela))
+                  sec.add(BombButton.new(510, :verde))
+      else        sec.add(BombButton.new(160, :azul))
+                  sec.add(BombButton.new(260, :vermelha))
+                  sec.add(BombButton.new(360, :amarela))
+                  sec.add(BombButton.new(460, :verde))
+                  sec.add(BombButton.new(560, :branca))
       end
     end
 

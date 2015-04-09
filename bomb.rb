@@ -1,7 +1,7 @@
 require 'minigl'
 
 class Bomb < GameObject
-  attr_reader :type, :hp, :facing_right
+  attr_reader :type, :name, :hp, :facing_right
 
   def initialize(type, hp)
     t_img_gap = -10

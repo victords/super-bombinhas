@@ -1,7 +1,7 @@
 require_relative 'bomb'
 
 class Player
-  attr_reader :bomb, :items, :cur_item_type, :specs
+  attr_reader :items, :cur_item_type, :specs
   attr_accessor :name, :last_world, :last_stage, :lives, :score, :stage_score
 
   def initialize(name, last_world = 1, last_stage = 1, bomb = :azul, hps = nil, lives = 5, score = 0, specs = '')
@@ -70,6 +70,11 @@ class Player
     @item_index += 1
     @item_index = 0 if @item_index >= @items.length
     @cur_item_type = @items.keys[@item_index]
+  end
+
+  def bomb(type = nil)
+    return @bombs[type] if type
+    @bomb
   end
 
   def set_bomb(type)

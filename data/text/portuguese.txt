@@ -27,6 +27,7 @@ loading			Carregando
 lives			Vidas
 score			Pontos
 resume			Continuar
+change_bomb		Trocar Bomba
 save_exit		Salvar e Sair
 stage_complete	Fase completa!
 total			Total

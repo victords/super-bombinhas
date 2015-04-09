@@ -27,6 +27,7 @@ loading			Loading
 lives			Lives
 score			Score
 resume			Resume
+change_bomb		Change Bomb
 save_exit		Save and Exit
 stage_complete	Stage Complete!
 total			Total
