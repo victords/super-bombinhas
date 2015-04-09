@@ -166,7 +166,7 @@ class StageMenu
 
     def draw
       if SB.state == :main
-        draw_player_stats
+        draw_player_stats unless SB.stage.starting
       elsif SB.state == :paused
         draw_menu
       else # :stage_end

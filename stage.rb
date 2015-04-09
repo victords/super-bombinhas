@@ -1,7 +1,7 @@
 require_relative 'section'
 
 class Stage
-  attr_reader :num, :id, :cur_entrance
+  attr_reader :num, :id, :starting, :cur_entrance
 
   def initialize(world, num, loaded = false)
     @num = num
@@ -34,6 +34,7 @@ class Stage
 
   def update
     if @starting
+      @timer = 240 if @timer < 240 and (KB.key_pressed? Gosu::KbReturn or KB.key_pressed? Gosu::KbSpace)
       if @timer < 240
         @alpha -= 5 if @alpha > 125
       else
