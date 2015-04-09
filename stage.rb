@@ -25,21 +25,47 @@ class Stage
   end
 
   def start
+    @panel_x = -600
+    @timer = 0
+    @alpha = 255
+    @starting = true
     @cur_section.start @switches, @cur_entrance[:x], @cur_entrance[:y]
   end
 
   def update
-    status = @cur_section.update
-    if status == :finish
-      index = @sections.index @cur_section
-      return :finish if index == @sections.length - 1
-      @cur_section = @sections[index + 1]
-      @cur_entrance = @entrances[@cur_section.default_entrance]
-      @cur_section.start @switches, @cur_entrance[:x], @cur_entrance[:y]
+    if @starting
+      if @timer < 240
+        @alpha -= 5 if @alpha > 125
+      else
+        @alpha -= 5 if @alpha > 0
+      end
+      if @panel_x < 50
+        speed = (50 - @panel_x) / 8.0
+        speed = 1 if speed < 1
+        @panel_x += speed
+        @panel_x = 50 if (50 - @panel_x).abs < 1
+      elsif @timer < 240
+        @panel_x += 0.5
+      else
+        @panel_x += (@timer - 239)
+      end
+      @timer += 1
+      if @timer == 300
+        @starting = false
+      end
     else
-      check_reload
-      check_entrance
-      check_warp
+      status = @cur_section.update
+      if status == :finish
+        index = @sections.index @cur_section
+        return :finish if index == @sections.length - 1
+        @cur_section = @sections[index + 1]
+        @cur_entrance = @entrances[@cur_section.default_entrance]
+        @cur_section.start @switches, @cur_entrance[:x], @cur_entrance[:y]
+      else
+        check_reload
+        check_entrance
+        check_warp
+      end
     end
   end
 
@@ -52,7 +78,7 @@ class Stage
       SB.player.reset
       reset_switches
       @cur_section = @cur_entrance[:section]
-      @cur_section.start @switches, @cur_entrance[:x], @cur_entrance[:y]
+      start
     end
   end
 
@@ -113,7 +139,19 @@ class Stage
   end
 
   def draw
-    # cuidar das transições
     @cur_section.draw
+    if @starting
+      c = (@alpha << 24)
+      G.window.draw_quad 0, 0, c,
+                         800, 0, c,
+                         0, 600, c,
+                         800, 600, c, 0
+      G.window.draw_quad @panel_x, 200, C::PANEL_COLOR,
+                         @panel_x + 600, 200, C::PANEL_COLOR,
+                         @panel_x, 400, C::PANEL_COLOR,
+                         @panel_x + 600, 400, C::PANEL_COLOR, 0
+      SB.text_helper.write_line SB.text("world_#{SB.world.num}"), @panel_x + 300, 220, :center
+      SB.big_text_helper.write_line "#{SB.world.num}-#{@num}: #{SB.text("stage_#{SB.world.num}_#{@num}")}", @panel_x + 300, 300, :center
+    end
   end
 end

@@ -3,7 +3,7 @@ require_relative 'stage'
 include MiniGL
 
 class MapStage
-  attr_reader :name, :x, :y
+  attr_reader :x, :y
 
   def initialize(world, num, x, y, img)
     @x = x
@@ -18,9 +18,12 @@ class MapStage
         0x7f
       end
 
-    @name = SB.text("stage_#{world}_#{num}")
     @world = world
     @num = num
+  end
+
+  def name
+    SB.text("stage_#{@world}_#{@num}")
   end
 
   def update
