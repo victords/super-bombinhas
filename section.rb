@@ -222,16 +222,15 @@ class Section
       end
     end
 
-    @elements << (@bomb = SB.player.bomb)
-    @margin = MiniGL::Vector.new((C::SCREEN_WIDTH - @bomb.w) / 2, (C::SCREEN_HEIGHT - @bomb.h) / 2)
+    @margin = MiniGL::Vector.new((C::SCREEN_WIDTH - SB.player.bomb.w) / 2, (C::SCREEN_HEIGHT - SB.player.bomb.h) / 2)
     do_warp bomb_x, bomb_y
 
     # @bgm.play true
   end
 
   def do_warp(x, y)
-    @bomb.do_warp x, y
-    @map.set_camera @bomb.x - @margin.x, @bomb.y - @margin.y
+    SB.player.bomb.do_warp x, y
+    @map.set_camera SB.player.bomb.x - @margin.x, SB.player.bomb.y - @margin.y
     @warp = nil
   end
 
@@ -328,16 +327,17 @@ class Section
     @hide_tiles.each do |t|
       t.update self if t.is_visible @map
     end
+    SB.player.bomb.update(self)
 
-    if @border_exit == 0 && @bomb.y + @bomb.h <= -C::EXIT_MARGIN ||
-       @border_exit == 1 && @bomb.x >= @size.x - C::EXIT_MARGIN ||
-       @border_exit == 2 && @bomb.y >= @size.x + C::EXIT_MARGIN ||
-       @border_exit == 3 && @bomb.x + @bomb.w <= C::EXIT_MARGIN ||
+    if @border_exit == 0 && SB.player.bomb.y + SB.player.bomb.h <= -C::EXIT_MARGIN ||
+       @border_exit == 1 && SB.player.bomb.x >= @size.x - C::EXIT_MARGIN ||
+       @border_exit == 2 && SB.player.bomb.y >= @size.x + C::EXIT_MARGIN ||
+       @border_exit == 3 && SB.player.bomb.x + SB.player.bomb.w <= C::EXIT_MARGIN ||
        @finished
       return :finish
     end
 
-    @map.set_camera (@bomb.x - @margin.x).round, (@bomb.y - @margin.y).round
+    @map.set_camera (SB.player.bomb.x - @margin.x).round, (SB.player.bomb.y - @margin.y).round
     @reload = true if SB.player.dead? or KB.key_pressed? Gosu::KbBackspace
     SB.state = :paused if KB.key_pressed? Gosu::KbEscape
   end
@@ -354,6 +354,7 @@ class Section
     @elements.each do |e|
       e.draw @map if e.is_visible @map
     end
+    SB.player.bomb.draw @map
 
     @map.foreach do |i, j, x, y|
       @tileset[@tiles[i][j].fore].draw x, y, 0 if @tiles[i][j].fore >= 0

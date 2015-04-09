@@ -4,11 +4,23 @@ class Player
   attr_reader :bomb, :items, :cur_item_type, :specs
   attr_accessor :name, :last_world, :last_stage, :lives, :score, :stage_score
 
-  def initialize(name, last_world = 1, last_stage = 1, bomb = :azul, lives = 5, score = 0, specs = '')
+  def initialize(name, last_world = 1, last_stage = 1, bomb = :azul, hps = nil, lives = 5, score = 0, specs = '')
     @name = name
     @last_world = last_world
     @last_stage = last_stage
-    @bomb = Bomb.new bomb
+    @bombs = {}
+    hps =
+      if hps
+        hps.split(',').map{ |s| s.to_i }
+      else
+        [0, 0, 0, 0, 0]
+      end
+    @bombs[:azul]     = Bomb.new(:azul,     hps[0])
+    @bombs[:vermelha] = Bomb.new(:vermelha, hps[1]) if last_world > 1
+    @bombs[:amarela]  = Bomb.new(:amarela,  hps[2]) if last_world > 2
+    @bombs[:verde]    = Bomb.new(:verde,    hps[3]) if last_world > 3
+    @bombs[:branca]   = Bomb.new(:branca,   hps[4]) if last_world > 4
+    @bomb = @bombs[bomb]
     @lives = lives
     @score = score
     @stage_score = 0
@@ -24,7 +36,7 @@ class Player
     unless @dead
       @lives -= 1
       @dead = true
-      @bomb.reset
+      @bombs.each { |k, v| v.reset }
     end
   end
 
@@ -58,6 +70,22 @@ class Player
     @item_index += 1
     @item_index = 0 if @item_index >= @items.length
     @cur_item_type = @items.keys[@item_index]
+  end
+
+  def set_bomb(type)
+    bomb = @bombs[type]
+    bomb.x = @bomb.x
+    bomb.y = @bomb.y
+    @bomb = bomb
+  end
+
+  def get_bomb_hps
+    s =  "#{@bombs[:azul].hp},"
+    s += "#{@bombs[:vermelha].hp}," if @bombs[:vermelha]
+    s += "#{@bombs[:amarela].hp},"  if @bombs[:amarela]
+    s += "#{@bombs[:verde].hp},"    if @bombs[:verde]
+    s += "#{@bombs[:branca].hp},"   if @bombs[:branca]
+    s
   end
 
   def reset

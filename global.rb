@@ -102,7 +102,7 @@ class SB
       data = IO.readlines(file_name).map { |l| l.chomp }
       world_stage = data[1].split('-')
       last_world_stage = data[2].split('-')
-      @player = Player.new(data[0], last_world_stage[0].to_i, last_world_stage[1].to_i, data[3].to_sym, data[4].to_i, data[5].to_i, data[6])
+      @player = Player.new(data[0], last_world_stage[0].to_i, last_world_stage[1].to_i, data[3].to_sym, data[8], data[4].to_i, data[5].to_i, data[6])
       @world = World.new(world_stage[0].to_i, world_stage[1].to_i, true)
       @save_file_name = file_name
       @save_data = data
@@ -157,7 +157,7 @@ class SB
       @save_data[5] = @player.score.to_s
       @save_data[6] = @player.specs.join(',')
       @save_data[7] = @stage.cur_entrance[:index].to_s
-      @save_data[8] = @player.bomb.hp.to_s
+      @save_data[8] = @player.get_bomb_hps
       @save_data[9] = @stage.switches_by_state(:taken)
       @save_data[10] = @stage.switches_by_state(:used)
       File.open(@save_file_name, 'w') do |f|

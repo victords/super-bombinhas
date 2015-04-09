@@ -47,7 +47,7 @@ class Enemy < GameObject
     elsif section.projectile_hit? self
       hit unless @invulnerable
     elsif SB.player.bomb.collide? self
-      SB.player.die
+      SB.player.bomb.hit
     end
 
     return if @dead

@@ -34,8 +34,14 @@ class BombButton < Button
 
   def initialize(x, bomb)
     super(x: x, y: 240, width: 64, height: 64, params: bomb) { |b|
-      puts "selected #{b}"
+      SB.player.set_bomb(b)
+      SB.state = :main
     }
+    @bomb_img = Res.img "icon_Bomba#{bomb.capitalize}"
+  end
+
+  def draw
+    @bomb_img.draw @x, @y, 0
   end
 end
 
@@ -171,6 +177,7 @@ class StageMenu
       SB.font.draw SB.player.lives, 100, 10, 0, 1, 1, 0xff000000
       SB.font.draw SB.text(:score), 10, 30, 0, 1, 1, 0xff000000
       SB.font.draw SB.player.stage_score, 100, 30, 0, 1, 1, 0xff000000
+      SB.font.draw SB.player.bomb.hp, 200, 10, 0, 1, 1, 0xff000000
 
       G.window.draw_quad 690, 5, C::PANEL_COLOR,
                          740, 5, C::PANEL_COLOR,

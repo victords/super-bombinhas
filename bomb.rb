@@ -3,14 +3,14 @@ require 'minigl'
 class Bomb < GameObject
   attr_reader :type, :hp, :facing_right
 
-  def initialize(type)
+  def initialize(type, hp)
     t_img_gap = -10
     case type
-    when :azul then @name = 'Bomba Azul'; @hp = 1; l_img_gap = -5; r_img_gap = -5
-    when :vermelha then @name = 'Bomba Vermelha'; @hp = 2; l_img_gap = -4; r_img_gap = -6
-    when :amarela then @name = 'Bomba Amarela'; @hp = 1; l_img_gap = -6; r_img_gap = -14
-    when :verde then @name = 'Bomba Verde'; @hp = 2; l_img_gap = -6; r_img_gap = -14
-    when :branca then @name = 'Aldan'; @hp = 1; l_img_gap = -6; r_img_gap = -14; t_img_gap = -26
+    when :azul     then @name = 'Bomba Azul';     @hp = hp == 0 ? 1 : hp; @max_hp = 1;   l_img_gap = -5; r_img_gap = -5
+    when :vermelha then @name = 'Bomba Vermelha'; @hp = hp == 0 ? 2 : hp; @max_hp = 999; l_img_gap = -4; r_img_gap = -6
+    when :amarela  then @name = 'Bomba Amarela';  @hp = hp == 0 ? 1 : hp; @max_hp = 1;   l_img_gap = -6; r_img_gap = -14
+    when :verde    then @name = 'Bomba Verde';    @hp = hp == 0 ? 2 : hp; @max_hp = 3;   l_img_gap = -6; r_img_gap = -14
+    else                @name = 'Aldan';          @hp = hp == 0 ? 1 : hp; @max_hp = 2;   l_img_gap = -6; r_img_gap = -14; t_img_gap = -26
     end
 
     super -1000, -1000, 20, 30, "sprite_Bomba#{type.to_s.capitalize}", Vector.new(r_img_gap, t_img_gap), 8, 2
@@ -36,6 +36,9 @@ class Bomb < GameObject
         animate [13, 14, 15], 8
       end
       return
+    elsif @invulnerable
+      @invulnerable_timer += 1
+      @invulnerable = false if @invulnerable_timer == 120
     end
 
     SB.player.change_item if KB.key_pressed? Gosu::KbLeftShift or KB.key_pressed? Gosu::KbRightShift
@@ -134,6 +137,16 @@ class Bomb < GameObject
   def over?(obj)
     @x + @w > obj.x and obj.x + obj.w > @x and
       @y + @h > obj.y and @y < obj.y - C::PLAYER_OVER_TOLERANCE
+  end
+
+  def hit(damage = 1)
+    unless @invulnerable
+      @hp -= damage
+      @hp = 0 if @hp < 0
+      SB.player.die if @hp == 0
+      @invulnerable = true
+      @invulnerable_timer = 0
+    end
   end
 
   def reset
