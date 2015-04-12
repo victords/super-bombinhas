@@ -42,3 +42,6 @@ stage_1_3		Teste para el Nombre de la Tercera Fase
 stage_1_4		¡Por Fin! La Fortaleza de Chamal
 world_2			Bosque de los sabios
 stage_2_1		El bosque de frontera
+movie_1_1		Español sdjfkls\njdfsj dkfjkdfj skdfjsk djfslkjsj dfk dskf sdfkjl.
+movie_1_2		blab balfab fablabs fblabf blaf ablafbalbf afblabf.
+movie_1_3		Thjg dkfjkjdsf jf psdf sdkjflsdkfj sjdkfsj s djfksl sdfjkjdf.\najkdhasdh asjsdh.

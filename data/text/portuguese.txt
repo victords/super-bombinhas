@@ -42,3 +42,6 @@ stage_1_3		Teste de Nome para a Terceira Fase
 stage_1_4		Finalmente! A Fortaleza de Chamal
 world_2			Floresta dos Sábios
 stage_2_1		As matas de fronteira
+movie_1_1		Portugues sdjfkls\njdfsj dkfjkdfj skdfjsk djfslkjsj dfk dskf sdfkjl.
+movie_1_2		blab balfab fablabs fblabf blaf ablafbalbf afblabf.
+movie_1_3		Thjg dkfjkjdsf jf psdf sdkjflsdkfj sjdkfsj s djfksl sdfjkjdf.\najkdhasdh asjsdh.

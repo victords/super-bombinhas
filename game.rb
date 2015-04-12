@@ -1,11 +1,17 @@
 require_relative 'menu'
 require_relative 'stage_menu'
+require_relative 'movie'
 
 class SBGame < MiniGL::GameWindow
   def initialize
     super(C::SCREEN_WIDTH, C::SCREEN_HEIGHT, false, Vector.new(0, 0.9))
 
     SB.initialize
+
+    ################## teste
+    SB.state = :presentation
+    @movie = Movie.new(1)
+    ########################
   end
 
   def needs_cursor?
@@ -19,7 +25,7 @@ class SBGame < MiniGL::GameWindow
     close if KB.key_pressed? Gosu::KbTab
 
     if SB.state == :presentation
-
+      @movie.update
     elsif SB.state == :menu
       Menu.update
     elsif SB.state == :map
@@ -37,7 +43,7 @@ class SBGame < MiniGL::GameWindow
 
   def draw
     if SB.state == :presentation
-
+      @movie.draw
     elsif SB.state == :menu
       Menu.draw
     elsif SB.state == :map

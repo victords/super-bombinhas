@@ -42,3 +42,6 @@ stage_1_3		Test for the Name of the Third Stage
 stage_1_4		Finally! Chamal's Fortress
 world_2			Wisemen's forest
 stage_2_1		The border woods
+movie_1_1		lskdjfksjdlkf sdjfkls\njdfsj dkfjkdfj skdfjsk djfslkjsj dfk dskf sdfkjl.
+movie_1_2		blab balfab fablabs fblabf blaf ablafbalbf afblabf.
+movie_1_3		Thjg dkfjkjdsf jf psdf sdkjflsdkfj sjdkfsj s djfksl sdfjkjdf.\najkdhasdh asjsdh.

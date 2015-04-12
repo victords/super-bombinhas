@@ -122,11 +122,11 @@ class Bombie < GameObject
     super map
     @balloon.draw @x - map.cam.x + 16, @y - map.cam.y - 32, 0 if @active
     if @speaking
-      G.window.draw_quad 5, 495, 0x80abcdef,
-                         795, 495, 0x80abcdef,
-                         795, 595, 0x80abcdef,
-                         5, 595, 0x80abcdef, 0
-      SB.font.draw SB.text(@msg_id), 10, 500, 0, 1, 1, 0xff000000
+      G.window.draw_quad 5, 495, C::PANEL_COLOR,
+                         795, 495, C::PANEL_COLOR,
+                         5, 595, C::PANEL_COLOR,
+                         795, 595, C::PANEL_COLOR, 0
+      SB.text_helper.write_breaking SB.text(@msg_id), 10, 500, 790, :justified
     end
   end
 end

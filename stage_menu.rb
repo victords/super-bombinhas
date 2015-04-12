@@ -157,7 +157,7 @@ class StageMenu
       t7.move_to 590, 300
       @stage_end_comps = [p, t1, t2, t3, t4, t5, t6, t7]
       @stage_end_timer = 0
-      @stage_menu.go_to_section 2
+      @stage_menu.go_to_section 3
     end
 
     def update_lang

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1100"
+   height="800"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="1.svg"
+   inkscape:export-filename="/home/victor/aleva/super-bombinhas/data/movie/1.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1"
+     inkscape:cx="553.86308"
+     inkscape:cy="450.15166"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1364"
+     inkscape:window-height="718"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-252.36217)">
+    <rect
+       style="fill:#6d6d6d;fill-opacity:1;stroke:none"
+       id="rect3753"
+       width="1113.6986"
+       height="813.69861"
+       x="-4.1095891"
+       y="-6.8493152"
+       transform="translate(0,252.36217)" />
+    <rect
+       style="fill:#888888;fill-opacity:1;stroke:none"
+       id="rect3757"
+       width="435.61642"
+       height="367.12329"
+       x="686.30139"
+       y="201.36986"
+       transform="translate(0,252.36217)" />
+    <path
+       style="fill:#9d9d9d;fill-opacity:1;stroke:none"
+       d="m -17.808219,572.60274 1146.575319,-17.80822 -9.589,252.0548 -1132.87673,-2.73973 z"
+       id="path3755"
+       inkscape:connector-curvature="0"
+       transform="translate(0,252.36217)" />
+    <path
+       style="fill:#82c1cd;fill-opacity:1;stroke:none"
+       d="m 126,201 0,-63 c 0,0 -1,-36 39,-36 40,0 38,33 38,33 l 0,66 z"
+       id="path3759"
+       inkscape:connector-curvature="0"
+       transform="translate(0,252.36217)" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path3761"
+       d="m 386,453.36217 0,-63 c 0,0 -1,-36 39,-36 40,0 38,33 38,33 l 0,66 z"
+       style="fill:#82c1cd;fill-opacity:1;stroke:none" />
+  </g>
+</svg>
