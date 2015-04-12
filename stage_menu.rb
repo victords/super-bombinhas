@@ -66,17 +66,17 @@ class StageMenu
 
         @stage_menu = Form.new([
           MenuImage.new(275, 180, :ui_stageMenu),
-          MenuButton.new(200, :resume, true) {
+          MenuButton.new(207, :resume, true) {
             SB.state = :main
           },
-          MenuButton.new(250, :change_bomb) {
+          MenuButton.new(257, :change_bomb) {
             @stage_menu.go_to_section 1
           },
-          MenuButton.new(300, :options) {
+          MenuButton.new(307, :options) {
             @options.set_temp
             @stage_menu.go_to_section 2
           },
-          MenuButton.new(350, :save_exit) {
+          MenuButton.new(357, :save_exit) {
             SB.save_and_exit
           }
         ], [], options_comps, [

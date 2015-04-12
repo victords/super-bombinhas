@@ -73,7 +73,7 @@ class SB
     def lang=(value)
       @lang = value
       Menu.update_lang
-      StageMenu.update_lang
+      StageMenu.update_lang if StageMenu.ready
     end
 
     def change_volume(type, d = 1)
