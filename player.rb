@@ -77,6 +77,15 @@ class Player
     @bomb
   end
 
+  def add_bomb
+    case @last_world
+    when 2 then @bombs[:vermelha] = Bomb.new(:vermelha, 0)
+    when 3 then @bombs[:amarela]  = Bomb.new(:amarela,  0)
+    when 4 then @bombs[:verde]    = Bomb.new(:verde,    0)
+    when 5 then @bombs[:branca]   = Bomb.new(:branca,   0)
+    end
+  end
+
   def set_bomb(type)
     bomb = @bombs[type]
     bomb.x = @bomb.x

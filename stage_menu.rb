@@ -32,10 +32,11 @@ end
 class BombButton < Button
   include FormElement
 
-  def initialize(x, bomb)
-    super(x: x, y: 240, width: 80, height: 80, params: bomb) { |b|
-      SB.player.set_bomb(b)
+  def initialize(x, bomb, form)
+    super(x: x, y: 240, width: 80, height: 80) {
+      SB.player.set_bomb(bomb)
       SB.state = :main
+      form.reset
     }
     @bomb = SB.player.bomb(bomb)
     @bomb_img = Res.img "icon_Bomba#{bomb.capitalize}"
@@ -100,21 +101,21 @@ class StageMenu
                 @stage_menu.go_to_section 0
               })
       case SB.player.last_world
-      when 1 then sec.add(BombButton.new(360, :azul))
-      when 2 then sec.add(BombButton.new(310, :azul))
-                  sec.add(BombButton.new(410, :vermelha))
-      when 3 then sec.add(BombButton.new(260, :azul))
-                  sec.add(BombButton.new(360, :vermelha))
-                  sec.add(BombButton.new(460, :amarela))
-      when 4 then sec.add(BombButton.new(210, :azul))
-                  sec.add(BombButton.new(310, :vermelha))
-                  sec.add(BombButton.new(410, :amarela))
-                  sec.add(BombButton.new(510, :verde))
-      else        sec.add(BombButton.new(160, :azul))
-                  sec.add(BombButton.new(260, :vermelha))
-                  sec.add(BombButton.new(360, :amarela))
-                  sec.add(BombButton.new(460, :verde))
-                  sec.add(BombButton.new(560, :branca))
+      when 1 then sec.add(BombButton.new(360, :azul, @stage_menu))
+      when 2 then sec.add(BombButton.new(310, :azul, @stage_menu))
+                  sec.add(BombButton.new(410, :vermelha, @stage_menu))
+      when 3 then sec.add(BombButton.new(260, :azul, @stage_menu))
+                  sec.add(BombButton.new(360, :vermelha, @stage_menu))
+                  sec.add(BombButton.new(460, :amarela, @stage_menu))
+      when 4 then sec.add(BombButton.new(210, :azul, @stage_menu))
+                  sec.add(BombButton.new(310, :vermelha, @stage_menu))
+                  sec.add(BombButton.new(410, :amarela, @stage_menu))
+                  sec.add(BombButton.new(510, :verde, @stage_menu))
+      else        sec.add(BombButton.new(160, :azul, @stage_menu))
+                  sec.add(BombButton.new(260, :vermelha, @stage_menu))
+                  sec.add(BombButton.new(360, :amarela, @stage_menu))
+                  sec.add(BombButton.new(460, :verde, @stage_menu))
+                  sec.add(BombButton.new(560, :branca, @stage_menu))
       end
     end
 
@@ -174,10 +175,6 @@ class StageMenu
         @continue_only = false
       end
       @stage_menu.go_to_section 3
-    end
-
-    def reset
-      @stage_menu.reset
     end
 
     def update_lang

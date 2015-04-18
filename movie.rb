@@ -1,6 +1,8 @@
 require_relative 'global'
 
 class MovieElement < GameObject
+  attr_reader :finished
+
   def initialize(x, y, img, sprite_cols, sprite_rows, actions)
     super x.to_i, y.to_i, 0, 0, img, nil, sprite_cols.to_i, sprite_rows.to_i
     @actions = []
@@ -53,7 +55,7 @@ class MovieElement < GameObject
                          795, 495, C::PANEL_COLOR,
                          5, 595, C::PANEL_COLOR,
                          795, 595, C::PANEL_COLOR, 0
-      SB.text_helper.write_breaking SB.text(@cur_action[:text]), 10, 500, 790, :justified
+      SB.text_helper.write_breaking SB.text(@cur_action[:text]).gsub("\\n", "\n"), 10, 500, 790, :justified
     end
   end
 end
@@ -92,28 +94,37 @@ class Movie
   end
 
   def update
-    unless @finished
-      if @speed_x
-        @cam_x += @speed_x
-        @cam_y += @speed_y
-      end
-      @timer += 16.666667
-      if @cur_action && @timer >= @cur_action[:duration]
-        @cur_action = @speed_x = nil
-        @cam_index += 1
-        @timer = 0
-        @finished = @cam_index == @cam_moves.length
-      elsif !@cur_action && @timer >= @cam_moves[@cam_index][:delay]
-        a = @cam_moves[@cam_index]
-        if a[:x]
-          @speed_x = (a[:x] - @cam_x) * 16.666667 / a[:duration]
-          @speed_y = (a[:y] - @cam_y) * 16.666667 / a[:duration]
+    if @finished and @elements_finished
+      @timer += 1
+      SB.next_world if @timer == 180
+    else
+      unless @finished
+        if @speed_x
+          @cam_x += @speed_x
+          @cam_y += @speed_y
         end
-        @cur_action = a
-        @timer = 0
+        @timer += 16.666667
+        if @cur_action && @timer >= @cur_action[:duration]
+          @cur_action = @speed_x = nil
+          @cam_index += 1
+          @timer = 0
+          @finished = @cam_index == @cam_moves.length
+        elsif !@cur_action && @timer >= @cam_moves[@cam_index][:delay]
+          a = @cam_moves[@cam_index]
+          if a[:x]
+            @speed_x = (a[:x] - @cam_x) * 16.666667 / a[:duration]
+            @speed_y = (a[:y] - @cam_y) * 16.666667 / a[:duration]
+          end
+          @cur_action = a
+          @timer = 0
+        end
       end
+      @elements_finished = true
+      @elements.each_with_index { |e|
+        e.update
+        @elements_finished = false unless e.finished
+      }
     end
-    @elements.each_with_index { |e| e.update }
   end
 
   def draw

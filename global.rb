@@ -139,14 +139,19 @@ class SB
           save_and_exit
         end
       else
-        world_num = @world.num + 1
-        @player.last_world = world_num
+        @player.last_world = @world.num + 1
         @player.last_stage = 1
+        @player.add_bomb
         save
         @movie = Movie.new(@world.num)
         @state = :movie
       end
-      StageMenu.reset
+      StageMenu.initialize
+    end
+
+    def next_world
+      @world = World.new(@world.num + 1, 1, false)
+      @state = :map
     end
 
     def save
@@ -166,13 +171,9 @@ class SB
       end
     end
 
-    def save_and_exit(next_world = nil)
+    def save_and_exit
       save
-      if next_world
-        @world = World.new(next_world, 1, false)
-      else
-        @world.set_loaded @stage.num
-      end
+      @world.set_loaded @stage.num
       @state = :map
     end
   end
