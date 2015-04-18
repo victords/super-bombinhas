@@ -57,8 +57,9 @@ class Stage
     else
       status = @cur_section.update
       if status == :finish
+        return :finish
+      elsif status == :next_section
         index = @sections.index @cur_section
-        return :finish if index == @sections.length - 1
         @cur_section = @sections[index + 1]
         @cur_entrance = @entrances[@cur_section.default_entrance]
         @cur_section.start @switches, @cur_entrance[:x], @cur_entrance[:y]

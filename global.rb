@@ -18,7 +18,7 @@ end
 class SB
   class << self
     attr_reader :font, :big_font, :text_helper, :big_text_helper, :small_text_helper, :save_data, :lang
-    attr_accessor :state, :player, :world, :stage, :music_volume, :sound_volume
+    attr_accessor :state, :player, :world, :stage, :movie, :music_volume, :sound_volume
 
     def initialize
       @state = :menu
@@ -113,7 +113,7 @@ class SB
     def end_stage
       @player.bomb.celebrate
       @player.score += @player.stage_score
-      StageMenu.end_stage
+      StageMenu.end_stage(@stage.num == @world.stage_count)
       @state = :stage_end
     end
 
@@ -124,31 +124,32 @@ class SB
         save_and_exit
         return
       end
-      @world.open_stage
+      @world.open_stage(continue)
       num = @stage.num + 1
       if num <= @world.stage_count
         # deve ter alguma transição, mostrar os pontos, etc.
         @player.last_stage = num
         if continue
+          save
           @stage = Stage.new(@world.num, num)
           @stage.start
           @state = :main
+        else
+          @stage = Stage.new(@world.num, @stage.num)
+          save_and_exit
         end
       else
         world_num = @world.num + 1
         @player.last_world = world_num
         @player.last_stage = 1
-        if continue
-          save_and_exit world_num
-        end
+        save
+        @movie = Movie.new(@world.num)
+        @state = :movie
       end
-      unless continue
-        @stage = Stage.new(@world.num, @stage.num)
-        save_and_exit
-      end
+      StageMenu.reset
     end
 
-    def save_and_exit(next_world = nil)
+    def save
       @save_data[0] = @player.name
       @save_data[1] = "#{@world.num}-#{@stage.num}"
       @save_data[2] = "#{@player.last_world}-#{@player.last_stage}"
@@ -163,6 +164,10 @@ class SB
       File.open(@save_file_name, 'w') do |f|
         @save_data.each { |s| f.print(s + "\n") }
       end
+    end
+
+    def save_and_exit(next_world = nil)
+      save
       if next_world
         @world = World.new(next_world, 1, false)
       else

@@ -171,6 +171,7 @@ class FormSection
   def clear
     @components.clear
     @buttons.clear
+    @cur_btn = nil
   end
 
   def reset

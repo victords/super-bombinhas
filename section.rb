@@ -329,12 +329,13 @@ class Section
     end
     SB.player.bomb.update(self)
 
-    if @border_exit == 0 && SB.player.bomb.y + SB.player.bomb.h <= -C::EXIT_MARGIN ||
-       @border_exit == 1 && SB.player.bomb.x >= @size.x - C::EXIT_MARGIN ||
-       @border_exit == 2 && SB.player.bomb.y >= @size.x + C::EXIT_MARGIN ||
-       @border_exit == 3 && SB.player.bomb.x + SB.player.bomb.w <= C::EXIT_MARGIN ||
-       @finished
+    if @finished
       return :finish
+    elsif @border_exit == 0 && SB.player.bomb.y + SB.player.bomb.h <= -C::EXIT_MARGIN ||
+          @border_exit == 1 && SB.player.bomb.x >= @size.x - C::EXIT_MARGIN ||
+          @border_exit == 2 && SB.player.bomb.y >= @size.x + C::EXIT_MARGIN ||
+          @border_exit == 3 && SB.player.bomb.x + SB.player.bomb.w <= C::EXIT_MARGIN
+      return :next_section
     end
 
     @map.set_camera (SB.player.bomb.x - @margin.x).round, (SB.player.bomb.y - @margin.y).round

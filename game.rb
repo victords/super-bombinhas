@@ -1,5 +1,6 @@
 require_relative 'menu'
 require_relative 'stage_menu'
+require_relative 'movie'
 
 class SBGame < MiniGL::GameWindow
   def initialize
@@ -31,6 +32,8 @@ class SBGame < MiniGL::GameWindow
       StageMenu.update
     elsif SB.state == :paused
       StageMenu.update
+    elsif SB.state == :movie
+      SB.movie.update
     end
   end
 
@@ -44,6 +47,8 @@ class SBGame < MiniGL::GameWindow
     elsif SB.state == :main || SB.state == :paused || SB.state == :stage_end
       SB.stage.draw
       StageMenu.draw
+    elsif SB.state == :movie
+      SB.movie.draw
     end
   end
 end

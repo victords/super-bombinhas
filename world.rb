@@ -149,12 +149,15 @@ class World
     @bomb = Sprite.new @stages[@cur].x + 1, @stages[@cur].y - 15, "sprite_Bomba#{SB.save_data[3].capitalize}", 5, 2
   end
 
-  def open_stage
+  def open_stage(continue)
     @stages[@cur].close
     if @cur < @stage_count - 1
-      @cur += 1
-      @stages[@cur].open
-      @bomb.x = @stages[@cur].x + 1; @bomb.y = @stages[@cur].y - 15
+      @stages[@cur + 1].open
+      @enabled_stage_count += 1
+      if continue
+        @cur += 1
+        @bomb.x = @stages[@cur].x + 1; @bomb.y = @stages[@cur].y - 15
+      end
     end
   end
 

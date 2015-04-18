@@ -130,7 +130,7 @@ class StageMenu
       end
     end
 
-    def end_stage
+    def end_stage(next_world)
       p = MenuPanel.new(-600, 150, 400, 300)
       p.init_movement
       p.move_to 200, 150
@@ -157,7 +157,27 @@ class StageMenu
       t7.move_to 590, 300
       @stage_end_comps = [p, t1, t2, t3, t4, t5, t6, t7]
       @stage_end_timer = 0
+      if next_world
+        @stage_menu.section(3).clear
+        @stage_menu.section(3).add(MenuButton.new(350, :continue) {
+                                     SB.next_stage
+                                   })
+        @continue_only = true
+      elsif not @continue_only
+        @stage_menu.section(3).clear
+        @stage_menu.section(3).add(MenuButton.new(350, :continue, false, 219) {
+                                     SB.next_stage
+                                   })
+        @stage_menu.section(3).add(MenuButton.new(350, :save_exit, false, 409) {
+                                     SB.next_stage false
+                                   })
+        @continue_only = false
+      end
       @stage_menu.go_to_section 3
+    end
+
+    def reset
+      @stage_menu.reset
     end
 
     def update_lang
