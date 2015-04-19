@@ -1,0 +1,20 @@
+## Programação ##
+- Animação de morte
+- Animação de morte de bichos
+- Fases bônus
+- Término do jogo
+- Abertura do mundo secreto
+- Finalização do mundo secreto
+- Sistema de sons
+- Pelo menos um chefão para testar as particularidades dele em relação a um
+  inimigo comum
+- Elementos
+  - Bombas   (1/5)
+  - Inimigos (7/40)
+  - Itens    (4/20?)
+
+## Conteúdo ##
+- Músicas
+- Sons
+- Gráficos
+- Fases    (0/40)

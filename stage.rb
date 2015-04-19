@@ -1,7 +1,7 @@
 require_relative 'section'
 
 class Stage
-  attr_reader :num, :id, :starting, :cur_entrance
+  attr_reader :num, :id, :starting, :cur_entrance, :switches
 
   def initialize(world, num, loaded = false)
     @num = num

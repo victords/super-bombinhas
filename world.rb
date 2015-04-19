@@ -79,7 +79,7 @@ class World
     @stages = []
     File.open("#{Res.prefix}stage/#{@num}/world").each_with_index do |l, i|
       coords = l.split ','
-      begin @mark.x = coords[0].to_i; @mark.y = coords[1].to_i; next end if i == 0
+      if i == 0; @mark.x = coords[0].to_i; @mark.y = coords[1].to_i; next; end
       state =
         if num < SB.player.last_world
           :complete
@@ -94,7 +94,7 @@ class World
     end
     @stage_count = @stages.count
     @enabled_stage_count = num < SB.player.last_world ? @stage_count : SB.player.last_stage
-    @cur = num < SB.player.last_world ? @stage_count - 1 : stage_num - 1
+    @cur = (loaded ? @loaded_stage : @enabled_stage_count) - 1
     @bomb = Sprite.new @stages[@cur].x + 1, @stages[@cur].y - 15, "sprite_Bomba#{SB.player.bomb.type.to_s.capitalize}", 8, 2
     @trans_alpha = 0
 
