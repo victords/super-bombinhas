@@ -36,7 +36,6 @@ class Player
     unless @dead
       @lives -= 1
       @dead = true
-      @bombs.each { |k, v| v.reset }
       @bomb.die
     end
   end
@@ -105,7 +104,7 @@ class Player
 
   def reset
     @items.clear
-    @bomb.reset
+    @bombs.each { |k, v| v.reset }
     @cur_item_type = nil
     @item_index = 0
     @stage_score = 0

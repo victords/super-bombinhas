@@ -27,11 +27,12 @@ class SBGame < MiniGL::GameWindow
     elsif SB.state == :main
       status = SB.stage.update
       SB.end_stage if status == :finish
+      StageMenu.update_main
     elsif SB.state == :stage_end
       SB.player.bomb.update(nil)
-      StageMenu.update
+      StageMenu.update_end
     elsif SB.state == :paused
-      StageMenu.update
+      StageMenu.update_paused
     elsif SB.state == :movie
       SB.movie.update
     end

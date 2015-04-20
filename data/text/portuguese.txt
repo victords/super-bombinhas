@@ -32,6 +32,8 @@ save_exit		Salvar e Sair
 stage_complete	Fase completa!
 total			Total
 spec_taken		Spec encontrado?
+dead			Você morreu!
+restart			Pressione 'Enter' para recomeçar
 msg1			Testando mensagem...
 msg2			Segunda mensagem de teste
 count_down		Contagem regressiva para explodir!

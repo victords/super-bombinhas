@@ -32,6 +32,8 @@ save_exit		Guardar y Salir
 stage_complete	¡Etapa Completa!
 total			Total
 spec_taken		¿Se encontró el Spec?
+dead			¡Moriste!
+restart			Pulsa 'Enter' para reanudar
 msg1			Testando mensaje
 msg2			Segunda mensaje de teste
 count_down		¡Cuenta regresiva para explodir!

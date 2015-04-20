@@ -60,6 +60,7 @@ class StageMenu
       if @ready
         @stage_menu.reset
         set_bomb_screen_comps
+        @alpha = 0
       else
         @options = Options.new
         options_comps = [MenuPanel.new(10, 90, 780, 450)]
@@ -90,6 +91,7 @@ class StageMenu
         ])
         @options.form = @stage_menu
         set_bomb_screen_comps
+        @alpha = 0
         @ready = true
       end
     end
@@ -119,16 +121,24 @@ class StageMenu
       end
     end
 
-    def update
-      if SB.state == :paused
-        @stage_menu.update
-      elsif SB.state == :stage_end
-        @stage_end_timer += 1 if @stage_end_timer < 30 * @stage_end_comps.length
-        @stage_menu.update
-        @stage_end_comps.each_with_index do |c, i|
-          c.update_movement if @stage_end_timer >= i * 30
-        end
+    def update_main
+      if SB.player.dead?
+        @alpha += 17 if @alpha < 255
+      elsif @alpha > 0
+        @alpha = 0
       end
+    end
+
+    def update_end
+      @stage_end_timer += 1 if @stage_end_timer < 30 * @stage_end_comps.length
+      @stage_menu.update
+      @stage_end_comps.each_with_index do |c, i|
+        c.update_movement if @stage_end_timer >= i * 30
+      end
+    end
+
+    def update_paused
+      @stage_menu.update
     end
 
     def end_stage(next_world)
@@ -178,12 +188,13 @@ class StageMenu
     end
 
     def update_lang
-      @stage_menu.update_lang
+      @stage_menu.update_lang if StageMenu.ready
     end
 
     def draw
       if SB.state == :main
         draw_player_stats unless SB.stage.starting
+        draw_player_dead if SB.player.dead?
       elsif SB.state == :paused
         draw_menu
       else # :stage_end
@@ -226,11 +237,21 @@ class StageMenu
       end
     end
 
+    def draw_player_dead
+      c = ((@alpha / 2) << 24)
+      G.window.draw_quad 0, 0, c,
+                         C::SCREEN_WIDTH, 0, c,
+                         0, C::SCREEN_HEIGHT, c,
+                         C::SCREEN_WIDTH, C::SCREEN_HEIGHT, c, 0
+      SB.big_text_helper.write_line SB.text(:dead), 400, 250, :center, 0, @alpha
+      SB.text_helper.write_line SB.text(:restart), 400, 300, :center, 0, @alpha
+    end
+
     def draw_menu
       G.window.draw_quad 0, 0, 0x80000000,
-                         800, 0, 0x80000000,
-                         0, 600, 0x80000000,
-                         800, 600, 0x80000000, 0
+                         C::SCREEN_WIDTH, 0, 0x80000000,
+                         0, C::SCREEN_HEIGHT, 0x80000000,
+                         C::SCREEN_WIDTH, C::SCREEN_HEIGHT, 0x80000000, 0
       @stage_menu.draw
     end
 

@@ -155,13 +155,13 @@ class Bomb < GameObject
 
   def celebrate
     @celebrating = true
-    @indices = @facing_right ? [5, 6, 7] : [17, 18, 19]
+    @indices = (@facing_right ? [5, 6, 7] : [17, 18, 19])
     set_animation(@facing_right ? 5 : 17)
   end
 
   def die
     @dying = true
-    @indices = @facing_right ? [8, 9, 10] : [20, 21, 22]
+    @indices = (@facing_right ? [8, 9, 10] : [20, 21, 22])
     set_animation(@facing_right ? 8 : 20)
   end
 
