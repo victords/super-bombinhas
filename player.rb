@@ -37,6 +37,7 @@ class Player
       @lives -= 1
       @dead = true
       @bombs.each { |k, v| v.reset }
+      @bomb.die
     end
   end
 

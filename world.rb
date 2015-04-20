@@ -95,7 +95,7 @@ class World
     @stage_count = @stages.count
     @enabled_stage_count = num < SB.player.last_world ? @stage_count : SB.player.last_stage
     @cur = (loaded ? @loaded_stage : @enabled_stage_count) - 1
-    @bomb = Sprite.new @stages[@cur].x + 1, @stages[@cur].y - 15, "sprite_Bomba#{SB.player.bomb.type.to_s.capitalize}", 8, 2
+    @bomb = Sprite.new @stages[@cur].x + 1, @stages[@cur].y - 15, "sprite_Bomba#{SB.player.bomb.type.to_s.capitalize}", 6, 4
     @trans_alpha = 0
 
     # @play_button = Button.new(420, 550, SB.font, SB.text(:play), :ui_button1, 0, 0, 0, 0, true, false, 0, 7) {

@@ -318,7 +318,6 @@ class Section
   end
 
   def update
-    # @showing_tiles = false
     @locked_door = nil
     @elements.each do |e|
       e.update self if e.is_visible @map
@@ -329,17 +328,21 @@ class Section
     end
     SB.player.bomb.update(self)
 
+    if SB.player.dead?
+      @reload = true if KB.key_pressed? Gosu::KbReturn
+      return
+    end
+
     if @finished
       return :finish
     elsif @border_exit == 0 && SB.player.bomb.y + SB.player.bomb.h <= -C::EXIT_MARGIN ||
-          @border_exit == 1 && SB.player.bomb.x >= @size.x - C::EXIT_MARGIN ||
-          @border_exit == 2 && SB.player.bomb.y >= @size.x + C::EXIT_MARGIN ||
-          @border_exit == 3 && SB.player.bomb.x + SB.player.bomb.w <= C::EXIT_MARGIN
+        @border_exit == 1 && SB.player.bomb.x >= @size.x - C::EXIT_MARGIN ||
+        @border_exit == 2 && SB.player.bomb.y >= @size.x + C::EXIT_MARGIN ||
+        @border_exit == 3 && SB.player.bomb.x + SB.player.bomb.w <= C::EXIT_MARGIN
       return :next_section
     end
 
     @map.set_camera (SB.player.bomb.x - @margin.x).round, (SB.player.bomb.y - @margin.y).round
-    @reload = true if SB.player.dead? or KB.key_pressed? Gosu::KbBackspace
     SB.state = :paused if KB.key_pressed? Gosu::KbEscape
   end
 

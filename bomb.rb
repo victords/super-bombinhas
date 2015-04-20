@@ -4,16 +4,15 @@ class Bomb < GameObject
   attr_reader :type, :name, :hp, :facing_right
 
   def initialize(type, hp)
-    t_img_gap = -10
     case type
-    when :azul     then @name = 'Bomba Azul';     @hp = hp == 0 ? 1 : hp; @max_hp = 1;   l_img_gap = -5; r_img_gap = -5
-    when :vermelha then @name = 'Bomba Vermelha'; @hp = hp == 0 ? 2 : hp; @max_hp = 999; l_img_gap = -4; r_img_gap = -6
-    when :amarela  then @name = 'Bomba Amarela';  @hp = hp == 0 ? 1 : hp; @max_hp = 1;   l_img_gap = -6; r_img_gap = -14
-    when :verde    then @name = 'Bomba Verde';    @hp = hp == 0 ? 2 : hp; @max_hp = 3;   l_img_gap = -6; r_img_gap = -14
-    else                @name = 'Aldan';          @hp = hp == 0 ? 1 : hp; @max_hp = 2;   l_img_gap = -6; r_img_gap = -14; t_img_gap = -26
+    when :azul     then @name = 'Bomba Azul';     @hp = hp == 0 ? 1 : hp; @max_hp = 1;   l_img_gap = -10; r_img_gap = -10; t_img_gap = -6
+    when :vermelha then @name = 'Bomba Vermelha'; @hp = hp == 0 ? 2 : hp; @max_hp = 999; l_img_gap = -4; r_img_gap = -6;   t_img_gap = -10
+    when :amarela  then @name = 'Bomba Amarela';  @hp = hp == 0 ? 1 : hp; @max_hp = 1;   l_img_gap = -6; r_img_gap = -14;  t_img_gap = -10
+    when :verde    then @name = 'Bomba Verde';    @hp = hp == 0 ? 2 : hp; @max_hp = 3;   l_img_gap = -6; r_img_gap = -14;  t_img_gap = -10
+    else                @name = 'Aldan';          @hp = hp == 0 ? 1 : hp; @max_hp = 2;   l_img_gap = -6; r_img_gap = -14;  t_img_gap = -26
     end
 
-    super -1000, -1000, 20, 30, "sprite_Bomba#{type.to_s.capitalize}", Vector.new(r_img_gap, t_img_gap), 8, 2
+    super -1000, -1000, 20, 30, "sprite_Bomba#{type.to_s.capitalize}", Vector.new(r_img_gap, t_img_gap), 6, 4
     @max_speed.x = 5
     @max_speed.y = 30
     @indices = [0, 1, 0, 2]
@@ -28,13 +27,12 @@ class Bomb < GameObject
 
   def update(section)
     if @celebrating
-      if @facing_right
-        return if @img_index == 7
-        animate [5, 6, 7], 8
-      else
-        return if @img_index == 15
-        animate [13, 14, 15], 8
-      end
+      return if @img_index == (@facing_right ? 7 : 19)
+      animate @indices, 8
+      return
+    elsif @dying
+      return if @img_index == (@facing_right ? 10 : 22)
+      animate @indices, 8
       return
     elsif @invulnerable
       @invulnerable_timer += 1
@@ -73,12 +71,12 @@ class Bomb < GameObject
         elsif @facing_right
           set_animation 0
         else
-          set_animation 8
+          set_animation 12
         end
         if KB.key_pressed? Gosu::KbSpace
           forces.y -= 13.7 + 0.4 * @speed.x.abs
           if @facing_right; set_animation 3
-          else; set_animation 11; end
+          else; set_animation 15; end
         end
         forces.x -= @speed.x * 0.1
       end
@@ -89,8 +87,8 @@ class Bomb < GameObject
   def set_direction(dir)
     if dir == :left
       @facing_right = false
-      @indices = [8, 9, 8, 10]
-      set_animation 8
+      @indices = [12, 13, 12, 14]
+      set_animation 12
     else
       @facing_right = true
       @indices = [0, 1, 0, 2]
@@ -118,7 +116,7 @@ class Bomb < GameObject
     @explosion_timer = 0
     @explosion.x = @x - 80
     @explosion.y = @y - 75
-    set_animation (@facing_right ? 4 : 12)
+    set_animation (@facing_right ? 4 : 16)
   end
 
   def explode?(obj)
@@ -150,14 +148,21 @@ class Bomb < GameObject
   end
 
   def reset
-    @will_explode = @exploding = @celebrating = false
+    @will_explode = @exploding = @celebrating = @dying = false
     @speed.x = @speed.y = 0
     set_direction :right
   end
 
   def celebrate
     @celebrating = true
-    set_animation(@facing_right ? 5 : 13)
+    @indices = @facing_right ? [5, 6, 7] : [17, 18, 19]
+    set_animation(@facing_right ? 5 : 17)
+  end
+
+  def die
+    @dying = true
+    @indices = @facing_right ? [8, 9, 10] : [20, 21, 22]
+    set_animation(@facing_right ? 8 : 20)
   end
 
   def is_visible(map)
