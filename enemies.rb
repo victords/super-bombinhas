@@ -46,16 +46,17 @@ class Enemy < GameObject
       return
     end
 
-    if SB.player.bomb.over? self
-      hit_by_bomb(section) unless @invulnerable
-      SB.player.bomb.stored_forces.y -= C::BOUNCE_FORCE
-      # SB.player.bomb.stored_forces.x -= @speed.x
-    elsif SB.player.bomb.explode? self
-      hit_by_explosion unless @invulnerable
-    elsif section.projectile_hit? self
-      hit(section) unless @invulnerable
-    elsif SB.player.bomb.collide? self
-      SB.player.bomb.hit
+    unless @invulnerable
+      if SB.player.bomb.over? self
+        hit_by_bomb(section)
+        SB.player.bomb.stored_forces.y -= C::BOUNCE_FORCE
+      elsif SB.player.bomb.explode? self
+        hit_by_explosion(section)
+      elsif section.projectile_hit? self
+        hit(section)
+      elsif SB.player.bomb.collide? self
+        SB.player.bomb.hit
+      end
     end
 
     return if @dying
@@ -75,9 +76,9 @@ class Enemy < GameObject
     hit(section)
   end
 
-  def hit_by_explosion
-    SB.player.stage_score += @score
-    @dead = true
+  def hit_by_explosion(section)
+    @hp = 1
+    hit(section)
   end
 
   def hit(section)
@@ -206,21 +207,21 @@ end
 
 class Fureel < FloorEnemy
   def initialize(x, y, args, section)
-    super x - 4, y - 4, args, 40, 36, :sprite_Fureel, Vector.new(-10, -3), 6, 1, [0, 1], 8, 300, 2, 4
+    super x - 4, y - 4, args, 40, 36, :sprite_Fureel, Vector.new(-10, -3), 5, 2, [0, 1], 8, 300, 2, 4
   end
 
   def change_animation(dir); end
 
   def get_invulnerable
     @invulnerable = true
-    if @facing_right; @indices = [5]; set_animation 5
+    if @facing_right; @indices = [7]; set_animation 7
     else; @indices = [2]; set_animation 2; end
   end
 
   def return_vulnerable
     @invulnerable = false
     @timer = 0
-    if @facing_right; @indices = [3, 4]; set_animation 3
+    if @facing_right; @indices = [5, 6]; set_animation 5
     else; @indices = [0, 1]; set_animation 0; end
   end
 end
@@ -256,23 +257,26 @@ end
 
 class Ekips < GameObject
   def initialize(x, y, args, section)
-    super x + 10, y - 10, 12, 25, :sprite_Ekips, Vector.new(-42, -8), 2, 3
+    super x + 5, y - 10, 22, 25, :sprite_Ekips, Vector.new(-37, -8), 2, 3
 
     @act_timer = 0
     @active_bounds = Rectangle.new x - 32, y - 18, 96, 50
     @attack_bounds = Rectangle.new x - 32, y + 10, 96, 12
+    @score = 240
   end
 
   def update(section)
-    if section.projectile_hit? self and not @attacking
-      SB.player.stage_score += 240
+    if SB.player.bomb.explode?(self) || section.projectile_hit?(self) && !@attacking
+      SB.player.stage_score += @score
+      section.add_score_effect(@x + @w / 2, @y, @score)
       @dead = true
       return
     end
 
     if SB.player.bomb.over? self
       if @attacking
-        SB.player.stage_score += 240
+        SB.player.stage_score += @score
+        section.add_score_effect(@x + @w / 2, @y, @score)
         @dead = true
         return
       else
@@ -326,11 +330,13 @@ class Faller < GameObject
     @interval = 8
     @step = 0
     @act_timer = 0
+    @score = 300
   end
 
   def update(section)
     if SB.player.bomb.explode? self
-      SB.player.stage_score += 300
+      SB.player.stage_score += @score
+      section.add_score_effect(@x + @w / 2, @y, @score)
       section.obstacles.delete self
       section.obstacles.delete @bottom
       @dead = true

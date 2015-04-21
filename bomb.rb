@@ -74,7 +74,7 @@ class Bomb < GameObject
           set_animation 12
         end
         if KB.key_pressed? Gosu::KbSpace
-          forces.y -= 13.7 + 0.4 * @speed.x.abs
+          forces.y -= 13.7 + 0.5 * @speed.x.abs
           if @facing_right; set_animation 3
           else; set_animation 15; end
         end
@@ -116,7 +116,7 @@ class Bomb < GameObject
     @explosion_timer = 0
     @explosion.x = @x - 80
     @explosion.y = @y - 75
-    set_animation (@facing_right ? 4 : 16)
+    set_animation(@facing_right ? 4 : 16)
   end
 
   def explode?(obj)

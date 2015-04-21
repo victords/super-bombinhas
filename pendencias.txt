@@ -1,5 +1,4 @@
 ## Programação ##
-- Animação de morte de bichos
 - Fases bônus
 - Término do jogo
 - Abertura do mundo secreto
