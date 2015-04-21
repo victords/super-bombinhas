@@ -123,8 +123,10 @@ class StageMenu
 
     def update_main
       if SB.player.dead?
+        @dead_text = (SB.player.lives == 0 ? :game_over : :dead) if @dead_text.nil?
         @alpha += 17 if @alpha < 255
-      elsif @alpha > 0
+      elsif @dead_text
+        @dead_text = nil
         @alpha = 0
       end
     end
@@ -243,7 +245,7 @@ class StageMenu
                          C::SCREEN_WIDTH, 0, c,
                          0, C::SCREEN_HEIGHT, c,
                          C::SCREEN_WIDTH, C::SCREEN_HEIGHT, c, 0
-      SB.big_text_helper.write_line SB.text(:dead), 400, 250, :center, 0, @alpha
+      SB.big_text_helper.write_line SB.text(@dead_text), 400, 250, :center, 0, @alpha
       SB.text_helper.write_line SB.text(:restart), 400, 300, :center, 0, @alpha
     end
 

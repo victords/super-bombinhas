@@ -1,8 +1,8 @@
 require_relative 'bomb'
 
 class Player
-  attr_reader :items, :cur_item_type, :specs
-  attr_accessor :name, :last_world, :last_stage, :lives, :score, :stage_score
+  attr_reader :score, :items, :cur_item_type, :specs
+  attr_accessor :name, :last_world, :last_stage, :lives, :stage_score
 
   def initialize(name, last_world = 1, last_stage = 1, bomb = :azul, hps = nil, lives = 5, score = 0, specs = '')
     @name = name
@@ -35,6 +35,7 @@ class Player
   def die
     unless @dead
       @lives -= 1
+      @score -= C::DEATH_PENALTY
       @dead = true
       @bomb.die
     end
@@ -70,6 +71,11 @@ class Player
     @item_index += 1
     @item_index = 0 if @item_index >= @items.length
     @cur_item_type = @items.keys[@item_index]
+  end
+
+  def score=(value)
+    @score = value
+    @score = 0 if @score < 0
   end
 
   def bomb(type = nil)

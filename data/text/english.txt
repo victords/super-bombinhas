@@ -34,6 +34,7 @@ total			Total
 spec_taken		Spec found?
 dead			You died!
 restart			Press 'Enter' to restart
+game_over		Game over!
 msg1			Testing message
 msg2			Second test message
 count_down		Countdown to explosion!

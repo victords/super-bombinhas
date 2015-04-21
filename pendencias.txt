@@ -1,5 +1,4 @@
 ## Programação ##
-- Animação de morte
 - Game Over
 - Animação de morte de bichos
 - Fases bônus

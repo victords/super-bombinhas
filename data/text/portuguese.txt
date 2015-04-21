@@ -34,6 +34,7 @@ total			Total
 spec_taken		Spec encontrado?
 dead			Você morreu!
 restart			Pressione 'Enter' para recomeçar
+game_over		Fim de jogo!
 msg1			Testando mensagem...
 msg2			Segunda mensagem de teste
 count_down		Contagem regressiva para explodir!

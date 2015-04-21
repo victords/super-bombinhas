@@ -141,7 +141,10 @@ class Bomb < GameObject
     unless @invulnerable
       @hp -= damage
       @hp = 0 if @hp < 0
-      SB.player.die if @hp == 0
+      if @hp == 0
+        SB.player.die
+        return
+      end
       @invulnerable = true
       @invulnerable_timer = 0
     end

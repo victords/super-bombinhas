@@ -73,14 +73,17 @@ class Stage
 
   def check_reload
     if @cur_section.reload
-      @sections.each do |s|
-        s.loaded = false
+      if SB.player.lives == 0
+        SB.game_over
+      else
+        @sections.each do |s|
+          s.loaded = false
+        end
+        SB.player.reset
+        reset_switches
+        @cur_section = @cur_entrance[:section]
+        start
       end
-
-      SB.player.reset
-      reset_switches
-      @cur_section = @cur_entrance[:section]
-      start
     end
   end
 
