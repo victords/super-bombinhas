@@ -62,15 +62,16 @@ end
 class MenuNumber < MenuElement
   attr_accessor :num
 
-  def initialize(num, x, y, mode)
+  def initialize(num, x, y, mode, color = 0)
     @num = num
     @x = x
     @y = y
     @mode = mode
+    @color = color
   end
 
   def draw
-    SB.text_helper.write_line(@num.to_s, @x, @y, @mode)
+    SB.text_helper.write_line(@num.to_s, @x, @y, @mode, @color)
   end
 end
 

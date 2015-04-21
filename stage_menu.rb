@@ -143,7 +143,7 @@ class StageMenu
       @stage_menu.update
     end
 
-    def end_stage(next_world)
+    def end_stage(next_world, bonus)
       p = MenuPanel.new(-600, 150, 400, 300)
       p.init_movement
       p.move_to 200, 150
@@ -159,7 +159,7 @@ class StageMenu
       t4 = MenuText.new(:total, 210, 860)
       t4.init_movement
       t4.move_to 210, 260
-      t5 = MenuNumber.new(SB.player.score, 590, 860, :right)
+      t5 = MenuNumber.new(SB.player.score, 590, 860, :right, bonus ? 0xff0000 : 0)
       t5.init_movement
       t5.move_to 590, 260
       t6 = MenuText.new(:spec_taken, 210, 900)

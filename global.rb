@@ -10,8 +10,9 @@ module C
   BOUNCE_FORCE = 15
   TOP_MARGIN = -200
   EXIT_MARGIN = 16
-  DEATH_PENALTY = 1000
-  GAME_OVER_PENALTY = 10000
+  DEATH_PENALTY = 1_000
+  GAME_OVER_PENALTY = 10_000
+  BONUS_THRESHOLD = 100
   GAME_LIMIT = 10
   PANEL_COLOR = 0x80aaaaff
   ARROW_COLOR = 0x80000099
@@ -114,8 +115,10 @@ class SB
 
     def end_stage
       @player.bomb.celebrate
+      prev_million = @player.score / C::BONUS_THRESHOLD
       @player.score += @player.stage_score
-      StageMenu.end_stage(@stage.num == @world.stage_count)
+      @bonus = true if @player.score / C::BONUS_THRESHOLD > prev_million
+      StageMenu.end_stage(@stage.num == @world.stage_count, @bonus)
       @state = :stage_end
     end
 
@@ -129,7 +132,6 @@ class SB
       @world.open_stage(continue)
       num = @stage.num + 1
       if num <= @world.stage_count
-        # deve ter alguma transição, mostrar os pontos, etc.
         @player.last_stage = num
         if continue
           save
