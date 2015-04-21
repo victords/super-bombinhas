@@ -38,19 +38,27 @@ class Enemy < GameObject
   end
 
   def update(section)
+    if @dying
+      @timer += 1
+      @dead = true if @timer == 180
+      return if @img_index == @indices[-1]
+      animate @indices, @interval
+      return
+    end
+
     if SB.player.bomb.over? self
-      hit_by_bomb unless @invulnerable
+      hit_by_bomb(section) unless @invulnerable
       SB.player.bomb.stored_forces.y -= C::BOUNCE_FORCE
       SB.player.bomb.stored_forces.x -= @speed.x
     elsif SB.player.bomb.explode? self
       hit_by_explosion unless @invulnerable
     elsif section.projectile_hit? self
-      hit unless @invulnerable
+      hit(section) unless @invulnerable
     elsif SB.player.bomb.collide? self
       SB.player.bomb.hit
     end
 
-    return if @dead
+    return if @dying
 
     if @invulnerable
       @timer += 1
@@ -63,8 +71,8 @@ class Enemy < GameObject
     animate @indices, @interval
   end
 
-  def hit_by_bomb
-    hit
+  def hit_by_bomb(section)
+    hit(section)
   end
 
   def hit_by_explosion
@@ -72,11 +80,12 @@ class Enemy < GameObject
     @dead = true
   end
 
-  def hit
+  def hit(section)
     @hp -= 1
     if @hp == 0
       SB.player.stage_score += @score
-      @dead = true
+      section.add_score_effect(@x + @w / 2, @y, @score)
+      @dying = true
     else
       get_invulnerable
     end
@@ -248,7 +257,7 @@ class Yaw < Enemy
     end
   end
 
-  def hit_by_bomb
+  def hit_by_bomb(section)
     SB.player.die
   end
 end
@@ -409,7 +418,7 @@ class Turner < Enemy
     end
   end
 
-  def hit_by_bomb
+  def hit_by_bomb(section)
   end
 
   def hit_by_explosion

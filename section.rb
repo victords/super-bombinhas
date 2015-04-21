@@ -6,6 +6,33 @@ require_relative 'items'
 
 Tile = Struct.new :back, :fore, :pass, :wall, :hide, :broken
 
+class ScoreEffect
+  def initialize(x, y, score)
+    @x = x
+    @y = y
+    @text = score
+    @alpha = 0
+    @timer = 0
+  end
+
+  def dead?; @dead; end
+
+  def update
+    if @timer < 15
+      @alpha += 17
+    elsif @timer > 135
+      @alpha -= 17
+      @dead = true if @alpha == 0
+    end
+    @y -= 0.5
+    @timer += 1
+  end
+
+  def draw(map)
+    SB.small_text_helper.write_line @text, @x - map.cam.x, @y - map.cam.y, :center, 0xffffff, @alpha, :border, 0, 1, @alpha
+  end
+end
+
 class Section
   attr_reader :reload, :tiles, :obstacles, :ramps, :size, :default_entrance
   attr_accessor :entrance, :warp, :loaded, :locked_door
@@ -196,6 +223,7 @@ class Section
   def start(switches, bomb_x, bomb_y)
     @elements = []
     @obstacles = [] #vetor de obstáculos não-tile
+    @effects = []
     @locked_door = nil
     @reload = false
     @loaded = true
@@ -289,6 +317,10 @@ class Section
     @elements << element
   end
 
+  def add_score_effect(x, y, score)
+    @effects << ScoreEffect.new(x, y, score)
+  end
+
   def save_check_point(id, obj)
     @entrance = id
     SB.stage.set_switch obj
@@ -322,6 +354,10 @@ class Section
     @elements.each do |e|
       e.update self if e.is_visible @map
       @elements.delete e if e.dead?
+    end
+    @effects.each do |e|
+      e.update
+      @effects.delete e if e.dead?
     end
     @hide_tiles.each do |t|
       t.update self if t.is_visible @map
@@ -359,6 +395,9 @@ class Section
 
     @elements.each do |e|
       e.draw @map if e.is_visible @map
+    end
+    @effects.each do |e|
+      e.draw @map
     end
     SB.player.bomb.draw @map
 

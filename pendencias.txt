@@ -1,5 +1,4 @@
 ## Programação ##
-- Game Over
 - Animação de morte de bichos
 - Fases bônus
 - Término do jogo
