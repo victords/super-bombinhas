@@ -40,7 +40,7 @@ class Enemy < GameObject
   def update(section)
     if @dying
       @timer += 1
-      @dead = true if @timer == 180
+      @dead = true if @timer == 150
       return if @img_index == @indices[-1]
       animate @indices, @interval
       return
@@ -49,7 +49,7 @@ class Enemy < GameObject
     if SB.player.bomb.over? self
       hit_by_bomb(section) unless @invulnerable
       SB.player.bomb.stored_forces.y -= C::BOUNCE_FORCE
-      SB.player.bomb.stored_forces.x -= @speed.x
+      # SB.player.bomb.stored_forces.x -= @speed.x
     elsif SB.player.bomb.explode? self
       hit_by_explosion unless @invulnerable
     elsif section.projectile_hit? self
@@ -133,6 +133,14 @@ class FloorEnemy < Enemy
     end
   end
 
+  def hit(section)
+    super
+    if @dying
+      @indices = @facing_right ? [7, 8, 9] : [2, 3, 4]
+      @interval = 5
+    end
+  end
+
   def set_direction(dir)
     @speed.x = 0
     if dir == :left
@@ -143,8 +151,8 @@ class FloorEnemy < Enemy
     else
       @forces.x = @speed_m
       @facing_right = true
-      @indices[0] = 2; @indices[1] = 3
-      set_animation 2
+      @indices[0] = 5; @indices[1] = 6
+      set_animation 5
     end
     change_animation dir
   end
@@ -154,18 +162,10 @@ end
 
 class Wheeliam < FloorEnemy
   def initialize(x, y, args, section)
-    super x, y, args, 32, 32, :sprite_Wheeliam, Vector.new(-4, -3), 4, 1, [0, 1], 8, 100
+    super x, y, args, 32, 32, :sprite_Wheeliam, Vector.new(-4, -3), 5, 2, [0, 1], 8, 100
   end
 
-  def change_animation(dir)
-    if dir == :left
-      @indices[0] = 0; @indices[1] = 1
-      set_animation 0
-    else
-      @indices[0] = 2; @indices[1] = 3
-      set_animation 2
-    end
-  end
+  def change_animation(dir); end
 end
 
 class Sprinny < Enemy
@@ -209,15 +209,7 @@ class Fureel < FloorEnemy
     super x - 4, y - 4, args, 40, 36, :sprite_Fureel, Vector.new(-10, -3), 6, 1, [0, 1], 8, 300, 2, 4
   end
 
-  def change_animation(dir)
-    if dir == :left
-      @indices[0] = 0; @indices[1] = 1
-      set_animation 0
-    else
-      @indices[0] = 3; @indices[1] = 4
-      set_animation 3
-    end
-  end
+  def change_animation(dir); end
 
   def get_invulnerable
     @invulnerable = true
