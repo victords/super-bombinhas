@@ -143,7 +143,7 @@ class StageMenu
       @stage_menu.update
     end
 
-    def end_stage(next_world, bonus)
+    def end_stage(next_world = false, bonus = nil)
       p = MenuPanel.new(-600, 150, 400, 300)
       p.init_movement
       p.move_to 200, 150
@@ -170,19 +170,19 @@ class StageMenu
       t7.move_to 590, 300
       @stage_end_comps = [p, t1, t2, t3, t4, t5, t6, t7]
       @stage_end_timer = 0
-      if next_world
+      if next_world or bonus
         @stage_menu.section(3).clear
         @stage_menu.section(3).add(MenuButton.new(350, :continue) {
-                                     SB.next_stage
+                                     SB.check_next_stage
                                    })
         @continue_only = true
-      elsif not @continue_only
+      elsif @continue_only
         @stage_menu.section(3).clear
         @stage_menu.section(3).add(MenuButton.new(350, :continue, false, 219) {
-                                     SB.next_stage
+                                     SB.check_next_stage
                                    })
         @stage_menu.section(3).add(MenuButton.new(350, :save_exit, false, 409) {
-                                     SB.next_stage false
+                                     SB.check_next_stage false
                                    })
         @continue_only = false
       end

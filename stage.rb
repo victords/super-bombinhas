@@ -4,8 +4,9 @@ class Stage
   attr_reader :num, :id, :starting, :cur_entrance, :switches
 
   def initialize(world, num, loaded = false)
+    @world = world
     @num = num
-    @id = "#{SB.world.num}-#{num}"
+    @id = "#{world}-#{num}"
     @sections = []
     @entrances = []
     @switches = []
@@ -13,7 +14,7 @@ class Stage
     taken_switches = loaded ? eval("[#{SB.save_data[9]}]") : []
     used_switches = loaded ? eval("[#{SB.save_data[10]}]") : []
 
-    sections = Dir["#{Res.prefix}stage/#{world}/#{num}-*.sbs"]
+    sections = Dir["#{Res.prefix}stage/#{world}/#{num}-*"]
     sections.sort.each do |s|
       @sections << Section.new(s, @entrances, @switches, taken_switches, used_switches)
     end
@@ -155,8 +156,8 @@ class Stage
                          @panel_x + 600, 200, C::PANEL_COLOR,
                          @panel_x, 400, C::PANEL_COLOR,
                          @panel_x + 600, 400, C::PANEL_COLOR, 0
-      SB.text_helper.write_line SB.text("world_#{SB.world.num}"), @panel_x + 300, 220, :center
-      SB.big_text_helper.write_line "#{SB.world.num}-#{@num}: #{SB.text("stage_#{SB.world.num}_#{@num}")}", @panel_x + 300, 300, :center
+      SB.text_helper.write_line SB.text("world_#{@world}"), @panel_x + 300, 220, :center
+      SB.big_text_helper.write_line "#{@world}-#{@num}: #{SB.text("stage_#{@world}_#{@num}")}", @panel_x + 300, 300, :center
     end
   end
 end

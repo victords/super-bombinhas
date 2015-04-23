@@ -63,7 +63,7 @@ end
 class Movie
   def initialize(id)
     @bg = Res.img "movie_#{id}"
-    f = File.open("#{Res.prefix}movie/#{id}.sbm")
+    f = File.open("#{Res.prefix}movie/#{id}")
     es = f.read.split "\n\n"
     f.close
 

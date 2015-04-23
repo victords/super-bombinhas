@@ -13,6 +13,7 @@ module C
   DEATH_PENALTY = 1_000
   GAME_OVER_PENALTY = 10_000
   BONUS_THRESHOLD = 100
+  BONUS_LEVELS = 5
   GAME_LIMIT = 10
   PANEL_COLOR = 0x80aaaaff
   ARROW_COLOR = 0x80000099
@@ -115,18 +116,36 @@ class SB
 
     def end_stage
       @player.bomb.celebrate
-      prev_million = @player.score / C::BONUS_THRESHOLD
-      @player.score += @player.stage_score
-      @bonus = true if @player.score / C::BONUS_THRESHOLD > prev_million
-      StageMenu.end_stage(@stage.num == @world.stage_count, @bonus)
+      if @bonus
+        @bonus = nil
+        StageMenu.end_stage
+      else
+        prev_million = @player.score / C::BONUS_THRESHOLD
+        @player.score += @player.stage_score
+        million = @player.score / C::BONUS_THRESHOLD
+        @bonus = (million - 1) % C::BONUS_LEVELS + 1 if million > prev_million
+        @prev_stage = @stage
+        StageMenu.end_stage(@stage.num == @world.stage_count, @bonus)
+      end
       @state = :stage_end
+    end
+
+    def check_next_stage(continue = true)
+      if @bonus
+        @stage = Stage.new('bonus', @bonus)
+        @stage.start
+        @state = :main
+      else
+        @stage = @prev_stage if @prev_stage
+        next_stage(continue)
+      end
     end
 
     def next_stage(continue = true)
       # Res.clear
+      @prev_stage = nil
       if @world.num < @player.last_world or @stage.num != @player.last_stage
-        @stage = Stage.new(@world.num, @stage.num)
-        save_and_exit
+        save_and_exit(@stage.num)
         return
       end
       @world.open_stage(continue)
@@ -139,8 +158,7 @@ class SB
           @stage.start
           @state = :main
         else
-          @stage = Stage.new(@world.num, @stage.num)
-          save_and_exit
+          save_and_exit(@stage.num)
         end
       else
         @player.last_world = @world.num + 1
@@ -163,14 +181,14 @@ class SB
       @player.last_stage = 1
       @player.lives = 5
       @player.reset
-      save(true)
+      save(1)
       @world = World.new(@player.last_world, 1)
       @state = :map
     end
 
-    def save(game_over = false)
+    def save(stage_num = nil)
       @save_data[0] = @player.name
-      @save_data[1] = "#{@world.num}-#{game_over ? 1 : @stage.num}"
+      @save_data[1] = "#{@world.num}-#{stage_num || @stage.num}"
       @save_data[2] = "#{@player.last_world}-#{@player.last_stage}"
       @save_data[3] = @player.bomb.type.to_s
       @save_data[4] = @player.lives.to_s
@@ -185,8 +203,8 @@ class SB
       end
     end
 
-    def save_and_exit
-      save
+    def save_and_exit(stage_num = nil)
+      save(stage_num)
       @world.set_loaded @stage.num
       @state = :map
     end

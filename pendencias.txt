@@ -10,6 +10,7 @@
   - Bombas   (1/5)
   - Inimigos (7/40)
   - Itens    (4/20?)
+  - Objetos  (13/40?)
 
 ## Conteúdo ##
 - Músicas
