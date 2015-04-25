@@ -132,7 +132,9 @@ class SB
 
     def check_next_stage(continue = true)
       if @bonus
-        @stage = Stage.new('bonus', @bonus)
+        StageMenu.initialize
+        time = IO.read("#{Res.prefix}stage/bonus/times").split[@bonus-1].to_i
+        @stage = Stage.new('bonus', @bonus, false, time)
         @stage.start
         @state = :main
       else
@@ -143,7 +145,7 @@ class SB
 
     def next_stage(continue = true)
       # Res.clear
-      @prev_stage = nil
+      @prev_stage = @bonus = nil
       if @world.num < @player.last_world or @stage.num != @player.last_stage
         save_and_exit(@stage.num)
         StageMenu.initialize
@@ -205,9 +207,14 @@ class SB
     end
 
     def save_and_exit(stage_num = nil)
-      save(stage_num)
-      @world.set_loaded @stage.num
-      @state = :map
+      if @bonus
+        @stage = @prev_stage
+        next_stage(false)
+      else
+        save(stage_num)
+        @world.set_loaded @stage.num
+        @state = :map
+      end
     end
   end
 end

@@ -3,9 +3,13 @@ require_relative 'section'
 class Stage
   attr_reader :num, :id, :starting, :cur_entrance, :switches
 
-  def initialize(world, num, loaded = false)
+  def initialize(world, num, loaded = false, time = nil)
     @world = world
     @num = num
+    if time
+      @time = time
+      @counter = 0
+    end
     @id = "#{world}-#{num}"
     @sections = []
     @entrances = []
@@ -56,6 +60,7 @@ class Stage
         @starting = false
       end
     else
+      return :finish if @time == 0
       status = @cur_section.update
       if status == :finish
         return :finish
@@ -68,6 +73,13 @@ class Stage
         check_reload
         check_entrance
         check_warp
+      end
+      if @time
+        @counter += 1
+        if @counter == 60
+          @time -= 1
+          @counter = 0
+        end
       end
     end
   end
@@ -156,8 +168,12 @@ class Stage
                          @panel_x + 600, 200, C::PANEL_COLOR,
                          @panel_x, 400, C::PANEL_COLOR,
                          @panel_x + 600, 400, C::PANEL_COLOR, 0
-      SB.text_helper.write_line SB.text("world_#{@world}"), @panel_x + 300, 220, :center
-      SB.big_text_helper.write_line "#{@world}-#{@num}: #{SB.text("stage_#{@world}_#{@num}")}", @panel_x + 300, 300, :center
+      world_name = @world == 'bonus' ? "#{SB.text(:bonus)} #{@num}" : SB.text("world_#{@world}")
+      SB.text_helper.write_line world_name, @panel_x + 300, 220, :center
+      name = @world == 'bonus' ? SB.text("bonus_#{@num}") : "#{@world}-#{@num}: #{SB.text("stage_#{@world}_#{@num}")}"
+      SB.big_text_helper.write_line name, @panel_x + 300, 300, :center
+    elsif @time
+      SB.text_helper.write_line @time.to_s, 400, 570, :center, 0xffff00, 255, :border
     end
   end
 end
