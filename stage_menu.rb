@@ -143,7 +143,7 @@ class StageMenu
       @stage_menu.update
     end
 
-    def end_stage(next_world = false, bonus = nil)
+    def end_stage(next_world, next_bonus = false, bonus = false)
       p = MenuPanel.new(-600, 150, 400, 300)
       p.init_movement
       p.move_to 200, 150
@@ -159,18 +159,21 @@ class StageMenu
       t4 = MenuText.new(:total, 210, 860)
       t4.init_movement
       t4.move_to 210, 260
-      t5 = MenuNumber.new(SB.player.score, 590, 860, :right, bonus ? 0xff0000 : 0)
+      t5 = MenuNumber.new(SB.player.score, 590, 860, :right, next_bonus ? 0xff0000 : 0)
       t5.init_movement
       t5.move_to 590, 260
-      t6 = MenuText.new(:spec_taken, 210, 900)
-      t6.init_movement
-      t6.move_to 210, 300
-      t7 = MenuText.new(SB.player.specs.index(SB.stage.id) ? :yes : :no, 590, 900, 300, :right)
-      t7.init_movement
-      t7.move_to 590, 300
-      @stage_end_comps = [p, t1, t2, t3, t4, t5, t6, t7]
+      unless bonus
+        t6 = MenuText.new(:spec_taken, 210, 900)
+        t6.init_movement
+        t6.move_to 210, 300
+        t7 = MenuText.new(SB.player.specs.index(SB.stage.id) ? :yes : :no, 590, 900, 300, :right)
+        t7.init_movement
+        t7.move_to 590, 300
+      end
+      @stage_end_comps = [p, t1, t2, t3, t4, t5]
+      @stage_end_comps << t6 << t7 unless bonus
       @stage_end_timer = 0
-      if next_world or bonus
+      if next_world or next_bonus
         @stage_menu.section(3).clear
         @stage_menu.section(3).add(MenuButton.new(350, :continue) {
                                      SB.check_next_stage

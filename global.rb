@@ -118,12 +118,12 @@ class SB
       @player.bomb.celebrate
       if @bonus
         @bonus = nil
-        StageMenu.end_stage
+        StageMenu.end_stage(false, false, true)
       else
-        prev_million = @player.score / C::BONUS_THRESHOLD
+        prev_factor = @player.score / C::BONUS_THRESHOLD
         @player.score += @player.stage_score
-        million = @player.score / C::BONUS_THRESHOLD
-        @bonus = (million - 1) % C::BONUS_LEVELS + 1 if million > prev_million
+        factor = @player.score / C::BONUS_THRESHOLD
+        @bonus = (factor - 1) % C::BONUS_LEVELS + 1 if factor > prev_factor
         @prev_stage = @stage
         StageMenu.end_stage(@stage.num == @world.stage_count, @bonus)
       end
@@ -146,6 +146,7 @@ class SB
       @prev_stage = nil
       if @world.num < @player.last_world or @stage.num != @player.last_stage
         save_and_exit(@stage.num)
+        StageMenu.initialize
         return
       end
       @world.open_stage(continue)
@@ -194,10 +195,10 @@ class SB
       @save_data[4] = @player.lives.to_s
       @save_data[5] = @player.score.to_s
       @save_data[6] = @player.specs.join(',')
-      @save_data[7] = @stage.cur_entrance[:index].to_s
+      @save_data[7] = stage_num ? '0' : @stage.cur_entrance[:index].to_s
       @save_data[8] = @player.get_bomb_hps
-      @save_data[9] = @stage.switches_by_state(:taken)
-      @save_data[10] = @stage.switches_by_state(:used)
+      @save_data[9] = stage_num ? '' : @stage.switches_by_state(:taken)
+      @save_data[10] = stage_num ? '' : @stage.switches_by_state(:used)
       File.open(@save_file_name, 'w') do |f|
         @save_data.each { |s| f.print(s + "\n") }
       end

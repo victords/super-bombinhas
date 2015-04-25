@@ -95,7 +95,8 @@ class World
     @stage_count = @stages.count
     @enabled_stage_count = num < SB.player.last_world ? @stage_count : SB.player.last_stage
     @cur = (loaded ? @loaded_stage : @enabled_stage_count) - 1
-    @bomb = Sprite.new @stages[@cur].x - 4, @stages[@cur].y - 15, "sprite_Bomba#{SB.player.bomb.type.to_s.capitalize}", 6, 4
+    @bomb = Sprite.new 0, 0, "sprite_Bomba#{SB.player.bomb.type.to_s.capitalize}", 6, 4
+    set_bomb_position
     @trans_alpha = 0
 
     # @play_button = Button.new(420, 550, SB.font, SB.text(:play), :ui_button1, 0, 0, 0, 0, true, false, 0, 7) {
@@ -133,10 +134,10 @@ class World
       @stages[@cur].select(@loaded_stage)
     elsif @cur > 0 and (KB.key_pressed? Gosu::KbLeft or KB.key_pressed? Gosu::KbDown)
       @cur -= 1
-      @bomb.x = @stages[@cur].x + 1; @bomb.y = @stages[@cur].y - 15
+      set_bomb_position
     elsif @cur < @enabled_stage_count - 1 and (KB.key_pressed? Gosu::KbRight or KB.key_pressed? Gosu::KbUp)
       @cur += 1
-      @bomb.x = @stages[@cur].x + 1; @bomb.y = @stages[@cur].y - 15
+      set_bomb_position
     elsif KB.key_pressed? Gosu::KbLeftShift and @num > 1
       change_world(@num - 1)
     elsif KB.key_pressed? Gosu::KbRightShift and @num < SB.player.last_world
@@ -144,9 +145,14 @@ class World
     end
   end
 
+  def set_bomb_position
+    @bomb.x = @stages[@cur].x - 4; @bomb.y = @stages[@cur].y - 15
+  end
+
   def set_loaded(stage_num)
     @loaded_stage = stage_num
-    @bomb = Sprite.new @stages[@cur].x - 4, @stages[@cur].y - 15, "sprite_Bomba#{SB.save_data[3].capitalize}", 5, 2
+    @bomb = Sprite.new 0, 0, "sprite_Bomba#{SB.save_data[3].capitalize}", 5, 2
+    set_bomb_position
   end
 
   def open_stage(continue)
@@ -156,7 +162,7 @@ class World
       @enabled_stage_count += 1
       if continue
         @cur += 1
-        @bomb.x = @stages[@cur].x - 4; @bomb.y = @stages[@cur].y - 15
+        set_bomb_position
       end
     end
   end
