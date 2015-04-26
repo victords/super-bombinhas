@@ -148,7 +148,9 @@ class SB
     def next_stage(continue = true)
       # Res.clear
       @prev_stage = @bonus = nil
-      if @world.num < @player.last_world or @stage.num != @player.last_stage
+      if @world.num < @player.last_world ||
+         @stage.num != @player.last_stage ||
+         @stage.num == @world.stage_count && @save_data[11].to_i >= C::LAST_WORLD - 1
         save_and_exit(@stage.num)
         StageMenu.initialize
         return
@@ -166,10 +168,14 @@ class SB
           save_and_exit(@stage.num)
         end
       else
-        @player.last_world = @world.num + 1
-        @player.last_stage = 1
-        @player.add_bomb
-        save
+        if @world.num < C::LAST_WORLD - 1
+          @player.last_world = @world.num + 1
+          @player.last_stage = 1
+          @player.add_bomb
+          save
+        else
+          save(nil, @world.num)
+        end
         @movie = Movie.new(@world.num)
         @state = :movie
       end
@@ -198,7 +204,7 @@ class SB
       @state = :map
     end
 
-    def save(stage_num = nil)
+    def save(stage_num = nil, special_world = nil)
       @save_data[0] = @player.name
       @save_data[1] = "#{@world.num}-#{stage_num || @stage.num}"
       @save_data[2] = "#{@player.last_world}-#{@player.last_stage}"
@@ -210,6 +216,7 @@ class SB
       @save_data[8] = @player.get_bomb_hps
       @save_data[9] = stage_num ? '' : @stage.switches_by_state(:taken)
       @save_data[10] = stage_num ? '' : @stage.switches_by_state(:used)
+      @save_data[11] = special_world.to_s || ''
       File.open(@save_file_name, 'w') do |f|
         @save_data.each { |s| f.print(s + "\n") }
       end
