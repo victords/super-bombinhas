@@ -54,3 +54,7 @@ bonus_5			w erte terter rtr
 movie_1_1		Español sdjfkls\njdfsj dkfjkdfj skdfjsk djfslkjsj dfk dskf sdfkjl.
 movie_1_2		blab balfab fablabs fblabf blaf ablafbalbf afblabf.
 movie_1_3		Thjg dkfjkjdsf jf psdf sdkjflsdkfj sjdkfsj s djfksl sdfjkjdf.\najkdhasdh asjsdh.
+game_end		¡Fin!
+game_end_sub	Pero... ¿has recogido todos los Specs?
+game_end_2		¡Fin!
+game_end_2_sub	Ahora sí, es verdad.

@@ -54,3 +54,7 @@ bonus_5			w erte terter rtr
 movie_1_1		Portugues sdjfkls\njdfsj dkfjkdfj skdfjsk djfslkjsj dfk dskf sdfkjl.
 movie_1_2		blab balfab fablabs fblabf blaf ablafbalbf afblabf.
 movie_1_3		Thjg dkfjkjdsf jf psdf sdkjflsdkfj sjdkfsj s djfksl sdfjkjdf.\najkdhasdh asjsdh.
+game_end		Fim!
+game_end_sub	Mas... você pegou todos os Specs?
+game_end_2		Fim!
+game_end_2_sub	Agora é sério.

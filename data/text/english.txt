@@ -54,3 +54,7 @@ bonus_5			w erte terter rtr
 movie_1_1		lskdjfksjdlkf sdjfkls\njdfsj dkfjkdfj skdfjsk djfslkjsj dfk dskf sdfkjl.
 movie_1_2		blab balfab fablabs fblabf blaf ablafbalbf afblabf.
 movie_1_3		Thjg dkfjkjdsf jf psdf sdkjflsdkfj sjdkfsj s djfksl sdfjkjdf.\najkdhasdh asjsdh.
+game_end		The End!
+game_end_sub	But... have you collected all the Specs?
+game_end_2		The End!
+game_end_2_sub	Seriously, now.

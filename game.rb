@@ -35,6 +35,11 @@ class SBGame < MiniGL::GameWindow
       StageMenu.update_paused
     elsif SB.state == :movie
       SB.movie.update
+    elsif SB.state == :game_end || SB.state == :game_end_2
+      if KB.key_pressed? Gosu::KbReturn or KB.key_pressed? Gosu::KbSpace
+        Menu.reset
+        SB.state = :menu
+      end
     end
   end
 
@@ -50,6 +55,10 @@ class SBGame < MiniGL::GameWindow
       StageMenu.draw
     elsif SB.state == :movie
       SB.movie.draw
+    elsif SB.state == :game_end || SB.state == :game_end_2
+      clear 0
+      SB.big_text_helper.write_line SB.text(SB.state), 400, 280, :center, 0xffffff
+      SB.small_text_helper.write_line SB.text("#{SB.state}_sub"), 400, 320, :center, 0xffffff, 51
     end
   end
 end

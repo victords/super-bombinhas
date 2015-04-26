@@ -15,6 +15,8 @@ module C
   BONUS_THRESHOLD = 100
   BONUS_LEVELS = 5
   GAME_LIMIT = 10
+  MOVIE_DELAY = 180
+  LAST_WORLD = 3
   PANEL_COLOR = 0x80aaaaff
   ARROW_COLOR = 0x80000099
 end
@@ -175,8 +177,15 @@ class SB
     end
 
     def next_world
-      @world = World.new(@world.num + 1, 1, false)
-      @state = :map
+      if @world.num == C::LAST_WORLD - 1
+        @state = :game_end
+      elsif @world.num == C::LAST_WORLD
+        @state = :game_end_2
+      else
+        @world = World.new(@world.num + 1, 1, false)
+        save(1)
+        @state = :map
+      end
     end
 
     def game_over

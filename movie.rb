@@ -60,10 +60,10 @@ class MovieElement < GameObject
   end
 end
 
-class Movie
-  def initialize(id)
-    @bg = Res.img "movie_#{id}"
-    f = File.open("#{Res.prefix}movie/#{id}")
+class MovieScene
+  def initialize(file_name)
+    @bg = Res.img "movie_#{file_name.split('/')[-1]}"
+    f = File.open(file_name)
     es = f.read.split "\n\n"
     f.close
 
@@ -96,7 +96,7 @@ class Movie
   def update
     if @finished and @elements_finished
       @timer += 1
-      SB.next_world if @timer == 180
+      return :finish if @timer == C::MOVIE_DELAY
     else
       unless @finished
         if @speed_x
@@ -130,5 +130,44 @@ class Movie
   def draw
     @bg.draw -@cam_x, -@cam_y, 0
     @elements.each { |e| e.draw(@cam_x, @cam_y) }
+  end
+end
+
+class Movie
+  def initialize(id)
+    files = Dir["#{Res.prefix}movie/#{id}-*"]
+    @scenes = []
+    files.each do |f|
+      @scenes << MovieScene.new(f)
+    end
+    @scene = 0
+    @alpha = 0
+  end
+
+  def update
+    if @changing
+      @alpha += @changing == 0 ? 17 : -17
+      if @alpha == 255
+        @changing = 1
+        @scene += 1
+        SB.next_world if @scene == @scenes.length
+      elsif @alpha == 0
+        @changing = nil
+      end
+    else
+      status = @scenes[@scene].update
+      @changing = 0 if status == :finish
+    end
+  end
+
+  def draw
+    @scenes[@scene].draw
+    if @changing
+      c = @alpha << 24
+      G.window.draw_quad 0, 0, c,
+                         C::SCREEN_WIDTH, 0, c,
+                         0, C::SCREEN_HEIGHT, c,
+                         C::SCREEN_WIDTH, C::SCREEN_HEIGHT, c, 0
+    end
   end
 end
