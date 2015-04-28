@@ -155,7 +155,7 @@ class Section
       when  7 then Life
       when  8 then Key
       when  9 then Door
-      #### 10      Door locked
+      when 10 then SpecGate
       #### 11      warp (virou entrance)
       when 12 then GunPowder
       when 13 then Crack

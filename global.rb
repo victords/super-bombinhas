@@ -188,10 +188,25 @@ class SB
       elsif @world.num == C::LAST_WORLD
         @state = :game_end_2
       else
-        @world = World.new(@world.num + 1, 1, false)
+        @world = World.new(@world.num + 1, 1)
         save(1)
         @state = :map
       end
+    end
+
+    def prepare_special_world
+      @movie = Movie.new('s')
+      @state = :movie
+      @player.reset
+      StageMenu.initialize
+    end
+
+    def open_special_world
+      @player.last_world = C::LAST_WORLD
+      @player.last_stage = 1
+      @world = World.new(C::LAST_WORLD, 1)
+      save(1)
+      @state = :map
     end
 
     def game_over
@@ -199,8 +214,8 @@ class SB
       @player.last_stage = 1
       @player.lives = 5
       @player.reset
-      save(1)
       @world = World.new(@player.last_world, 1)
+      save(1)
       @state = :map
     end
 

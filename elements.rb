@@ -612,3 +612,16 @@ class Spring < GameObject
     @img_gap.y = -16
   end
 end
+
+class SpecGate < GameObject
+  def initialize(x, y, args, section)
+    super x, y, 32, 32, :sprite_SpecGate
+    @active_bounds = Rectangle.new(x, y, 32, 32)
+  end
+
+  def update(section)
+    if SB.player.bomb.bounds.intersect? self
+      SB.prepare_special_world
+    end
+  end
+end

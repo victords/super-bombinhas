@@ -135,6 +135,7 @@ end
 
 class Movie
   def initialize(id)
+    @id = id
     files = Dir["#{Res.prefix}movie/#{id}-*"]
     @scenes = []
     files.each do |f|
@@ -150,7 +151,10 @@ class Movie
       if @alpha == 255
         @changing = 1
         @scene += 1
-        SB.next_world if @scene == @scenes.length
+        if @scene == @scenes.length
+          if @id == 's'; SB.open_special_world
+          else; SB.next_world; end
+        end
       elsif @alpha == 0
         @changing = nil
       end
