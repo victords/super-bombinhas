@@ -116,12 +116,20 @@ class SB
       StageMenu.initialize
     end
 
+    def set_spec_taken
+      @spec_taken = true
+    end
+
     def end_stage
       @player.bomb.celebrate
       if @bonus
         @bonus = nil
         StageMenu.end_stage(false, false, true)
       else
+        if @spec_taken
+          @player.specs << @stage.id
+          @spec_taken = false
+        end
         prev_factor = @player.score / C::BONUS_THRESHOLD
         @player.score += @player.stage_score
         factor = @player.score / C::BONUS_THRESHOLD
@@ -214,6 +222,7 @@ class SB
       @player.last_stage = 1
       @player.lives = 5
       @player.reset
+      @player.specs.delete_if { |s| s =~ /^#{@player.last_world}-/ }
       @world = World.new(@player.last_world, 1)
       save(1)
       @state = :map

@@ -1,6 +1,4 @@
 ## Programação ##
-- Ajustes dos Specs (salvar apenas quando passa a fase, resetar quando dá game
-  over).
 - Apresentação
 - Filme inicial
 - Sistema de sons

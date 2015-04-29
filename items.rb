@@ -146,7 +146,7 @@ class Spec < FloatingItem
   def update(section)
     super(section) do
       SB.player.stage_score += 1000
-      SB.player.specs << SB.stage.id
+      SB.set_spec_taken
     end
   end
 end
