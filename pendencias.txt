@@ -1,5 +1,4 @@
 ## Programação ##
-- Apresentação
 - Filme inicial
 - Sistema de sons
 - Pelo menos um chefão para testar as particularidades dele em relação a um

@@ -27,7 +27,7 @@ class SB
     attr_accessor :state, :player, :world, :stage, :movie, :music_volume, :sound_volume
 
     def initialize
-      @state = :menu
+      @state = :presentation
 
       @font = Res.font :BankGothicMedium, 20
       @big_font = Res.font :BankGothicMedium, 36

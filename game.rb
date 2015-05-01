@@ -6,6 +6,9 @@ class SBGame < MiniGL::GameWindow
   def initialize
     super(C::SCREEN_WIDTH, C::SCREEN_HEIGHT, false, Vector.new(0, 0.9))
     SB.initialize
+
+    @logo = Res.img(:ui_alevaLogo)
+    @timer = @state = @alpha = 0
   end
 
   def needs_cursor?
@@ -19,7 +22,30 @@ class SBGame < MiniGL::GameWindow
     close if KB.key_pressed? Gosu::KbTab
 
     if SB.state == :presentation
-
+      @timer += 1
+      if @state < 2
+        @alpha += 5 if @alpha < 255
+        if @timer == 120
+          @state += 1
+          @timer = 0
+          @alpha = 0 if @state == 1
+        end
+      elsif @state > 2
+        @alpha -= 17 if @alpha > 0
+        @alpha = 0 if @alpha < 0
+        if @timer == 15
+          if @state == 5; SB.state = :menu
+          else; @state += 1; @alpha = 255; end
+          @timer = 0
+        end
+      else
+        @alpha -= 5 if @alpha > 0
+        if @timer == 120
+          @state += 1
+          @timer = 0
+          @alpha = 255
+        end
+      end
     elsif SB.state == :menu
       Menu.update
     elsif SB.state == :map
@@ -45,7 +71,21 @@ class SBGame < MiniGL::GameWindow
 
   def draw
     if SB.state == :presentation
-
+      @logo.draw 200, 235, 0, 1, 1, (@state == 1 ? 0xffffffff : (@alpha << 24) | 0xffffff)
+      SB.text_helper.write_line(SB.text(:presents), 400, 365, :center, 0xffffff, (@state == 0 ? 0 : @alpha))
+      if @state > 2
+        Menu.draw
+        (0..3).each do |i|
+          (0..3).each do |j|
+            s = (i + j) % 3
+            c = @state < s + 3 ? 0xff000000 : @state == s + 3 ? @alpha << 24 : 0
+            G.window.draw_quad i * 200, j * 150, c,
+                               i * 200 + 200, j * 150, c,
+                               i * 200, j * 150 + 150, c,
+                               i * 200 + 200, j * 150 + 150, c, 0
+          end
+        end
+      end
     elsif SB.state == :menu
       Menu.draw
     elsif SB.state == :map

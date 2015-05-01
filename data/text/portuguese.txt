@@ -1,3 +1,4 @@
+presents		Apresenta...
 play			Jogar
 options			Opções
 credits			Créditos
