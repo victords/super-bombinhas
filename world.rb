@@ -75,6 +75,7 @@ class World
     @arrow = Res.img :ui_changeWorld
     @parchment = Res.img :ui_parchment
     @map = Res.img "bg_world#{num}"
+    @song = Res.song("w#{@num}")
 
     @stages = []
     File.open("#{Res.prefix}stage/#{@num}/world").each_with_index do |l, i|
@@ -98,8 +99,11 @@ class World
     @bomb = Sprite.new 0, 0, "sprite_Bomba#{SB.player.bomb.type.to_s.capitalize}", 6, 4
     set_bomb_position
     @trans_alpha = 0
+  end
 
-    SB.play_song Res.song("w#{@num}")
+  def resume
+    SB.play_song @song
+    SB.state = :map
   end
 
   def update

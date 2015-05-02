@@ -2,11 +2,12 @@ require_relative 'global'
 include MiniGL
 
 module FormElement
-  attr_reader :x, :y, :start_x, :start_y
+  attr_reader :x, :y, :start_x, :start_y, :initialized
 
   def init_movement
     @start_x = @x
     @start_y = @y
+    @initialized = true
   end
 
   def move_to(x, y)
@@ -126,8 +127,10 @@ class FormSection
         @buttons << c
         @back_btn = c if c.respond_to?(:back) && c.back
       end
-      c.init_movement
-      c.set_position(c.x - C::SCREEN_WIDTH, c.y) unless visible
+      unless c.initialized
+        c.init_movement
+        c.set_position(c.x - C::SCREEN_WIDTH, c.y) unless visible
+      end
     end
     @visible = visible
     @changing = nil

@@ -143,6 +143,7 @@ class Movie
     end
     @scene = 0
     @alpha = 0
+    SB.play_song Res.song("m#{id}")
   end
 
   def update

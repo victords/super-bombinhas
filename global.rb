@@ -115,7 +115,7 @@ class SB
     end
 
     def start_new_game
-      @state = :map
+      @world.resume
       StageMenu.initialize
     end
 
@@ -127,7 +127,7 @@ class SB
       @world = World.new(world_stage[0].to_i, world_stage[1].to_i, true)
       @save_file_name = file_name
       @save_data = data
-      @state = :map
+      @world.resume
       StageMenu.initialize
     end
 
@@ -217,7 +217,7 @@ class SB
       else
         @world = World.new(@world.num + 1, 1)
         save(1)
-        @state = :map
+        @world.resume
       end
     end
 
@@ -233,14 +233,14 @@ class SB
       @player.last_stage = 1
       @world = World.new(C::LAST_WORLD, 1)
       save(1)
-      @state = :map
+      @world.resume
     end
 
     def game_over
       @player.game_over
       @world = World.new(@player.last_world, 1)
       save(1)
-      @state = :map
+      @world.resume
     end
 
     def save(stage_num = nil, special_world = nil)
@@ -268,7 +268,7 @@ class SB
       else
         save(stage_num)
         @world.set_loaded @stage.num
-        @state = :map
+        @world.resume
       end
     end
   end

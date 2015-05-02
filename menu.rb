@@ -80,13 +80,12 @@ class Menu
       @bg = Res.img :bg_start1, true, false, '.jpg'
       @title = Res.img :ui_title, true
 
-      @options = Options.new
       @form = Form.new([
         MenuButton.new(295, :play) {
           @form.go_to_section 1
         },
         MenuButton.new(345, :options) {
-          @options.set_temp
+          Options.set_temp
           @form.go_to_section 5
         },
         MenuButton.new(395, :credits) {
@@ -124,7 +123,7 @@ class Menu
           add_game_slots
           @form.go_to_section 1
         }
-      ], @options.get_menu, [
+      ], Options.get_menu, [
         MenuButton.new(550, :back, true) {
           @form.go_to_section 0
         },
@@ -134,7 +133,7 @@ class Menu
           "linha explícitas.\nAqui tem uma quebra de linha explícita.\n\n"\
           'Duas quebras seguidas.', 400, 200, 600, :center)
       ])
-      @options.form = @form
+      Options.form = @form
 
       add_game_slots
     end
@@ -150,6 +149,8 @@ class Menu
       @form.reset
       @txt_name.text = ''
       add_game_slots
+      Options.form = @form
+      SB.play_song Res.song(:main)
     end
 
     def update_lang

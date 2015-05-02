@@ -62,9 +62,8 @@ class StageMenu
         set_bomb_screen_comps
         @alpha = 0
       else
-        @options = Options.new
         options_comps = [MenuPanel.new(10, 90, 780, 450)]
-        options_comps.concat(@options.get_menu)
+        options_comps.concat(Options.get_menu)
 
         @stage_menu = Form.new([
           MenuImage.new(275, 180, :ui_stageMenu),
@@ -75,7 +74,7 @@ class StageMenu
             @stage_menu.go_to_section 1
           },
           MenuButton.new(307, :options) {
-            @options.set_temp
+            Options.set_temp
             @stage_menu.go_to_section 2
           },
           MenuButton.new(357, :save_exit) {
@@ -89,11 +88,11 @@ class StageMenu
             SB.next_stage false
           }
         ])
-        @options.form = @stage_menu
         set_bomb_screen_comps
         @alpha = 0
         @ready = true
       end
+      Options.form = @stage_menu
     end
 
     def set_bomb_screen_comps
