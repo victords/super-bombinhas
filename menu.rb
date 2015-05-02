@@ -20,11 +20,13 @@ class NewGameButton < Button
   def initialize(index, x, y, menu)
     super(x: x, y: y, width: 370, height: 80) {
       menu.go_to_new_game(@index - 1)
+      SB.play_sound @sound
     }
     @index = index
     @img = Res.img(:ui_bgGameSlot)
     @text = SB.text(:new_game)
     @text_id = :new_game
+    @sound = Res.sound :btn1
   end
 
   def draw(alpha = 0xff, z_index = 0)
@@ -159,6 +161,7 @@ class Menu
       @saved_games = []
       games = Dir["#{Res.prefix}save/*"].sort
       next_index = 0
+      sound = Res.sound :btn1
       games.each do |g|
         file = g.split('/')[-1]
         next unless /^[0-9]$/ =~ file
@@ -175,6 +178,7 @@ class Menu
           SavedGameButton.new(20 + (num % 2) * 390, 95 + (num / 2) * 90) {
             @selected_game = g
             @form.go_to_section 2
+            SB.play_sound sound
           }
       end
       (next_index...C::GAME_LIMIT).each do |i|

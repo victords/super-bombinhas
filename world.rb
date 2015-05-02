@@ -99,13 +99,7 @@ class World
     set_bomb_position
     @trans_alpha = 0
 
-    # @play_button = Button.new(420, 550, SB.font, SB.text(:play), :ui_button1, 0, 0, 0, 0, true, false, 0, 7) {
-    #   @stages[@cur].select(@loaded_stage)
-    # }
-    # @back_button = Button.new(610, 550, SB.font, SB.text(:back), :ui_button1, 0, 0, 0, 0, true, false, 0, 7) {
-    #   SB.menu.reset
-    #   SB.state = :menu
-    # }
+    SB.play_song Res.song("w#{@num}")
   end
 
   def update

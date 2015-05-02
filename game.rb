@@ -44,6 +44,7 @@ class SBGame < MiniGL::GameWindow
           @state += 1
           @timer = 0
           @alpha = 255
+          SB.play_song Res.song(:main)
         end
       end
     elsif SB.state == :menu

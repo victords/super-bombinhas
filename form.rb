@@ -84,6 +84,12 @@ class MenuButton < Button
     super(x, y, SB.font, SB.text(text_id), :ui_button1, 0, 0x808080, 0, 0, true, false, 0, 7, 0, 0, 0, &action)
     @text_id = text_id
     @back = back
+    @sound = Res.sound(back ? :btn2 : :btn1)
+  end
+
+  def click
+    @action.call @params
+    SB.play_sound @sound
   end
 end
 
@@ -92,6 +98,12 @@ class MenuArrowButton < Button
 
   def initialize(x, y, type, &action)
     super(x, y, nil, nil, "ui_button#{type}", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, &action)
+    @sound = Res.sound :btn3
+  end
+
+  def click
+    @action.call @params
+    SB.play_sound @sound
   end
 end
 

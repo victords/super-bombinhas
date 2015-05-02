@@ -56,11 +56,10 @@ class Section
     @border_exit = s[2].to_i # 0: top, 1: right, 2: down, 3: left, 4: none
     @tileset_num = s[3].to_i
     @tileset = Res.tileset s[3]
+    @bgm = Res.song "s#{s[4]}"
     @map = Map.new C::TILE_SIZE, C::TILE_SIZE, t_x_count, t_y_count
     # @map.set_camera 4500, 1200
     @size = @map.get_absolute_size
-
-    @bgm = Res.song '01'
   end
 
   def set_bgs(s)
@@ -253,7 +252,7 @@ class Section
     @margin = MiniGL::Vector.new((C::SCREEN_WIDTH - SB.player.bomb.w) / 2, (C::SCREEN_HEIGHT - SB.player.bomb.h) / 2)
     do_warp bomb_x, bomb_y
 
-    # @bgm.play true
+    SB.play_song @bgm
   end
 
   def do_warp(x, y)

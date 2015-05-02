@@ -67,6 +67,16 @@ class SB
       @texts[@lang].fetch(id.to_sym, '<!>')
     end
 
+    def play_song(song)
+      cur_song = Gosu::Song.current_song
+      if cur_song
+        return if cur_song == song
+        Gosu::Song.current_song.stop
+      end
+      song.volume = @music_volume * 0.1
+      song.play true
+    end
+
     def change_lang(d = 1)
       ind = @langs.index(@lang) + d
       ind = 0 if ind == @langs.length
@@ -119,6 +129,10 @@ class SB
       @save_data = data
       @state = :map
       StageMenu.initialize
+    end
+
+    def play_sound(sound)
+      sound.play @sound_volume * 0.1 if @sound_volume > 0
     end
 
     def set_spec_taken
@@ -223,11 +237,7 @@ class SB
     end
 
     def game_over
-      @player.score -= C::GAME_OVER_PENALTY
-      @player.last_stage = 1
-      @player.lives = 5
-      @player.reset
-      @player.specs.delete_if { |s| s =~ /^#{@player.last_world}-/ }
+      @player.game_over
       @world = World.new(@player.last_world, 1)
       save(1)
       @state = :map
