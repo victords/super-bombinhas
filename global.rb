@@ -100,6 +100,11 @@ class SB
       @world = World.new
       @save_file_name = "#{Res.prefix}save/#{index}"
       @save_data = Array.new(10)
+      @movie = Movie.new 0
+      @state = :movie
+    end
+
+    def start_new_game
       @state = :map
       StageMenu.initialize
     end

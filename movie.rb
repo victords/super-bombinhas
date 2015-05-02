@@ -153,6 +153,7 @@ class Movie
         @scene += 1
         if @scene == @scenes.length
           if @id == 's'; SB.open_special_world
+          elsif @id == 0; SB.start_new_game
           else; SB.next_world; end
         end
       elsif @alpha == 0
