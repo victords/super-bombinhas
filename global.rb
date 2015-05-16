@@ -97,6 +97,7 @@ class SB
       vol = 0 if vol < 0
       vol = 10 if vol > 10
       instance_eval("@#{type}_volume = #{vol}")
+      Gosu::Song.current_song.volume = vol * 0.1 if Gosu::Song.current_song and type == 'music'
     end
 
     def save_options

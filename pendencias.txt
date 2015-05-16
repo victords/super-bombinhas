@@ -1,5 +1,5 @@
 ## Programação ##
-- Sistema de sons
+- Correção em Ball
 - Pelo menos um chefão para testar as particularidades dele em relação a um
   inimigo comum
 - Elementos

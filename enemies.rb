@@ -241,12 +241,11 @@ class Yaw < Enemy
       Vector.new(x - 32, y + 32),
       Vector.new(x, y)
     ]
-    @cur_point = 0
   end
 
   def update(section)
     super section do
-      @cur_point = cycle @points, @cur_point, 3
+      cycle @points, 3
     end
   end
 
@@ -423,5 +422,11 @@ class Turner < Enemy
     SB.player.stage_score += @score
     @obst.delete self unless @harmful
     @dead = true
+  end
+end
+
+class Chamal < Enemy
+  def initialize(x, y, args, section)
+    super x - 25, y - 74, 82, 106, :sprite_chamal, Vector.new(16, 8), 3, 1, [0, 1, 0, 2], 7, 5000, 3
   end
 end

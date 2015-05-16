@@ -34,6 +34,36 @@ class ScoreEffect
 end
 
 class Section
+  ELEMENT_TYPES = [
+    Attack1,
+    Ball,
+    BallReceptor,
+    Bombie,
+    Chamal,
+    Crack,
+    Door,
+    Ekips,
+    Elevator,
+    Faller,
+    FireRock,
+    Fureel,
+    Goal,
+    GunPowder,
+    Key,
+    Life,
+    MovingWall,
+    Pin,
+    SaveBombie,
+    Spec,
+    SpecGate,
+    Spikes,
+    Spring,
+    Sprinny,
+    Turner,
+    Wheeliam,
+    Yaw
+  ]
+
   attr_reader :reload, :tiles, :obstacles, :ramps, :size, :default_entrance
   attr_accessor :entrance, :warp, :loaded, :locked_door
 
@@ -144,42 +174,7 @@ class Section
       n = s.to_i
       args = nil
     end
-    type = case n
-      when  1 then Wheeliam
-      when  2 then FireRock
-      when  3 then Bombie
-      when  4 then Sprinny
-      when  5 then Spring
-      when  6 then Goal
-      when  7 then Life
-      when  8 then Key
-      when  9 then Door
-      when 10 then SpecGate
-      #### 11      warp (virou entrance)
-      when 12 then GunPowder
-      when 13 then Crack
-      #### 14      gambiarra da rampa, eliminada!
-      #### 15      gambiarra da rampa, eliminada!
-      #### 16      Wheeliam dont_fall false
-      when 17 then Elevator
-      when 18 then Fureel
-      #### 19      Fureel dont_fall false
-      when 20 then SaveBombie
-      when 21 then Pin
-      #### 22      Pin com obstáculo
-      when 23 then Spikes
-      when 24 then Attack1
-      when 25 then MovingWall
-      when 26 then Ball
-      when 27 then BallReceptor
-      when 28 then Yaw
-      when 29 then Ekips
-      #### 30      ForeWall
-      when 31 then Spec
-      when 32 then Faller
-      when 33 then Turner
-      else :none
-    end
+    type = ELEMENT_TYPES[n - 1]
     [type, args]
   end
 
