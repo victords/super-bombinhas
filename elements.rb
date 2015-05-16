@@ -372,12 +372,7 @@ end
 class Ball < GameObject
   def initialize(x, y, args, section, switch)
     super x, y, 32, 32, :sprite_Ball
-    if switch[:state] == :taken
-      @x = switch[:extra].x
-      @y = switch[:extra].y - 31
-      @rec = switch[:extra]
-      @set = true
-    end
+    @set = switch[:state] == :taken
     @start_x = x
     @rotation = 0
     @active_bounds = Rectangle.new @x, @y, @w, @h
@@ -385,6 +380,11 @@ class Ball < GameObject
 
   def update(section)
     if @set
+      if @rec.nil?
+        @rec = section.get_next_ball_receptor
+        @x = @rec.x
+        @y = @rec.y - 31
+      end
       @x += (0.1 * (@rec.x - @x)) if @x.round(2) != @rec.x
     else
       forces = Vector.new 0, 0
@@ -537,7 +537,6 @@ class Projectile < GameObject
     @aim = Vector.new @x + (1000000 * Math.cos(angle)), @y - (1000000 * Math.sin(angle))
     @active_bounds = Rectangle.new @x + @img_gap.x, @y + @img_gap.y, @img[0].width, @img[0].height
     @angle = angle
-    puts angle
   end
 
   def update(section)
