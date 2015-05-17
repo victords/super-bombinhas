@@ -415,8 +415,7 @@ class Turner < Enemy
     end
   end
 
-  def hit_by_bomb(section)
-  end
+  def hit_by_bomb(section); end
 
   def hit_by_explosion
     SB.player.stage_score += @score
@@ -426,7 +425,88 @@ class Turner < Enemy
 end
 
 class Chamal < Enemy
+  X_OFFSET = 320
+  MAX_MOVEMENT = 160
+
   def initialize(x, y, args, section)
-    super x - 25, y - 74, 82, 106, :sprite_chamal, Vector.new(16, 8), 3, 1, [0, 1, 0, 2], 7, 5000, 3
+    super x - 25, y - 74, 82, 106, :sprite_chamal, Vector.new(-16, -8), 3, 1, [0, 1, 0, 2], 7, 5000, 3
+    @left_limit = @x - X_OFFSET
+    @right_limit = @x + X_OFFSET
+    @spawn_points = [
+      Vector.new(@x + @w / 2 - 120, 0),
+      Vector.new(@x + @w / 2, -20),
+      Vector.new(@x + @w / 2 + 120, 0)
+    ]
+    @spawns = []
+    @speed_m = 4
+    @timer = 119
+    @turn = 0
+    @facing_right = false
+  end
+
+  def update(section)
+    super(section) do
+      if @moving
+        move_free @aim, @speed_m
+        if @speed.x == 0 and @speed.y == 0
+          @moving = false
+          @timer = 0
+        end
+      else
+        @timer += 1
+        if @timer == 120
+          x = rand @left_limit..@right_limit
+          x = @x - MAX_MOVEMENT if @x - x > MAX_MOVEMENT
+          x = @x + MAX_MOVEMENT if x - @x > MAX_MOVEMENT
+          @aim = Vector.new x, @y
+          if x < @x; @facing_right = false
+          else; @facing_right = true; end
+          @moving = true
+          if @turn % 5 == 0 and @spawns.size < 4
+            @spawn_points.each do |p|
+              @spawns << Wheeliam.new(p.x, p.y, nil, section)
+              section.add(@spawns[-1])
+            end
+            @respawned = true
+          end
+          @turn += 1
+        end
+      end
+      spawns_dead = true
+      @spawns.each do |s|
+        if s.dead?; @spawns.delete s
+        else; spawns_dead = false; end
+      end
+      if spawns_dead and @respawned and @gun_powder.nil?
+        @gun_powder = GunPowder.new(@x, @y, nil, section, nil)
+        section.add(@gun_powder)
+        @respawned = false
+      end
+      @gun_powder = nil if @gun_powder && @gun_powder.dead?
+    end
+  end
+
+  def hit_by_bomb(section); end
+
+  def hit_by_explosion(section)
+    hit(section)
+    @moving = false
+    @timer = -120
+  end
+
+  def get_invulnerable
+    super
+    @indices = [0]
+    set_animation 0
+  end
+
+  def return_vulnerable
+    super
+    @indices = [0, 1, 0, 2]
+    set_animation 0
+  end
+
+  def draw(map)
+    super(map, 1, 1, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
   end
 end

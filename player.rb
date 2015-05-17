@@ -116,9 +116,9 @@ class Player
     @stage_score = 0
     @dead = false
   end
-  
+
   def game_over
-    @score -= C::GAME_OVER_PENALTY
+    self.score -= C::GAME_OVER_PENALTY
     @last_stage = 1
     @lives = 5
     @specs.delete_if { |s| s =~ /^#{@last_world}-/ }

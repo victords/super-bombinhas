@@ -175,8 +175,9 @@ end
 
 class GunPowder < GameObject
   def initialize(x, y, args, section, switch)
-    return if switch[:state] == :taken
+    return if switch && switch[:state] == :taken
     super x + 3, y + 19, 26, 13, :sprite_GunPowder, Vector.new(-2, -2)
+    @switch = !switch.nil?
     @life = 10
     @counter = 0
 
@@ -186,7 +187,7 @@ class GunPowder < GameObject
   def update(section)
     if SB.player.bomb.collide? self
       SB.player.bomb.set_exploding
-      SB.stage.set_switch self
+      SB.stage.set_switch self if @switch
       @dead = true
     end
   end

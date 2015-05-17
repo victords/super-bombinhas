@@ -298,7 +298,7 @@ class Section
 
   def get_next_ball_receptor
     SB.stage.switches.each do |s|
-      if s[:type] == BallReceptor && s[:state] == :taken && !@ball_receptors.include?(s[:index])
+      if s[:section] == self && s[:type] == BallReceptor && s[:state] == :taken && !@ball_receptors.include?(s[:index])
         @ball_receptors << s[:index]
         return s[:obj]
       end
