@@ -38,6 +38,8 @@ restart			Press 'Enter' to restart
 game_over		Game over!
 msg1			Testing message
 msg2			Second test message
+chamal_speech	Muahahahahahahahahahahahaha hahahahahaha hahaha hahahahahaha hahahahahahahahahaha hahaha hahahaha haha!
+chamal_death	Noooooooooooooooooooooo...!! Y u do dis??
 count_down		Countdown to explosion!
 world_1			Tars Island
 stage_1_1		Exploring the Tars Beach

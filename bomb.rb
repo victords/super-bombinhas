@@ -37,7 +37,7 @@ class Bomb < GameObject
       return
     elsif @invulnerable
       @invulnerable_timer += 1
-      @invulnerable = false if @invulnerable_timer == 120
+      @invulnerable = false if @invulnerable_timer == C::INVULNERABLE_TIME
     end
 
     SB.player.change_item if KB.key_pressed? Gosu::KbLeftShift or KB.key_pressed? Gosu::KbRightShift

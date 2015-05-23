@@ -8,7 +8,7 @@ class Enemy < GameObject
     @interval = interval
     @score = score
     @hp = hp
-    @timer = 0
+    @control_timer = 0
 
     @active_bounds = Rectangle.new x + img_gap.x, y + img_gap.y, @img[0].width, @img[0].height
   end
@@ -39,8 +39,8 @@ class Enemy < GameObject
 
   def update(section)
     if @dying
-      @timer += 1
-      @dead = true if @timer == 150
+      @control_timer += 1
+      @dead = true if @control_timer == 150
       return if @img_index == @indices[-1]
       animate @indices, @interval
       return
@@ -62,8 +62,8 @@ class Enemy < GameObject
     return if @dying
 
     if @invulnerable
-      @timer += 1
-      return_vulnerable if @timer == C::INVULNERABLE_TIME
+      @control_timer += 1
+      return_vulnerable if @control_timer == C::INVULNERABLE_TIME
     end
 
     yield if block_given?
@@ -98,7 +98,7 @@ class Enemy < GameObject
 
   def return_vulnerable
     @invulnerable = false
-    @timer = 0
+    @control_timer = 0
   end
 end
 
@@ -432,6 +432,7 @@ class Chamal < Enemy
     super x - 25, y - 74, 82, 106, :sprite_chamal, Vector.new(-16, -8), 3, 1, [0, 1, 0, 2], 7, 5000, 3
     @left_limit = @x - X_OFFSET
     @right_limit = @x + X_OFFSET
+    @activation_x = @x + @w / 2 - C::SCREEN_WIDTH / 2
     @spawn_points = [
       Vector.new(@x + @w / 2 - 120, 0),
       Vector.new(@x + @w / 2, -20),
@@ -439,50 +440,79 @@ class Chamal < Enemy
     ]
     @spawns = []
     @speed_m = 4
-    @timer = 119
+    @timer = 0
     @turn = 0
     @facing_right = false
+    @state = :waiting
   end
 
   def update(section)
-    super(section) do
-      if @moving
-        move_free @aim, @speed_m
-        if @speed.x == 0 and @speed.y == 0
-          @moving = false
-          @timer = 0
-        end
-      else
+    if @state == :waiting
+      if SB.player.bomb.x >= @activation_x
+        section.set_fixed_camera(@x + @w / 2 - C::SCREEN_WIDTH / 2, @y + @h / 2 - C::SCREEN_HEIGHT / 2)
+        @state = :speaking
+      end
+    elsif @state == :speaking
+      @timer += 1
+      if @timer >= 300 or KB.key_pressed? Gosu::KbSpace or KB.key_pressed? Gosu::KbReturn
+        section.unset_fixed_camera
+        @state = :acting
+        @timer = 119
+      end
+    else
+      if @dying
         @timer += 1
-        if @timer == 120
-          x = rand @left_limit..@right_limit
-          x = @x - MAX_MOVEMENT if @x - x > MAX_MOVEMENT
-          x = @x + MAX_MOVEMENT if x - @x > MAX_MOVEMENT
-          @aim = Vector.new x, @y
-          if x < @x; @facing_right = false
-          else; @facing_right = true; end
-          @moving = true
-          if @turn % 5 == 0 and @spawns.size < 4
-            @spawn_points.each do |p|
-              @spawns << Wheeliam.new(p.x, p.y, nil, section)
-              section.add(@spawns[-1])
-            end
-            @respawned = true
-          end
-          @turn += 1
+        if @timer >= 300 or KB.key_pressed? Gosu::KbSpace or KB.key_pressed? Gosu::KbReturn
+          section.unset_fixed_camera
+          section.finish
+          @dead = true
         end
+        return
       end
-      spawns_dead = true
-      @spawns.each do |s|
-        if s.dead?; @spawns.delete s
-        else; spawns_dead = false; end
+      super(section) do
+        if @moving
+          move_free @aim, @speed_m
+          if @speed.x == 0 and @speed.y == 0
+            @moving = false
+            @timer = 0
+          end
+        else
+          @timer += 1
+          if @timer == 120
+            x = rand @left_limit..@right_limit
+            x = @x - MAX_MOVEMENT if @x - x > MAX_MOVEMENT
+            x = @x + MAX_MOVEMENT if x - @x > MAX_MOVEMENT
+            @aim = Vector.new x, @y
+            if x < @x; @facing_right = false
+            else; @facing_right = true; end
+            @moving = true
+            if @turn % 5 == 0 and @spawns.size < 4
+              @spawn_points.each do |p|
+                @spawns << Wheeliam.new(p.x, p.y, nil, section)
+                section.add(@spawns[-1])
+              end
+              @respawned = true
+            end
+            @turn += 1
+          end
+        end
+        spawns_dead = true
+        @spawns.each do |s|
+          if s.dead?; @spawns.delete s
+          else; spawns_dead = false; end
+        end
+        if spawns_dead and @respawned and @gun_powder.nil?
+          @gun_powder = GunPowder.new(@x, @y, nil, section, nil)
+          section.add(@gun_powder)
+          @respawned = false
+        end
+        @gun_powder = nil if @gun_powder && @gun_powder.dead?
       end
-      if spawns_dead and @respawned and @gun_powder.nil?
-        @gun_powder = GunPowder.new(@x, @y, nil, section, nil)
-        section.add(@gun_powder)
-        @respawned = false
+      if @dying
+        set_animation 0
+        section.set_fixed_camera(@x + @w / 2 - C::SCREEN_WIDTH / 2, @y + @h / 2 - C::SCREEN_HEIGHT / 2)
+        @timer = 0
       end
-      @gun_powder = nil if @gun_powder && @gun_powder.dead?
     end
   end
 
@@ -491,7 +521,7 @@ class Chamal < Enemy
   def hit_by_explosion(section)
     hit(section)
     @moving = false
-    @timer = -120
+    @timer = -C::INVULNERABLE_TIME
   end
 
   def get_invulnerable
@@ -508,5 +538,12 @@ class Chamal < Enemy
 
   def draw(map)
     super(map, 1, 1, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
+    if @state == :speaking or (@dying and not @dead)
+      G.window.draw_quad 5, 495, C::PANEL_COLOR,
+                         795, 495, C::PANEL_COLOR,
+                         5, 595, C::PANEL_COLOR,
+                         795, 595, C::PANEL_COLOR, 1
+      SB.text_helper.write_breaking SB.text(@state == :speaking ? :chamal_speech : :chamal_death), 10, 500, 790, :justified, 0, 255, 1
+    end
   end
 end

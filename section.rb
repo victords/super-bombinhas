@@ -350,6 +350,15 @@ class Section
     end
   end
 
+  def set_fixed_camera(x, y)
+    @map.set_camera x, y
+    @fixed_camera = true
+  end
+
+  def unset_fixed_camera
+    @fixed_camera = false
+  end
+
   def finish
     @finished = true
   end
@@ -367,25 +376,28 @@ class Section
     @hide_tiles.each do |t|
       t.update self if t.is_visible @map
     end
-    SB.player.bomb.update(self)
 
-    if SB.player.dead?
-      @reload = true if KB.key_pressed? Gosu::KbReturn
-      return
-    end
+    unless @fixed_camera
+      SB.player.bomb.update(self)
 
-    if @finished
-      return :finish
-    elsif @border_exit == 0 && SB.player.bomb.y + SB.player.bomb.h <= -C::EXIT_MARGIN ||
-          @border_exit == 1 && SB.player.bomb.x >= @size.x - C::EXIT_MARGIN ||
-          @border_exit == 2 && SB.player.bomb.y >= @size.x + C::EXIT_MARGIN ||
-          @border_exit == 3 && SB.player.bomb.x + SB.player.bomb.w <= C::EXIT_MARGIN
-      return :next_section
-    end
+      if SB.player.dead?
+        @reload = true if KB.key_pressed? Gosu::KbReturn
+        return
+      end
 
-    @map.set_camera (SB.player.bomb.x - @margin.x).round, (SB.player.bomb.y - @margin.y).round
-    if KB.key_pressed? Gosu::KbEscape
-      SB.state = :paused
+      if @finished
+        return :finish
+      elsif @border_exit == 0 && SB.player.bomb.y + SB.player.bomb.h <= -C::EXIT_MARGIN ||
+            @border_exit == 1 && SB.player.bomb.x >= @size.x - C::EXIT_MARGIN ||
+            @border_exit == 2 && SB.player.bomb.y >= @size.x + C::EXIT_MARGIN ||
+            @border_exit == 3 && SB.player.bomb.x + SB.player.bomb.w <= C::EXIT_MARGIN
+        return :next_section
+      end
+
+      @map.set_camera (SB.player.bomb.x - @margin.x).round, (SB.player.bomb.y - @margin.y).round
+      if KB.key_pressed? Gosu::KbEscape
+        SB.state = :paused
+      end
     end
   end
 

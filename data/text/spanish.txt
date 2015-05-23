@@ -38,6 +38,8 @@ restart			Pulsa 'Enter' para reanudar
 game_over		¡Fin del juego!
 msg1			Testando mensaje
 msg2			Segunda mensaje de teste
+chamal_speech	Muajajajajajajajajajajajaja jajajajajaja jajaja jajajajajaja jajajajajajajajajaja jajaja jajajaja jaja!
+chamal_death	Noooooooooooooooooooooo...!! Y u do dis??
 count_down		¡Cuenta regresiva para explodir!
 world_1			Isla de Tars
 stage_1_1		Explorando la Playa de Tars
