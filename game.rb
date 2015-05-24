@@ -5,6 +5,8 @@ require_relative 'movie'
 class SBGame < MiniGL::GameWindow
   def initialize
     super(C::SCREEN_WIDTH, C::SCREEN_HEIGHT, false, Vector.new(0, 0.9))
+    G.ramp_slip_threshold = 1
+    G.ramp_slip_force = 0.02
     SB.initialize
 
     @logo = Res.img(:ui_alevaLogo)

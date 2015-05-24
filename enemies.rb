@@ -117,6 +117,7 @@ class FloorEnemy < Enemy
       super section
     else
       super section do
+        #puts "left: #{@left}" if @bottom.is_a? Ramp
         move @forces, section.get_obstacles(@x, @y), section.ramps
         @forces.x = 0
         if @left

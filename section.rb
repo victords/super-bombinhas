@@ -392,6 +392,9 @@ class Section
             @border_exit == 2 && SB.player.bomb.y >= @size.x + C::EXIT_MARGIN ||
             @border_exit == 3 && SB.player.bomb.x + SB.player.bomb.w <= C::EXIT_MARGIN
         return :next_section
+      elsif @border_exit != 2 && SB.player.bomb.y >= @size.x + C::EXIT_MARGIN # abismo
+        SB.player.die
+        return
       end
 
       @map.set_camera (SB.player.bomb.x - @margin.x).round, (SB.player.bomb.y - @margin.y).round
@@ -429,7 +432,7 @@ class Section
 
   def draw_bgs
     @bgs.each_with_index do |bg, ind|
-      back_x = -@map.cam.x * (ind+1) * 0.1; back_y = -@map.cam.y * (ind+1) * 0.1
+      back_x = -@map.cam.x * 0.9 + ind * 0.1; back_y = -@map.cam.y * 0.9 + ind * 0.1
       tiles_x = @size.x / bg.width; tiles_y = @size.y / bg.height
       (1..tiles_x-1).each do |i|
         if back_x + i * bg.width > 0
