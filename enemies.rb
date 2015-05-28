@@ -548,3 +548,45 @@ class Chamal < Enemy
     end
   end
 end
+
+class Electong < Enemy
+  def initialize(x, y, args, section)
+    super x - 5, y, 42, 32, :sprite_electong, Vector.new(-3, -68), 4, 2, [0, 1, 2, 1], 7, 500, 1
+    @timer = 0
+  end
+
+  def hit_by_bomb(section)
+    SB.player.die
+  end
+
+  def update(section)
+    super(section) do
+      if @will_attack
+        if @img_index == 5
+          @indices = [5, 6, 7, 6]
+          @attacking = true
+          @will_attack = false
+        end
+      elsif @attacking
+        @timer += 1
+        if @timer == 150
+          @indices = [4, 3, 0]
+          set_animation 4
+          @attacking = false
+        end
+      elsif @timer > 0
+        if @img_index == 0
+          @indices = [0, 1, 2, 1]
+          @timer = 0
+        end
+      else
+        b = SB.player.bomb
+        if b.x + b.w > @x - 20 and b.x < @x + @w + 20
+          @indices = [3, 4, 5]
+          set_animation 3
+          @will_attack = true
+        end
+      end
+    end
+  end
+end

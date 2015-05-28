@@ -43,6 +43,7 @@ class Section
     Crack,
     Door,
     Ekips,
+    Electong,
     Elevator,
     Faller,
     FireRock,
