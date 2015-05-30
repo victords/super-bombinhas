@@ -40,6 +40,7 @@ class Section
     BallReceptor,
     Bombie,
     Chamal,
+    Chrazer,
     Crack,
     Door,
     Ekips,

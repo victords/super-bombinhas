@@ -599,3 +599,9 @@ class Electong < Enemy
     end
   end
 end
+
+class Chrazer < Enemy
+  def initialize(x, y, args, section)
+    super x + 1, y - 11, 30, 43, :sprite_chrazer, Vector.new(-21, -20), 2, 2, [0, 1, 0, 2], 7, 600, 2
+  end
+end
