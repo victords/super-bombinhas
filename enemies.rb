@@ -551,8 +551,9 @@ end
 
 class Electong < Enemy
   def initialize(x, y, args, section)
-    super x - 5, y, 42, 32, :sprite_electong, Vector.new(-3, -68), 4, 2, [0, 1, 2, 1], 7, 500, 1
+    super x - 12, y - 11, 56, 43, :sprite_electong, Vector.new(-4, -91), 4, 2, [0, 1, 2, 1], 7, 500, 1
     @timer = 0
+    @tongue_y = @y
   end
 
   def hit_by_bomb(section)
@@ -561,11 +562,14 @@ class Electong < Enemy
 
   def update(section)
     super(section) do
+      b = SB.player.bomb
       if @will_attack
+        @tongue_y -= 91 / 14.0
         if @img_index == 5
           @indices = [5, 6, 7, 6]
           @attacking = true
           @will_attack = false
+          @tongue_y = @y - 91
         end
       elsif @attacking
         @timer += 1
@@ -575,17 +579,22 @@ class Electong < Enemy
           @attacking = false
         end
       elsif @timer > 0
+        @tongue_y += 91 / 14.0
         if @img_index == 0
           @indices = [0, 1, 2, 1]
-          @timer = 0
+          @timer = -30
+          @tongue_y = @y
         end
       else
-        b = SB.player.bomb
-        if b.x + b.w > @x - 20 and b.x < @x + @w + 20
+        @timer += 1 if @timer < 0
+        if @timer == 0 and b.x + b.w > @x - 20 and b.x < @x + @w + 20
           @indices = [3, 4, 5]
           set_animation 3
           @will_attack = true
         end
+      end
+      if b.bounds.intersect? Rectangle.new(@x + 22, @tongue_y, 12, @y + @h - @tongue_y)
+        b.hit
       end
     end
   end

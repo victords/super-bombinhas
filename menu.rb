@@ -65,12 +65,12 @@ class SavedGame
     @bomb.draw @x + 5, @y + 5, 0
     @map_icon.draw @x + 45, @y + 40, 0
     @spec_icon.draw @x + 135, @y + 40, 0
-    @score_icon.draw @x + 225, @y + 40, 0
+    @score_icon.draw @x + 227, @y + 42, 0
     SB.font.draw_rel @index.to_s, @x + 365, @y + 40, 0, 1, 0.5, 3, 3, 0x80000000
     SB.text_helper.write_line @name, @x + 45, @y + 5, :left, 0xffffff, 255, :border
-    SB.text_helper.write_line @world_stage, @x + 75, @y + 40
-    SB.text_helper.write_line @specs.to_s, @x + 165, @y + 40
-    SB.text_helper.write_line @score, @x + 255, @y + 40
+    SB.text_helper.write_line @world_stage, @x + 75, @y + 41
+    SB.text_helper.write_line @specs.to_s, @x + 165, @y + 41
+    SB.text_helper.write_line @score, @x + 255, @y + 41
   end
 end
 

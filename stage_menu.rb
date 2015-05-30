@@ -91,6 +91,9 @@ class StageMenu
         set_bomb_screen_comps
         @alpha = 0
         @ready = true
+        @lives_icon = Res.img :icon_lives
+        @hp_icon = Res.img :icon_hp
+        @score_icon = Res.img :icon_score
       end
       Options.form = @stage_menu
     end
@@ -211,16 +214,13 @@ class StageMenu
                          205, 5, C::PANEL_COLOR,
                          205, 55, C::PANEL_COLOR,
                          5, 55, C::PANEL_COLOR, 0
-      SB.font.draw SB.text(:lives), 10, 10, 0, 1, 1, 0xff000000
-      SB.font.draw SB.player.lives, 100, 10, 0, 1, 1, 0xff000000
-      SB.font.draw SB.text(:score), 10, 30, 0, 1, 1, 0xff000000
-      SB.font.draw SB.player.stage_score, 100, 30, 0, 1, 1, 0xff000000
-      SB.font.draw SB.player.bomb.hp, 200, 10, 0, 1, 1, 0xff000000
+      @lives_icon.draw 12, 10, 0
+      SB.font.draw SB.player.lives, 40, 10, 0, 1, 1, 0xff000000
+      @hp_icon.draw 105, 10, 0
+      SB.font.draw SB.player.bomb.hp, 135, 10, 0, 1, 1, 0xff000000
+      @score_icon.draw 10, 32, 0
+      SB.font.draw SB.player.stage_score, 40, 32, 0, 1, 1, 0xff000000
 
-      G.window.draw_quad 690, 5, C::PANEL_COLOR,
-                         740, 5, C::PANEL_COLOR,
-                         740, 55, C::PANEL_COLOR,
-                         690, 55, C::PANEL_COLOR, 0
       G.window.draw_quad 745, 5, C::PANEL_COLOR,
                          795, 5, C::PANEL_COLOR,
                          795, 55, C::PANEL_COLOR,
@@ -228,16 +228,16 @@ class StageMenu
 
       if SB.player.cur_item_type
         item_set = SB.player.items[SB.player.cur_item_type]
-        item_set[0][:obj].icon.draw 695, 10, 0
-        SB.font.draw item_set.length.to_s, 725, 36, 0, 1, 1, 0xff000000
+        item_set[0][:obj].icon.draw 750, 10, 0
+        SB.font.draw item_set.length.to_s, 780, 36, 0, 1, 1, 0xff000000
       end
       if SB.player.items.length > 1
-        G.window.draw_triangle 690, 30, C::ARROW_COLOR,
-                               694, 26, C::ARROW_COLOR,
-                               694, 34, C::ARROW_COLOR, 0
-        G.window.draw_triangle 736, 25, C::ARROW_COLOR,
-                               741, 30, C::ARROW_COLOR,
-                               736, 35, C::ARROW_COLOR, 0
+        G.window.draw_triangle 745, 30, C::ARROW_COLOR,
+                               749, 26, C::ARROW_COLOR,
+                               749, 34, C::ARROW_COLOR, 0
+        G.window.draw_triangle 791, 25, C::ARROW_COLOR,
+                               796, 30, C::ARROW_COLOR,
+                               791, 35, C::ARROW_COLOR, 0
       end
     end
 
