@@ -613,6 +613,20 @@ class Spring < GameObject
   end
 end
 
+class Poison < GameObject
+  def initialize(x, y, args, section)
+    super x, y + 31, 32, 1, :sprite_poison, Vector.new(0, -19), 3, 1
+    @active_bounds = Rectangle.new(x, y - 19, 32, 28)
+  end
+
+  def update(section)
+    animate [0, 1, 2], 8
+    if SB.player.bomb.bounds.intersect? bounds
+      SB.player.bomb.hit
+    end
+  end
+end
+
 class SpecGate < GameObject
   def initialize(x, y, args, section)
     super x, y, 32, 32, :sprite_SpecGate

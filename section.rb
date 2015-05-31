@@ -55,6 +55,7 @@ class Section
     Life,
     MovingWall,
     Pin,
+    Poison,
     SaveBombie,
     Spec,
     SpecGate,

@@ -1,9 +1,7 @@
 ## Programação ##
-- Pelo menos um chefão para testar as particularidades dele em relação a um
-  inimigo comum
 - Elementos
   - Bombas   (1/5)
-  - Inimigos (7/40)
+  - Inimigos (9/40)
   - Itens    (4/20?)
   - Objetos  (13/40?)
 
