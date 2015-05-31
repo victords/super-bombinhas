@@ -603,5 +603,34 @@ end
 class Chrazer < Enemy
   def initialize(x, y, args, section)
     super x + 1, y - 11, 30, 43, :sprite_chrazer, Vector.new(-21, -20), 2, 2, [0, 1, 0, 2], 7, 600, 2
+    @facing_right = false
+  end
+
+  def update(section)
+    super(section) do
+      forces = Vector.new(0, 0)
+      unless @invulnerable
+        d = SB.player.bomb.x - @x
+        d = 150 if d > 150
+        d = -150 if d < -150
+        if @bottom
+          forces.x = d * 0.01666667
+          forces.y = -14.5
+          if d > 0 and not @facing_right
+            @facing_right = true
+          elsif d < 0 and @facing_right
+            @facing_right = false
+          end
+          @speed.x = 0
+        else
+          forces.x = d * 0.001
+        end
+      end
+      move forces, section.get_obstacles(@x, @y), section.ramps
+    end
+  end
+
+  def draw(map)
+    super(map, 1, 1, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
   end
 end
