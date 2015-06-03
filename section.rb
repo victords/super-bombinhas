@@ -56,6 +56,7 @@ class Section
     MovingWall,
     Pin,
     Poison,
+    Robort,
     SaveBombie,
     Spec,
     SpecGate,

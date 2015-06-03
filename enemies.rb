@@ -138,7 +138,7 @@ class FloorEnemy < Enemy
   def hit(section)
     super
     if @dying
-      @indices = @facing_right ? [7, 8, 9] : [2, 3, 4]
+      @indices = [2, 3, 4]
       @interval = 5
     end
   end
@@ -148,15 +148,14 @@ class FloorEnemy < Enemy
     if dir == :left
       @forces.x = -@speed_m
       @facing_right = false
-      @indices[0] = 0; @indices[1] = 1
-      set_animation 0
     else
       @forces.x = @speed_m
       @facing_right = true
-      @indices[0] = 5; @indices[1] = 6
-      set_animation 5
     end
-    change_animation dir
+  end
+
+  def draw(map)
+    super(map, 1, 1, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
   end
 end
 
@@ -166,8 +165,6 @@ class Wheeliam < FloorEnemy
   def initialize(x, y, args, section)
     super x, y, args, 32, 32, :sprite_Wheeliam, Vector.new(-4, -3), 5, 2, [0, 1], 8, 100
   end
-
-  def change_animation(dir); end
 end
 
 class Sprinny < Enemy
@@ -211,19 +208,17 @@ class Fureel < FloorEnemy
     super x - 4, y - 4, args, 40, 36, :sprite_Fureel, Vector.new(-10, -3), 5, 2, [0, 1], 8, 300, 2, 4
   end
 
-  def change_animation(dir); end
-
   def get_invulnerable
     @invulnerable = true
-    if @facing_right; @indices = [7]; set_animation 7
-    else; @indices = [2]; set_animation 2; end
+    @indices = [2]
+    set_animation 2
   end
 
   def return_vulnerable
     @invulnerable = false
     @timer = 0
-    if @facing_right; @indices = [5, 6]; set_animation 5
-    else; @indices = [0, 1]; set_animation 0; end
+    @indices = [0, 1]
+    set_animation 0
   end
 end
 
@@ -632,5 +627,11 @@ class Chrazer < Enemy
 
   def draw(map)
     super(map, 1, 1, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
+  end
+end
+
+class Robort < FloorEnemy
+  def initialize(x, y, args, section)
+    super x - 12, y - 31, args, 56, 63, :sprite_robort, Vector.new(-6, -1), 3, 1, [0, 1, 2, 1], 7, 450, 3
   end
 end
