@@ -117,7 +117,7 @@ class FloorEnemy < Enemy
       super section
     else
       super section do
-        #puts "left: #{@left}" if @bottom.is_a? Ramp
+        # puts "left: #{@left} / right: #{@right}" if @bottom.is_a? Ramp
         move @forces, section.get_obstacles(@x, @y), section.ramps
         @forces.x = 0
         if @left
@@ -632,6 +632,35 @@ end
 
 class Robort < FloorEnemy
   def initialize(x, y, args, section)
-    super x - 12, y - 31, args, 56, 63, :sprite_robort, Vector.new(-6, -1), 3, 1, [0, 1, 2, 1], 7, 450, 3
+    super x - 12, y - 31, args, 56, 63, :sprite_robort, Vector.new(-14, -9), 3, 2, [0, 1, 2, 1], 7, 450, 3
+  end
+
+  def update(section)
+    if @attacking
+      @timer += 1
+      set_direction @next_dir if @timer == 150
+      animate @indices, @interval
+      if SB.player.bomb.collide? self
+        SB.player.bomb.hit
+      end
+    else
+      super(section)
+    end
+  end
+
+  def set_direction(dir)
+    if @attacking
+      super(dir)
+      @attacking = false
+      @indices = [0, 1, 2, 1]
+      @interval = 7
+    else
+      @speed.x = 0
+      @next_dir = dir
+      @attacking = true
+      @indices = [3, 4, 5, 4]
+      @interval = 4
+      @timer = 0
+    end
   end
 end
