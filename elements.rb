@@ -279,20 +279,15 @@ class Pin < TwoStateObject
       60, 0, 3, [0], [4], [1, 2, 3, 4, 0], [3, 2, 1, 0, 4], (not args.nil?)
 
     @active_bounds = Rectangle.new x, y, 32, 32
-    section.obstacles << Block.new(x, y, 32, 32, true) if args
+    section.obstacles << (@obst = Block.new(x, y, 32, 32, true)) if args
   end
 
   def s1_to_s2(section)
-    section.obstacles << Block.new(@x, @y, @w, @h, true)
+    section.obstacles << @obst
   end
 
   def s2_to_s1(section)
-    section.obstacles.each do |o|
-      if o.x == @x and o.y == @y
-        section.obstacles.delete o
-        break
-      end
-    end
+    section.obstacles.delete @obst
   end
 end
 
@@ -300,29 +295,76 @@ class Spikes < TwoStateObject
   def initialize(x, y, args, section)
     super x, y, 32, 32, :sprite_Spikes, Vector.new(0, 0), 5, 1,
       120, 0, 2, [0], [4], [1, 2, 3, 4, 0], [3, 2, 1, 0, 4]
-
-    @active_bounds = Rectangle.new x, y, 32, 33
+    @dir = (args || 0).to_i
+    @active_bounds = Rectangle.new x, y, 32, 32
+    @obst = Block.new(x + 2, y + 2, 28, 28)
   end
 
   def s1_to_s2(section)
-    section.obstacles << Block.new(@x, @y + 30, @w, @h, false)
+    if SB.player.bomb.bounds.intersect?(@obst.bounds)
+      SB.player.die
+    else
+      section.obstacles << @obst
+    end
   end
 
   def s2_to_s1(section)
-    section.obstacles.each do |o|
-      if o.x == @x and o.y == @y + 30
-        section.obstacles.delete o
-        break
-      end
-    end
+    section.obstacles.delete @obst
   end
 
   def update(section)
     super section
 
-    if SB.player.bomb.collide? self and @state2
-      SB.player.die
+    b = SB.player.bomb
+    if @state2 and b.collide? self
+      if (@dir == 0 and b.y + b.h <= @y + 2) or
+         (@dir == 1 and b.x >= @x + @w - 2) or
+         (@dir == 2 and b.y >= @y + @h - 2) or
+         (@dir == 3 and b.x + b.w <= @x + 2)
+        SB.player.die
+      end
     end
+  end
+
+  def draw(map)
+    angle = case @dir
+              when 0 then 0
+              when 1 then 90
+              when 2 then 180
+              when 3 then 270
+            end
+    @img[@img_index].draw_rot @x + @w/2 - map.cam.x, @y + @h/2 - map.cam.y, 0, angle
+  end
+end
+
+class FixedSpikes < GameObject
+  def initialize(x, y, args, section)
+    super x, y, 32, 32, :sprite_Spikes, Vector.new(0, 0), 5, 1
+    @dir = (args || 0).to_i
+    @active_bounds = Rectangle.new x, y, 32, 32
+    section.obstacles << Block.new(x + 2, y + 2, 28, 28)
+  end
+
+  def update(section)
+    b = SB.player.bomb
+    if b.collide? self
+      if (@dir == 0 and b.y + b.h <= @y + 2) or
+         (@dir == 1 and b.x >= @x + @w - 2) or
+         (@dir == 2 and b.y >= @y + @h - 2) or
+         (@dir == 3 and b.x + b.w <= @x + 2)
+        SB.player.die
+      end
+    end
+  end
+
+  def draw(map)
+    angle = case @dir
+              when 0 then 0
+              when 1 then 90
+              when 2 then 180
+              when 3 then 270
+            end
+    @img[4].draw_rot @x + @w/2 - map.cam.x, @y + @h/2 - map.cam.y, 0, angle
   end
 end
 

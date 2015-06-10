@@ -1,9 +1,11 @@
 ## Programação ##
+- Tela de instruções (falar de programas de JoyStick)
+
 - Elementos
   - Bombas   (1/5)
-  - Inimigos (9/40)
+  - Inimigos (10/40)
   - Itens    (4/20?)
-  - Objetos  (13/40?)
+  - Objetos  (12/40?)
 
 ## Conteúdo ##
 - Músicas

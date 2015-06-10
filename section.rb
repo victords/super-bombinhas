@@ -48,6 +48,7 @@ class Section
     Elevator,
     Faller,
     FireRock,
+    FixedSpikes,
     Fureel,
     Goal,
     GunPowder,
