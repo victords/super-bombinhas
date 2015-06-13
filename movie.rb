@@ -152,18 +152,20 @@ class Movie
       if @alpha == 255
         @changing = 1
         @scene += 1
-        if @scene == @scenes.length
-          if @id == 's'; SB.open_special_world
-          elsif @id == 0; SB.start_new_game
-          else; SB.next_world; end
-        end
+        finish if @scene == @scenes.length
       elsif @alpha == 0
         @changing = nil
       end
     else
       status = @scenes[@scene].update
-      @changing = 0 if status == :finish
+      @changing = 0 if status == :finish or KB.key_pressed? Gosu::KbReturn or KB.key_pressed? Gosu::KbSpace
     end
+  end
+
+  def finish
+    if @id == 's'; SB.open_special_world
+    elsif @id == 0; SB.start_new_game
+    else; SB.next_world; end
   end
 
   def draw

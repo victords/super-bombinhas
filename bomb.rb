@@ -2,6 +2,7 @@ require 'minigl'
 
 class Bomb < GameObject
   attr_reader :type, :name, :hp, :facing_right
+  attr_accessor :active
 
   def initialize(type, hp)
     case type
@@ -18,7 +19,7 @@ class Bomb < GameObject
     @max_speed.y = 30
     @indices = [0, 1, 0, 2]
     @facing_right = true
-    @ready = true
+    @active = true
     @type = type
 
     @explosion = Sprite.new 0, 0, :fx_Explosion, 2, 2
@@ -27,29 +28,22 @@ class Bomb < GameObject
   end
 
   def update(section)
+    forces = Vector.new 0, 0
     if @celebrating
       return if @img_index == (@facing_right ? 7 : 19)
       animate @indices, 8
       return
     elsif @dying
-      return if @img_index == (@facing_right ? 10 : 22)
-      animate @indices, 8
-      return
+      animate @indices, 8 unless @img_index == (@facing_right ? 10 : 22)
     elsif @invulnerable
       @invulnerable_timer += 1
       @invulnerable = false if @invulnerable_timer == C::INVULNERABLE_TIME
-    end
-
-    SB.player.change_item if KB.key_pressed? Gosu::KbLeftShift or KB.key_pressed? Gosu::KbRightShift
-    SB.player.use_item section if KB.key_pressed? Gosu::KbA
-
-    forces = Vector.new 0, 0
-    if @exploding
+    elsif @exploding
       @explosion.animate [0, 1, 2, 3], 5
       @explosion_counter += 1
       @exploding = false if @explosion_counter == 90
       forces.x -= 0.15 * @speed.x if @bottom and @speed.x != 0
-    else
+    elsif @active
       if @will_explode
         @explosion_timer += 1
         if @explosion_timer == 60
@@ -83,6 +77,9 @@ class Bomb < GameObject
       end
     end
     move forces, section.get_obstacles(@x, @y), section.ramps
+
+    SB.player.change_item if KB.key_pressed? Gosu::KbLeftShift or KB.key_pressed? Gosu::KbRightShift
+    SB.player.use_item section if KB.key_pressed? Gosu::KbA
   end
 
   def set_direction(dir)
@@ -167,6 +164,7 @@ class Bomb < GameObject
   def die
     @dying = true
     @indices = (@facing_right ? [8, 9, 10] : [20, 21, 22])
+    @speed.x = @speed.y = @stored_forces.x = @stored_forces.y = 0
     set_animation(@facing_right ? 8 : 20)
   end
 

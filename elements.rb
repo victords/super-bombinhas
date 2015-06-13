@@ -68,7 +68,7 @@ class Goal < GameObject
 
   def update(section)
     animate [0, 1, 2, 3], 7
-    section.finish if SB.player.bomb.bounds.intersect?(bounds)
+    section.finish if SB.player.bomb.collide? self
   end
 end
 
@@ -301,7 +301,7 @@ class Spikes < TwoStateObject
   end
 
   def s1_to_s2(section)
-    if SB.player.bomb.bounds.intersect?(@obst.bounds)
+    if SB.player.bomb.collide? @obst
       SB.player.die
     else
       section.obstacles << @obst
@@ -663,9 +663,33 @@ class Poison < GameObject
 
   def update(section)
     animate [0, 1, 2], 8
-    if SB.player.bomb.bounds.intersect? bounds
+    if SB.player.bomb.collide? self
       SB.player.bomb.hit
     end
+  end
+end
+
+class Vortex < GameObject
+  def initialize(x, y, args, section)
+    super x - 16, y - 16, 64, 64, :sprite_vortex, Vector.new(0, 0), 2, 2
+    @active_bounds = Rectangle.new(@x, @y, @w, @h)
+    @angle = 0
+  end
+
+  def update(section)
+    animate [0, 1, 2, 3, 2, 1], 5
+    @angle += 5
+    @angle = 0 if @angle == 360
+
+    # b = SB.player.bomb
+    # if b.collide? self
+    #   b.active = false
+    #   b.stored_forces += Vector.new()
+    # end
+  end
+
+  def draw(map)
+    @img[@img_index].draw_rot @x + @w / 2 - map.cam.x, @y + @h/2 - map.cam.y, 0, @angle
   end
 end
 
@@ -676,7 +700,7 @@ class SpecGate < GameObject
   end
 
   def update(section)
-    if SB.player.bomb.bounds.intersect? self
+    if SB.player.bomb.collide? self
       SB.prepare_special_world
     end
   end

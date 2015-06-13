@@ -65,6 +65,7 @@ class Section
     Spring,
     Sprinny,
     Turner,
+    Vortex,
     Wheeliam,
     Yaw
   ]
