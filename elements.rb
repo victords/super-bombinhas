@@ -674,6 +674,7 @@ class Vortex < GameObject
     super x - 16, y - 16, 64, 64, :sprite_vortex, Vector.new(0, 0), 2, 2
     @active_bounds = Rectangle.new(@x, @y, @w, @h)
     @angle = 0
+    @entrance = args.to_i
   end
 
   def update(section)
@@ -681,11 +682,23 @@ class Vortex < GameObject
     @angle += 5
     @angle = 0 if @angle == 360
 
-    # b = SB.player.bomb
-    # if b.collide? self
-    #   b.active = false
-    #   b.stored_forces += Vector.new()
-    # end
+    b = SB.player.bomb
+    if @transporting
+      b.move_free @aim, 1.5
+      @timer += 1
+      if @timer == 60
+        section.warp = @entrance
+        @transporting = false
+        b.active = true
+      end
+    else
+      if b.collide? self
+        b.active = false
+        @aim = Vector.new(@x + (@w - b.w) / 2, @y + (@h - b.h) / 2)
+        @transporting = true
+        @timer = 0
+      end
+    end
   end
 
   def draw(map)
