@@ -7,6 +7,8 @@ require_relative 'items'
 Tile = Struct.new :back, :fore, :pass, :wall, :hide, :broken
 
 class ScoreEffect
+  attr_reader :dead
+
   def initialize(x, y, score)
     @x = x
     @y = y
@@ -14,8 +16,6 @@ class ScoreEffect
     @alpha = 0
     @timer = 0
   end
-
-  def dead?; @dead; end
 
   def update
     if @timer < 15
@@ -328,8 +328,12 @@ class Section
     @elements << element
   end
 
+  def add_effect(e)
+    @effects << e
+  end
+
   def add_score_effect(x, y, score)
-    @effects << ScoreEffect.new(x, y, score)
+    add_effect ScoreEffect.new(x, y, score)
   end
 
   def save_check_point(id, obj)
@@ -377,7 +381,7 @@ class Section
     end
     @effects.each do |e|
       e.update
-      @effects.delete e if e.dead?
+      @effects.delete e if e.dead
     end
     @hide_tiles.each do |t|
       t.update self if t.is_visible @map
@@ -422,10 +426,10 @@ class Section
     @elements.each do |e|
       e.draw @map if e.is_visible @map
     end
+    SB.player.bomb.draw @map
     @effects.each do |e|
       e.draw @map
     end
-    SB.player.bomb.draw @map
 
     @map.foreach do |i, j, x, y|
       @tileset[@tiles[i][j].fore].draw x, y, 0 if @tiles[i][j].fore >= 0

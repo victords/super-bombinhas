@@ -686,7 +686,9 @@ class Vortex < GameObject
     if @transporting
       b.move_free @aim, 1.5
       @timer += 1
-      if @timer == 60
+      if @timer == 32
+        section.add_effect(Effect.new(@x + 2, @y + 2, :fx_transport, 2, 2, 7, [0, 1, 2, 3], 28))
+      elsif @timer == 60
         section.warp = @entrance
         @transporting = false
         b.active = true
