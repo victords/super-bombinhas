@@ -708,6 +708,64 @@ class Vortex < GameObject
   end
 end
 
+class AirMattress < GameObject
+  def initialize(x, y, args, section)
+    super x + 2, y + 16, 60, 1, :sprite_airMattress, Vector.new(-2, -2), 1, 3
+    @active_bounds = Rectangle.new(x, y + 15, 64, 32)
+    @color = (args || 'ffffff').to_i(16)
+    @timer = 0
+    @points = [
+      Vector.new(@x, @y),
+      Vector.new(@x, @y + 16)
+    ]
+    @speed_m = 0.16
+    @passable = true
+    @state = :normal
+    section.obstacles << self
+  end
+
+  def update(section)
+    if @state == :normal
+      if SB.player.bomb.bottom == self
+        @state = :down
+        @timer = 0
+        set_animation 0
+      else
+        x = @timer + 0.5
+        @speed_m = -0.0001875 * x**2 + 0.015 * x
+        cycle @points, @speed_m, [SB.player.bomb]
+        @timer += 1
+        if @timer == 80
+          @timer = 0
+        end
+      end
+    elsif @state == :down
+      animate [0, 1, 2], 8 if @img_index != 2
+      if SB.player.bomb.bottom == self
+        move_carrying Vector.new(@x, @y + 1), 0.3, [SB.player.bomb]
+      else
+        @state = :up
+        set_animation 2
+      end
+    elsif @state == :up
+      animate [2, 1, 0], 8 if @img_index != 0
+      if SB.player.bomb.bottom == self
+        @state = :down
+      else
+        @y -= 0.3
+        if @y.round == @points[0].y
+          @y = @points[0].y
+          @state = :normal
+        end
+      end
+    end
+  end
+
+  def draw(map)
+    super map, 1, 1, 255, @color
+  end
+end
+
 class SpecGate < GameObject
   def initialize(x, y, args, section)
     super x, y, 32, 32, :sprite_SpecGate

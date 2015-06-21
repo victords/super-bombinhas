@@ -44,7 +44,7 @@ count_down		Countdown to explosion!
 world_1			Tars Island
 stage_1_1		Exploring the Tars Beach
 stage_1_2		Sand, Wind and Wilderness
-stage_1_3		Test for the Name of the Third Stage
+stage_1_3		Name of the Third Stage
 stage_1_4		Finally! Chamal's Fortress
 world_2			Wisemen's forest
 stage_2_1		The border woods
