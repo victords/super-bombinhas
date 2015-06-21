@@ -46,7 +46,7 @@ class MenuText < MenuElement
 
   def initialize(text_id, x, y, width = 760, mode = :justified, big = false)
     @text_id = text_id
-    @text = SB.text(text_id)
+    @text = SB.text(text_id).gsub("\\n", "\n")
     @x = x
     @y = y
     @width = width
@@ -196,7 +196,7 @@ class FormSection
 
   def update_lang
     @components.each do |c|
-      c.text = SB.text(c.text_id) if c.respond_to? :text_id
+      c.text = SB.text(c.text_id).gsub("\\n", "\n") if c.respond_to? :text_id
       c.locale = (SB.lang == :portuguese ? 'pt-br' : 'en-us') if c.respond_to? :locale=
     end
   end

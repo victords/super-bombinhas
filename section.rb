@@ -403,7 +403,7 @@ class Section
             @border_exit == 2 && SB.player.bomb.y >= @size.x + C::EXIT_MARGIN ||
             @border_exit == 3 && SB.player.bomb.x + SB.player.bomb.w <= C::EXIT_MARGIN
         return :next_section
-      elsif @border_exit != 2 && SB.player.bomb.y >= @size.x + C::EXIT_MARGIN # abismo
+      elsif @border_exit != 2 && SB.player.bomb.y >= @size.y + C::EXIT_MARGIN # abismo
         SB.player.die
         return
       end

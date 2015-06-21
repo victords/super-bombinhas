@@ -81,17 +81,20 @@ class Menu
       @title = Res.img :ui_title, true
 
       @form = Form.new([
-        MenuButton.new(295, :play) {
+        MenuButton.new(270, :play) {
           @form.go_to_section 1
         },
-        MenuButton.new(345, :options) {
+        MenuButton.new(320, :help) {
+          @form.go_to_section 7
+        },
+        MenuButton.new(370, :options) {
           Options.set_temp
           @form.go_to_section 5
         },
-        MenuButton.new(395, :credits) {
+        MenuButton.new(420, :credits) {
           @form.go_to_section 6
         },
-        MenuButton.new(445, :exit, true) {
+        MenuButton.new(470, :exit, true) {
           exit
         }
       ], [], [
@@ -127,11 +130,12 @@ class Menu
         MenuButton.new(550, :back, true) {
           @form.go_to_section 0
         },
-        MenuText.new(
-          'Texto dos créditos aqui. Texto bem longo, podendo quebrar linha. '\
-          'Texto bem longo, podendo quebrar linha. Pode também ter quebras de '\
-          "linha explícitas.\nAqui tem uma quebra de linha explícita.\n\n"\
-          'Duas quebras seguidas.', 400, 200, 600, :center)
+        MenuText.new(:credits_text, 400, 200, 600, :center)
+      ], [
+        MenuButton.new(550, :back, true) {
+          @form.go_to_section 0
+        },
+        MenuText.new(:help_text, 400, 200, 600, :center)
       ])
       Options.form = @form
 

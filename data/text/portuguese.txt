@@ -1,5 +1,6 @@
 presents		Apresenta...
 play			Jogar
+help			Ajuda
 options			Opções
 credits			Créditos
 exit			Sair
@@ -12,12 +13,14 @@ delete			Apagar
 delete_confirm	Tem certeza que quer apagar este jogo?
 yes				Sim
 no				Não
+help_text		Texto da ajuda em português.
 save			Salvar
 cancel			Cancelar
 language		Idioma
 lang_name		Português
 sound_volume	Volume dos sons
 music_volume	Volume da música
+credits_text	- Design, Programação, Gráficos e Música -\nVictor David Santos\n\n- Agradecimentos Especiais -\n...\n...
 ch_st_instruct	Aperte 'Enter' ou 'Espaço' para começar.\nAperte 'Esc' ou 'Backspace' para voltar.
 left_shift		shift esq.
 right_shift		shift dir.

@@ -1,5 +1,6 @@
 presents		Presents...
 play			Play
+help			Help
 options			Options
 credits			Credits
 exit			Exit
@@ -12,12 +13,14 @@ delete			Delete
 delete_confirm	Are you sure you want to delete this game?
 yes				Yes
 no				No
+help_text		This is a platform game. Use the arrow keys for moving, spacebar for jumping and 'A' for actions.\nUnfortunately the game does not offer joystick support, but you can use programs like AntiMicro to map your joystick to the keyboard.
 save			Save
 cancel			Cancel
 language		Language
 lang_name		English
 sound_volume	Sounds volume
 music_volume	Music volume
+credits_text	- Design, Programming, Graphics and Music -\nVictor David Santos\n\n- Special Thanks -\n...\n...\n...
 ch_st_instruct	Press 'Enter' or 'Space' to start.\nPress 'Esc' or 'Backspace' to go back.
 left_shift		left shift
 right_shift		right shift
