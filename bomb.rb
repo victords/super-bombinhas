@@ -35,15 +35,16 @@ class Bomb < GameObject
       return
     elsif @dying
       animate @indices, 8 unless @img_index == (@facing_right ? 10 : 22)
-    elsif @invulnerable
-      @invulnerable_timer += 1
-      @invulnerable = false if @invulnerable_timer == C::INVULNERABLE_TIME
     elsif @exploding
       @explosion.animate [0, 1, 2, 3], 5
       @explosion_counter += 1
       @exploding = false if @explosion_counter == 90
       forces.x -= 0.15 * @speed.x if @bottom and @speed.x != 0
     elsif @active
+      if @invulnerable
+        @invulnerable_timer += 1
+        @invulnerable = false if @invulnerable_timer == @invulnerable_time
+      end
       if @will_explode
         @explosion_timer += 1
         if @explosion_timer == 60
@@ -143,9 +144,14 @@ class Bomb < GameObject
         SB.player.die
         return
       end
-      @invulnerable = true
-      @invulnerable_timer = 0
+      set_invulnerable
     end
+  end
+
+  def set_invulnerable(time = nil)
+    @invulnerable = true
+    @invulnerable_timer = 0
+    @invulnerable_time = time || C::INVULNERABLE_TIME
   end
 
   def reset

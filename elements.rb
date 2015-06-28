@@ -302,7 +302,7 @@ class Spikes < TwoStateObject
 
   def s1_to_s2(section)
     if SB.player.bomb.collide? @obst
-      SB.player.die
+      SB.player.bomb.hit
     else
       section.obstacles << @obst
     end
@@ -321,7 +321,7 @@ class Spikes < TwoStateObject
          (@dir == 1 and b.x >= @x + @w - 2) or
          (@dir == 2 and b.y >= @y + @h - 2) or
          (@dir == 3 and b.x + b.w <= @x + 2)
-        SB.player.die
+        SB.player.bomb.hit
       end
     end
   end
@@ -352,7 +352,7 @@ class FixedSpikes < GameObject
          (@dir == 1 and b.x >= @x + @w - 2) or
          (@dir == 2 and b.y >= @y + @h - 2) or
          (@dir == 3 and b.x + b.w <= @x + 2)
-        SB.player.die
+        SB.player.bomb.hit
       end
     end
   end
@@ -763,6 +763,39 @@ class AirMattress < GameObject
 
   def draw(map)
     super map, 1, 1, 255, @color
+  end
+end
+
+class ForceField < GameObject
+  def initialize(x, y, args, section, switch)
+    return if switch[:state] == :taken
+    super x, y, 32, 32, :sprite_ForceField, Vector.new(-14, -14), 3, 1
+    @active_bounds = Rectangle.new(x - 14, y - 14, 60, 60)
+    @alpha = 255
+  end
+
+  def update(section)
+    animate [0, 1, 2, 1], 10
+    b = SB.player.bomb
+    if @taken
+      @x = b.x + b.w / 2 - 16; @y = b.y + b.h / 2 - 16
+      @timer += 1
+      @dead = true if @timer == 1200
+      if @timer >= 1080
+        if @timer % 5 == 0
+          @alpha = @alpha == 0 ? 255 : 0
+        end
+      end
+    elsif b.collide? self
+      b.set_invulnerable 1200
+      SB.stage.set_switch self
+      @taken = true
+      @timer = 0
+    end
+  end
+
+  def draw(map)
+    super map, 1, 1, @alpha
   end
 end
 

@@ -50,6 +50,7 @@ class Section
     Faller,
     FireRock,
     FixedSpikes,
+    ForceField,
     Fureel,
     Goal,
     GunPowder,

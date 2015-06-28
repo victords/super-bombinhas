@@ -246,7 +246,7 @@ class Yaw < Enemy
   end
 
   def hit_by_bomb(section)
-    SB.player.die
+    SB.player.bomb.hit
   end
 end
 
@@ -275,12 +275,12 @@ class Ekips < GameObject
         @dead = true
         return
       else
-        SB.player.die
+        SB.player.bomb.hit
       end
     elsif @attacking and SB.player.bomb.bounds.intersect? @attack_bounds
-      SB.player.die
+      SB.player.bomb.hit
     elsif SB.player.bomb.collide? self
-      SB.player.die
+      SB.player.bomb.hit
     end
 
     @act_timer += 1
@@ -337,9 +337,9 @@ class Faller < GameObject
       @dead = true
       return
     elsif SB.player.bomb.bottom == @bottom
-      SB.player.die
+      SB.player.bomb.hit
     elsif SB.player.bomb.collide? self
-      SB.player.die
+      SB.player.bomb.hit
     end
 
     animate @indices, @interval
@@ -391,7 +391,7 @@ class Turner < Enemy
     @harm_bounds = Rectangle.new @x, @y - 23, 60, 62
     super section do
       if @harmful
-        SB.player.die if SB.player.bomb.bounds.intersect? @harm_bounds
+        SB.player.bomb.hit if SB.player.bomb.collide? @harm_bounds
         move_free @aim1, 2
         if @speed.x == 0 and @speed.y == 0
           @harmful = false
@@ -552,7 +552,7 @@ class Electong < Enemy
   end
 
   def hit_by_bomb(section)
-    SB.player.die
+    SB.player.bomb.hit
   end
 
   def update(section)
