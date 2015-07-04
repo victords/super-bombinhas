@@ -140,8 +140,14 @@ end
 
 class Heart < FloatingItem
   def initialize(x, y, args, section)
-    super x + 2, y + 2, 26, 26, :sprite_heart, nil, 8, 1,
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7], 6, :vermelha
+    args = (args || '1').to_i
+    bomb = case args
+           when 1 then :vermelha
+           when 2 then :verde
+           when 3 then :branca
+           end
+    super x + 2, y + 2, 26, 26, "sprite_heart#{args}", nil, 8, 1,
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7], 6, bomb
   end
 
   def update(section)
