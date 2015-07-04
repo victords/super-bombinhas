@@ -54,6 +54,7 @@ class Section
     Fureel,
     Goal,
     GunPowder,
+    Heart,
     Key,
     Life,
     MovingWall,

@@ -30,7 +30,7 @@ module Item
 end
 
 class FloatingItem < GameObject
-  def initialize(x, y, w, h, img, img_gap = nil, sprite_cols = nil, sprite_rows = nil, indices = nil, interval = nil)
+  def initialize(x, y, w, h, img, img_gap = nil, sprite_cols = nil, sprite_rows = nil, indices = nil, interval = nil, type = nil)
     super x, y, w, h, img, img_gap, sprite_cols, sprite_rows
     img_gap = Vector.new(0, 0) if img_gap.nil?
     @active_bounds = Rectangle.new x + img_gap.x, y - img_gap.y, @img[0].width, @img[0].height
@@ -38,10 +38,11 @@ class FloatingItem < GameObject
     @counter = 0
     @indices = indices
     @interval = interval
+    @type = type
   end
 
   def update(section)
-    if SB.player.bomb.collide? self
+    if SB.player.bomb.collide?(self) and (@type.nil? or SB.player.bomb.type == @type)
       yield
       @dead = true
       return
@@ -77,7 +78,7 @@ class Life < FloatingItem
 
   def initialize(x, y, args, section, switch)
     return if check switch
-    super x + 3, y + 3, 26, 26, :sprite_Life, Vector.new(-3, -3), 8, 1,
+    super x + 2, y + 2, 26, 26, :sprite_Life, nil, 8, 1,
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7], 6
   end
 
@@ -119,8 +120,8 @@ class Attack1 < FloatingItem
   def initialize(x, y, args, section, switch)
     set_icon :Attack1
     return if check switch
-    super x + 3, y + 3, 26, 26, :sprite_Attack1, Vector.new(-3, -3), 8, 1,
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7], 6
+    super x + 2, y + 2, 26, 26, :sprite_Attack1, nil, 8, 1,
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7], 6, :azul
   end
 
   def update(section)
@@ -134,6 +135,19 @@ class Attack1 < FloatingItem
     else; angle = Math::PI; end
     section.add Projectile.new SB.player.bomb.x, SB.player.bomb.y, 1, angle
     true
+  end
+end
+
+class Heart < FloatingItem
+  def initialize(x, y, args, section)
+    super x + 2, y + 2, 26, 26, :sprite_heart, nil, 8, 1,
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7], 6, :vermelha
+  end
+
+  def update(section)
+    super(section) do
+      SB.player.bomb.hp += 1
+    end
   end
 end
 
