@@ -79,6 +79,7 @@ class Bomb < GameObject
     end
     move forces, section.get_obstacles(@x, @y), section.ramps if @active
 
+    hit if section.projectile_hit?(self)
     SB.player.change_item if KB.key_pressed? Gosu::KbLeftShift or KB.key_pressed? Gosu::KbRightShift
     SB.player.use_item section if KB.key_pressed? Gosu::KbA
   end

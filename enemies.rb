@@ -632,7 +632,7 @@ end
 
 class Robort < FloorEnemy
   def initialize(x, y, args, section)
-    super x - 12, y - 31, args, 56, 63, :sprite_robort, Vector.new(-14, -9), 3, 2, [0, 1, 2, 1], 7, 450, 3
+    super x - 12, y - 31, args, 56, 63, :sprite_robort, Vector.new(-14, -9), 3, 2, [0, 1, 2, 1], 6, 450, 3
   end
 
   def update(section)
@@ -640,7 +640,9 @@ class Robort < FloorEnemy
       @timer += 1
       set_direction @next_dir if @timer == 150
       animate @indices, @interval
-      if SB.player.bomb.collide? self
+      if SB.player.bomb.explode? self
+        hit_by_explosion(section)
+      elsif SB.player.bomb.collide? self
         SB.player.bomb.hit
       end
     else
@@ -662,5 +664,49 @@ class Robort < FloorEnemy
       @interval = 4
       @timer = 0
     end
+  end
+end
+
+class Shep < FloorEnemy
+  def initialize(x, y, args, section)
+    super x, y - 2, args, 42, 34, :sprite_shep, Vector.new(0, 0), 3, 2, [0, 1, 0, 2], 7, 200, 1, 2
+  end
+
+  def update(section)
+    if @attacking
+      @timer += 1
+      if @timer == 60
+        section.add(Projectile.new(@facing_right ? @x + @w - 4 : @x - 4, @y + 10, 2, @facing_right ? 0 : Math::PI, self))
+        set_direction @next_dir
+      end
+      animate @indices, @interval
+      if SB.player.bomb.over? self
+        hit_by_bomb(section)
+        SB.player.bomb.stored_forces.y -= C::BOUNCE_FORCE
+      elsif SB.player.bomb.explode? self
+        hit_by_explosion(section)
+      elsif section.projectile_hit? self
+        hit(section)
+      elsif SB.player.bomb.collide? self
+        SB.player.bomb.hit
+      end
+    else
+      super(section)
+    end
+  end
+
+  def set_direction(dir)
+    if @attacking
+      super(dir)
+      @attacking = false
+      @indices = [0, 1, 0, 2]
+    else
+      @speed.x = 0
+      @next_dir = dir
+      @attacking = true
+      @indices = [0]
+      @timer = 0
+    end
+    set_animation @indices[0]
   end
 end

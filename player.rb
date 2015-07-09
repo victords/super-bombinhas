@@ -108,13 +108,13 @@ class Player
     s
   end
 
-  def reset
+  def reset(loaded = false)
     @items.clear
-    @bombs.each { |k, v| v.reset }
     @cur_item_type = nil
     @item_index = 0
     @stage_score = 0
     @dead = false
+    @bombs.each { |k, v| v.reset } unless loaded
   end
 
   def game_over

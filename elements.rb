@@ -571,19 +571,25 @@ class HideTile
 end
 
 class Projectile < GameObject
-  def initialize(x, y, type, angle)
+  attr_reader :owner
+
+  def initialize(x, y, type, angle, owner)
     case type
-    when 1 then w = 20; h = 12; img = :sprite_Projectile1; x_g = -2; y_g = -2; cols = 3; rows = 1; @speed_m = 3
+    when 1 then w = 20; h = 12; x_g = -2; y_g = -2; cols = 3; rows = 1; indices = [0, 1, 0, 2]; @speed_m = 3
+    when 2 then w = 8; h = 8; x_g = -2; y_g = -2; cols = 4; rows = 2; indices = [0, 1, 2, 3, 4, 5, 6, 7]; @speed_m = 2.5
     end
 
-    super x - x_g, y - y_g, w, h, img, Vector.new(x_g, y_g), cols, rows
+    super x - x_g, y - y_g, w, h, "sprite_Projectile#{type}", Vector.new(x_g, y_g), cols, rows
     @aim = Vector.new @x + (1000000 * Math.cos(angle)), @y - (1000000 * Math.sin(angle))
     @active_bounds = Rectangle.new @x + @img_gap.x, @y + @img_gap.y, @img[0].width, @img[0].height
     @angle = angle
+    @owner = owner
+    @indices = indices
   end
 
   def update(section)
     move_free @aim, @speed_m
+    animate @indices, 5
 
     t = (@y + @img_gap.y).floor
     r = (@x + @img_gap.x + @img[0].width).ceil

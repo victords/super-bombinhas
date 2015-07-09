@@ -62,6 +62,7 @@ class Section
     Poison,
     Robort,
     SaveBombie,
+    Shep,
     Spec,
     SpecGate,
     Spikes,
@@ -319,7 +320,7 @@ class Section
   def projectile_hit?(obj)
     @elements.each do |e|
       if e.is_a? Projectile
-        if e.bounds.intersect? obj.bounds
+        if e.owner != obj && e.bounds.intersect?(obj.bounds)
           @elements.delete e
           return true
         end
