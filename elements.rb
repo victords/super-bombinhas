@@ -799,6 +799,42 @@ class ForceField < GameObject
   end
 end
 
+class Stalactite < GameObject
+  def initialize(x, y, args, section)
+    super x + 11, y - 16, 10, 48, :sprite_stalactite, Vector.new(-9, 0), 3, 2
+    @active_bounds = Rectangle.new(x + 2, y, 28, 48)
+  end
+
+  def update(section)
+    if @dying
+      animate [0, 1, 2, 3, 4, 5, 5, 5, 5, 5, 5, 5], 5
+      @timer += 1
+      @dead = true if @timer == 60
+    elsif @moving
+      move Vector.new(0, 0), section.get_obstacles(@x, @y), section.ramps
+      SB.player.bomb.hit if SB.player.bomb.collide?(self)
+      if @bottom
+        @dying = true
+        @moving = false
+        @timer = 0
+      end
+    elsif @will_move
+      if @timer % 4 == 0
+        if @x % 2 == 0; @x += 1
+        else; @x -= 1; end
+      end
+      @timer += 1
+      @moving = true if @timer == 30
+    else
+      b = SB.player.bomb
+      if b.x + b.w > @x - 80 && b.x < @x + 90 && b.y > @y && b.y < @y + 256
+        @will_move = true
+        @timer = 0
+      end
+    end
+  end
+end
+
 class SpecGate < GameObject
   def initialize(x, y, args, section)
     super x, y, 32, 32, :sprite_SpecGate

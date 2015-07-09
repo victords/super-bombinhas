@@ -67,6 +67,7 @@ class Section
     Spikes,
     Spring,
     Sprinny,
+    Stalactite,
     Turner,
     Vortex,
     Wheeliam,
