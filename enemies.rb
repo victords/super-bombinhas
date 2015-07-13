@@ -669,13 +669,13 @@ end
 
 class Shep < FloorEnemy
   def initialize(x, y, args, section)
-    super x, y - 2, args, 42, 34, :sprite_shep, Vector.new(0, 0), 3, 2, [0, 1, 0, 2], 7, 200, 1, 2
+    super x, y - 2, args, 42, 34, :sprite_shep, Vector.new(-5, 0), 3, 2, [0, 1, 0, 2], 7, 200, 1, 2
   end
 
   def update(section)
     if @attacking
       @timer += 1
-      if @timer == 60
+      if @timer == 35
         section.add(Projectile.new(@facing_right ? @x + @w - 4 : @x - 4, @y + 10, 2, @facing_right ? 0 : Math::PI, self))
         set_direction @next_dir
       end
@@ -704,7 +704,7 @@ class Shep < FloorEnemy
       @speed.x = 0
       @next_dir = dir
       @attacking = true
-      @indices = [0]
+      @indices = [0, 3, 4, 5, 5]
       @timer = 0
     end
     set_animation @indices[0]
