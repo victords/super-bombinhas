@@ -841,6 +841,27 @@ class Stalactite < GameObject
   end
 end
 
+class Board < GameObject
+  def initialize(x, y, facing_right, section)
+    super x, y, 50, 4, :sprite_board, Vector.new(0, -1)
+    @facing_right = facing_right
+    @passable = true
+    @active_bounds = Rectangle.new(x, y - 1, 50, 5)
+    section.obstacles << self
+  end
+
+  def update(section)
+    b = SB.player.bomb
+    if b.collide? self and b.y + b.h <= @y + @h
+      b.y = @y - b.h
+    end
+  end
+
+  def draw(map)
+    super(map, 1, 1, 255, 0xffffff, nil, @facing_right ? nil : :horiz)
+  end
+end
+
 class SpecGate < GameObject
   def initialize(x, y, args, section)
     super x, y, 32, 32, :sprite_SpecGate

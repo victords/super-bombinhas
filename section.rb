@@ -39,6 +39,7 @@ class Section
     Attack1,
     Ball,
     BallReceptor,
+    BoardItem,
     Bombie,
     Chamal,
     Chrazer,

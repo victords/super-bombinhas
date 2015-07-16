@@ -78,7 +78,7 @@ class Life < FloatingItem
 
   def initialize(x, y, args, section, switch)
     return if check switch
-    super x + 2, y + 2, 26, 26, :sprite_Life, nil, 8, 1,
+    super x + 2, y + 2, 28, 28, :sprite_Life, nil, 8, 1,
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7], 6
   end
 
@@ -120,7 +120,7 @@ class Attack1 < FloatingItem
   def initialize(x, y, args, section, switch)
     set_icon :Attack1
     return if check switch
-    super x + 2, y + 2, 26, 26, :sprite_Attack1, nil, 8, 1,
+    super x + 2, y + 2, 28, 28, :sprite_Attack1, nil, 8, 1,
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7], 6, :azul
   end
 
@@ -146,7 +146,7 @@ class Heart < FloatingItem
            when 2 then :verde
            when 3 then :branca
            end
-    super x + 2, y + 2, 26, 26, "sprite_heart#{args}", nil, 8, 1,
+    super x + 2, y + 2, 28, 28, "sprite_heart#{args}", nil, 8, 1,
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7], 6, bomb
   end
 
@@ -154,6 +154,27 @@ class Heart < FloatingItem
     super(section) do
       SB.player.bomb.hp += 1
     end
+  end
+end
+
+class BoardItem < FloatingItem
+  include Item
+
+  def initialize(x, y, args, section, switch)
+    set_icon :board
+    return if check switch
+    super x + 6, y + 3, 20, 26, :sprite_boardItem, Vector.new(-6, -3)
+  end
+
+  def update(section)
+    super(section) do
+      take section, true
+    end
+  end
+
+  def use(section)
+    b = SB.player.bomb
+    section.add(Board.new(b.x + (b.facing_right ? 0 : b.w - 50), b.y + b.h - 2, b.facing_right, section))
   end
 end
 
