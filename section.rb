@@ -51,6 +51,7 @@ class Section
     Faller,
     FireRock,
     FixedSpikes,
+    Flep,
     ForceField,
     Fureel,
     Goal,

@@ -710,3 +710,26 @@ class Shep < FloorEnemy
     set_animation @indices[0]
   end
 end
+
+class Flep < Enemy
+  def initialize(x, y, args, section)
+    super x, y, 64, 20, :sprite_flep, Vector.new(0, 0), 1, 3, [0, 1, 2], 6, 300, 2
+    @movement = C::TILE_SIZE * args.to_i
+    @aim = Vector.new(@x - @movement, @y)
+    @facing_right = false
+  end
+
+  def update(section)
+    super(section) do
+      move_free @aim, 4
+      if @speed.x == 0 and @speed.y == 0
+        @aim = Vector.new(@x + (@facing_right ? -@movement : @movement), @y)
+        @facing_right = !@facing_right
+      end
+    end
+  end
+
+  def draw(map)
+    super map, 1, 1, 255, 0xffffff, nil, @facing_right ? :horiz : nil
+  end
+end
