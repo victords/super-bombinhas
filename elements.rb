@@ -246,8 +246,9 @@ class Elevator < GameObject
   end
 
   def update(section)
-    obst = [SB.player.bomb] #verificar...
-    cycle @points, @speed_m, obst
+    b = SB.player.bomb
+    obst = [b] #verificar...
+    cycle @points, @speed_m, obst, section.get_obstacles(b.x, b.y), section.ramps
   end
 end
 
@@ -731,15 +732,16 @@ class AirMattress < GameObject
   end
 
   def update(section)
+    b = SB.player.bomb
     if @state == :normal
-      if SB.player.bomb.bottom == self
+      if b.bottom == self
         @state = :down
         @timer = 0
         set_animation 0
       else
         x = @timer + 0.5
         @speed_m = -0.0001875 * x**2 + 0.015 * x
-        cycle @points, @speed_m, [SB.player.bomb]
+        cycle @points, @speed_m, [b]
         @timer += 1
         if @timer == 80
           @timer = 0
@@ -747,22 +749,20 @@ class AirMattress < GameObject
       end
     elsif @state == :down
       animate [0, 1, 2], 8 if @img_index != 2
-      if SB.player.bomb.bottom == self
-        move_carrying Vector.new(@x, @y + 1), 0.3, [SB.player.bomb]
+      if b.bottom == self
+        move_carrying Vector.new(@x, @y + 1), 0.3, [b], section.get_obstacles(b.x, b.y), section.ramps
       else
         @state = :up
         set_animation 2
       end
     elsif @state == :up
       animate [2, 1, 0], 8 if @img_index != 0
+      move_carrying Vector.new(@x, @y - 1), 0.3, [b], section.get_obstacles(b.x, b.y), section.ramps
       if SB.player.bomb.bottom == self
         @state = :down
-      else
-        @y -= 0.3
-        if @y.round == @points[0].y
-          @y = @points[0].y
-          @state = :normal
-        end
+      elsif @y.round == @points[0].y
+        @y = @points[0].y
+        @state = :normal
       end
     end
   end
