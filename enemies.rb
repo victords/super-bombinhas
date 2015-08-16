@@ -391,7 +391,7 @@ class Turner < Enemy
     @harm_bounds = Rectangle.new @x, @y - 23, 60, 62
     super section do
       if @harmful
-        SB.player.bomb.hit if SB.player.bomb.collide? @harm_bounds
+        SB.player.bomb.hit if SB.player.bomb.bounds.intersect? @harm_bounds
         move_free @aim1, 2
         if @speed.x == 0 and @speed.y == 0
           @harmful = false
@@ -400,7 +400,8 @@ class Turner < Enemy
           @obst << self
         end
       else
-        move_carrying @aim2, 2, [SB.player.bomb]
+        b = SB.player.bomb
+        move_carrying @aim2, 2, [b], section.get_obstacles(b.x, b.y), section.ramps
         if @speed.x == 0 and @speed.y == 0
           @harmful = true
           @indices = [0, 1, 2, 1]

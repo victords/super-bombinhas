@@ -74,6 +74,7 @@ class World
     @mark = GameObject.new 0, 0, 1, 1, :ui_mark
     @arrow = Res.img :ui_changeWorld
     @parchment = Res.img :ui_parchment
+    @secret_world = Res.img :ui_secretWorld if SB.player.last_world == C::LAST_WORLD
     @map = Res.img "bg_world#{num}"
     @song = Res.song("w#{@num}")
 
@@ -188,6 +189,7 @@ class World
     end
     @map.draw 0, 0, 0, 1, 1, (@trans_alpha << 24) | 0xffffff
     @parchment.draw 0, 0, 0
+    @secret_world.draw 0, 75, 0 if @secret_world
     @mark.draw
 
     @stages.each { |s| s.draw @trans_alpha }
