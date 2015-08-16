@@ -733,3 +733,30 @@ class Flep < Enemy
     super map, 1, 1, 255, 0xffffff, nil, @facing_right ? :horiz : nil
   end
 end
+
+class Vamep < Enemy
+  def initialize(x, y, args, section)
+    super x, y, 29, 22, :sprite_vamep, Vector.new(-24, -18), 2, 2, [0, 1, 2, 3, 2, 1], 6, 300
+    @angle = 0
+    if args
+      args = args.split ','
+      @radius = args[0].to_i
+      @speed = (args[1] || '3').to_i
+    else
+      @radius = 32
+      @speed = 3
+    end
+    @start_x = x
+    @start_y = y
+  end
+
+  def update(section)
+    super(section) do
+      radians = @angle * Math::PI / 180
+      @x = @start_x + Math.cos(radians) * @radius
+      @y = @start_y + Math.sin(radians) * @radius
+      @angle += @speed
+      @angle %= 360 if @angle >= 360
+    end
+  end
+end

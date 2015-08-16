@@ -72,6 +72,7 @@ class Section
     Sprinny,
     Stalactite,
     Turner,
+    Vamep,
     Vortex,
     Wheeliam,
     Yaw
