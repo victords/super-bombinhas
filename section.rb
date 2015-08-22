@@ -258,6 +258,9 @@ class Section
         end
       end
     end
+    @tile_timer = 0
+    @tile_3_index = 0
+    @tile_4_index = 0
 
     @margin = MiniGL::Vector.new((C::SCREEN_WIDTH - SB.player.bomb.w) / 2, (C::SCREEN_HEIGHT - SB.player.bomb.h) / 2)
     do_warp bomb_x, bomb_y
@@ -426,7 +429,14 @@ class Section
     draw_bgs
 
     @map.foreach do |i, j, x, y|
-      @tileset[@tiles[i][j].back].draw x, y, 0 if @tiles[i][j].back >= 0
+      b = @tiles[i][j].back
+      if b >= 0
+        ind = b
+        if b >= 90 && b < 93; ind = 90 + (b - 90 + @tile_3_index) % 3
+        elsif b >= 93 && b < 96; ind = 93 + (b - 93 + @tile_3_index) % 3
+        elsif b >= 96; ind = 96 + (b - 96 + @tile_4_index) % 4; end
+        @tileset[ind].draw x, y, 0
+      end
       @tileset[@tiles[i][j].pass].draw x, y, 0 if @tiles[i][j].pass >= 0
       @tileset[@tiles[i][j].wall].draw x, y, 0 if @tiles[i][j].wall >= 0 and not @tiles[i][j].broken
     end
@@ -440,7 +450,21 @@ class Section
     end
 
     @map.foreach do |i, j, x, y|
-      @tileset[@tiles[i][j].fore].draw x, y, 0 if @tiles[i][j].fore >= 0
+      f = @tiles[i][j].fore
+      if f >= 0
+        ind = f
+        if f >= 90 && f < 93; ind = 90 + (f - 90 + @tile_3_index) % 3
+        elsif f >= 93 && f < 96; ind = 93 + (f - 93 + @tile_3_index) % 3
+        elsif f >= 96; ind = 96 + (f - 96 + @tile_4_index) % 4; end
+        @tileset[ind].draw x, y, 0
+      end
+    end
+
+    @tile_timer += 1
+    if @tile_timer == C::TILE_ANIM_INTERVAL
+      @tile_3_index = (@tile_3_index + 1) % 3
+      @tile_4_index = (@tile_4_index + 1) % 4
+      @tile_timer = 0
     end
 
     @hide_tiles.each do |t|

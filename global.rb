@@ -19,6 +19,7 @@ module C
   LAST_WORLD = 3
   PANEL_COLOR = 0x80aaaaff
   ARROW_COLOR = 0x80000099
+  TILE_ANIM_INTERVAL = 7
 end
 
 class SB
