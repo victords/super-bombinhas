@@ -1,7 +1,7 @@
 require 'minigl'
 
 class Bomb < GameObject
-  attr_reader :type, :name, :hp, :facing_right
+  attr_reader :type, :name, :hp, :facing_right, :can_use_ability
   attr_accessor :active
 
   def initialize(type, hp)
@@ -25,16 +25,18 @@ class Bomb < GameObject
     @explosion = Sprite.new 0, 0, :fx_Explosion, 2, 2
     @explosion_timer = 0
     @explosion_counter = 10
+
+    @can_use_ability = true
   end
 
   def update(section)
     forces = Vector.new 0, 0
     if @celebrating
-      return if @img_index == (@facing_right ? 7 : 19)
+      return if @img_index == 7
       animate @indices, 8
       return
     elsif @dying
-      animate @indices, 8 unless @img_index == (@facing_right ? 10 : 22)
+      animate @indices, 8 unless @img_index == 10
     elsif @exploding
       @explosion.animate [0, 1, 2, 3], 5
       @explosion_counter += 1
@@ -54,46 +56,46 @@ class Bomb < GameObject
         end
       end
       if KB.key_down? Gosu::KbLeft
-        set_direction :left if @facing_right
+        @facing_right = false
         forces.x -= @bottom ? 0.5 : 0.08
       end
       if KB.key_down? Gosu::KbRight
-        set_direction :right unless @facing_right
+        @facing_right = true
         forces.x += @bottom ? 0.5 : 0.08
       end
       if @bottom
         if @speed.x != 0
           animate @indices, 30 / @speed.x.abs
-        elsif @facing_right
-          set_animation 0
         else
-          set_animation 12
+          set_animation 0
         end
         if KB.key_pressed? Gosu::KbSpace
           forces.y -= 14 + 0.52 * @speed.x.abs
-          if @facing_right; set_animation 3
-          else; set_animation 15; end
+          set_animation 3
         end
         forces.x -= @speed.x * 0.15
+      end
+      SB.player.change_item if KB.key_pressed? Gosu::KbLeftShift or KB.key_pressed? Gosu::KbRightShift
+      SB.player.use_item section if KB.key_pressed? Gosu::KbA
+
+      if @can_use_ability
+        if KB.key_pressed? Gosu::KbS
+          if @type == :verde
+            explode; @can_use_ability = false; @cooldown = C::EXPLODE_COOLDOWN
+          elsif @type == :azul
+            SB.stage.stop_time; @can_use_ability = false; @cooldown = C::STOP_TIME_COOLDOWN
+          end
+        end
+      else
+        @cooldown -= 1
+        if @cooldown == 0
+          @can_use_ability = true
+        end
       end
     end
     move forces, section.get_obstacles(@x, @y), section.ramps if @active
 
     hit if section.projectile_hit?(self)
-    SB.player.change_item if KB.key_pressed? Gosu::KbLeftShift or KB.key_pressed? Gosu::KbRightShift
-    SB.player.use_item section if KB.key_pressed? Gosu::KbA
-  end
-
-  def set_direction(dir)
-    if dir == :left
-      @facing_right = false
-      @indices = [12, 13, 12, 14]
-      set_animation 12
-    else
-      @facing_right = true
-      @indices = [0, 1, 0, 2]
-      set_animation 0
-    end
   end
 
   def do_warp(x, y)
@@ -116,7 +118,7 @@ class Bomb < GameObject
     @explosion_timer = 0
     @explosion.x = @x - 80
     @explosion.y = @y - 75
-    set_animation(@facing_right ? 4 : 16)
+    set_animation 4
   end
 
   def explode?(obj)
@@ -164,20 +166,20 @@ class Bomb < GameObject
     @will_explode = @exploding = @celebrating = @dying = false
     @speed.x = @speed.y = @stored_forces.x = @stored_forces.y = 0
     @hp = @max_hp
-    set_direction :right
+    @facing_right = true
   end
 
   def celebrate
     @celebrating = true
-    @indices = (@facing_right ? [5, 6, 7] : [17, 18, 19])
-    set_animation(@facing_right ? 5 : 17)
+    @indices = [5, 6, 7]
+    set_animation 5
   end
 
   def die
     @dying = true
-    @indices = (@facing_right ? [8, 9, 10] : [20, 21, 22])
     @speed.x = @speed.y = @stored_forces.x = @stored_forces.y = 0
-    set_animation(@facing_right ? 8 : 20)
+    @indices = [8, 9, 10]
+    set_animation 8
   end
 
   def is_visible(map)
@@ -185,7 +187,7 @@ class Bomb < GameObject
   end
 
   def draw(map)
-    super map
+    super map, 1, 1, 255, 0xffffff, nil, @facing_right ? nil : :horiz
     if @will_explode
       SB.font.draw_rel SB.text(:count_down), 400, 200, 0, 0.5, 0.5, 1, 1, 0xff000000 if @explosion_counter > 6
       SB.font.draw_rel @explosion_counter.to_s, 400, 220, 0, 0.5, 0.5, 1, 1, 0xff000000

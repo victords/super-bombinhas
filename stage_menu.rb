@@ -221,11 +221,11 @@ class StageMenu
       @score_icon.draw 10, 32, 0
       SB.font.draw SB.player.stage_score, 40, 32, 0, 1, 1, 0xff000000
 
+      ########## ITEM ##########
       G.window.draw_quad 745, 5, C::PANEL_COLOR,
                          795, 5, C::PANEL_COLOR,
                          795, 55, C::PANEL_COLOR,
                          745, 55, C::PANEL_COLOR, 0
-
       if SB.player.cur_item_type
         item_set = SB.player.items[SB.player.cur_item_type]
         item_set[0][:obj].icon.draw 750, 10, 0
@@ -239,6 +239,19 @@ class StageMenu
                                796, 30, C::ARROW_COLOR,
                                791, 35, C::ARROW_COLOR, 0
       end
+      ##########################
+
+      ######### ABILITY ########
+      G.window.draw_quad 690, 5, C::PANEL_COLOR,
+                         740, 5, C::PANEL_COLOR,
+                         740, 55, C::PANEL_COLOR,
+                         690, 55, C::PANEL_COLOR, 0
+      b = SB.player.bomb
+      if b.type == :verde; icon = 'explode'
+      elsif b.type == :azul; icon = 'time'
+      else; return; end
+      Res.img("icon_#{icon}").draw(699, 14, 0, 1, 1, b.can_use_ability ? 0xffffffff : 0x66ffffff)
+      ##########################
     end
 
     def draw_player_dead

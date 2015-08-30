@@ -384,11 +384,13 @@ class Section
     @finished = true
   end
 
-  def update
+  def update(stopped)
     @locked_door = nil
-    @elements.each do |e|
-      e.update self if e.is_visible @map
-      @elements.delete e if e.dead?
+    unless stopped
+      @elements.each do |e|
+        e.update self if e.is_visible @map
+        @elements.delete e if e.dead?
+      end
     end
     @effects.each do |e|
       e.update

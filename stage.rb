@@ -61,7 +61,7 @@ class Stage
       end
     else
       return :finish if @time == 0
-      status = @cur_section.update
+      status = @cur_section.update(@stopped)
       if status == :finish
         return :finish
       elsif status == :next_section
@@ -79,6 +79,12 @@ class Stage
         if @counter == 60
           @time -= 1
           @counter = 0
+        end
+      end
+      if @stopped
+        @stopped_timer += 1
+        if @stopped_timer == C::STOP_TIME_DURATION
+          @stopped = false
         end
       end
     end
@@ -154,6 +160,11 @@ class Stage
 
   def switches_by_state(state)
     @switches.select{ |s| s[:state] == state }.map{ |s| s[:index] }.join(',')
+  end
+
+  def stop_time
+    @stopped = true
+    @stopped_timer = 0
   end
 
   def draw
