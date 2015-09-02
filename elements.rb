@@ -247,8 +247,7 @@ class Elevator < GameObject
 
   def update(section)
     b = SB.player.bomb
-    obst = [b] #verificar...
-    cycle @points, @speed_m, obst, section.get_obstacles(b.x, b.y), section.ramps
+    cycle @points, @speed_m, section.passengers, section.get_obstacles(b.x, b.y), section.ramps
   end
 end
 
@@ -420,6 +419,7 @@ class Ball < GameObject
     @start_x = x
     @rotation = 0
     @active_bounds = Rectangle.new @x, @y, @w, @h
+    section.passengers << self
   end
 
   def update(section)

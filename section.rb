@@ -78,7 +78,7 @@ class Section
     Yaw
   ]
 
-  attr_reader :reload, :tiles, :obstacles, :ramps, :size, :default_entrance
+  attr_reader :reload, :tiles, :obstacles, :ramps, :passengers, :size, :default_entrance
   attr_accessor :entrance, :warp, :loaded, :locked_door
 
   def initialize(file, entrances, switches, taken_switches, used_switches)
@@ -87,6 +87,7 @@ class Section
     set_bgs parts[1].split ','
     set_elements parts[2].split(';'), entrances, switches, taken_switches, used_switches
     set_ramps parts[3].split ';'
+    @passengers = [SB.player.bomb] #vetor de objetos que podem ser carregados por elevador
   end
 
   # initialization
