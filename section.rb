@@ -311,7 +311,7 @@ class Section
   def obstacle_at?(x, y)
     i = x / C::TILE_SIZE
     j = y / C::TILE_SIZE
-    @tiles[i] and @tiles[i][j] and not @tiles[i][j].broken and @tiles[i][j].pass + @tiles[i][j].wall >= 0
+    @tiles[i] and @tiles[i][j] and (@tiles[i][j].pass >= 0 or @tiles[i][j].wall >= 0) and not @tiles[i][j].broken
   end
 
   def get_next_ball_receptor
@@ -363,10 +363,10 @@ class Section
     false
   end
 
-  def open_wall(id)
+  def activate_wall(id)
     @elements.each do |e|
       if e.class == MovingWall and e.id == id
-        e.open
+        e.activate
         break
       end
     end

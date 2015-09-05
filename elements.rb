@@ -372,39 +372,47 @@ class MovingWall < GameObject
   attr_reader :id
 
   def initialize(x, y, args, section)
-    super x + 2, y, 28, 32, :sprite_MovingWall, Vector.new(0, 0), 1, 2
-    @id = args.to_i
-    until section.obstacle_at? @x, @y - 1
-      @y -= C::TILE_SIZE
-      @h += C::TILE_SIZE
+    super x + 2, y + C::TILE_SIZE, 28, 0, :sprite_MovingWall, Vector.new(0, 0), 1, 2
+    args = args.split ','
+    @id = args[0].to_i
+    @closed = args[1].nil?
+    if @closed
+      until section.obstacle_at? @x, @y - 1
+        @y -= C::TILE_SIZE
+        @h += C::TILE_SIZE
+      end
+    else
+      @max_size = C::TILE_SIZE * args[1].to_i
     end
     @active_bounds = Rectangle.new @x, @y, @w, @h
     section.obstacles << self
   end
 
   def update(section)
-    if @opening
+    if @active
       @timer += 1
       if @timer == 30
-        @y += 16
-        @h -= 16
+        @y += @closed ? 16 : -16
+        @h += @closed ? -16 : 16
         @active_bounds = Rectangle.new @x, @y, @w, @h
         @timer = 0
-        if @h == 0
+        if @closed and @h == 0
           @dead = true
+        elsif not @closed and @h == @max_size
+          @active = false
         end
       end
     end
   end
 
-  def open
-    @opening = true
+  def activate
+    @active = true
     @timer = 0
   end
 
   def draw(map)
+    @img[0].draw @x - map.cam.x, @y - map.cam.y, 0 if @h > 0
     y = 16
-    @img[0].draw @x - map.cam.x, @y - map.cam.y, 0
     while y < @h
       @img[1].draw @x - map.cam.x, @y + y - map.cam.y, 0
       y += 16
@@ -426,8 +434,8 @@ class Ball < GameObject
     if @set
       if @rec.nil?
         @rec = section.get_next_ball_receptor
-        @x = @rec.x
-        @y = @rec.y - 31
+        @x = @active_bounds.x = @rec.x
+        @y = @active_bounds.y = @rec.y - 31
       end
       @x += (0.1 * (@rec.x - @x)) if @x.round(2) != @rec.x
     else
@@ -443,6 +451,7 @@ class Ball < GameObject
 
         SB.stage.switches.each do |s|
           if s[:type] == BallReceptor and bounds.intersect? s[:obj].bounds
+            next if s[:obj].is_set
             s[:obj].set section
             s2 = SB.stage.find_switch self
             s2[:extra] = @rec = s[:obj]
@@ -465,7 +474,7 @@ class Ball < GameObject
 end
 
 class BallReceptor < GameObject
-  attr_reader :id
+  attr_reader :id, :is_set
 
   def initialize(x, y, args, section, switch)
     super x, y + 31, 32, 1, :sprite_BallReceptor, Vector.new(0, -8), 1, 2
@@ -476,7 +485,8 @@ class BallReceptor < GameObject
 
   def update(section)
     if @will_set
-      section.open_wall @id
+      section.activate_wall @id
+      @is_set = true
       @img_index = 1
       @will_set = false
     end
@@ -484,7 +494,8 @@ class BallReceptor < GameObject
 
   def set(section)
     SB.stage.set_switch self
-    section.open_wall @id
+    section.activate_wall @id
+    @is_set = true
     @img_index = 1
   end
 end
