@@ -619,60 +619,6 @@ class Projectile < GameObject
   end
 end
 
-class Spring < GameObject
-  def initialize(x, y, args, section)
-    super x, y, 32, 1, :sprite_Spring, Vector.new(-2, -16), 3, 2
-    @active_bounds = Rectangle.new x, y - 16, 32, 48
-    @start_y = y
-    @state = 0
-    @timer = 0
-    @indices = [0, 4, 4, 5, 0, 5, 0, 5, 0, 5]
-    @passable = true
-    section.obstacles << self
-  end
-
-  def update(section)
-    if SB.player.bomb.bottom == self
-      reset if @state == 4
-      @timer += 1
-      if @timer == 10
-        case @state
-          when 0 then @y += 8; @img_gap.y -= 8; SB.player.bomb.y += 8
-          when 1 then @y += 6; @img_gap.y -= 6; SB.player.bomb.y += 6
-          when 2 then @y += 4; @img_gap.y -= 4; SB.player.bomb.y += 4
-        end
-        @state += 1
-        if @state == 4
-          SB.player.bomb.stored_forces.y = -18
-        else
-          set_animation @state
-        end
-        @timer = 0
-      end
-    elsif @state > 0 and @state < 4
-      reset
-    end
-
-    if @state == 4
-      animate @indices, 7
-      @timer += 1
-      if @timer == 70
-        reset
-      elsif @timer == 7
-        @y = @start_y
-        @img_gap.y = -16
-      end
-    end
-  end
-
-  def reset
-    set_animation 0
-    @state = @timer = 0
-    @y = @start_y
-    @img_gap.y = -16
-  end
-end
-
 class Poison < GameObject
   def initialize(x, y, args, section)
     super x, y + 31, 32, 1, :sprite_poison, Vector.new(0, -19), 3, 1

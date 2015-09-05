@@ -137,6 +137,11 @@ class Stage
     switch[:state] = :temp_taken
   end
 
+  def unset_switch(obj)
+    switch = self.find_switch obj
+    switch[:state] = :normal
+  end
+
   def reset_switches
     @switches.each do |s|
       if s[:state] == :temp_taken or s[:state] == :temp_taken_used

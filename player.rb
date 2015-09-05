@@ -51,13 +51,7 @@ class Player
     return if @cur_item_type.nil?
     item_set = @items[@cur_item_type]
     item = item_set[0]
-    if item[:obj].use section
-      if item[:state] == :temp_taken
-        item[:state] = :temp_taken_used
-      else
-        item[:state] = :temp_used
-      end
-
+    if item[:obj].use section, item
       item_set.delete item
       if item_set.length == 0
         @items.delete @cur_item_type

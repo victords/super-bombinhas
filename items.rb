@@ -23,8 +23,16 @@ module Item
       SB.player.add_item info
       info[:state] = :temp_taken
     else
-      use section
+      use section, info
       info[:state] = :temp_taken_used
+    end
+  end
+
+  def set_switch(switch)
+    if switch[:state] == :temp_taken
+      switch[:state] = :temp_taken_used
+    else
+      switch[:state] = :temp_used
     end
   end
 end
@@ -88,8 +96,9 @@ class Life < FloatingItem
     end
   end
 
-  def use(section)
+  def use(section, switch)
     SB.player.lives += 1
+    set_switch(switch)
     true
   end
 end
@@ -109,8 +118,9 @@ class Key < FloatingItem
     end
   end
 
-  def use(section)
+  def use(section, switch)
     section.unlock_door
+    set_switch(switch)
   end
 end
 
@@ -130,12 +140,13 @@ class Attack1 < FloatingItem
     end
   end
 
-  def use(section)
+  def use(section, switch)
     b = SB.player.bomb
     return false if b.type != @type
     if b.facing_right; angle = 0
     else; angle = Math::PI; end
     section.add Projectile.new(b.x, b.y, 1, angle, b)
+    set_switch(switch)
     true
   end
 end
@@ -174,9 +185,87 @@ class BoardItem < FloatingItem
     end
   end
 
-  def use(section)
+  def use(section, switch)
     b = SB.player.bomb
     section.add(Board.new(b.x + (b.facing_right ? 0 : b.w - 50), b.y + b.h - 2, b.facing_right, section))
+    set_switch(switch)
+  end
+end
+
+class Spring < GameObject
+  include Item
+
+  def initialize(x, y, args, section, switch)
+    @switch = switch
+    set_icon :spring
+    return if check(switch)
+    super x, y, 32, 32, :sprite_Spring, Vector.new(-2, -16), 3, 2
+    @active_bounds = Rectangle.new x, y - 16, 32, 48
+    @start_y = y
+    @state = 0
+    @timer = 0
+    @indices = [0, 4, 4, 5, 0, 5, 0, 5, 0, 5]
+    @passable = true
+    @ready = false
+  end
+
+  def update(section)
+    unless @ready
+      section.obstacles << self
+      @ready = true
+    end
+    if SB.player.bomb.bottom == self
+      reset if @state == 4
+      @timer += 1
+      if @timer == 10
+        case @state
+          when 0 then @y += 8; @img_gap.y -= 8; SB.player.bomb.y += 8
+          when 1 then @y += 6; @img_gap.y -= 6; SB.player.bomb.y += 6
+          when 2 then @y += 4; @img_gap.y -= 4; SB.player.bomb.y += 4
+        end
+        @state += 1
+        if @state == 4
+          SB.player.bomb.stored_forces.y = -18
+        else
+          set_animation @state
+        end
+        @timer = 0
+      end
+    elsif SB.player.bomb.collide?(self) and KB.key_pressed?(Gosu::KbUp)
+      take(section, true)
+      @dead = true
+      section.obstacles.delete self
+    elsif @state > 0 and @state < 4
+      reset
+    end
+
+    if @state == 4
+      animate @indices, 7
+      @timer += 1
+      if @timer == 70
+        reset
+      elsif @timer == 7
+        @y = @start_y
+        @img_gap.y = -16
+      end
+    end
+  end
+
+  def reset
+    set_animation 0
+    @state = @timer = 0
+    @y = @start_y
+    @img_gap.y = -16
+  end
+
+  def use(section, switch)
+    b = SB.player.bomb
+    x = b.facing_right ? b.x + b.w : b.x - @w
+    return false if section.obstacle_at?(x, b.y)
+    SB.stage.unset_switch self
+    spring = Spring.new(x, b.y, nil, section, @switch)
+    switch[:obj] = spring
+    section.add spring
   end
 end
 
