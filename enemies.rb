@@ -47,15 +47,16 @@ class Enemy < GameObject
     end
 
     unless @invulnerable
-      if SB.player.bomb.over? self
+      b = SB.player.bomb
+      if b.over? self
         hit_by_bomb(section)
-        SB.player.bomb.stored_forces.y -= C::BOUNCE_FORCE
-      elsif SB.player.bomb.explode? self
+        b.stored_forces.y -= C::BOUNCE_FORCE
+      elsif b.explode? self
         hit_by_explosion(section)
       elsif section.projectile_hit? self
         hit(section)
-      elsif SB.player.bomb.collide? self
-        SB.player.bomb.hit
+      elsif b.collide? self
+        b.hit
       end
     end
 
@@ -117,7 +118,6 @@ class FloorEnemy < Enemy
       super section
     else
       super section do
-        # puts "left: #{@left} / right: #{@right}" if @bottom.is_a? Ramp
         move @forces, section.get_obstacles(@x, @y), section.ramps
         @forces.x = 0
         if @left

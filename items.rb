@@ -131,9 +131,11 @@ class Attack1 < FloatingItem
   end
 
   def use(section)
-    if SB.player.bomb.facing_right; angle = 0
+    b = SB.player.bomb
+    return false if b.type != @type
+    if b.facing_right; angle = 0
     else; angle = Math::PI; end
-    section.add Projectile.new(SB.player.bomb.x, SB.player.bomb.y, 1, angle, SB.player.bomb)
+    section.add Projectile.new(b.x, b.y, 1, angle, b)
     true
   end
 end

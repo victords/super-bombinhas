@@ -210,28 +210,29 @@ class StageMenu
     end
 
     def draw_player_stats
+      p = SB.player
       G.window.draw_quad 5, 5, C::PANEL_COLOR,
                          205, 5, C::PANEL_COLOR,
                          205, 55, C::PANEL_COLOR,
                          5, 55, C::PANEL_COLOR, 0
       @lives_icon.draw 12, 10, 0
-      SB.font.draw SB.player.lives, 40, 10, 0, 1, 1, 0xff000000
+      SB.font.draw p.lives, 40, 10, 0, 1, 1, 0xff000000
       @hp_icon.draw 105, 10, 0
-      SB.font.draw SB.player.bomb.hp, 135, 10, 0, 1, 1, 0xff000000
+      SB.font.draw p.bomb.hp, 135, 10, 0, 1, 1, 0xff000000
       @score_icon.draw 10, 32, 0
-      SB.font.draw SB.player.stage_score, 40, 32, 0, 1, 1, 0xff000000
+      SB.font.draw p.stage_score, 40, 32, 0, 1, 1, 0xff000000
 
       ########## ITEM ##########
       G.window.draw_quad 745, 5, C::PANEL_COLOR,
                          795, 5, C::PANEL_COLOR,
                          795, 55, C::PANEL_COLOR,
                          745, 55, C::PANEL_COLOR, 0
-      if SB.player.cur_item_type
-        item_set = SB.player.items[SB.player.cur_item_type]
+      if p.cur_item_type
+        item_set = p.items[p.cur_item_type]
         item_set[0][:obj].icon.draw 750, 10, 0
         SB.font.draw item_set.length.to_s, 780, 36, 0, 1, 1, 0xff000000
       end
-      if SB.player.items.length > 1
+      if p.items.length > 1
         G.window.draw_triangle 745, 30, C::ARROW_COLOR,
                                749, 26, C::ARROW_COLOR,
                                749, 34, C::ARROW_COLOR, 0
@@ -246,9 +247,9 @@ class StageMenu
                          740, 5, C::PANEL_COLOR,
                          740, 55, C::PANEL_COLOR,
                          690, 55, C::PANEL_COLOR, 0
-      b = SB.player.bomb
+      b = p.bomb
       if b.type == :verde; icon = 'explode'
-      elsif b.type == :azul; icon = 'time'
+      elsif b.type == :branca; icon = 'time'
       else; return; end
       Res.img("icon_#{icon}").draw(699, 14, 0, 1, 1, b.can_use_ability ? 0xffffffff : 0x66ffffff)
       ##########################

@@ -13,10 +13,11 @@ class Bomb < GameObject
     else                @name = 'Aldan';          def_hp = 1; @max_hp = 2;   l_img_gap = -6; r_img_gap = -14;  t_img_gap = -26
     end
 
-    super -1000, -1000, 20, 30, "sprite_Bomba#{type.to_s.capitalize}", Vector.new(r_img_gap, t_img_gap), 6, 4
+    super -1000, -1000, 20, 30, "sprite_Bomba#{type.to_s.capitalize}", Vector.new(r_img_gap, t_img_gap), 6, 2
     @hp = hp == 0 ? def_hp : hp
-    @max_speed.x = 5
-    @max_speed.y = 30
+    @max_speed.x = type == :amarela ? 6 : 4
+    @max_speed.y = 20
+    @jump_speed = type == :amarela ? 0.58 : 0.45
     @indices = [0, 1, 0, 2]
     @facing_right = true
     @active = true
@@ -32,9 +33,7 @@ class Bomb < GameObject
   def update(section)
     forces = Vector.new 0, 0
     if @celebrating
-      return if @img_index == 7
-      animate @indices, 8
-      return
+      animate @indices, 8 unless @img_index == 7
     elsif @dying
       animate @indices, 8 unless @img_index == 10
     elsif @exploding
@@ -55,13 +54,16 @@ class Bomb < GameObject
           @explosion_timer = 0
         end
       end
+      walking = false
       if KB.key_down? Gosu::KbLeft
         @facing_right = false
-        forces.x -= @bottom ? 0.5 : 0.08
+        forces.x -= @bottom ? 0.3 : 0.1
+        walking = true
       end
       if KB.key_down? Gosu::KbRight
         @facing_right = true
-        forces.x += @bottom ? 0.5 : 0.08
+        forces.x += @bottom ? 0.3 : 0.1
+        walking = true
       end
       if @bottom
         if @speed.x != 0
@@ -70,10 +72,10 @@ class Bomb < GameObject
           set_animation 0
         end
         if KB.key_pressed? Gosu::KbSpace
-          forces.y -= 14 + 0.52 * @speed.x.abs
+          forces.y -= 14 + @jump_speed * @speed.x.abs
           set_animation 3
         end
-        forces.x -= @speed.x * 0.15
+        forces.x -= 0.15 * @speed.x unless walking
       end
       SB.player.change_item if KB.key_pressed? Gosu::KbLeftShift or KB.key_pressed? Gosu::KbRightShift
       SB.player.use_item section if KB.key_pressed? Gosu::KbA
@@ -81,8 +83,8 @@ class Bomb < GameObject
       if @can_use_ability
         if KB.key_pressed? Gosu::KbS
           if @type == :verde
-            explode; @can_use_ability = false; @cooldown = C::EXPLODE_COOLDOWN
-          elsif @type == :azul
+            explode(false); @can_use_ability = false; @cooldown = C::EXPLODE_COOLDOWN
+          elsif @type == :branca
             SB.stage.stop_time; @can_use_ability = false; @cooldown = C::STOP_TIME_COOLDOWN
           end
         end
@@ -92,15 +94,15 @@ class Bomb < GameObject
           @can_use_ability = true
         end
       end
+
+      hit if section.projectile_hit?(self)
     end
     move forces, section.get_obstacles(@x, @y), section.ramps if @active
-
-    hit if section.projectile_hit?(self)
   end
 
   def do_warp(x, y)
     @speed.x = @speed.y = 0
-    @x = x + 6; @y = y + 2
+    @x = x + C::TILE_SIZE / 2 - @w / 2; @y = y + C::TILE_SIZE - @h
     @facing_right = true
     @indices = [0, 1, 0, 2]
     set_animation 0
@@ -112,22 +114,26 @@ class Bomb < GameObject
     @explosion_counter = 10
   end
 
-  def explode
+  def explode(gun_powder = true)
     @will_explode = false
     @exploding = true
     @explosion_timer = 0
-    @explosion.x = @x - 80
-    @explosion.y = @y - 75
+    @explosion_radius = if gun_powder
+                          @type == :verde ? 135 : 90
+                        else
+                          90
+                        end
+    @explosion.x = @x + @w / 2 - @explosion_radius
+    @explosion.y = @y + @h / 2 - @explosion_radius
     set_animation 4
   end
 
   def explode?(obj)
     return false unless @exploding
-    radius = @type == :verde ? 120 : 90
     c_x = @x + @w / 2; c_y = @y + @h / 2
     o_c_x = obj.x + obj.w / 2; o_c_y = obj.y + obj.h / 2
     sq_dist = (o_c_x - c_x)**2 + (o_c_y - c_y)**2
-    sq_dist <= radius**2
+    sq_dist <= @explosion_radius**2
   end
 
   def collide?(obj)
@@ -136,7 +142,7 @@ class Bomb < GameObject
 
   def over?(obj)
     @x + @w > obj.x and obj.x + obj.w > @x and
-      @y + @h > obj.y and @y < obj.y - C::PLAYER_OVER_TOLERANCE
+      @y + @h > obj.y and @y + @h <= obj.y + C::PLAYER_OVER_TOLERANCE
   end
 
   def hit(damage = 1)
@@ -177,7 +183,6 @@ class Bomb < GameObject
 
   def die
     @dying = true
-    @speed.x = @speed.y = @stored_forces.x = @stored_forces.y = 0
     @indices = [8, 9, 10]
     set_animation 8
   end
@@ -192,6 +197,6 @@ class Bomb < GameObject
       SB.font.draw_rel SB.text(:count_down), 400, 200, 0, 0.5, 0.5, 1, 1, 0xff000000 if @explosion_counter > 6
       SB.font.draw_rel @explosion_counter.to_s, 400, 220, 0, 0.5, 0.5, 1, 1, 0xff000000
     end
-    @explosion.draw map if @exploding
+    @explosion.draw map, @explosion_radius.to_f / 90, @explosion_radius.to_f / 90 if @exploding
   end
 end
