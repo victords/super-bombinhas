@@ -219,8 +219,10 @@ class Section
     @ramps = []
     s.each do |r|
       left = r[0] == 'l'
-      w = r[1].to_i * C::TILE_SIZE
-      h = r[2].to_i * C::TILE_SIZE
+      a = r[1] == "'" ? 2 : 1
+      w = r[a].to_i * C::TILE_SIZE
+      h = r[a + 1].to_i * C::TILE_SIZE
+      h -= 1 if r[1] == "'"
       coords = r.split(':')[1].split(',')
       x = coords[0].to_i * C::TILE_SIZE
       y = coords[1].to_i * C::TILE_SIZE
