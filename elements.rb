@@ -132,6 +132,8 @@ class Bombie < GameObject
 end
 
 class Door < GameObject
+  attr_reader :locked
+
   def initialize(x, y, args, section, switch)
     super x + 15, y + 63, 2, 1, :sprite_Door, Vector.new(-15, -63), 5, 1
     args = args.split(',')
@@ -145,7 +147,9 @@ class Door < GameObject
   def update(section)
     collide = SB.player.bomb.collide? self
     if @locked and collide
-      section.locked_door = self
+      section.active_object = self
+    elsif section.active_object == self
+      section.active_object = nil
     end
     if not @locked and not @opening and collide
       if KB.key_pressed? Gosu::KbUp
@@ -799,19 +803,31 @@ class Stalactite < GameObject
 end
 
 class Board < GameObject
-  def initialize(x, y, facing_right, section)
+  def initialize(x, y, facing_right, section, switch)
     super x, y, 50, 4, :sprite_board, Vector.new(0, -1)
     @facing_right = facing_right
     @passable = true
     @active_bounds = Rectangle.new(x, y - 1, 50, 5)
     section.obstacles << self
+    @switch = switch
   end
 
   def update(section)
     b = SB.player.bomb
     if b.collide? self and b.y + b.h <= @y + @h
       b.y = @y - b.h
+    elsif b.bottom == self
+      section.active_object = self
+    elsif section.active_object == self
+      section.active_object = nil
     end
+  end
+
+  def take(section)
+    SB.player.add_item @switch
+    @switch[:state] = :temp_taken
+    section.obstacles.delete self
+    @dead = true
   end
 
   def draw(map)

@@ -56,6 +56,7 @@ class Section
     Fureel,
     Goal,
     GunPowder,
+    Hammer,
     Heart,
     Key,
     Life,
@@ -79,7 +80,7 @@ class Section
   ]
 
   attr_reader :reload, :tiles, :obstacles, :ramps, :passengers, :size, :default_entrance
-  attr_accessor :entrance, :warp, :loaded, :locked_door
+  attr_accessor :entrance, :warp, :loaded, :active_object
 
   def initialize(file, entrances, switches, taken_switches, used_switches)
     parts = File.read(file).chomp.split('#', -1)
@@ -356,15 +357,6 @@ class Section
     SB.stage.save_switches
   end
 
-  def unlock_door
-    if @locked_door
-      @locked_door.unlock
-      SB.stage.set_switch @locked_door
-      return true
-    end
-    false
-  end
-
   def activate_wall(id)
     @elements.each do |e|
       if e.class == MovingWall and e.id == id
@@ -388,7 +380,6 @@ class Section
   end
 
   def update(stopped)
-    @locked_door = nil
     unless stopped
       @elements.each do |e|
         e.update self if e.is_visible @map

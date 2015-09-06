@@ -6,6 +6,7 @@ module Item
   def check(switch)
     if switch[:state] == :taken
       SB.player.add_item switch
+      switch[:obj] = self
       return true
     elsif switch[:state] == :used
       return true
@@ -119,8 +120,12 @@ class Key < FloatingItem
   end
 
   def use(section, switch)
-    section.unlock_door
-    set_switch(switch)
+    obj = section.active_object
+    if obj.is_a? Door and obj.locked
+      obj.unlock
+      SB.stage.set_switch obj
+      set_switch(switch)
+    end
   end
 end
 
@@ -177,6 +182,7 @@ class BoardItem < FloatingItem
     set_icon :board
     return if check switch
     super x + 6, y + 3, 20, 26, :sprite_boardItem, Vector.new(-6, -3)
+    @item = true
   end
 
   def update(section)
@@ -187,8 +193,33 @@ class BoardItem < FloatingItem
 
   def use(section, switch)
     b = SB.player.bomb
-    section.add(Board.new(b.x + (b.facing_right ? 0 : b.w - 50), b.y + b.h - 2, b.facing_right, section))
-    set_switch(switch)
+    @board = Board.new(b.x + (b.facing_right ? 0 : b.w - 50), b.y + b.h - 2, b.facing_right, section, switch)
+    section.add(@board)
+    switch[:state] = :normal
+  end
+end
+
+class Hammer < FloatingItem
+  include Item
+
+  def initialize(x, y, args, section, switch)
+    set_icon :hammer
+    return if check(switch)
+    super x + 7, y + 1, 18, 30, :sprite_hammer, Vector.new(-7, -1)
+  end
+
+  def update(section)
+    super(section) do
+      take section, true
+    end
+  end
+
+  def use(section, switch)
+    obj = section.active_object
+    if obj.is_a? Board
+      obj.take(section)
+      set_switch(switch)
+    end
   end
 end
 
@@ -262,7 +293,7 @@ class Spring < GameObject
     b = SB.player.bomb
     x = b.facing_right ? b.x + b.w : b.x - @w
     return false if section.obstacle_at?(x, b.y)
-    SB.stage.unset_switch self
+    switch[:state] = :normal
     spring = Spring.new(x, b.y, nil, section, @switch)
     switch[:obj] = spring
     section.add spring
