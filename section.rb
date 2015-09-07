@@ -58,6 +58,7 @@ class Section
     GunPowder,
     Hammer,
     Heart,
+    Jellep,
     Key,
     Life,
     MovingWall,

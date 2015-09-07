@@ -19,7 +19,8 @@ class Enemy < GameObject
     b = (@y + @img_gap.y + @img[0].height).ceil
     l = (@x + @img_gap.x).floor
 
-    if t > section.size.y; @dead = true
+    if t > section.size.y
+      @dead = true
     elsif r < 0; @dead = true
     elsif b < C::TOP_MARGIN; @dead = true #para sumir por cima, a margem deve ser maior
     elsif l > section.size.x; @dead = true
@@ -732,6 +733,46 @@ class Flep < Enemy
 
   def draw(map)
     super map, 1, 1, 255, 0xffffff, nil, @facing_right ? :horiz : nil
+  end
+end
+
+class Jellep < Enemy
+  def initialize(x, y, args, section)
+    super x, section.size.y - 1, 32, 110, :sprite_jellep, Vector.new(-5, 0), 3, 1, [0, 1, 0, 2], 5, 500
+    @max_y = y
+    @state = 0
+    @timer = 0
+  end
+
+  def update(section)
+    super(section) do
+      if @state == 0
+        @timer += 1
+        if @timer == 120
+          @stored_forces.y = -14
+          @state = 1
+          @timer = 0
+        end
+      else
+        force = @y - @max_y <= 100 ? 0 : -G.gravity.y
+        move Vector.new(0, force), [], []
+        if @state == 1 and @speed.y >= 0
+          @state = 2
+        elsif @state == 2 and @y >= section.size.y
+          @speed.y = 0
+          @y = section.size.y - 1
+          @state = 0
+        end
+      end
+    end
+  end
+
+  def hit_by_bomb(section)
+    SB.player.bomb.hit
+  end
+
+  def draw(map)
+    super map, 1, 1, 255, 0xffffff, nil, @state == 2 ? :vert : nil
   end
 end
 
