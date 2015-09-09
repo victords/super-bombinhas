@@ -122,8 +122,7 @@ class Key < FloatingItem
   def use(section, switch)
     obj = section.active_object
     if obj.is_a? Door and obj.locked
-      obj.unlock
-      SB.stage.set_switch obj
+      obj.unlock(section)
       set_switch(switch)
     end
   end
@@ -297,6 +296,32 @@ class Spring < GameObject
     spring = Spring.new(x, b.y, nil, section, @switch)
     switch[:obj] = spring
     section.add spring
+  end
+end
+
+class Herb < GameObject
+  include Item
+
+  def initialize(x, y, args, section, switch)
+    set_icon :herb
+    return if check(switch)
+    super x, y - 4, 30, 36, :sprite_herb, Vector.new(-3, -4)
+    @active_bounds = Rectangle.new(x - 3, y - 8, 36, 40)
+  end
+
+  def update(section)
+    if SB.player.bomb.collide?(self)
+      take(section, true)
+      @dead = true
+    end
+  end
+
+  def use(section, switch)
+    obj = section.active_object
+    if obj.is_a? Monep
+      obj.activate
+      set_switch(switch)
+    end
   end
 end
 

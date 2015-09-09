@@ -229,7 +229,7 @@ class StageMenu
                          745, 55, C::PANEL_COLOR, 0
       if p.cur_item_type
         item_set = p.items[p.cur_item_type]
-        item_set[0][:obj].icon.draw 750, 10, 0
+        item_set[0][:obj].icon.draw 754, 14, 0
         SB.font.draw item_set.length.to_s, 780, 36, 0, 1, 1, 0xff000000
       end
       if p.items.length > 1

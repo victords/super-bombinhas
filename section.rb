@@ -58,6 +58,7 @@ class Section
     GunPowder,
     Hammer,
     Heart,
+    Herb,
     Jellep,
     Key,
     Life,

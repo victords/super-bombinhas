@@ -166,9 +166,11 @@ class Door < GameObject
     end
   end
 
-  def unlock
+  def unlock(section)
     @locked = false
     @lock = nil
+    section.active_object = nil
+    SB.stage.set_switch self
   end
 
   def draw(map)
@@ -827,11 +829,44 @@ class Board < GameObject
     SB.player.add_item @switch
     @switch[:state] = :temp_taken
     section.obstacles.delete self
+    section.active_object = nil
     @dead = true
   end
 
   def draw(map)
     super(map, 1, 1, 255, 0xffffff, nil, @facing_right ? nil : :horiz)
+  end
+end
+
+class Monep < GameObject
+  def initialize(x, y, args, section, switch)
+    super x, y, 32, 128, :sprite_monep, Vector.new(0, 0), 3, 1
+  end
+
+  def update(section)
+    if @blocking
+      if SB.player.bomb.collide? self
+        # if @state == :normal
+        # set_fixed_camera...
+        # fala...
+        # section.active_object = self
+        # elsif @state == :speaking
+        # timer++...
+        # else
+        # desenha balaozinho pedindo erva
+      else
+        section.active_object = nil if section.active_object == self
+        animate [0, 1, 2], 8
+      end
+    else
+      animate [0, 1, 2], 8
+    end
+  end
+
+  def activate(section)
+    @blocking = false
+    section.active_object = nil
+    SB.stage.set_switch(self)
   end
 end
 
