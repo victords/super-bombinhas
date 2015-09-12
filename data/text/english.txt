@@ -41,6 +41,7 @@ restart			Press 'Enter' to restart
 game_over		Game over!
 msg1			Testing message
 msg2			Second test message
+msg_monep		Hey! Hold on! If you want to go any further, you must bring me a Forest Herb. Yes, a delicious Forest Herb... Now get lost and only come back here when you have it!
 chamal_speech	Muahahahahahahahahahahahaha hahahahahaha hahaha hahahahahaha hahahahahahahahahaha hahaha hahahaha haha!
 chamal_death	Noooooooooooooooooooooo...!! Y u do dis??
 count_down		Countdown to explosion!

@@ -41,6 +41,7 @@ restart			Pulsa 'Enter' para reanudar
 game_over		¡Fin del juego!
 msg1			Testando mensaje
 msg2			Segunda mensaje de teste
+msg_monep		¡Hey! ¡Espera un minuto! Si quieres ir adelante debe traerme una Hierba del Bosque. Sí, una deliciosa Hierba del Bosque... ¡Ahora vas y solo vuelve aquí cuando la tuvieres!
 chamal_speech	Muajajajajajajajajajajajaja jajajajajaja jajaja jajajajajaja jajajajajajajajajaja jajaja jajajaja jaja!
 chamal_death	Noooooooooooooooooooooo...!! Y u do dis??
 count_down		¡Cuenta regresiva para explodir!

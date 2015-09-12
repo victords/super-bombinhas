@@ -121,13 +121,7 @@ class Bombie < GameObject
   def draw(map)
     super map
     @balloon.draw @x - map.cam.x + 16, @y - map.cam.y - 32, 0 if @active
-    if @speaking
-      G.window.draw_quad 5, 495, C::PANEL_COLOR,
-                         795, 495, C::PANEL_COLOR,
-                         5, 595, C::PANEL_COLOR,
-                         795, 595, C::PANEL_COLOR, 0
-      SB.text_helper.write_breaking SB.text(@msg_id), 10, 500, 790, :justified
-    end
+    speak(@msg_id) if @speaking
   end
 end
 
@@ -888,6 +882,7 @@ class Monep < GameObject
   def draw(map)
     super map
     @balloon.draw @x - map.cam.x, @y + 30 - map.cam.y, 0 if @state == :waiting
+    speak(:msg_monep) if @state == :speaking
   end
 end
 

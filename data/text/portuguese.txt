@@ -41,6 +41,7 @@ restart			Pressione 'Enter' para recomeçar
 game_over		Fim de jogo!
 msg1			Testando mensagem...
 msg2			Segunda mensagem de teste
+msg_monep		Ei! Alto lá! Se você quiser passar por aqui, tem que me trazer uma erva florestal. Isso mesmo, uma deliciosa erva florestal... Agora suma daqui e volte apenas quando tiver arranjado uma para mim!
 chamal_speech	Muahahahahahahahahahahahaha hahahahahaha hahaha hahahahahaha hahahahahahahahahaha hahaha hahahaha haha!
 chamal_death	Nãããããããããããããããoooooo...!! Y u do dis??
 count_down		Contagem regressiva para explodir!

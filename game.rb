@@ -119,6 +119,15 @@ class MiniGL::GameObject
   def position
     Vector.new(@x, @y)
   end
+
+  def speak(msg_id)
+    return if SB.state == :paused
+    G.window.draw_quad 5, 495, C::PANEL_COLOR,
+                       795, 495, C::PANEL_COLOR,
+                       5, 595, C::PANEL_COLOR,
+                       795, 595, C::PANEL_COLOR, 0
+    SB.text_helper.write_breaking SB.text(msg_id), 10, 500, 780, :justified
+  end
 end
 
 SBGame.new.show
