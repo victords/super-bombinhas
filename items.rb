@@ -319,7 +319,7 @@ class Herb < GameObject
   def use(section, switch)
     obj = section.active_object
     if obj.is_a? Monep
-      obj.activate
+      obj.activate(section)
       set_switch(switch)
     end
   end

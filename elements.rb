@@ -840,33 +840,54 @@ end
 
 class Monep < GameObject
   def initialize(x, y, args, section, switch)
-    super x, y, 32, 128, :sprite_monep, Vector.new(0, 0), 3, 1
+    super x, y, 62, 224, :sprite_monep, Vector.new(0, 0), 3, 2
+    @active_bounds = Rectangle.new(x, y, 62, 224)
+    @blocking = switch[:state] != :taken
+    @state = :normal
+    @balloon = Res.img :fx_Balloon3
   end
 
   def update(section)
     if @blocking
-      if SB.player.bomb.collide? self
-        # if @state == :normal
-        # set_fixed_camera...
-        # fala...
-        # section.active_object = self
-        # elsif @state == :speaking
-        # timer++...
-        # else
-        # desenha balaozinho pedindo erva
+      b = SB.player.bomb
+      if b.collide? self
+        if @state == :normal
+          section.set_fixed_camera(@x + @w / 2 - C::SCREEN_WIDTH / 2, @y + 50 - C::SCREEN_HEIGHT / 2)
+          section.active_object = self
+          set_animation 3
+          @state = :speaking
+          @timer = 0
+        elsif @state == :speaking
+          @timer += 1
+          if @timer == 600 or KB.key_pressed? Gosu::KbReturn or KB.key_pressed? Gosu::KbUp
+            section.unset_fixed_camera
+            set_animation 0
+            @state = :waiting
+          end
+        elsif b.x > @x + @w / 2 - b.w / 2
+          b.x = @x + @w / 2 - b.w / 2
+        end
       else
-        section.active_object = nil if section.active_object == self
-        animate [0, 1, 2], 8
+        if section.active_object == self
+          section.active_object = nil
+          @state = :normal
+        end
       end
-    else
-      animate [0, 1, 2], 8
     end
+    if @state == :speaking; animate [3, 4, 5, 4, 5, 3, 5], 10
+    else; animate [0, 1, 0, 2], 10; end
   end
 
   def activate(section)
     @blocking = false
+    @state = :normal
     section.active_object = nil
     SB.stage.set_switch(self)
+  end
+
+  def draw(map)
+    super map
+    @balloon.draw @x - map.cam.x, @y + 30 - map.cam.y, 0 if @state == :waiting
   end
 end
 

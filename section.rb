@@ -62,6 +62,7 @@ class Section
     Jellep,
     Key,
     Life,
+    Monep,
     MovingWall,
     Pin,
     Poison,
@@ -371,6 +372,7 @@ class Section
   def set_fixed_camera(x, y)
     @map.set_camera x, y
     @fixed_camera = true
+    SB.player.bomb.stop
   end
 
   def unset_fixed_camera

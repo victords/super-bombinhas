@@ -187,6 +187,10 @@ class Bomb < GameObject
     set_animation 8
   end
 
+  def stop
+    @speed.x = @speed.y = @stored_forces.x = @stored_forces.y = 0
+  end
+
   def is_visible(map)
     true
   end
