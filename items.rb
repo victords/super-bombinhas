@@ -336,5 +336,10 @@ class Spec < FloatingItem
       SB.player.stage_score += 1000
       SB.set_spec_taken
     end
+    if rand < 0.05
+      x = @x + rand(@w) - 7
+      y = @y + rand(@h) - 7
+      section.add_effect(Effect.new(x, y, :fx_Glow1, 3, 2, 6, [0, 1, 2, 3, 4, 5, 4, 3, 2, 1, 0], 66))
+    end
   end
 end
