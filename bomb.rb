@@ -185,6 +185,7 @@ class Bomb < GameObject
     @dying = true
     @indices = [8, 9, 10]
     set_animation 8
+    stop
   end
 
   def stop

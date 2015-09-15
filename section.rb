@@ -36,6 +36,7 @@ end
 class Section
   ELEMENT_TYPES = [
     AirMattress,
+    Armep,
     Attack1,
     Ball,
     BallReceptor,

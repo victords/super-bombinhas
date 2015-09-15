@@ -50,12 +50,12 @@ class Enemy < GameObject
     unless @invulnerable
       b = SB.player.bomb
       if b.over? self
+        b.stored_forces.y -= C::BOUNCE_FORCE unless SB.player.dead?
         hit_by_bomb(section)
-        b.stored_forces.y -= C::BOUNCE_FORCE
       elsif b.explode? self
         hit_by_explosion(section)
       elsif section.projectile_hit? self
-        hit(section)
+        hit_by_projectile(section)
       elsif b.collide? self
         b.hit
       end
@@ -80,6 +80,10 @@ class Enemy < GameObject
 
   def hit_by_explosion(section)
     @hp = 1
+    hit(section)
+  end
+
+  def hit_by_projectile(section)
     hit(section)
   end
 
@@ -140,6 +144,7 @@ class FloorEnemy < Enemy
     super
     if @dying
       @indices = [2, 3, 4]
+      set_animation 2
       @interval = 5
     end
   end
@@ -801,4 +806,16 @@ class Vamep < Enemy
       @angle %= 360 if @angle >= 360
     end
   end
+end
+
+class Armep < FloorEnemy
+  def initialize(x, y, args, section)
+    super(x, y + 12, args, 41, 20, :sprite_armep, Vector.new(-21, -3), 1, 5, [0, 1, 0, 2], 8, 290, 1, 1.3)
+  end
+
+  def hit_by_bomb(section)
+    SB.player.bomb.hit
+  end
+
+  def hit_by_projectile(section); end
 end
