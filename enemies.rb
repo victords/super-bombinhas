@@ -781,6 +781,37 @@ class Jellep < Enemy
   end
 end
 
+class Snep < Enemy
+  def initialize(x, y, args, section)
+    @facing_right = args.nil?
+    super @facing_right ? x : x - 16, y - 24, 48, 56, :sprite_snep,
+          Vector.new(0, 4), 3, 4, [0, 1, 0, 2], 12, 200
+  end
+
+  def update(section)
+    super(section) do
+      if @attacking && @img_index == 0
+        @attacking = false
+        @indices = [0, 1, 0, 2]
+        @interval = 12
+        set_animation 0
+      end
+    end
+  end
+
+  def hit_by_bomb(section)
+    SB.player.bomb.hit
+    @attacking = true
+    @indices = [3, 4, 5, 4, 3, 0]
+    @interval = 4
+    set_animation 3
+  end
+
+  def draw(map)
+    super map, 1, 1, 255, 0xffffff, nil, @facing_right ? nil : :horiz
+  end
+end
+
 class Vamep < Enemy
   def initialize(x, y, args, section)
     super x, y, 29, 22, :sprite_vamep, Vector.new(-24, -18), 2, 2, [0, 1, 2, 3, 2, 1], 6, 300

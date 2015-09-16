@@ -70,6 +70,7 @@ class Section
     Robort,
     SaveBombie,
     Shep,
+    Snep,
     Spec,
     SpecGate,
     Spikes,
