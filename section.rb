@@ -65,6 +65,7 @@ class Section
     Life,
     Monep,
     MovingWall,
+    Owlep,
     Pin,
     Poison,
     Robort,

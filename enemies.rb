@@ -871,3 +871,9 @@ class Armep < FloorEnemy
 
   def hit_by_projectile(section); end
 end
+
+class Owlep < Enemy
+  def initialize(x, y, args, section)
+    super x - 3, y - 32, 38, 55, :sprite_owlep, Vector.new(-3, 0), 1, 1, [0], 0, 250, 2
+  end
+end
