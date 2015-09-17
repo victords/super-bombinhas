@@ -47,10 +47,10 @@ class Enemy < GameObject
       return
     end
 
-    unless @invulnerable
+    unless @invulnerable or SB.player.dead?
       b = SB.player.bomb
       if b.over? self
-        b.stored_forces.y -= C::BOUNCE_FORCE unless SB.player.dead?
+        b.stored_forces.y -= C::BOUNCE_FORCE
         hit_by_bomb(section)
       elsif b.explode? self
         hit_by_explosion(section)
@@ -783,15 +783,28 @@ end
 
 class Snep < Enemy
   def initialize(x, y, args, section)
+    super x, y - 24, 32, 56, :sprite_snep, Vector.new(0, 4), 5, 2, [0, 1, 0, 2], 12, 200
     @facing_right = args.nil?
-    super @facing_right ? x : x - 16, y - 24, 48, 56, :sprite_snep,
-          Vector.new(0, 4), 3, 4, [0, 1, 0, 2], 12, 200
   end
 
   def update(section)
     super(section) do
+      b = SB.player.bomb
+      if b.y + b.h > @y && b.y + b.h <= @y + @h &&
+         (@facing_right && b.x > @x && b.x < @x + @w + 16 || !@facing_right && b.x < @x && b.x + b.w > @x - 16)
+        if @attacking
+          @hurting = true if @img_index == 8
+          b.hit if @hurting
+        else
+          @attacking = true
+          @indices = [6, 7, 8, 7, 6, 0]
+          @interval = 4
+          set_animation 6
+        end
+      end
+
       if @attacking && @img_index == 0
-        @attacking = false
+        @attacking = @hurting = false
         @indices = [0, 1, 0, 2]
         @interval = 12
         set_animation 0
@@ -805,6 +818,14 @@ class Snep < Enemy
     @indices = [3, 4, 5, 4, 3, 0]
     @interval = 4
     set_animation 3
+  end
+
+  def hit(section)
+    super
+    if @dying
+      @indices = [9]
+      set_animation 9
+    end
   end
 
   def draw(map)
