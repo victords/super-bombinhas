@@ -874,6 +874,35 @@ end
 
 class Owlep < Enemy
   def initialize(x, y, args, section)
-    super x - 3, y - 32, 38, 55, :sprite_owlep, Vector.new(-3, 0), 1, 1, [0], 0, 250, 2
+    super x - 3, y - 34, 38, 55, :sprite_owlep, Vector.new(-3, 0), 4, 1, [0, 0, 1, 0, 0, 0, 2], 60, 250, 2
+  end
+
+  def update(section)
+    super(section) do
+      b = SB.player.bomb
+      if !@attacking && b.x + b.w > @x && b.x < @x + @w && b.y > @y + @h && b.y < @y + C::SCREEN_HEIGHT
+        section.add(Projectile.new(@x + 10, @y + 10, 3, 270, self))
+        section.add(Projectile.new(@x + 20, @y + 10, 3, 270, self))
+        @indices = [0]
+        set_animation 0
+        @attacking = true
+        @timer = 0
+      elsif @attacking
+        @timer += 1
+        if @timer == 120
+          @indices = [0, 0, 1, 0, 0, 0, 2]
+          set_animation 0
+          @attacking = false
+        end
+      end
+    end
+  end
+
+  def hit(section)
+    super
+    if @dying
+      @indices = [3]
+      set_animation 3
+    end
   end
 end

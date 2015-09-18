@@ -32,6 +32,7 @@ class Bomb < GameObject
 
   def update(section)
     forces = Vector.new 0, 0
+    walking = false
     if @celebrating
       animate @indices, 8 unless @img_index == 7
     elsif @dying
@@ -54,7 +55,6 @@ class Bomb < GameObject
           @explosion_timer = 0
         end
       end
-      walking = false
       if KB.key_down? Gosu::KbLeft
         @facing_right = false
         forces.x -= @bottom ? 0.3 : 0.1
@@ -75,7 +75,6 @@ class Bomb < GameObject
           forces.y -= 14 + @jump_speed * @speed.x.abs
           set_animation 3
         end
-        forces.x -= 0.15 * @speed.x unless walking
       end
       SB.player.change_item if KB.key_pressed? Gosu::KbLeftShift or KB.key_pressed? Gosu::KbRightShift
       SB.player.use_item section if KB.key_pressed? Gosu::KbA
@@ -97,6 +96,8 @@ class Bomb < GameObject
 
       hit if section.projectile_hit?(self)
     end
+
+    forces.x -= 0.2 * @speed.x if @bottom and not walking
     move forces, section.get_obstacles(@x, @y), section.ramps if @active
   end
 
