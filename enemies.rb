@@ -683,7 +683,7 @@ class Shep < FloorEnemy
     if @attacking
       @timer += 1
       if @timer == 35
-        section.add(Projectile.new(@facing_right ? @x + @w - 4 : @x - 4, @y + 10, 2, @facing_right ? 0 : Math::PI, self))
+        section.add(Projectile.new(@facing_right ? @x + @w - 4 : @x - 4, @y + 10, 2, @facing_right ? 0 : 180, self))
         set_direction @next_dir
       end
       animate @indices, @interval
@@ -904,5 +904,54 @@ class Owlep < Enemy
       @indices = [3]
       set_animation 3
     end
+  end
+end
+
+class Zep < Enemy
+  def initialize(x, y, args, section)
+    super x, y - 18, 60, 50, :sprite_zep, Vector.new(-24, -30), 2, 3, [0, 1, 2, 3, 4], 5, 500, 3
+    @passable = true
+
+    @aim1 = Vector.new(@x, @y)
+    while not section.obstacle_at? @aim1.x - 3, @aim1.y and
+        not section.obstacle_at? @aim1.x - 3, @aim1.y + 20
+      @aim1.x -= C::TILE_SIZE
+    end
+
+    @aim2 = Vector.new(@x, @y)
+    while not section.obstacle_at? @aim2.x + 65, @aim2.y and
+        not section.obstacle_at? @aim2.x + 65, @aim2.y + 20
+      @aim2.x += C::TILE_SIZE
+    end
+    @aim2.x += 4
+
+    @aim = @aim1
+    section.obstacles << self
+  end
+
+  def update(section)
+    super section do
+      b = SB.player.bomb
+      move_carrying @aim, 4, [b], section.get_obstacles(b.x, b.y), section.ramps
+      if @speed.x == 0 and @speed.y == 0
+        @aim = @aim == @aim1 ? @aim2 : @aim1
+        @img_gap.x = @aim == @aim2 ? -16 : -24
+      end
+    end
+  end
+
+  def hit_by_bomb(section); end
+
+  def hit(section)
+    super
+    if @dying
+      section.obstacles.delete self
+      @indices = [5]
+      set_animation 5
+    end
+  end
+
+  def draw(map)
+    super map, 1, 1, 255, 0xffffff, nil, @aim == @aim1 ? nil : :horiz
   end
 end

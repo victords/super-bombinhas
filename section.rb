@@ -82,7 +82,8 @@ class Section
     Vamep,
     Vortex,
     Wheeliam,
-    Yaw
+    Yaw,
+    Zep
   ]
 
   attr_reader :reload, :tiles, :obstacles, :ramps, :passengers, :size, :default_entrance

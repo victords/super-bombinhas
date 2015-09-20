@@ -148,7 +148,7 @@ class Attack1 < FloatingItem
     b = SB.player.bomb
     return false if b.type != @type
     if b.facing_right; angle = 0
-    else; angle = Math::PI; end
+    else; angle = 180; end
     section.add Projectile.new(b.x, b.y, 1, angle, b)
     set_switch(switch)
     true
