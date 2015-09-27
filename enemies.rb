@@ -123,7 +123,7 @@ class FloorEnemy < Enemy
       super section
     else
       super section do
-        move @forces, section.get_obstacles(@x, @y), section.ramps
+        move @forces, section.get_obstacles(@x, @y, @w, @h), section.ramps
         @forces.x = 0
         if @left
           set_direction :right
@@ -953,5 +953,12 @@ class Zep < Enemy
 
   def draw(map)
     super map, 1, 1, 255, 0xffffff, nil, @aim == @aim1 ? nil : :horiz
+  end
+end
+
+class Sahiss < FloorEnemy
+  def initialize(x, y, args, section)
+    super x - 48, y - 148, args, 160, 180, :sprite_sahiss, Vector.new(-2, -3), 2, 2, [0, 1, 0, 2], 7, 2000, 3
+
   end
 end

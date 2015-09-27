@@ -69,6 +69,7 @@ class Section
     Pin,
     Poison,
     Robort,
+    Sahiss,
     SaveBombie,
     Shep,
     Snep,
@@ -285,7 +286,7 @@ class Section
     @warp = nil
   end
 
-  def get_obstacles(x, y)
+  def get_obstacles(x, y, w = 0, h = 0)
     obstacles = []
     if x > @size.x - 4 * C::TILE_SIZE and @border_exit != 1
       obstacles << Block.new(@size.x, 0, 1, @size.y, false)
@@ -294,10 +295,20 @@ class Section
       obstacles << Block.new(-1, 0, 1, @size.y, false)
     end
 
+    offset_x = offset_y = 2
+    if w > 0
+      x += w / 2
+      offset_x = w / 64 + 2
+    end
+    if h > 0
+      y += h / 2
+      offset_y = h / 64 + 2
+    end
+
     i = (x / C::TILE_SIZE).round
     j = (y / C::TILE_SIZE).round
-    ((i-2)..(i+2)).each do |k|
-      ((j-2)..(j+2)).each do |l|
+    ((i-offset_x)..(i+offset_x)).each do |k|
+      ((j-offset_y)..(j+offset_y)).each do |l|
         if @tiles[k] and @tiles[k][l]
           if @tiles[k][l].pass >= 0
             obstacles << Block.new(k * C::TILE_SIZE, l * C::TILE_SIZE, C::TILE_SIZE, C::TILE_SIZE, true)
