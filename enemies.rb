@@ -958,7 +958,75 @@ end
 
 class Sahiss < FloorEnemy
   def initialize(x, y, args, section)
-    super x - 48, y - 148, args, 160, 180, :sprite_sahiss, Vector.new(-2, -3), 2, 2, [0, 1, 0, 2], 7, 2000, 3
-
+    super x - 54, y - 148, args, 148, 180, :sprite_sahiss, Vector.new(-139, -3), 2, 3, [0, 1, 0, 2], 7, 2000, 3
+    @timer = 0
+    @time = 120 + rand(240)
   end
+
+  def update(section)
+    if @attacking
+      move_free @aim, 6
+      b = SB.player.bomb
+      if b.over? self
+        b.stored_forces.y -= C::BOUNCE_FORCE
+      elsif b.collide? self
+        b.hit
+      end
+      if @speed.x == 0
+        if @img_index == 5
+          set_bounds 3
+          @img_index = 4
+        end
+        @timer += 1
+        if @timer == 5
+          set_bounds 4
+          @img_index = 0
+        elsif @timer == 60
+          @img_index = 0
+          @stored_forces.x = -3
+          @attacking = false
+          @timer = 0
+          @time = 120 + rand(240)
+        end
+      elsif @img_index == 4
+        @timer += 1
+        if @timer == 5
+          set_bounds 2
+          @img_index = 5
+          @timer = 0
+        end
+      end
+    else
+      prev = @facing_right
+      super(section)
+      if @aim
+        @timer += 1
+        if @timer == @time
+          if @facing_right
+            @timer = @time - 1
+          else
+            set_bounds 1
+            @attacking = true
+            @img_index = 4
+            @timer = 0
+          end
+        end
+      elsif @facing_right and not prev
+        @aim = Vector.new(@x, @y)
+      end
+    end
+  end
+
+  def set_bounds(step)
+    @x += case step; when 1 then -55; when 2 then -74; else 0; end
+    @y += case step; when 1 then 16; when 2 then 45; when 3 then -45; else -16; end
+    @aim.y += case step; when 1 then 16; when 2 then 45; when 3 then -45; else -16; end
+    @w = case step; when 1 then 137; when 2 then 170; when 3 then 137; else 148; end
+    @h = case step; when 1 then 164; when 2 then 70; when 3 then 164; else 180; end
+    @img_gap.x = case step; when 1 then -84; when 2 then -10; when 3 then -84; else -139; end
+    @img_gap.y = case step; when 1 then -19; when 2 then -64; when 3 then -19; else -3; end
+  end
+
+  def hit_by_bomb(section); end
+  def hit_by_projectile(section); end
 end
