@@ -79,6 +79,7 @@ class Section
     Spring,
     Sprinny,
     Stalactite,
+    StalactiteGenerator,
     Turner,
     Vamep,
     Vortex,
@@ -396,6 +397,7 @@ class Section
 
   def finish
     @finished = true
+    SB.player.bomb.active = false
   end
 
   def update(stopped)

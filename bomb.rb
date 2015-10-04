@@ -173,7 +173,7 @@ class Bomb < GameObject
     @will_explode = @exploding = @celebrating = @dying = false
     @speed.x = @speed.y = @stored_forces.x = @stored_forces.y = 0
     @hp = @max_hp
-    @facing_right = true
+    @active = @facing_right = true
   end
 
   def celebrate

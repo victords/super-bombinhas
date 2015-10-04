@@ -768,6 +768,7 @@ class Stalactite < GameObject
   def initialize(x, y, args, section)
     super x + 11, y - 16, 10, 48, :sprite_stalactite, Vector.new(-9, 0), 3, 2
     @active_bounds = Rectangle.new(x + 2, y, 28, 48)
+    @normal = args.nil?
   end
 
   def update(section)
@@ -778,6 +779,10 @@ class Stalactite < GameObject
     elsif @moving
       move Vector.new(0, 0), section.get_obstacles(@x, @y), section.ramps
       SB.player.bomb.hit if SB.player.bomb.collide?(self)
+      obj = section.active_object
+      if obj.is_a? Sahiss and obj.bounds.intersect?(self)
+        obj.hit(section)
+      end
       if @bottom
         @dying = true
         @moving = false
@@ -792,7 +797,8 @@ class Stalactite < GameObject
       @moving = true if @timer == 30
     else
       b = SB.player.bomb
-      if b.x + b.w > @x - 80 && b.x < @x + 90 && b.y > @y && b.y < @y + 256
+      if (@normal && b.x + b.w > @x - 80 && b.x < @x + 90 && b.y > @y && b.y < @y + 256) ||
+         (!@normal && b.x + b.w > @x && b.x < @x + @w && b.y + b.h > @y - C::TILE_SIZE && b.y + b.h < @y)
         @will_move = true
         @timer = 0
       end
@@ -885,6 +891,28 @@ class Monep < GameObject
     super map
     @balloon.draw @x - map.cam.x, @y + 30 - map.cam.y, 0 if @state == :waiting
     speak(:msg_monep) if @state == :speaking
+  end
+end
+
+class StalactiteGenerator < GameObject
+  def initialize(x, y, args, section)
+    super x, y, 96, 32, :sprite_stalacGen, Vector.new(0, 0)
+    @active_bounds = Rectangle.new(@x, @y, @w, @h)
+    @active = true
+    @limit = args.to_i * C::TILE_SIZE
+  end
+
+  def update(section)
+    if @active and SB.player.bomb.collide?(self)
+      section.add(Stalactite.new(@x + 96 + rand(@limit), @y + C::TILE_SIZE, '!', section))
+      @active = false
+      @timer = 0
+    elsif not @active
+      @timer += 1
+      if @timer == 60
+        @active = true
+      end
+    end
   end
 end
 

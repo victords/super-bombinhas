@@ -960,7 +960,8 @@ class Sahiss < FloorEnemy
   def initialize(x, y, args, section)
     super x - 54, y - 148, args, 148, 180, :sprite_sahiss, Vector.new(-139, -3), 2, 3, [0, 1, 0, 2], 7, 2000, 3
     @timer = 0
-    @time = 120 + rand(240)
+    @time = 180 + rand(240)
+    section.active_object = self
   end
 
   def update(section)
@@ -971,6 +972,9 @@ class Sahiss < FloorEnemy
         b.stored_forces.y -= C::BOUNCE_FORCE
       elsif b.collide? self
         b.hit
+      elsif @img_index == 5
+        r = Rectangle.new(@x + 170, @y, 1, 120)
+        b.hit if b.bounds.intersect? r
       end
       if @speed.x == 0
         if @img_index == 5
@@ -986,7 +990,7 @@ class Sahiss < FloorEnemy
           @stored_forces.x = -3
           @attacking = false
           @timer = 0
-          @time = 120 + rand(240)
+          @time = 180 + rand(240)
         end
       elsif @img_index == 4
         @timer += 1
@@ -999,7 +1003,9 @@ class Sahiss < FloorEnemy
     else
       prev = @facing_right
       super(section)
-      if @aim
+      if @dead
+        section.finish
+      elsif @aim
         @timer += 1
         if @timer == @time
           if @facing_right
@@ -1019,8 +1025,8 @@ class Sahiss < FloorEnemy
 
   def set_bounds(step)
     @x += case step; when 1 then -55; when 2 then -74; else 0; end
-    @y += case step; when 1 then 16; when 2 then 45; when 3 then -45; else -16; end
-    @aim.y += case step; when 1 then 16; when 2 then 45; when 3 then -45; else -16; end
+    @y += case step; when 1 then 16; when 2 then 60; when 3 then -60; else -16; end
+    @aim.y += case step; when 1 then 16; when 2 then 60; when 3 then -60; else -16; end
     @w = case step; when 1 then 137; when 2 then 170; when 3 then 137; else 148; end
     @h = case step; when 1 then 164; when 2 then 70; when 3 then 164; else 180; end
     @img_gap.x = case step; when 1 then -84; when 2 then -10; when 3 then -84; else -139; end
@@ -1029,4 +1035,26 @@ class Sahiss < FloorEnemy
 
   def hit_by_bomb(section); end
   def hit_by_projectile(section); end
+
+  def hit(section)
+    unless @invulnerable
+      super
+      if @img_index == 5
+        set_bounds 3; set_bounds 4
+      elsif @img_index == 4
+        set_bounds 4
+      end
+      @indices = [3]
+      set_animation 3
+      @attacking = false
+      @timer = 0
+      @time = 180 + rand(240)
+    end
+  end
+
+  def return_vulnerable
+    super
+    @indices = [0, 1, 0, 2]
+    set_animation 0
+  end
 end
