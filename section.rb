@@ -38,6 +38,7 @@ class Section
     AirMattress,
     Armep,
     Attack1,
+    Attack2,
     Ball,
     BallReceptor,
     BoardItem,

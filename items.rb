@@ -299,6 +299,31 @@ class Spring < GameObject
   end
 end
 
+class Attack2 < FloatingItem
+  include Item
+
+  def initialize(x, y, args, section, switch)
+    set_icon :attack2
+    return if check switch
+    super x + 2, y + 2, 28, 28, :sprite_attack2, nil, 8, 1,
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7], 6, :vermelha
+  end
+
+  def update(section)
+    super(section) do
+      take section, true
+    end
+  end
+
+  def use(section, switch)
+    b = SB.player.bomb
+    return false if b.type != @type
+    section.add Projectile.new(b.x, b.y, 4, 270, b)
+    set_switch(switch)
+    true
+  end
+end
+
 class Herb < GameObject
   include Item
 
