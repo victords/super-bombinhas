@@ -841,6 +841,29 @@ class Board < GameObject
   end
 end
 
+class Rock < GameObject
+  def initialize(x, y, args, section)
+    case args
+      when '1' then
+        objs = [['l', 0, 0, 26, 96], [26, 0, 32, 96], [58, 27, 31, 69], ['r', 89, 27, 18, 35], [89, 62, 30, 34]]
+        w = 120; h = 96; x -= 44; y -= 64
+      else
+        objs = []; w = h = 0
+    end
+    objs.each do |o|
+      if o[0].is_a? String
+        section.ramps << Ramp.new(x + o[1], y + o[2], o[3], o[4], o[0] == 'l')
+      else
+        section.obstacles << Block.new(x + o[0], y + o[1], o[2], o[3])
+      end
+    end
+    super x, y, w, h, "sprite_rock#{args}", Vector.new(0, 0)
+    @active_bounds = Rectangle.new(x, y, w, h)
+  end
+
+  def update(section); end
+end
+
 class Monep < GameObject
   def initialize(x, y, args, section, switch)
     super x, y, 62, 224, :sprite_monep, Vector.new(0, 0), 3, 2

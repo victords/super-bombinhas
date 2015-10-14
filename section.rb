@@ -70,6 +70,7 @@ class Section
     Pin,
     Poison,
     Robort,
+    Rock,
     Sahiss,
     SaveBombie,
     Shep,
