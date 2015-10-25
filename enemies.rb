@@ -747,6 +747,7 @@ class Jellep < Enemy
     @max_y = y
     @state = 0
     @timer = 0
+    @active_bounds.y = y
   end
 
   def update(section)

@@ -216,8 +216,9 @@ class Elevator < GameObject
     a = args.split(':')
     type = a[0].to_i
     case type
-      when 1 then w = 32; cols = nil; rows = nil
+      when 1 then w = 32; cols = rows = nil
       when 2 then w = 64; cols = 4; rows = 1
+      when 3 then w = 64; cols = rows = nil
     end
     super x, y, w, 1, "sprite_Elevator#{type}", Vector.new(0, 0), cols, rows
     @passable = true
@@ -730,6 +731,37 @@ class AirMattress < GameObject
   def draw(map)
     super map, 1, 1, 255, @color
   end
+end
+
+class Water
+  attr_reader :bounds
+
+  def initialize(x, y, args, section)
+    a = args.split ':'
+    @x = x
+    @y = y + 5
+    @w = C::TILE_SIZE * a[0].to_i
+    @h = C::TILE_SIZE * a[1].to_i - 5
+    @bounds = Rectangle.new(@x, @y, @w, @h)
+  end
+
+  def update(section)
+    b = SB.player.bomb
+    if b.collide? self
+      b.stored_forces.y -= 1
+      SB.player.die
+    end
+  end
+
+  def dead?
+    false
+  end
+
+  def is_visible(map)
+    map.cam.intersect? @bounds
+  end
+
+  def draw(map); end
 end
 
 class ForceField < GameObject
