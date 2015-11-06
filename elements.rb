@@ -750,7 +750,10 @@ class Water
     b = SB.player.bomb
     if b.collide? self
       b.stored_forces.y -= 1
-      SB.player.die
+      unless SB.player.dead?
+        SB.player.die
+        section.add_effect(Effect.new(b.x + b.w / 2 - 32, @y - 19, :fx_water, 1, 4, 8))
+      end
     end
   end
 
