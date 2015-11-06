@@ -734,7 +734,7 @@ class AirMattress < GameObject
 end
 
 class Water
-  attr_reader :bounds
+  attr_reader :x, :y, :w, :h, :bounds
 
   def initialize(x, y, args, section)
     a = args.split ':'
@@ -743,6 +743,7 @@ class Water
     @w = C::TILE_SIZE * a[0].to_i
     @h = C::TILE_SIZE * a[1].to_i - 5
     @bounds = Rectangle.new(@x, @y, @w, @h)
+    section.add_interacting_element(self)
   end
 
   def update(section)

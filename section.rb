@@ -246,7 +246,8 @@ class Section
 
   def start(switches, bomb_x, bomb_y)
     @elements = []
-    @obstacles = [] #vetor de obstáculos não-tile
+    @inter_elements = [] # vetor de objetos que podem interagir com outros
+    @obstacles = [] # vetor de obstáculos não-tile
     @effects = []
     @locked_door = nil
     @reload = false
@@ -337,6 +338,19 @@ class Section
     i = x / C::TILE_SIZE
     j = y / C::TILE_SIZE
     @tiles[i] and @tiles[i][j] and (@tiles[i][j].pass >= 0 or @tiles[i][j].wall >= 0) and not @tiles[i][j].broken
+  end
+
+  def add_interacting_element(el)
+    @inter_elements << el
+  end
+
+  def element_at(type, x, y)
+    @inter_elements.each do |e|
+      if e.is_a? type and x >= e.x and x <= e.x + e.w and y >= e.y and y <= e.y + e.h
+        return e
+      end
+    end
+    nil
   end
 
   def get_next_ball_receptor

@@ -748,6 +748,7 @@ class Jellep < Enemy
     @state = 0
     @timer = 0
     @active_bounds.y = y
+    @water = true
   end
 
   def update(section)
@@ -768,6 +769,11 @@ class Jellep < Enemy
           @speed.y = 0
           @y = section.size.y - 1
           @state = 0
+        end
+        @prev_water = @water
+        @water = section.element_at(Water, @x, @y)
+        if @water && !@prev_water || @prev_water && !@water
+          section.add_effect(Effect.new(@x - 16, (@water || @prev_water).y - 16, :fx_water, 1, 4, 8))
         end
       end
     end
