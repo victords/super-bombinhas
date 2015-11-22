@@ -1,3 +1,4 @@
+require 'rbconfig'
 require_relative 'menu'
 require_relative 'stage_menu'
 require_relative 'movie'
@@ -6,7 +7,15 @@ class SBGame < MiniGL::GameWindow
   def initialize
     super(C::SCREEN_WIDTH, C::SCREEN_HEIGHT, false, Vector.new(0, 0.9))
     G.ramp_slip_force = 0.8
-    SB.initialize
+    
+    os = RbConfig::CONFIG['host_os']
+    dir =
+      if /linux/ =~ os
+        "#{Dir.home}/.aleva-games/super-bombinhas"
+      else
+        "#{Dir.home}/AppData/Local/Aleva Games/Super Bombinhas"
+      end
+	SB.initialize dir
 
     @logo = Res.img(:ui_alevaLogo)
     @timer = @state = @alpha = 0

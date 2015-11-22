@@ -164,7 +164,7 @@ class Menu
     def add_game_slots
       components = []
       @saved_games = []
-      games = Dir["#{Res.prefix}save/*"].sort
+      games = Dir["#{SB.save_dir}/*"].sort
       next_index = 0
       sound = Res.sound :btn1
       games.each do |g|

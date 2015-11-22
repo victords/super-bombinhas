@@ -1,5 +1,6 @@
 # require 'joystick'
 require 'minigl'
+require 'fileutils'
 
 module C
   TILE_SIZE = 32
@@ -27,10 +28,10 @@ end
 
 class SB
   class << self
-    attr_reader :font, :big_font, :text_helper, :big_text_helper, :small_text_helper, :save_data, :lang
+    attr_reader :font, :big_font, :text_helper, :big_text_helper, :small_text_helper, :save_dir, :save_data, :lang
     attr_accessor :state, :player, :world, :stage, :movie, :music_volume, :sound_volume
 
-    def initialize
+    def initialize(save_dir)
       @state = :presentation
 
       @font = Res.font :BankGothicMedium, 20
@@ -51,9 +52,11 @@ class SB
         end
       end
 
-      options_path = "#{Res.prefix}save/options"
-      unless File.exist?(options_path)
-        File.open(options_path, 'w') do |f|
+	  @save_dir = save_dir
+      options_path = "#{save_dir}/options"
+      unless File.exist?(save_dir)
+        FileUtils.mkdir_p save_dir
+		File.open(options_path, 'w') do |f|
           f.print 'english,10,10'
         end
       end
@@ -105,7 +108,7 @@ class SB
     end
 
     def save_options
-      File.open("#{Res.prefix}save/options", 'w') do |f|
+      File.open("#{@save_dir}/options", 'w') do |f|
         f.print("#{@lang},#{@sound_volume},#{@music_volume}")
       end
     end
@@ -113,7 +116,7 @@ class SB
     def new_game(name, index)
       @player = Player.new name
       @world = World.new
-      @save_file_name = "#{Res.prefix}save/#{index}"
+      @save_file_name = "#{@save_dir}/#{index}"
       @save_data = Array.new(10)
       @movie = Movie.new 0
       @state = :movie
