@@ -58,9 +58,9 @@ bonus_2			sdkfh sdjh dfjkdfk jk
 bonus_3			sdf fdfh gh
 bonus_4			rtrtrt rtr trt r
 bonus_5			w erte terter rtr
-movie_1_1		Español sdjfkls\njdfsj dkfjkdfj skdfjsk djfslkjsj dfk dskf sdfkjl.
-movie_1_2		blab balfab fablabs fblabf blaf ablafbalbf afblabf.
-movie_1_3		Thjg dkfjkjdsf jf psdf sdkjflsdkfj sjdkfsj s djfksl sdfjkjdf.\najkdhasdh asjsdh.
+movie_0_1		En una tierra lejana, hay una bella aldea, habitada por... bombas.
+movie_0_2		Esta aldea solía ser un lugar tranquilo, donde el pueblo amaba su rey y tenía una vida próspera.
+movie_0_3		Pero la envidia de Gaxlon, uno de los consejeros del rey, acaba de trastornar esta tranquilidad...
 game_end		¡Fin!
 game_end_sub	Pero... ¿has recogido todos los Specs?
 game_end_2		¡Fin!

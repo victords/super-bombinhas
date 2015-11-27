@@ -55,14 +55,14 @@ class MovieElement < GameObject
                          795, 495, C::PANEL_COLOR,
                          5, 595, C::PANEL_COLOR,
                          795, 595, C::PANEL_COLOR, 0
-      SB.text_helper.write_breaking SB.text(@cur_action[:text]).gsub("\\n", "\n"), 10, 500, 790, :justified
+      SB.text_helper.write_breaking SB.text(@cur_action[:text]).gsub("\\n", "\n"), 10, 500, 780, :justified
     end
   end
 end
 
 class MovieScene
   def initialize(file_name)
-    @bg = Res.img "movie_#{file_name.split('/')[-1]}"
+    @bg = Res.img "movie_#{file_name.split('/')[-1]}", false, false, '.jpg'
     f = File.open(file_name)
     es = f.read.split "\n\n"
     f.close

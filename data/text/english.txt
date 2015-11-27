@@ -58,9 +58,9 @@ bonus_2			sdkfh sdjh dfjkdfk jk
 bonus_3			sdf fdfh gh
 bonus_4			rtrtrt rtr trt r
 bonus_5			w erte terter rtr
-movie_1_1		lskdjfksjdlkf sdjfkls\njdfsj dkfjkdfj skdfjsk djfslkjsj dfk dskf sdfkjl.
-movie_1_2		blab balfab fablabs fblabf blaf ablafbalbf afblabf.
-movie_1_3		Thjg dkfjkjdsf jf psdf sdkjflsdkfj sjdkfsj s djfksl sdfjkjdf.\najkdhasdh asjsdh.
+movie_0_1		In a distant land, there is a beautiful village inhabited by living... bombs.
+movie_0_2		This village was once a peaceful place, where the people loved their king and had prosperous lives.
+movie_0_3		But the envy of Gaxlon, one of the king's counselors, has just unsettled this tranquility...
 game_end		The End!
 game_end_sub	But... have you collected all the Specs?
 game_end_2		The End!

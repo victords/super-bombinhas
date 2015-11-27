@@ -58,9 +58,9 @@ bonus_2			sdkfh sdjh dfjkdfk jk
 bonus_3			sdf fdfh gh
 bonus_4			rtrtrt rtr trt r
 bonus_5			w erte terter rtr
-movie_1_1		Portugues sdjfkls\njdfsj dkfjkdfj skdfjsk djfslkjsj dfk dskf sdfkjl.
-movie_1_2		blab balfab fablabs fblabf blaf ablafbalbf afblabf.
-movie_1_3		Thjg dkfjkjdsf jf psdf sdkjflsdkfj sjdkfsj s djfksl sdfjkjdf.\najkdhasdh asjsdh.
+movie_0_1		Numa terra distante, há um belo vilarejo, habitado por... bombas.
+movie_0_2		Este vilarejo foi um dia um lugar pacífico, onde o povo amava seu rei e vivia na prosperidade.
+movie_0_3		Mas a inveja de Gaxlon, um dos conselheiros do rei, acaba de abalar esta tranquilidade...
 game_end		Fim!
 game_end_sub	Mas... você pegou todos os Specs?
 game_end_2		Fim!
