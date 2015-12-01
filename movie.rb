@@ -13,13 +13,14 @@ class MovieElement < GameObject
         delay: d[0].to_i,
         x: pos ? pos[0].to_i : nil,
         y: pos ? pos[1].to_i : nil,
-        text: pos ? nil : eval(d[1]),
+        text: pos ? nil : SB.text(eval(d[1])).gsub("\\n", "\n"),
         indices: eval(d[2]),
         last_index: d[3].to_i,
         interval: d[4].to_i,
         duration: d[5].to_i
       }
     end
+    @finished = @actions.length == 0
     @action_index = 0
     @timer = 0
   end
@@ -55,7 +56,7 @@ class MovieElement < GameObject
                          795, 495, C::PANEL_COLOR,
                          5, 595, C::PANEL_COLOR,
                          795, 595, C::PANEL_COLOR, 0
-      SB.text_helper.write_breaking SB.text(@cur_action[:text]).gsub("\\n", "\n"), 10, 500, 780, :justified
+      SB.text_helper.write_breaking @cur_action[:text], 10, 500, 780, :justified
     end
   end
 end
@@ -67,20 +68,29 @@ class MovieScene
     es = f.read.split "\n\n"
     f.close
 
-    cam = es[0].split("\n")
-    cam_pos = cam[0].split(',')
+    movie = es[0].split("\n")
+    cam_pos = movie[0].split(',')
     @cam_x = cam_pos[0].to_i
     @cam_y = cam_pos[1].to_i
     @cam_moves = []
-    cam[1..-1].each do |c|
+    @texts = []
+    movie[1..-1].each do |c|
       d = c.split
-      pos = d[1].split(',')
-      @cam_moves << {
-        delay: d[0].to_i,
-        x: pos[0].to_i,
-        y: pos[1].to_i,
-        duration: d[2].to_i
-      }
+      if d[1][0] == ':'
+        @texts << {
+          delay: d[0].to_i,
+          text: SB.text(eval(d[1])).gsub("\\n", "\n"),
+          duration: d[2].to_i
+        }
+      else
+        pos = d[1].split(',')
+        @cam_moves << {
+          delay: d[0].to_i,
+          x: pos[0].to_i,
+          y: pos[1].to_i,
+          duration: d[2].to_i
+        }
+      end
     end
     @cam_index = 0
     @timer = 0
@@ -136,7 +146,7 @@ end
 class Movie
   def initialize(id)
     @id = id
-    files = Dir["#{Res.prefix}movie/#{id}-*"]
+    files = Dir["#{Res.prefix}movie/#{id}-*"]#.sort
     @scenes = []
     files.each do |f|
       @scenes << MovieScene.new(f)
