@@ -56,7 +56,7 @@ class MovieElement < GameObject
                          795, 495, C::PANEL_COLOR,
                          5, 595, C::PANEL_COLOR,
                          795, 595, C::PANEL_COLOR, 0
-      SB.text_helper.write_breaking @cur_action[:text], 10, 500, 780, :justified
+      SB.text_helper.write_breaking @cur_action[:text], 10, 495, 780, :justified
     end
   end
 end
@@ -92,8 +92,8 @@ class MovieScene
         }
       end
     end
-    @cam_index = 0
-    @timer = 0
+    @cam_timer = 0
+    @text_timer = 0
 
     @elements = []
     es[1..-1].each do |e|
@@ -105,29 +105,45 @@ class MovieScene
 
   def update
     if @finished and @elements_finished
-      @timer += 1
-      return :finish if @timer == C::MOVIE_DELAY
+      @cam_timer += 1
+      return :finish if @cam_timer == C::MOVIE_DELAY
     else
       unless @finished
         if @speed_x
           @cam_x += @speed_x
           @cam_y += @speed_y
         end
-        @timer += 16.666667
-        if @cur_action && @timer >= @cur_action[:duration]
-          @cur_action = @speed_x = nil
-          @cam_index += 1
-          @timer = 0
-          @finished = @cam_index == @cam_moves.length
-        elsif !@cur_action && @timer >= @cam_moves[@cam_index][:delay]
-          a = @cam_moves[@cam_index]
-          if a[:x]
-            @speed_x = (a[:x] - @cam_x) * 16.666667 / a[:duration]
-            @speed_y = (a[:y] - @cam_y) * 16.666667 / a[:duration]
+        
+        unless @cam_moves.empty?
+          @cam_timer += 16.666667
+          if @cur_cam && @cam_timer >= @cur_cam[:duration]
+            @cur_cam = @speed_x = nil
+            @cam_timer = 0
+            @cam_moves.shift
+          elsif !@cur_cam && @cam_timer >= @cam_moves[0][:delay]
+            a = @cam_moves[0]
+            if a[:x]
+              @speed_x = (a[:x] - @cam_x) * 16.666667 / a[:duration]
+              @speed_y = (a[:y] - @cam_y) * 16.666667 / a[:duration]
+            end
+            @cur_cam = a
+            @cam_timer = 0
           end
-          @cur_action = a
-          @timer = 0
         end
+        
+        unless @texts.empty?
+          @text_timer += 16.666667
+          if @cur_text && @text_timer >= @cur_text[:duration]
+            @cur_text = nil
+            @text_timer = 0
+            @texts.shift
+          elsif !@cur_text && @text_timer >= @texts[0][:delay]
+            @cur_text = @texts[0]
+            @text_timer = 0
+          end
+        end
+
+        @finished = @cam_moves.empty? && @texts.empty?
       end
       @elements_finished = true
       @elements.each_with_index { |e|
@@ -140,13 +156,20 @@ class MovieScene
   def draw
     @bg.draw -@cam_x, -@cam_y, 0
     @elements.each { |e| e.draw(@cam_x, @cam_y) }
+    if @cur_text
+      G.window.draw_quad 5, 495, C::PANEL_COLOR,
+                         795, 495, C::PANEL_COLOR,
+                         5, 595, C::PANEL_COLOR,
+                         795, 595, C::PANEL_COLOR, 0
+      SB.text_helper.write_breaking @cur_text[:text], 10, 495, 780, :justified
+    end
   end
 end
 
 class Movie
   def initialize(id)
     @id = id
-    files = Dir["#{Res.prefix}movie/#{id}-*"]#.sort
+    files = Dir["#{Res.prefix}movie/#{id}-*"].sort
     @scenes = []
     files.each do |f|
       @scenes << MovieScene.new(f)

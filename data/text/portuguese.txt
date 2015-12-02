@@ -61,6 +61,9 @@ bonus_5			w erte terter rtr
 movie_0_1		Numa terra distante, há um belo vilarejo, habitado por... bombas.
 movie_0_2		Este vilarejo foi um dia um lugar pacífico, onde o povo amava seu rei e vivia na prosperidade.
 movie_0_3		Mas a inveja de Gaxlon, um dos conselheiros do rei, acaba de abalar esta tranquilidade...
+movie_0_4		Gaxlon queria governar o reino com as próprias mãos, mas como ele não estava preparado para a tarefa, aprisionou Aldan, o rei, de modo que pudesse extrair à força "conselhos" sobre como governar.
+movie_0_5		Gaxlon:\n"Agora, Aldan, seja um bom ex-rei e me conte como fazer seu trabalho, para que o povo ame a mim em vez de você, hahahahah!"
+movie_0_6		Aldan:\n"Hah! Como se o que você realmente quer fosse ser amado pelo povo! É tão triste... Eu confiei tanto em você, Gaxlon, e agora no que você se transformou por sede de poder!?"
 game_end		Fim!
 game_end_sub	Mas... você pegou todos os Specs?
 game_end_2		Fim!

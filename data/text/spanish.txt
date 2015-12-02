@@ -41,7 +41,7 @@ restart			Pulsa 'Enter' para reanudar
 game_over		¡Fin del juego!
 msg1			Testando mensaje
 msg2			Segunda mensaje de teste
-msg_monep		¡Hey! ¡Espera un minuto! Si quieres ir adelante debe traerme una Hierba del Bosque. Sí, una deliciosa Hierba del Bosque... ¡Ahora vas y solo vuelve aquí cuando la tuvieres!
+msg_monep		¡Hey! ¡Espera un minuto! Si quieres ir adelante debe traerme una Hierba del Bosque. Sí, una deliciosa Hierba del Bosque... ¡Ahora va y solo vuelve aquí cuando la tuvieres!
 chamal_speech	Muajajajajajajajajajajajaja jajajajajaja jajaja jajajajajaja jajajajajajajajajaja jajaja jajajaja jaja!
 chamal_death	Noooooooooooooooooooooo...!! Y u do dis??
 count_down		¡Cuenta regresiva para explodir!
@@ -61,6 +61,9 @@ bonus_5			w erte terter rtr
 movie_0_1		En una tierra lejana, hay una bella aldea, habitada por... bombas.
 movie_0_2		Esta aldea solía ser un lugar tranquilo, donde el pueblo amaba su rey y tenía una vida próspera.
 movie_0_3		Pero la envidia de Gaxlon, uno de los consejeros del rey, acaba de trastornar esta tranquilidad...
+movie_0_4		Gaxlon quería gobernar el reino solo, pero como no estaba preparado para esta tarea, aprisionó Aldan, para que pudiera extraer, a la fuerza, consejo acerca de como gobernar.
+movie_0_5		Gaxlon:\n"Ahora, Aldan, sé un buen ex-rey y enseñame a hacer tu trabajo, para que el pueblo quiera a mí en vez de tú, ¡jajajaja!"
+movie_0_6		Aldan:\n"¡Hah! ¡Como si lo que realmente quiere es ser amado por el pueblo! Eso es tan triste... Yo confié en usted, Gaxlon, y ahora, ¿en que hay se transformado por poder?"
 game_end		¡Fin!
 game_end_sub	Pero... ¿has recogido todos los Specs?
 game_end_2		¡Fin!

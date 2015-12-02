@@ -61,6 +61,9 @@ bonus_5			w erte terter rtr
 movie_0_1		In a distant land, there is a beautiful village inhabited by living... bombs.
 movie_0_2		This village was once a peaceful place, where the people loved their king and had prosperous lives.
 movie_0_3		But the envy of Gaxlon, one of the king's counselors, has just unsettled this tranquility...
+movie_0_4		Gaxlon wanted to rule the kingdom by himself, but as he wasn't really prepared for such task, he imprisoned Aldan, the king, so that he could forcibly extract "advice" on how to govern.
+movie_0_5		Gaxlon:\n"Now, Aldan, you be a nice ex-king and tell me how to do your work, so that the people love me instead of you, hahahahah!"
+movie_0_6		Aldan:\n"Hah! As if what you really wanted was to be loved by the people! It's so sad... I trusted you so much, Gaxlon, and now what have you become for the sake of power!?"
 game_end		The End!
 game_end_sub	But... have you collected all the Specs?
 game_end_2		The End!
