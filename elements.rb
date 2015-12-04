@@ -280,7 +280,8 @@ class Pin < TwoStateObject
       60, 0, 3, [0], [4], [1, 2, 3, 4, 0], [3, 2, 1, 0, 4], (not args.nil?)
 
     @active_bounds = Rectangle.new x, y, 32, 32
-    section.obstacles << (@obst = Block.new(x, y, 32, 32, true)) if args
+    @obst = Block.new(x, y, 32, 32, true)
+    section.obstacles << @obst if args
   end
 
   def s1_to_s2(section)
@@ -289,6 +290,10 @@ class Pin < TwoStateObject
 
   def s2_to_s1(section)
     section.obstacles.delete @obst
+  end
+
+  def is_visible(map)
+    true
   end
 end
 
