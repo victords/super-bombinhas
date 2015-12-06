@@ -41,7 +41,7 @@ class Bomb < GameObject
       @explosion.animate [0, 1, 2, 3], 5
       @explosion_counter += 1
       @exploding = false if @explosion_counter == 90
-      forces.x -= 0.15 * @speed.x if @bottom and @speed.x != 0
+      forces.x -= 0.3 * @speed.x if @bottom and @speed.x != 0
     elsif @active
       if @invulnerable
         @invulnerable_timer += 1
@@ -97,7 +97,7 @@ class Bomb < GameObject
       hit if section.projectile_hit?(self)
     end
 
-    forces.x -= 0.2 * @speed.x if @bottom and not walking
+    forces.x -= 0.3 * @speed.x if @bottom and not walking
     move forces, section.get_obstacles(@x, @y), section.ramps if @active
   end
 

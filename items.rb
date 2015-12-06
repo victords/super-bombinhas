@@ -133,7 +133,10 @@ class Attack1 < FloatingItem
 
   def initialize(x, y, args, section, switch)
     set_icon :Attack1
-    return if check switch
+    if check switch
+      @type = :azul
+      return
+    end
     super x + 2, y + 2, 28, 28, :sprite_Attack1, nil, 8, 1,
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7], 6, :azul
   end
@@ -304,7 +307,10 @@ class Attack2 < FloatingItem
 
   def initialize(x, y, args, section, switch)
     set_icon :attack2
-    return if check switch
+    if check switch
+      @type = :vermelha
+      return
+    end
     super x + 2, y + 2, 28, 28, :sprite_attack2, nil, 8, 1,
           [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7], 6, :vermelha
   end

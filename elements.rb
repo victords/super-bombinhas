@@ -250,6 +250,10 @@ class Elevator < GameObject
     b = SB.player.bomb
     cycle @points, @speed_m, section.passengers, section.get_obstacles(b.x, b.y), section.ramps
   end
+
+  def is_visible(map)
+    true
+  end
 end
 
 class SaveBombie < GameObject
