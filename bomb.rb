@@ -57,12 +57,12 @@ class Bomb < GameObject
       end
       if KB.key_down? Gosu::KbLeft
         @facing_right = false
-        forces.x -= @bottom ? 0.3 : 0.1
+        forces.x -= @bottom ? 0.3 : 0.2
         walking = true
       end
       if KB.key_down? Gosu::KbRight
         @facing_right = true
-        forces.x += @bottom ? 0.3 : 0.1
+        forces.x += @bottom ? 0.3 : 0.2
         walking = true
       end
       if @bottom
@@ -72,7 +72,7 @@ class Bomb < GameObject
           set_animation 0
         end
         if KB.key_pressed? Gosu::KbSpace
-          forces.y -= 14 + @jump_speed * @speed.x.abs
+          forces.y -= 12 + @jump_speed * @speed.x.abs
           set_animation 3
         end
       end

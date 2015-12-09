@@ -50,7 +50,7 @@ class Enemy < GameObject
     unless @invulnerable or SB.player.dead?
       b = SB.player.bomb
       if b.over? self
-        b.stored_forces.y -= C::BOUNCE_FORCE
+        b.speed.y = -C::BOUNCE_SPEED
         hit_by_bomb(section)
       elsif b.explode? self
         hit_by_explosion(section)
@@ -170,6 +170,7 @@ end
 class Wheeliam < FloorEnemy
   def initialize(x, y, args, section)
     super x, y, args, 32, 32, :sprite_Wheeliam, Vector.new(-4, -3), 5, 2, [0, 1], 8, 100
+    @max_speed.y = 10
   end
 end
 
@@ -202,7 +203,7 @@ class Sprinny < Enemy
         @speed.x = 0
         if @facing_right; forces.x = 4
         else; forces.x = -4; end
-        forces.y = -15
+        forces.y = -12
       end
       move forces, section.get_obstacles(@x, @y), section.ramps
     end
