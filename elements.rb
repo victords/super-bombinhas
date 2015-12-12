@@ -185,8 +185,9 @@ class GunPowder < GameObject
   end
 
   def update(section)
-    if SB.player.bomb.collide? self
-      SB.player.bomb.set_exploding
+    b = SB.player.bomb
+    if b.collide? self and not b.will_explode
+      b.set_exploding
       SB.stage.set_switch self if @switch
       @dead = true
     end

@@ -67,8 +67,8 @@ class Stage
       elsif status == :next_section
         index = @sections.index @cur_section
         @cur_section = @sections[index + 1]
-        @cur_entrance = @entrances[@cur_section.default_entrance]
-        @cur_section.start @switches, @cur_entrance[:x], @cur_entrance[:y]
+        entrance = @entrances[@cur_section.default_entrance]
+        @cur_section.start @switches, entrance[:x], entrance[:y]
       else
         check_reload
         check_entrance

@@ -1,7 +1,7 @@
 require 'minigl'
 
 class Bomb < GameObject
-  attr_reader :type, :name, :hp, :facing_right, :can_use_ability
+  attr_reader :type, :name, :hp, :facing_right, :can_use_ability, :will_explode
   attr_accessor :active
 
   def initialize(type, hp)
