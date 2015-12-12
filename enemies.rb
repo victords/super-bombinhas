@@ -336,17 +336,18 @@ class Faller < GameObject
   end
 
   def update(section)
-    if SB.player.bomb.explode? self
+    b = SB.player.bomb
+    if b.explode? self
       SB.player.stage_score += @score
       section.add_score_effect(@x + @w / 2, @y, @score)
       section.obstacles.delete self
       section.obstacles.delete @bottom
       @dead = true
       return
-    elsif SB.player.bomb.bottom == @bottom
-      SB.player.bomb.hit
-    elsif SB.player.bomb.collide? self
-      SB.player.bomb.hit
+    elsif b.bottom == @bottom
+      b.hit
+    elsif b.collide? self
+      b.hit
     end
 
     animate @indices, @interval
@@ -358,11 +359,11 @@ class Faller < GameObject
         @act_timer = 0
       end
     elsif @step == 1 # subindo
-      move_carrying @up, 2, [SB.player.bomb]
+      move_carrying @up, 2, [b], section.get_obstacles(b.x, b.y), section.ramps
       @step += 1 if @speed.y == 0
     else # descendo
       diff = ((@start.y - @y) / 5).ceil
-      move_carrying @start, diff, [SB.player.bomb]
+      move_carrying @start, diff, [b], section.get_obstacles(b.x, b.y), section.ramps
       @step = 0 if @speed.y == 0
     end
   end
