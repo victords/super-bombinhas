@@ -304,9 +304,13 @@ end
 
 class Spikes < TwoStateObject
   def initialize(x, y, args, section)
-    super x, y, 32, 32, :sprite_Spikes, Vector.new(0, 0), 5, 1,
-      120, 0, 2, [0], [4], [1, 2, 3, 4, 0], [3, 2, 1, 0, 4]
-    @dir = (args || 0).to_i
+    @dir = args.to_i
+    if @dir % 2 == 0
+      x += 2; w = 28; h = 32
+    else
+      y += 2; w = 32; h = 28
+    end
+    super x, y, w, h, :sprite_Spikes, Vector.new(0, 0), 5, 1, 120, 0, 2, [0], [4], [1, 2, 3, 4, 0], [3, 2, 1, 0, 4]
     @active_bounds = Rectangle.new x, y, 32, 32
     @obst = Block.new(x + 2, y + 2, 28, 28)
   end
@@ -350,8 +354,12 @@ end
 
 class FixedSpikes < GameObject
   def initialize(x, y, args, section)
-    super x, y, 32, 32, :sprite_Spikes, Vector.new(0, 0), 5, 1
-    @dir = (args || 0).to_i
+    @dir = args.to_i
+    if @dir % 2 == 0
+      super x + 2, y, 28, 32, :sprite_Spikes, Vector.new(0, 0), 5, 1
+    else
+      super x, y + 2, 32, 28, :sprite_Spikes, Vector.new(0, 0), 5, 1
+    end
     @active_bounds = Rectangle.new x, y, 32, 32
     section.obstacles << Block.new(x + 2, y + 2, 28, 28)
   end

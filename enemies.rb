@@ -382,13 +382,15 @@ class Turner < Enemy
 
     @aim1 = Vector.new(@x, @y)
     while not section.obstacle_at? @aim1.x - 3, @aim1.y and
-      not section.obstacle_at? @aim1.x - 3, @aim1.y + 8
+      not section.obstacle_at? @aim1.x - 3, @aim1.y + 8 and
+      section.obstacle_at? @aim1.x - 3, @y + @h
       @aim1.x -= C::TILE_SIZE
     end
 
     @aim2 = Vector.new(@x, @y)
     while not section.obstacle_at? @aim2.x + 63, @aim2.y and
-      not section.obstacle_at? @aim2.x + 63, @aim2.y + 8
+      not section.obstacle_at? @aim2.x + 63, @aim2.y + 8 and
+      section.obstacle_at? @aim2.x + 63, @y + @h
       @aim2.x += C::TILE_SIZE
     end
 
