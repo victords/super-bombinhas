@@ -6,14 +6,14 @@ class Bomb < GameObject
 
   def initialize(type, hp)
     case type
-    when :azul     then @name = 'Bomba Azul';     def_hp = 1; @max_hp = 1;   l_img_gap = -10; r_img_gap = -10; t_img_gap = -6
-    when :vermelha then @name = 'Bomba Vermelha'; def_hp = 2; @max_hp = 999; l_img_gap = -4; r_img_gap = -6;   t_img_gap = -10
-    when :amarela  then @name = 'Bomba Amarela';  def_hp = 1; @max_hp = 1;   l_img_gap = -6; r_img_gap = -14;  t_img_gap = -10
-    when :verde    then @name = 'Bomba Verde';    def_hp = 2; @max_hp = 3;   l_img_gap = -6; r_img_gap = -14;  t_img_gap = -10
-    else                @name = 'Aldan';          def_hp = 1; @max_hp = 2;   l_img_gap = -6; r_img_gap = -14;  t_img_gap = -26
+    when :azul     then @name = 'Bomba Azul';     def_hp = 1; @max_hp = 1;   l_img_gap = -10; r_img_gap = -10; t_img_gap = -9
+    when :vermelha then @name = 'Bomba Vermelha'; def_hp = 2; @max_hp = 999; l_img_gap = -4; r_img_gap = -6;   t_img_gap = -13
+    when :amarela  then @name = 'Bomba Amarela';  def_hp = 1; @max_hp = 1;   l_img_gap = -6; r_img_gap = -14;  t_img_gap = -13
+    when :verde    then @name = 'Bomba Verde';    def_hp = 2; @max_hp = 3;   l_img_gap = -6; r_img_gap = -14;  t_img_gap = -13
+    else                @name = 'Aldan';          def_hp = 1; @max_hp = 2;   l_img_gap = -6; r_img_gap = -14;  t_img_gap = -29
     end
 
-    super -1000, -1000, 20, 30, "sprite_Bomba#{type.to_s.capitalize}", Vector.new(r_img_gap, t_img_gap), 6, 2
+    super -1000, -1000, 20, 27, "sprite_Bomba#{type.to_s.capitalize}", Vector.new(r_img_gap, t_img_gap), 6, 2
     @hp = hp == 0 ? def_hp : hp
     @max_speed.x = type == :amarela ? 6 : 4
     @max_speed.y = 20

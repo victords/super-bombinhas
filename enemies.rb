@@ -203,7 +203,7 @@ class Sprinny < Enemy
         @speed.x = 0
         if @facing_right; forces.x = 4
         else; forces.x = -4; end
-        forces.y = -12
+        forces.y = -11.5
       end
       move forces, section.get_obstacles(@x, @y), section.ramps
     end
@@ -621,7 +621,7 @@ class Chrazer < Enemy
         d = -150 if d < -150
         if @bottom
           forces.x = d * 0.01666667
-          forces.y = -14.5
+          forces.y = -12.5
           if d > 0 and not @facing_right
             @facing_right = true
           elsif d < 0 and @facing_right
