@@ -216,6 +216,7 @@ class Elevator < GameObject
   def initialize(x, y, args, section)
     a = args.split(':')
     type = a[0].to_i
+    open = a[0][-1] == '!'
     case type
       when 1 then w = 32; cols = rows = nil
       when 2 then w = 64; cols = 4; rows = 1
@@ -241,7 +242,13 @@ class Elevator < GameObject
 
       @points << Vector.new(p_x, p_y)
     end
+    if open
+      (@points.length - 2).downto(0) do |i|
+        @points << @points[i]
+      end
+    end
     @points << Vector.new(x, y)
+    @indices = *(0...@img.size)
     @active_bounds = Rectangle.new min_x, min_y, (max_x - min_x + w), (max_y - min_y + @img[0].height)
 
     section.obstacles << self
@@ -250,6 +257,7 @@ class Elevator < GameObject
   def update(section)
     b = SB.player.bomb
     cycle @points, @speed_m, section.passengers, section.get_obstacles(b.x, b.y), section.ramps
+    animate @indices, 8
   end
 
   def is_visible(map)
@@ -657,7 +665,7 @@ end
 
 class Vortex < GameObject
   def initialize(x, y, args, section)
-    super x - 16, y - 16, 64, 64, :sprite_vortex, Vector.new(0, 0), 2, 2
+    super x - 11, y - 11, 54, 54, :sprite_vortex, Vector.new(-5, -5), 2, 2
     @active_bounds = Rectangle.new(@x, @y, @w, @h)
     @angle = 0
     @entrance = args.to_i
