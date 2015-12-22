@@ -681,7 +681,7 @@ class Vortex < GameObject
       b.move_free @aim, 1.5
       @timer += 1
       if @timer == 32
-        section.add_effect(Effect.new(@x + 2, @y + 2, :fx_transport, 2, 2, 7, [0, 1, 2, 3], 28))
+        section.add_effect(Effect.new(@x - 3, @y - 3, :fx_transport, 2, 2, 7, [0, 1, 2, 3], 28))
       elsif @timer == 60
         section.warp = @entrance
         @transporting = false
@@ -690,7 +690,7 @@ class Vortex < GameObject
     else
       if b.collide? self
         b.active = false
-        @aim = Vector.new(@x + (@w - b.w) / 2, @y + (@h - b.h) / 2)
+        @aim = Vector.new(@x + (@w - b.w) / 2, @y + (@h - b.h) / 2 + 3)
         @transporting = true
         @timer = 0
       end
