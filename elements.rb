@@ -468,7 +468,7 @@ class Ball < GameObject
     else
       forces = Vector.new 0, 0
       if SB.player.bomb.collide? self
-        if SB.player.bomb.x < @x; forces.x = (SB.player.bomb.x + SB.player.bomb.w - @x) * 0.15
+        if SB.player.bomb.x <= @x; forces.x = (SB.player.bomb.x + SB.player.bomb.w - @x) * 0.15
         else; forces.x = -(@x + @w - SB.player.bomb.x) * 0.15; end
       end
       if @bottom
@@ -483,8 +483,10 @@ class Ball < GameObject
             s2 = SB.stage.find_switch self
             s2[:extra] = @rec = s[:obj]
             s2[:state] = :temp_taken
+            @active_bounds.x = @rec.x
+            @active_bounds.y = @rec.y - 31
             @set = true
-            break
+            return
           end
         end
       end

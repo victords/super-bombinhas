@@ -212,7 +212,7 @@ end
 
 class Fureel < FloorEnemy
   def initialize(x, y, args, section)
-    super x - 4, y - 4, args, 40, 36, :sprite_Fureel, Vector.new(-10, -3), 5, 2, [0, 1], 8, 300, 2, 4
+    super x - 4, y - 7, args, 40, 39, :sprite_Fureel, Vector.new(-10, 0), 5, 2, [0, 1], 8, 300, 2, 4
   end
 
   def get_invulnerable
@@ -231,7 +231,7 @@ end
 
 class Yaw < Enemy
   def initialize(x, y, args, section)
-    super x, y, 32, 32, :sprite_Yaw, Vector.new(-4, -4), 8, 1, [0, 1, 2], 6, 500
+    super x, y, 32, 32, :sprite_Yaw, Vector.new(-4, -4), 8, 1, [0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 3, 4, 5, 6, 7], 6, 500
     @moving_eye = false
     @eye_timer = 0
     @points = [
