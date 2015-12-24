@@ -13,7 +13,7 @@ module C
   EXIT_MARGIN = 16
   DEATH_PENALTY = 1_000
   GAME_OVER_PENALTY = 10_000
-  BONUS_THRESHOLD = 100
+  BONUS_THRESHOLD = 100_000_000
   BONUS_LEVELS = 5
   GAME_LIMIT = 10
   MOVIE_DELAY = 30
@@ -56,7 +56,7 @@ class SB
       options_path = "#{save_dir}/options"
       unless File.exist?(save_dir)
         FileUtils.mkdir_p save_dir
-		File.open(options_path, 'w') do |f|
+        File.open(options_path, 'w') do |f|
           f.print 'english,10,10'
         end
       end

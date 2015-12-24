@@ -76,6 +76,7 @@ class Bombie < GameObject
   def initialize(x, y, args, section)
     super x - 16, y, 64, 32, :sprite_Bombie, Vector.new(17, -2), 6, 1
     @msg_id = "msg#{args.to_i}".to_sym
+    @pages = SB.text(@msg_id).split('/').size
     @balloon = Res.img :fx_Balloon1
     @facing_right = false
     @active = false
@@ -91,7 +92,7 @@ class Bombie < GameObject
         @facing_right = true
         @indices = [3, 4, 5]
         set_animation 3
-      elsif @facing_right and SB.player.bomb.bounds.x < @x - @w / 2
+      elsif @facing_right and SB.player.bomb.bounds.x < @x + @w / 2
         @facing_right = false
         @indices = [0, 1, 2]
         set_animation 0
@@ -103,12 +104,23 @@ class Bombie < GameObject
           else; @indices = [0, 1, 2]; end
           @active = false
         else
+          @page = 0
+          if @facing_right; set_animation 3
+          else; set_animation 0; end
+        end
+      elsif @speaking and KB.key_pressed? Gosu::KbDown
+        if @page < @pages - 1
+          @page += 1
+        else
+          @page = 0
+          @speaking = false
           if @facing_right; set_animation 3
           else; set_animation 0; end
         end
       end
       @active = (not @speaking)
     else
+      @page = 0
       @active = false
       @speaking = false
       if @facing_right; set_animation 3
@@ -121,7 +133,7 @@ class Bombie < GameObject
   def draw(map)
     super map
     @balloon.draw @x - map.cam.x + 16, @y - map.cam.y - 32, 0 if @active
-    speak(@msg_id) if @speaking
+    speak(@msg_id, @page) if @speaking
   end
 end
 

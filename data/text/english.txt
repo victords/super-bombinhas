@@ -13,7 +13,7 @@ delete			Delete
 delete_confirm	Are you sure you want to delete this game?
 yes				Yes
 no				No
-help_text		This is a platform game. Use the arrow keys for moving, spacebar for jumping and 'A' for actions.\nUnfortunately the game does not offer joystick support, but you can use programs like AntiMicro to map your joystick to the keyboard.
+help_text		This is a platform game. Use the arrow keys for moving, spacebar for jumping and 'A' for actions.\nUnfortunately the game does not offer joystick support, but you can use software like AntiMicro to map the keys to your joystick.
 save			Save
 cancel			Cancel
 language		Language
@@ -39,16 +39,23 @@ spec_taken		Spec found?
 dead			You died!
 restart			Press 'Enter' to restart
 game_over		Game over!
-msg1			Testing message
-msg2			Second test message
+msg1			Hello! As you may have already noticed, you can use the arrow keys to move around and the space bar to jump. Use 'Esc' to pause the game and open the menu, and the up arrow to open doors and talk to bombies like me./This is Tars Island, a formerly peaceful place, until the day that Chamal invaded with his mechanic animals...
+msg2			You can use items like this one before me by pressing 'A' after you collected it. Items you have collected will appear on the top right corner of the screen./If you have collected more than one type of item, you can use 'Shift' to switch between them.
+msg3			This creature ahead is quite dangerous... you can try using one of these missiles you have been collecting, or just sneak under it, if possible.
+msg4			Always pay attention to the scenery around you, for it can hide many secrets like this.
+msg5			This glittering artifact is a Spec. Legend says there are many of them scattered around the world, and one who is able to gather them all will have the key to a path to the magical forest of Lae.../But it's just a legend, right? Hahaha...
+msg6			Look, it's gunpowder! Now you can unleash your bomb power! Look for cracks in walls to open paths or just kill your enemies without needing to touch them./But mind the time! You only have 10 seconds after you made contact with the gunpowder.
+msg7			You see this wooden board over there? You can attach it to the floor to extend it, when needing to leap over a large chasm. Once attached, you will need a hammer to release it and be able to use it again.
+msg8			This is Chamal's fortress, and only danger awaits you... Be very careful from now on.
+msg9			Try rolling that ball over this little star mark in the floor, and see what happens!
 msg_monep		Hey! Hold on! If you want to go any further, you must bring me a Forest Herb. Yes, a delicious Forest Herb... Now get lost and only come back here when you have it!
 chamal_speech	Muahahahahahahahahahahahaha hahahahahaha hahaha hahahahahaha hahahahahahahahahaha hahaha hahahaha haha!
 chamal_death	Noooooooooooooooooooooo...!! Y u do dis??
 count_down		Countdown to explosion!
 world_1			Tars Island
 stage_1_1		Exploring the Tars Beach
-stage_1_2		Sand, Wind and Wilderness
-stage_1_3		Name of the Third Stage
+stage_1_2		Sand and Green Hills
+stage_1_3		A 'mechanimal' chaos!
 stage_1_4		Finally! Chamal's Fortress
 world_2			Wisemen's forest
 stage_2_1		The border woods

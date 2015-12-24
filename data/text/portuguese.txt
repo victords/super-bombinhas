@@ -13,7 +13,7 @@ delete			Apagar
 delete_confirm	Tem certeza que quer apagar este jogo?
 yes				Sim
 no				Não
-help_text		Texto da ajuda em português.
+help_text		Este é um jogo de plataforma. Use as setas para se mover, espaço para pular e 'A' para ações.\nInfelizmente, o jogo não suporta joysticks, mas você pode usar programas como o AntiMicro para mapear as teclas para o seu joystick.
 save			Salvar
 cancel			Cancelar
 language		Idioma
@@ -39,16 +39,23 @@ spec_taken		Spec encontrado?
 dead			Você morreu!
 restart			Pressione 'Enter' para recomeçar
 game_over		Fim de jogo!
-msg1			Testando mensagem...
-msg2			Segunda mensagem de teste
+msg1			Olá! Como você já deve ter percebido, você pode usar as setas para se mover e a barra de espaço para pular. Use 'Esc' para pausar o jogo e abrir o menu. Além disso, use a seta para cima para abrir portas e falar com bombies como eu./Essa é a ilha de Tars, um lugar outrora pacífico, até o dia em que Chamal invadiu com seus animais mecânicos...
+msg2			Você pode usar itens como esse à minha frente apertando 'A' uma vez que o tenha pagado. Itens que você pegou aparecerão no canto superior direito da tela./Se você tiver pegado mais de um tipo de item, use 'Shift' para alternar entre eles.
+msg3			Essa criatura à frente é um tanto perigosa... Você pode tentar usar um desses mísseis que veio coletando ou se esgueirar por baixo dela, se possível.
+msg4			Sempre preste atenção ao cenário ao seu redor, pois ele pode esconder muitos segredos como esse.
+msg5			Esse artefato brilhante é um Spec. A lenda diz que há muitos desses espalhados pelo mundo, e aquele que for capaz de juntar todos eles terá a chave para um caminho para a floresta mágica Lae.../Mas é apenas uma lenda, não é mesmo? Hahaha...
+msg6			Veja, é pólvora! Agora você pode liberar seus poderes de bomba! Procure por rachaduras em paredes para abrir caminho, ou simplesmente elimine seus inimigos sem precisar tocá-los./Mas atente ao tempo! Você só tem 10 segundos após fazer contato com a pólvora.
+msg7			Você vê essa tábua ali? Você pode fixá-la ao chão para estendê-lo, quando precisar saltar sobre um abismo muito largo. Uma vez fixada, você precisará de um martelo para soltá-la a poder usá-la novamente.
+msg8			Essa é a fortaleza de Chamal, e apenas perigo o aguarda. Seja muito cuidadoso daqui em diante.
+msg9			Tente rolar aquela bola sobre essa pequena marca de estrela no chão, e veja o que acontece!
 msg_monep		Ei! Alto lá! Se você quiser passar por aqui, tem que me trazer uma erva florestal. Isso mesmo, uma deliciosa erva florestal... Agora suma daqui e volte apenas quando tiver arranjado uma para mim!
 chamal_speech	Muahahahahahahahahahahahaha hahahahahaha hahaha hahahahahaha hahahahahahahahahaha hahaha hahahaha haha!
 chamal_death	Nãããããããããããããããoooooo...!! Y u do dis??
 count_down		Contagem regressiva para explodir!
 world_1			Ilha de Tars
 stage_1_1		Explorando a Praia de Tars
-stage_1_2		Areia, Vento e Deserto
-stage_1_3		Teste de Nome para a Terceira Fase
+stage_1_2		Areia e Colinas Verdes
+stage_1_3		Um caos de 'mecanimais'!
 stage_1_4		Finalmente! A Fortaleza de Chamal
 world_2			Floresta dos Sábios
 stage_2_1		As matas de fronteira
