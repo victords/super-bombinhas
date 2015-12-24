@@ -45,7 +45,7 @@ msg3			Essa criatura à frente é um tanto perigosa... Você pode tentar usar um
 msg4			Sempre preste atenção ao cenário ao seu redor, pois ele pode esconder muitos segredos como esse.
 msg5			Esse artefato brilhante é um Spec. A lenda diz que há muitos desses espalhados pelo mundo, e aquele que for capaz de juntar todos eles terá a chave para um caminho para a floresta mágica Lae.../Mas é apenas uma lenda, não é mesmo? Hahaha...
 msg6			Veja, é pólvora! Agora você pode liberar seus poderes de bomba! Procure por rachaduras em paredes para abrir caminho, ou simplesmente elimine seus inimigos sem precisar tocá-los./Mas atente ao tempo! Você só tem 10 segundos após fazer contato com a pólvora.
-msg7			Você vê essa tábua ali? Você pode fixá-la ao chão para estendê-lo, quando precisar saltar sobre um abismo muito largo. Uma vez fixada, você precisará de um martelo para soltá-la a poder usá-la novamente.
+msg7			Você vê essa tábua ali? Você pode fixá-la ao chão para estendê-lo, quando precisar saltar sobre um abismo muito largo. Uma vez fixada, você precisará de um martelo para soltá-la e poder usá-la novamente.
 msg8			Essa é a fortaleza de Chamal, e apenas perigo o aguarda. Seja muito cuidadoso daqui em diante.
 msg9			Tente rolar aquela bola sobre essa pequena marca de estrela no chão, e veja o que acontece!
 msg_monep		Ei! Alto lá! Se você quiser passar por aqui, tem que me trazer uma erva florestal. Isso mesmo, uma deliciosa erva florestal... Agora suma daqui e volte apenas quando tiver arranjado uma para mim!
