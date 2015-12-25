@@ -63,6 +63,8 @@ class Stage
       return :finish if @time == 0
       status = @cur_section.update(@stopped)
       if status == :finish
+        SB.play_sound Res.sound(:victory)
+        Gosu::Song.current_song.stop
         return :finish
       elsif status == :next_section
         index = @sections.index @cur_section

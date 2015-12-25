@@ -176,7 +176,8 @@ class Movie
     end
     @scene = 0
     @alpha = 0
-    SB.play_song Res.song("m#{id}")
+    # SB.play_song Res.song("m#{id}")
+    Gosu::Song.current_song.stop
   end
 
   def update
