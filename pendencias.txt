@@ -1,13 +1,13 @@
 ## Programação ##
 - Elementos
-  - Bombas   (1/5)
-  - Inimigos (10/40)
-  - Itens    (4/20?)
-  - Objetos  (12/40?)
+  - Bombas    (5/5)
+  - Inimigos  (19/50)
+  - Itens
+  - Elementos
 
 ## Conteúdo ##
-- Músicas
+- Músicas  (3/?)
 - Sons
 - Gráficos
-- Fases    (0/40)
+- Fases    (4/40)
 - Textos
