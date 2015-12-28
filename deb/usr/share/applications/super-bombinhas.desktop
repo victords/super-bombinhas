@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Super Bombinhas
+GenericName=Adventure Game
+Comment=Play a platformer adventure game (demo version)
+Icon=super-bombinhas
+Exec=ruby2.0 /opt/aleva-games/super-bombinhas/sb.rb
+Terminal=false
+StartupNotify=false
+Categories=Game;AdventureGame
