@@ -57,12 +57,12 @@ class Bomb < GameObject
       end
       if KB.key_down? Gosu::KbLeft
         @facing_right = false
-        forces.x -= @bottom ? 0.3 : 0.2
+        forces.x -= 0.3 # @bottom ? 0.3 : 0.2
         walking = true
       end
       if KB.key_down? Gosu::KbRight
         @facing_right = true
-        forces.x += @bottom ? 0.3 : 0.2
+        forces.x += 0.3 # @bottom ? 0.3 : 0.2
         walking = true
       end
       if @bottom

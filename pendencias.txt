@@ -11,3 +11,7 @@
 - Gráficos
 - Fases    (4/40)
 - Textos
+
+## Antivírus ##
+
+SHA256: 4eab91e210efedc5aebdeac0cb2c58c76d0e0306a0a5fdf8d25fe1192a566803
