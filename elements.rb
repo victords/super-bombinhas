@@ -1028,3 +1028,37 @@ class SpecGate < GameObject
     end
   end
 end
+
+class Graphic < Sprite
+  def initialize(x, y, args, section)
+    type = args.to_i
+    cols = 1; rows = 1
+    case type
+    when 1 then @w = 32; @h = 64
+    when 2 then x += 16; y += 16; @w = 64; @h = 64; cols = 2; rows = 2; @rot = -5
+    end
+    super x, y, "sprite_graphic#{type}", cols, rows
+    @active_bounds = Rectangle.new(x, y, @w, @h)
+    @indices = *(0...(cols * rows)) if cols * rows > 1
+    @angle = 0 if @rot
+  end
+
+  def update(section)
+    animate @indices, 7 if @indices
+    @angle += @rot if @rot
+  end
+
+  def draw(map)
+    @rot ?
+      (@img[@img_index].draw_rot @x + @w / 2 - map.cam.x, @y + @h/2 - map.cam.y, 0, @angle) :
+      super
+  end
+
+  def is_visible(map)
+    map.cam.intersect? @active_bounds
+  end
+
+  def dead?
+    false
+  end
+end

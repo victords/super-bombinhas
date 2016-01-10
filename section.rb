@@ -57,6 +57,7 @@ class Section
     ForceField,
     Fureel,
     Goal,
+    Graphic,
     GunPowder,
     Hammer,
     Heart,
