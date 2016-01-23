@@ -28,7 +28,7 @@ end
 
 class SB
   class << self
-    attr_reader :font, :big_font, :text_helper, :big_text_helper, :small_text_helper, :save_dir, :save_data, :lang
+    attr_reader :font, :big_font, :text_helper, :big_text_helper, :small_text_helper, :save_dir, :save_data, :lang, :key
     attr_accessor :state, :player, :world, :stage, :movie, :music_volume, :sound_volume
 
     def initialize(save_dir)
@@ -52,21 +52,40 @@ class SB
         end
       end
 
-	  @save_dir = save_dir
+      @save_dir = save_dir
       options_path = "#{save_dir}/options"
-      unless File.exist?(save_dir)
+      if File.exist?(options_path)
+        File.open(options_path) do |f|
+          data = f.readline.chomp.split ','
+          @lang = data[0].to_sym
+          @sound_volume = data[1].to_i
+          @music_volume = data[2].to_i
+          @key = {}
+          keys = data[3..-1].map { |i| i.to_i }
+          keys_keys = [:up, :right, :down, :left, :jump, :item, :next, :ab]
+          keys.each_with_index { |k, i| @key[keys_keys[i]] = k }
+        end
+      else
+        @lang = :english
+        @sound_volume = 10
+        @music_volume = 10
+        @key = {
+          up:    Gosu::KbUp,
+          right: Gosu::KbRight,
+          down:  Gosu::KbDown,
+          left:  Gosu::KbLeft,
+          jump:  Gosu::KbSpace,
+          item:  Gosu::KbA,
+          next:  Gosu::KbLeftShift,
+          ab:    Gosu::KbS
+        }
         FileUtils.mkdir_p save_dir
         File.open(options_path, 'w') do |f|
-          f.print 'english,10,10'
+          f.print "#{@lang},#{@sound_volume},#{@music_volume},#{@key.values.join(',')}"
         end
       end
-      File.open(options_path) do |f|
-        data = f.readline.chomp.split ','
-        @lang = data[0].to_sym
-        @sound_volume = data[1].to_i
-        @music_volume = data[2].to_i
-      end
 
+      Options.initialize
       Menu.initialize
     end
 
@@ -107,9 +126,10 @@ class SB
       Gosu::Song.current_song.volume = vol * 0.1 if Gosu::Song.current_song and type == 'music'
     end
 
-    def save_options
+    def save_options(controls)
+      @key.keys.each_with_index { |k, i| @key[k] = controls[i] }
       File.open("#{@save_dir}/options", 'w') do |f|
-        f.print("#{@lang},#{@sound_volume},#{@music_volume}")
+        f.print("#{@lang},#{@sound_volume},#{@music_volume},#{@key.values.join(',')}")
       end
     end
 
@@ -117,7 +137,8 @@ class SB
       @player = Player.new name
       @world = World.new
       @save_file_name = "#{@save_dir}/#{index}"
-      @save_data = Array.new(10)
+      @save_data = Array.new(12)
+
       @movie = Movie.new 0
       @state = :movie
     end

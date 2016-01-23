@@ -461,7 +461,7 @@ class Chamal < Enemy
       end
     elsif @state == :speaking
       @timer += 1
-      if @timer >= 300 or KB.key_pressed? Gosu::KbSpace or KB.key_pressed? Gosu::KbReturn
+      if @timer >= 300 or KB.key_pressed? Gosu::KbReturn or KB.key_pressed? SB.key[:up]
         section.unset_fixed_camera
         @state = :acting
         @timer = 119
@@ -469,7 +469,7 @@ class Chamal < Enemy
     else
       if @dying
         @timer += 1
-        if @timer >= 300 or KB.key_pressed? Gosu::KbSpace or KB.key_pressed? Gosu::KbReturn
+        if @timer >= 300 or KB.key_pressed? Gosu::KbReturn or KB.key_pressed? SB.key[:up]
           section.unset_fixed_camera
           section.finish
           @dead = true

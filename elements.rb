@@ -97,7 +97,7 @@ class Bombie < GameObject
         @indices = [0, 1, 2]
         set_animation 0
       end
-      if KB.key_pressed? Gosu::KbUp
+      if KB.key_pressed? SB.key[:up]
         @speaking = (not @speaking)
         if @speaking
           if @facing_right; @indices = [3, 4, 5]
@@ -108,7 +108,7 @@ class Bombie < GameObject
           if @facing_right; set_animation 3
           else; set_animation 0; end
         end
-      elsif @speaking and KB.key_pressed? Gosu::KbDown
+      elsif @speaking and KB.key_pressed? SB.key[:down]
         if @page < @pages - 1
           @page += 1
         else
@@ -158,7 +158,7 @@ class Door < GameObject
       section.active_object = nil
     end
     if not @locked and not @opening and collide
-      if KB.key_pressed? Gosu::KbUp
+      if KB.key_pressed? SB.key[:up]
         set_animation 1
         @opening = true
       end
@@ -961,7 +961,7 @@ class Monep < GameObject
           @timer = 0
         elsif @state == :speaking
           @timer += 1
-          if @timer == 600 or KB.key_pressed? Gosu::KbReturn or KB.key_pressed? Gosu::KbUp
+          if @timer == 600 or KB.key_pressed? Gosu::KbReturn or KB.key_pressed? SB.key[:up]
             section.unset_fixed_camera
             set_animation 0
             @state = :waiting

@@ -20,6 +20,9 @@ language		Language
 lang_name		English
 sound_volume	Sounds volume
 music_volume	Music volume
+controls		Controls
+controls_0		Arrows, Space, Shift, A, S
+controls_1		WASD, JKLI
 credits_text	- Design, Programming, Graphics and Music -\nVictor David Santos\n\n- Special Thanks -\n...\n...\n...
 ch_st_instruct	Press 'Enter' or 'Space' to start.\nPress 'Esc' or 'Backspace' to go back.
 left_shift		left shift

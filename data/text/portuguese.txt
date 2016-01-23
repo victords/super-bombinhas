@@ -20,6 +20,9 @@ language		Idioma
 lang_name		Português
 sound_volume	Volume dos sons
 music_volume	Volume da música
+controls		Controles
+controls_0		Setas, Espaço, Shift, A, S
+controls_1		WASD, JKLI
 credits_text	- Design, Programação, Gráficos e Música -\nVictor David Santos\n\n- Agradecimentos Especiais -\n...\n...
 ch_st_instruct	Aperte 'Enter' ou 'Espaço' para começar.\nAperte 'Esc' ou 'Backspace' para voltar.
 left_shift		shift esq.

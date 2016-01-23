@@ -55,12 +55,12 @@ class Bomb < GameObject
           @explosion_timer = 0
         end
       end
-      if KB.key_down? Gosu::KbLeft
+      if KB.key_down? SB.key[:left]
         @facing_right = false
         forces.x -= 0.3 # @bottom ? 0.3 : 0.2
         walking = true
       end
-      if KB.key_down? Gosu::KbRight
+      if KB.key_down? SB.key[:right]
         @facing_right = true
         forces.x += 0.3 # @bottom ? 0.3 : 0.2
         walking = true
@@ -71,16 +71,16 @@ class Bomb < GameObject
         else
           set_animation 0
         end
-        if KB.key_pressed? Gosu::KbSpace
+        if KB.key_pressed? SB.key[:jump]
           forces.y -= 12 + @jump_speed * @speed.x.abs
           set_animation 3
         end
       end
-      SB.player.change_item if KB.key_pressed? Gosu::KbLeftShift or KB.key_pressed? Gosu::KbRightShift
-      SB.player.use_item section if KB.key_pressed? Gosu::KbA
+      SB.player.change_item if KB.key_pressed? SB.key[:next]
+      SB.player.use_item section if KB.key_pressed? SB.key[:item]
 
       if @can_use_ability
-        if KB.key_pressed? Gosu::KbS
+        if KB.key_pressed? SB.key[:ab]
           if @type == :verde
             explode(false); @can_use_ability = false; @cooldown = C::EXPLODE_COOLDOWN
           elsif @type == :branca

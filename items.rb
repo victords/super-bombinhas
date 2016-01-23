@@ -264,7 +264,7 @@ class Spring < GameObject
         end
         @timer = 0
       end
-    elsif SB.player.bomb.collide?(self) and KB.key_pressed?(Gosu::KbUp)
+    elsif SB.player.bomb.collide?(self) and KB.key_pressed?(SB.key[:up])
       take(section, true)
       @dead = true
       section.obstacles.delete self

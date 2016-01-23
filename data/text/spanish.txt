@@ -20,6 +20,9 @@ language		Lenguaje
 lang_name		Español
 sound_volume	Volumen de los sonidos
 music_volume	Volumen de la música
+controls		Controles
+controls_0		Flechas, Espacio, Shift, A, S
+controls_1		WASD, JKLI
 credits_text	- Design, Programación, Gráficos y Música -\nVictor David Santos\n\n- Agradecimientos Especiales -\n...\n...
 ch_st_instruct	Pulsa 'Enter' o 'Espacio' para empezar.\nPulsa 'Esc' o 'Backspace' para volver.
 left_shift		shift izq.
