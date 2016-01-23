@@ -13,7 +13,7 @@ delete			Borrar
 delete_confirm	¿Estás seguro que deseas borrar este juego?
 yes				Sí
 no				No
-help_text		Este es un juego de plataformas. Utilice las teclas de flecha para mover, barra espaciadora para saltar y 'A' para las acciones.\nDesafortunadamente el juego no ofrece soporte para joystick, pero se puede usar programas como AntiMicro para mapear las teclas a su joystick.
+help_text		Este es un juego de plataformas. Dependiendo de la opción de controles que hay eligido, utilice las teclas de flecha derecha e izquierda o 'A' y 'D' para mover, barra espaciadora o 'J' para saltar, 'A' o 'K' para ítenes, Shift o 'L' para cambiar el íten y 'S' o 'I' para habilidades. Utilice la flecha hacia arriba para abrir puertas y hablar con bombas amigas, y la flecha hacia abajo para avanzar el texto cuando hablando con ellas.\nDesafortunadamente el juego no ofrece soporte para joystick, pero se puede usar programas como AntiMicro para mapear las teclas a su joystick.
 save			Guardar
 cancel			Cancelar
 language		Lenguaje
@@ -42,8 +42,8 @@ spec_taken		¿Se encontró el Spec?
 dead			¡Moriste!
 restart			Pulsa 'Enter' para reanudar
 game_over		¡Fin del juego!
-msg1			¡Hola! Como es posible que ya hayas notado, puede utilizar las teclas de flecha para moverse y la barra espaciadora para saltar. Utilice 'Esc' para pausar el juego y abrir el menú, y la flecha hacia arriba para abrir puertas y hablar con bombies como yo./Esta es la isla de Tars, un lugar antiguamente pacífico, hasta el día en que Chamal invadió con sus animales mecánicos...
-msg2			Usted puede utilizar ítenes como este en frente de mí pulsando 'A' después que usted lo consiguió. Los ítenes que ha recogido aparecerán en la esquina superior derecha de la pantalla./Si usted ha recogido más de un tipo de íten, puede utilizar 'Shift' para cambiar entre ellos.
+msg1			¡Hola! Como ya debe haber notado, puede utilizar las flechas (o 'A' y 'D') para moverse y la barra espaciadora (o 'J') para saltar. Utilice 'Esc' para pausar el juego y la flecha hacia arriba (o 'W') para abrir puertas y hablar con bombies como yo. (flecha hacia abajo o 'S'...)/Esta es la isla de Tars, un lugar antiguamente pacífico, hasta el día en que Chamal invadió con sus animales mecánicos...
+msg2			Usted puede utilizar ítenes como este en frente de mí pulsando 'A' (o 'K') después que usted lo consiguió. Los ítenes que ha recogido aparecerán en la esquina superior derecha de la pantalla./Si usted ha recogido más de un tipo de íten, puede utilizar 'Shift' (o 'L') para cambiar entre ellos.
 msg3			Esta criatura delante es muy peligrosa... puede intentar a usar uno de estos misiles que ha estado recogiendo, o simplemente colarse debajo de ella, si es posible.
 msg4			Siempre presta atención al paisaje que te rodea, porque puede esconder muchos secretos como este.
 msg5			Este artefacto brillante es un Spec. La leyenda dice que hay muchos de ellos repartidos por todo el mundo, y aquél que es capaz de reunir a todos ellos tendrá la llave de una ruta de acceso al bosque mágico de Lae.../Pero es sólo una leyenda, ¿verdad? Jajaja...
