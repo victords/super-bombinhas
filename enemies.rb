@@ -1,6 +1,8 @@
 ############################### classes abstratas ##############################
 
 class Enemy < GameObject
+  attr_reader :dying
+
   def initialize(x, y, w, h, img, img_gap, sprite_cols, sprite_rows, indices, interval, score, hp = 1)
     super x, y, w, h, img, img_gap, sprite_cols, sprite_rows
 
@@ -441,9 +443,9 @@ class Chamal < Enemy
     @right_limit = @x + X_OFFSET
     @activation_x = @x + @w / 2 - C::SCREEN_WIDTH / 2
     @spawn_points = [
-      Vector.new(@x + @w / 2 - 120, 0),
-      Vector.new(@x + @w / 2, -20),
-      Vector.new(@x + @w / 2 + 120, 0)
+      Vector.new(@x + @w / 2 - 120, @y - 480),
+      Vector.new(@x + @w / 2, @y - 480),
+      Vector.new(@x + @w / 2 + 120, @y - 480)
     ]
     @spawns = []
     @speed_m = 4
@@ -493,7 +495,7 @@ class Chamal < Enemy
             if x < @x; @facing_right = false
             else; @facing_right = true; end
             @moving = true
-            if @turn % 5 == 0 and @spawns.size < 4
+            if @turn % 5 == 0 and @spawns.size < 3
               @spawn_points.each do |p|
                 @spawns << Wheeliam.new(p.x, p.y, nil, section)
                 section.add(@spawns[-1])
@@ -505,11 +507,11 @@ class Chamal < Enemy
         end
         spawns_dead = true
         @spawns.each do |s|
-          if s.dead?; @spawns.delete s
+          if s.dying; @spawns.delete s
           else; spawns_dead = false; end
         end
         if spawns_dead and @respawned and @gun_powder.nil?
-          @gun_powder = GunPowder.new(@x, @y, nil, section, nil)
+          @gun_powder = GunPowder.new(@x, @y + 30, nil, section, nil)
           section.add(@gun_powder)
           @respawned = false
         end

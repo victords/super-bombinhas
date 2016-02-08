@@ -134,7 +134,7 @@ class Bomb < GameObject
     c_x = @x + @w / 2; c_y = @y + @h / 2
     o_c_x = obj.x + obj.w / 2; o_c_y = obj.y + obj.h / 2
     sq_dist = (o_c_x - c_x)**2 + (o_c_y - c_y)**2
-    sq_dist <= @explosion_radius**2
+    sq_dist <= (obj.is_a?(Chamal) ? @explosion_radius * 1.25 : @explosion_radius)**2
   end
 
   def collide?(obj)

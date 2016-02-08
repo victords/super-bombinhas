@@ -141,10 +141,15 @@ class Door < GameObject
   attr_reader :locked
 
   def initialize(x, y, args, section, switch)
-    super x + 15, y + 63, 2, 1, :sprite_Door, Vector.new(-15, -63), 5, 1
     args = args.split(',')
+    type = args[2]
+    case type
+    when '2' then x_g = -19; y_g = -89
+    else          x_g = -10; y_g = -63
+    end
+    super x + 10, y + 63, 12, 1, "sprite_Door#{type}", Vector.new(x_g, y_g), 5, 1
     @entrance = args[0].to_i
-    @locked = (switch[:state] != :taken and args[1])
+    @locked = (switch[:state] != :taken and args[1] == '.')
     @open = false
     @active_bounds = Rectangle.new x, y, 32, 64
     @lock = Res.img(:sprite_Lock) if @locked
@@ -233,6 +238,7 @@ class Elevator < GameObject
       when 1 then w = 32; cols = rows = nil
       when 2 then w = 64; cols = 4; rows = 1
       when 3 then w = 64; cols = rows = nil
+      when 4 then w = 64; cols = rows = nil
     end
     super x, y, w, 1, "sprite_Elevator#{type}", Vector.new(0, 0), cols, rows
     @passable = true
