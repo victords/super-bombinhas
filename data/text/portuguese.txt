@@ -76,6 +76,16 @@ movie_0_3		Mas a inveja de Gaxlon, um dos conselheiros do rei, acaba de abalar e
 movie_0_4		Gaxlon queria governar o reino com as próprias mãos, mas como ele não estava preparado para a tarefa, aprisionou Aldan, o rei, de modo que pudesse extrair à força "conselhos" sobre como governar.
 movie_0_5		Gaxlon:\n"Agora, Aldan, seja um bom ex-rei e me conte como fazer seu trabalho, para que o povo ame a mim em vez de você, hahahahah!"
 movie_0_6		Aldan:\n"Hah! Como se o que você realmente quer fosse ser amado pelo povo! É tão triste... Eu confiei tanto em você, Gaxlon, e agora no que você se transformou por sede de poder!?"
+movie_0_7		E Aldan estava certo... Tão logo anunciou sua ascenção ao trono, Gaxlon começou a governar com medidas autoritárias e a oprimir qualquer tipo de oposição.
+movie_0_8		Contudo, havia um grupo de bombas fiéis ao genuíno rei Aldan que se destacavam por sua inteligência, lealdade e perícia no combate...
+movie_0_9		As Super Bombinhas, como eram conhecidas pelo povo local, suspeitaram que havia algo de errado por trás dessa sucessão. Sorrateiramente, infiltraram-se no castelo e ouviram Gaxlon torturando o rei e exigindo saber sobre a localização dos tesouros do reino.
+movie_0_10		Resolveram revelar-se e abordar Gaxlon na tentativa de detê-lo, mas ele estava fortemente guarnecido por seus comparsas...
+movie_0_11		Vendo a situação encaminhar-se para uma tragédia, o rei Aldan utilizou-se de suas últimas forças para evocar os poderes sagrados da família real - magia que só podia ser usada para o bem, nunca para atacar -, lançando sobre as Super Bombinhas uma proteção impenetrável, mas temporária.
+movie_0_12		Assim, Gaxlon e seus capangas se viram incapazes de eliminar as Super Bombinhas, mas sabiam que elas representavam uma ameaça ao governo de Gaxlon.
+movie_0_13		Gaxlon:\n"Não podemos eliminá-las, mas temos que expulsá-las do reino, antes que espalhem o que presenciaram aqui hoje! Drepz, conto com você e seus parceiros!"
+movie_0_14		Assim, Drepz chamou os outros principais capangas de Gaxlon e juntos eles capturaram as Super Bombinhas, partindo rapidamente, cada um deles para um canto do continente... Mas não perceberam que Bomba Azul havia escapado.
+movie_0_15		Ciente de que, sozinho, Bomba Azul não seria capaz de reverter a situação, resolveu seguir um dos capangas para tentar libertar seus companheiros. Foi atrás primeiro de Bomba Vermelha, que fora capturado por Chamal.
+movie_0_16		Assim, após uma longa jornada pelas terras da península Enmat, Bomba Azul chega finalmente à ilha de Tars, onde a aventura pela restauração da justiça no Reino das Bombas começa...
 game_end		Fim!
 game_end_sub	Mas... você pegou todos os Specs?
 game_end_2		Fim!
