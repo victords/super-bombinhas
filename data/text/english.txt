@@ -53,15 +53,15 @@ msg8			This is Chamal's fortress, and only danger awaits you... Be very careful 
 msg9			Try rolling that ball over this little star mark in the floor, and see what happens!
 msg10			Well... That's it for the demo. But keep your eyes on alevagames.com for news on the next release!
 msg_monep		Hey! Hold on! If you want to go any further, you must bring me a Forest Herb. Yes, a delicious Forest Herb... Now get lost and only come back here when you have it!
-chamal_speech	Muahahahahahahahahahahahaha hahahahahaha hahaha hahahahahaha hahahahahahahahahaha hahaha hahahaha haha!
-chamal_death	Noooooooooooooooooooooo...!! Y u do dis??
+chamal_speech	So... you've come. Well, I'm afraid this is the end of your pointless journey, little bomb. GET HIM, WHEELIAMS!
+chamal_death	Noooooo...!! How come I lost to such a weakling...?! No, that's not... poss...
 count_down		Countdown to explosion!
 world_1			Tars Island
 stage_1_1		Exploring the Tars Beach
 stage_1_2		Sand and Green Hills
-stage_1_3		A 'mechanimal' chaos!
+stage_1_3		A 'mechanimal' chaos
 stage_1_4		Finally! Chamal's Fortress
-stage_1_5		The end... for now
+stage_1_5		Chamal: the knock down!
 world_2			Wisemen's forest
 stage_2_1		The border woods
 bonus			Bonus

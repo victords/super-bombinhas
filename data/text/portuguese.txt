@@ -53,15 +53,15 @@ msg8			Essa é a fortaleza de Chamal, e apenas perigo o aguarda. Seja muito cuid
 msg9			Tente rolar aquela bola sobre essa pequena marca de estrela no chão, e veja o que acontece!
 msg10			Bom... É isso, para a demo. Mas fique atento ao alevagames.com para novidades sobre o próximo lançamento!
 msg_monep		Ei! Alto lá! Se você quiser passar por aqui, tem que me trazer uma erva florestal. Isso mesmo, uma deliciosa erva florestal... Agora suma daqui e volte apenas quando tiver arranjado uma para mim!
-chamal_speech	Muahahahahahahahahahahahaha hahahahahaha hahaha hahahahahaha hahahahahahahahahaha hahaha hahahaha haha!
-chamal_death	Nãããããããããããããããoooooo...!! Y u do dis??
+chamal_speech	Então... você veio. Porém, temo que este seja o fim de sua vã jornada, pequena bomba. WHEELIAMS, PEGUEM-NO!
+chamal_death	Nããããããoooo...!! Como eu fui perder para um fracote como esse...?! Não... Não é poss...
 count_down		Contagem regressiva para explodir!
 world_1			Ilha de Tars
 stage_1_1		Explorando a Praia de Tars
 stage_1_2		Areia e Colinas Verdes
-stage_1_3		Um caos de 'mecanimais'!
+stage_1_3		Um caos de 'mecanimais'
 stage_1_4		Finalmente! A Fortaleza de Chamal
-stage_1_5		O fim... por enquanto
+stage_1_5		Chamal: a derrubada!
 world_2			Floresta dos Sábios
 stage_2_1		As matas de fronteira
 bonus			Bônus

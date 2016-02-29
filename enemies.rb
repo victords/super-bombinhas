@@ -434,7 +434,7 @@ class Turner < Enemy
 end
 
 class Chamal < Enemy
-  X_OFFSET = 320
+  X_OFFSET = 224
   MAX_MOVEMENT = 160
 
   def initialize(x, y, args, section)
@@ -443,9 +443,9 @@ class Chamal < Enemy
     @right_limit = @x + X_OFFSET
     @activation_x = @x + @w / 2 - C::SCREEN_WIDTH / 2
     @spawn_points = [
-      Vector.new(@x + @w / 2 - 120, @y - 480),
-      Vector.new(@x + @w / 2, @y - 480),
-      Vector.new(@x + @w / 2 + 120, @y - 480)
+      Vector.new(@x + @w / 2 - 120, @y - 400),
+      Vector.new(@x + @w / 2, @y - 400),
+      Vector.new(@x + @w / 2 + 120, @y - 400)
     ]
     @spawns = []
     @speed_m = 4
@@ -511,7 +511,7 @@ class Chamal < Enemy
           else; spawns_dead = false; end
         end
         if spawns_dead and @respawned and @gun_powder.nil?
-          @gun_powder = GunPowder.new(@x, @y + 30, nil, section, nil)
+          @gun_powder = GunPowder.new(@x, @y + 74, nil, section, nil)
           section.add(@gun_powder)
           @respawned = false
         end
