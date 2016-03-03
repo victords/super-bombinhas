@@ -1042,6 +1042,7 @@ class Graphic < Sprite
     case type
     when 1 then @w = 32; @h = 64
     when 2 then x += 16; y += 16; @w = 64; @h = 64; cols = 2; rows = 2; @rot = -5
+    when 3..5 then x -= 16; @w = 64; @h = 32
     end
     super x, y, "sprite_graphic#{type}", cols, rows
     @active_bounds = Rectangle.new(x, y, @w, @h)
