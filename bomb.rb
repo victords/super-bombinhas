@@ -6,15 +6,15 @@ class Bomb < GameObject
 
   def initialize(type, hp)
     case type
-    when :azul     then @name = 'Bomba Azul';     def_hp = 1; @max_hp = 1;   l_img_gap = -10; r_img_gap = -10; t_img_gap = -9
-    when :vermelha then @name = 'Bomba Vermelha'; def_hp = 2; @max_hp = 999; l_img_gap = -4; r_img_gap = -6;   t_img_gap = -13
-    when :amarela  then @name = 'Bomba Amarela';  def_hp = 1; @max_hp = 1;   l_img_gap = -6; r_img_gap = -14;  t_img_gap = -13
-    when :verde    then @name = 'Bomba Verde';    def_hp = 2; @max_hp = 3;   l_img_gap = -6; r_img_gap = -14;  t_img_gap = -13
-    else                @name = 'Aldan';          def_hp = 1; @max_hp = 2;   l_img_gap = -6; r_img_gap = -14;  t_img_gap = -29
+    when :azul     then @name = 'Bomba Azul';     @def_hp = 1; @max_hp = 1;   l_img_gap = -10; r_img_gap = -10; t_img_gap = -9
+    when :vermelha then @name = 'Bomba Vermelha'; @def_hp = 2; @max_hp = 999; l_img_gap = -4; r_img_gap = -6;   t_img_gap = -13
+    when :amarela  then @name = 'Bomba Amarela';  @def_hp = 1; @max_hp = 1;   l_img_gap = -6; r_img_gap = -14;  t_img_gap = -13
+    when :verde    then @name = 'Bomba Verde';    @def_hp = 2; @max_hp = 3;   l_img_gap = -6; r_img_gap = -14;  t_img_gap = -13
+    else                @name = 'Aldan';          @def_hp = 1; @max_hp = 2;   l_img_gap = -6; r_img_gap = -14;  t_img_gap = -29
     end
 
     super -1000, -1000, 20, 27, "sprite_Bomba#{type.to_s.capitalize}", Vector.new(r_img_gap, t_img_gap), 6, 2
-    @hp = hp == 0 ? def_hp : hp
+    @hp = hp == 0 ? @def_hp : hp
     @max_speed.x = type == :amarela ? 6 : 4
     @max_speed.y = 20
     @jump_speed = type == :amarela ? 0.58 : 0.45
@@ -146,6 +146,10 @@ class Bomb < GameObject
       @y + @h > obj.y and @y + @h <= obj.y + C::PLAYER_OVER_TOLERANCE
   end
 
+  def bounce
+    @speed.y = -(C::BOUNCE_SPEED_BASE + (@speed.y / @max_speed.y) * C::BOUNCE_SPEED_INCREMENT)
+  end
+
   def hit(damage = 1)
     unless @invulnerable
       @hp -= damage
@@ -172,7 +176,7 @@ class Bomb < GameObject
   def reset
     @will_explode = @exploding = @celebrating = @dying = false
     @speed.x = @speed.y = @stored_forces.x = @stored_forces.y = 0
-    @hp = @max_hp
+    @hp = @def_hp
     @active = @facing_right = true
   end
 
@@ -198,7 +202,7 @@ class Bomb < GameObject
   end
 
   def draw(map)
-    super map, 1, 1, 255, 0xffffff, nil, @facing_right ? nil : :horiz
+    super(map, 1, 1, 255, 0xffffff, nil, @facing_right ? nil : :horiz) unless @invulnerable && @invulnerable_timer % 2 == 0
     if @will_explode
       SB.font.draw_rel SB.text(:count_down), 400, 200, 0, 0.5, 0.5, 1, 1, 0xff000000 if @explosion_counter > 6
       SB.font.draw_rel @explosion_counter.to_s, 400, 220, 0, 0.5, 0.5, 1, 1, 0xff000000

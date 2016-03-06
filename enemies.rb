@@ -52,7 +52,7 @@ class Enemy < GameObject
     unless @invulnerable or SB.player.dead?
       b = SB.player.bomb
       if b.over? self
-        b.speed.y = -C::BOUNCE_SPEED
+        b.bounce
         hit_by_bomb(section)
       elsif b.explode? self
         hit_by_explosion(section)
@@ -696,7 +696,7 @@ class Shep < FloorEnemy
       b = SB.player.bomb
       if b.over? self
         hit_by_bomb(section)
-        b.stored_forces.y -= C::BOUNCE_SPEED
+        b.bounce
       elsif b.explode? self
         hit_by_explosion(section)
       elsif section.projectile_hit? self
@@ -983,7 +983,7 @@ class Sahiss < FloorEnemy
       move_free @aim, 6
       b = SB.player.bomb
       if b.over? self
-        b.stored_forces.y -= C::BOUNCE_SPEED
+        b.bounce
       elsif b.collide? self
         b.hit
       elsif @img_index == 5
