@@ -693,15 +693,16 @@ class Shep < FloorEnemy
         set_direction @next_dir
       end
       animate @indices, @interval
-      if SB.player.bomb.over? self
+      b = SB.player.bomb
+      if b.over? self
         hit_by_bomb(section)
-        SB.player.bomb.stored_forces.y -= C::BOUNCE_FORCE
-      elsif SB.player.bomb.explode? self
+        b.stored_forces.y -= C::BOUNCE_SPEED
+      elsif b.explode? self
         hit_by_explosion(section)
       elsif section.projectile_hit? self
         hit(section)
-      elsif SB.player.bomb.collide? self
-        SB.player.bomb.hit
+      elsif b.collide? self
+        b.hit
       end
     else
       super(section)
@@ -982,7 +983,7 @@ class Sahiss < FloorEnemy
       move_free @aim, 6
       b = SB.player.bomb
       if b.over? self
-        b.stored_forces.y -= C::BOUNCE_FORCE
+        b.stored_forces.y -= C::BOUNCE_SPEED
       elsif b.collide? self
         b.hit
       elsif @img_index == 5

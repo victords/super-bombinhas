@@ -43,6 +43,7 @@ class Section
     BallReceptor,
     BoardItem,
     Bombie,
+    Branch,
     Chamal,
     Chrazer,
     Crack,
@@ -470,10 +471,10 @@ class Section
         if b >= 90 && b < 93; ind = 90 + (b - 90 + @tile_3_index) % 3
         elsif b >= 93 && b < 96; ind = 93 + (b - 93 + @tile_3_index) % 3
         elsif b >= 96; ind = 96 + (b - 96 + @tile_4_index) % 4; end
-        @tileset[ind].draw x, y, 0
+        @tileset[ind].draw x, y, -2
       end
-      @tileset[@tiles[i][j].pass].draw x, y, 0 if @tiles[i][j].pass >= 0
-      @tileset[@tiles[i][j].wall].draw x, y, 0 if @tiles[i][j].wall >= 0 and not @tiles[i][j].broken
+      @tileset[@tiles[i][j].pass].draw x, y, -2 if @tiles[i][j].pass >= 0
+      @tileset[@tiles[i][j].wall].draw x, y, -2 if @tiles[i][j].wall >= 0 and not @tiles[i][j].broken
     end
 
     @elements.each do |e|
@@ -526,7 +527,7 @@ class Section
       first_back_y = back_y
       while back_x < C::SCREEN_WIDTH
         while back_y < C::SCREEN_HEIGHT
-          bg.draw back_x, back_y, 0
+          bg.draw back_x, back_y, -3
           back_y += bg.height
         end
         back_x += bg.width

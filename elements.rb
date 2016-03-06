@@ -779,6 +779,22 @@ class AirMattress < GameObject
   end
 end
 
+class Branch < GameObject
+  def initialize(x, y, args, section)
+    super x, y, 64, 10, :sprite_branch, Vector.new(0, 0)
+    @passable = true
+    @active_bounds = Rectangle.new(@x, @y, @w, @img[0].height)
+    @left = args.nil?
+    section.obstacles << self
+  end
+
+  def update(section); end
+
+  def draw(map)
+    super(map, 1, 1, 255, 0xffffff, nil, @left ? nil : :horiz)
+  end
+end
+
 class Water
   attr_reader :x, :y, :w, :h, :bounds
 
@@ -1043,6 +1059,7 @@ class Graphic < Sprite
     when 1 then @w = 32; @h = 64
     when 2 then x += 16; y += 16; @w = 64; @h = 64; cols = 2; rows = 2; @rot = -5
     when 3..5 then x -= 16; @w = 64; @h = 32
+    when 6 then x -= 134; y -= 208; @w = 300; @h = 240
     end
     super x, y, "sprite_graphic#{type}", cols, rows
     @active_bounds = Rectangle.new(x, y, @w, @h)
@@ -1057,8 +1074,8 @@ class Graphic < Sprite
 
   def draw(map)
     @rot ?
-      (@img[@img_index].draw_rot @x + @w / 2 - map.cam.x, @y + @h/2 - map.cam.y, 0, @angle) :
-      super
+      (@img[@img_index].draw_rot @x + @w / 2 - map.cam.x, @y + @h/2 - map.cam.y, -1, @angle) :
+      super(map, 1, 1, 255, 0xffffff, nil, nil, -1)
   end
 
   def is_visible(map)

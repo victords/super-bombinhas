@@ -52,6 +52,7 @@ msg7			You see this wooden board over there? You can attach it to the floor to e
 msg8			This is Chamal's fortress, and only danger awaits you... Be very careful from now on.
 msg9			Try rolling that ball over this little star mark in the floor, and see what happens!
 msg10			Well... That's it for the demo. But keep your eyes on alevagames.com for news on the next release!
+msg11			Hello, welcome to the Wisemen's forest. No, I'm not one of them, and neither do I know where they are.../But one thing is sure: this forest hides many secrets. Keep both eyes open!
 msg_monep		Hey! Hold on! If you want to go any further, you must bring me a Forest Herb. Yes, a delicious Forest Herb... Now get lost and only come back here when you have it!
 chamal_speech	So... you've come. Well, I'm afraid this is the end of your pointless journey, little bomb. GET HIM, WHEELIAMS!
 chamal_death	Noooooo...!! How come I lost to such a weakling...?! No, that's not... poss...
