@@ -247,24 +247,25 @@ class Spring < GameObject
       section.obstacles << self
       @ready = true
     end
-    if SB.player.bomb.bottom == self
+    b = SB.player.bomb
+    if b.bottom == self
       reset if @state == 4
       @timer += 1
       if @timer == 10
         case @state
-          when 0 then @y += 8; @img_gap.y -= 8; SB.player.bomb.y += 8
-          when 1 then @y += 6; @img_gap.y -= 6; SB.player.bomb.y += 6
-          when 2 then @y += 4; @img_gap.y -= 4; SB.player.bomb.y += 4
+          when 0 then @y += 8; @img_gap.y -= 8; b.y += 8
+          when 1 then @y += 6; @img_gap.y -= 6; b.y += 6
+          when 2 then @y += 4; @img_gap.y -= 4; b.y += 4
         end
         @state += 1
         if @state == 4
-          SB.player.bomb.stored_forces.y = -18
+          b.stored_forces.y = -18
         else
           set_animation @state
         end
         @timer = 0
       end
-    elsif SB.player.bomb.collide?(self) and KB.key_pressed?(SB.key[:up])
+    elsif b.collide?(self) and KB.key_pressed?(SB.key[:up])
       take(section, true)
       @dead = true
       section.obstacles.delete self
@@ -299,6 +300,13 @@ class Spring < GameObject
     spring = Spring.new(x, b.y, nil, section, @switch)
     switch[:obj] = spring
     section.add spring
+  end
+
+  def draw(map)
+    super
+    if SB.player.bomb.collide?(self)
+      Res.img(:fx_Balloon1).draw(@x - map.cam.x, @y - map.cam.y - 40, 0)
+    end
   end
 end
 

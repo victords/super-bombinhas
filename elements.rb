@@ -641,8 +641,8 @@ class Projectile < GameObject
     end
 
     super x - x_g, y - y_g, w, h, "sprite_Projectile#{type}", Vector.new(x_g, y_g), cols, rows
-    rads = angle * Math::PI / 180
-    @aim = Vector.new @x + (1000000 * Math.cos(rads)), @y + (1000000 * Math.sin(rads))
+    # rads = angle * Math::PI / 180
+    # @aim = Vector.new @x + (1000000 * Math.cos(rads)), @y + (1000000 * Math.sin(rads))
     @active_bounds = Rectangle.new @x + @img_gap.x, @y + @img_gap.y, @img[0].width, @img[0].height
     @angle = angle
     @owner = owner
@@ -650,17 +650,19 @@ class Projectile < GameObject
   end
 
   def update(section)
-    move_free @aim, @speed_m
-    animate @indices, 5
+    move_free(@angle, @speed_m)
 
     t = (@y + @img_gap.y).floor
     r = (@x + @img_gap.x + @img[0].width).ceil
     b = (@y + @img_gap.y + @img[0].height).ceil
     l = (@x + @img_gap.x).floor
-    if t > section.size.y; @dead = true
-    elsif r < 0; @dead = true
-    elsif b < C::TOP_MARGIN; @dead = true #para sumir por cima, a margem deve ser maior
-    elsif l > section.size.x; @dead = true
+    if t > section.size.y || r < 0 || b < C::TOP_MARGIN || l > section.size.x
+      @dead = true
+    end
+
+    unless @dead
+      animate @indices, 5
+      @active_bounds = Rectangle.new @x + @img_gap.x, @y + @img_gap.y, @img[0].width, @img[0].height
     end
   end
 
