@@ -682,7 +682,7 @@ end
 
 class Shep < FloorEnemy
   def initialize(x, y, args, section)
-    super x, y - 2, args, 42, 34, :sprite_shep, Vector.new(-5, 0), 3, 2, [0, 1, 0, 2], 7, 200, 1, 2
+    super x, y, args, 42, 32, :sprite_shep, Vector.new(-5, -2), 3, 2, [0, 1, 0, 2], 7, 200, 1, 2
   end
 
   def update(section)
