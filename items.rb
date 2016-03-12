@@ -294,10 +294,12 @@ class Spring < GameObject
 
   def use(section, switch)
     b = SB.player.bomb
-    x = b.facing_right ? b.x + b.w : b.x - @w
+    return false if b.bottom.nil?
+    x = b.facing_right ? b.x + b.w + @w : b.x - @w
     return false if section.obstacle_at?(x, b.y)
+    x -= @w if b.facing_right
     switch[:state] = :normal
-    spring = Spring.new(x, b.y, nil, section, @switch)
+    spring = Spring.new(x, (b.y / C::TILE_SIZE).floor * C::TILE_SIZE, nil, section, @switch)
     switch[:obj] = spring
     section.add spring
   end

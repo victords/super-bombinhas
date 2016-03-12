@@ -186,7 +186,7 @@ class Door < GameObject
 
   def draw(map)
     super map
-    @lock.draw(@x + 4 - map.cam.x, @y - 38 - map.cam.y, 0) if @lock
+    @lock.draw(@x + 9 - map.cam.x, @y - 38 - map.cam.y, 0) if @lock
   end
 end
 
@@ -783,17 +783,23 @@ end
 
 class Branch < GameObject
   def initialize(x, y, args, section)
-    super x, y, 64, 10, :sprite_branch, Vector.new(0, 0)
+    a = args ? args.split(',') : []
+    size = a[0] ? a[0].to_i : 2
+    super x, y, size * C::TILE_SIZE, 1, :sprite_branch, Vector.new(0, 0)
     @passable = true
     @active_bounds = Rectangle.new(@x, @y, @w, @img[0].height)
-    @left = args.nil?
+    @left = a[1].nil?
+    @scale = size.to_f / 2
     section.obstacles << self
   end
 
   def update(section); end
 
   def draw(map)
-    super(map, 1, 1, 255, 0xffffff, nil, @left ? nil : :horiz)
+    w = @w
+    @w = @img[0].width
+    super(map, @scale, 1, 255, 0xffffff, nil, @left ? nil : :horiz)
+    @w = w
   end
 end
 
