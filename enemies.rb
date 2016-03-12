@@ -133,10 +133,14 @@ class FloorEnemy < Enemy
           set_direction :left
         elsif @dont_fall
           if @facing_right
-            set_direction :left unless section.obstacle_at? @x + @w, @y + @h
-          elsif not section.obstacle_at? @x - 1, @y + @h
+            set_direction :left unless section.obstacle_at?(@x + @w, @y + @h)
+          elsif not section.obstacle_at?(@x - 1, @y + @h)
             set_direction :right
           end
+        elsif @facing_right
+          set_direction :left if @speed.x < 0
+        elsif @speed.x > 0
+          set_direction :right
         end
       end
     end
