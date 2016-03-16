@@ -647,6 +647,8 @@ class Projectile < GameObject
     @angle = angle
     @owner = owner
     @indices = indices
+    @visible = true
+    @timer = 0
   end
 
   def update(section)
@@ -660,6 +662,13 @@ class Projectile < GameObject
       @dead = true
     end
 
+    if @visible
+      @timer = 0 if @timer > 0
+    else
+      @timer += 1
+      @dead = true if @timer > 180
+    end
+
     unless @dead
       animate @indices, 5
       @active_bounds = Rectangle.new @x + @img_gap.x, @y + @img_gap.y, @img[0].width, @img[0].height
@@ -668,6 +677,11 @@ class Projectile < GameObject
 
   def draw(map)
     @img[@img_index].draw_rot @x + (@w / 2) - map.cam.x, @y + (@h / 2) - map.cam.y, 0, @angle
+  end
+
+  def is_visible(map)
+    @visible = super(map)
+    true
   end
 end
 

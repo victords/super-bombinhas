@@ -125,7 +125,7 @@ class FloorEnemy < Enemy
       super section
     else
       super section do
-        move @forces, section.get_obstacles(@x, @y, @w, @h), section.ramps
+        move(@forces, section.get_obstacles(@x, @y, @w, @h), @dont_fall ? [] : section.ramps)
         @forces.x = 0
         if @left
           set_direction :right
