@@ -1,7 +1,7 @@
 require 'minigl'
 
 class Bomb < GameObject
-  attr_reader :type, :name, :hp, :facing_right, :can_use_ability, :will_explode
+  attr_reader :type, :name, :hp, :saved_hp, :facing_right, :can_use_ability, :will_explode
   attr_accessor :active
 
   def initialize(type, hp)
@@ -15,6 +15,7 @@ class Bomb < GameObject
 
     super -1000, -1000, 20, 27, "sprite_Bomba#{type.to_s.capitalize}", Vector.new(r_img_gap, t_img_gap), 6, 2
     @hp = hp == 0 ? @def_hp : hp
+    @saved_hp = @hp
     @max_speed.x = type == :amarela ? 6 : 4
     @max_speed.y = 20
     @jump_speed = type == :amarela ? 0.58 : 0.45
@@ -167,16 +168,21 @@ class Bomb < GameObject
     @hp = @max_hp if @hp > @max_hp
   end
 
+  def save_hp
+    @saved_hp = @hp
+  end
+
   def set_invulnerable(time = nil)
     @invulnerable = true
     @invulnerable_timer = 0
     @invulnerable_time = time || C::INVULNERABLE_TIME
   end
 
-  def reset
+  def reset(loaded = false)
     @will_explode = @exploding = @celebrating = @dying = false
     @speed.x = @speed.y = @stored_forces.x = @stored_forces.y = 0
-    @hp = @def_hp
+    if loaded; @hp = @saved_hp
+    else; @saved_hp = @hp = @def_hp; end
     @active = @facing_right = true
   end
 
@@ -202,7 +208,7 @@ class Bomb < GameObject
   end
 
   def draw(map)
-    super(map, 1, 1, 255, 0xffffff, nil, @facing_right ? nil : :horiz) unless @invulnerable && @invulnerable_timer % 2 == 0
+    super(map, 1, 1, 255, 0xffffff, nil, @facing_right ? nil : :horiz) unless @invulnerable && @invulnerable_timer % 6 < 3
     if @will_explode
       SB.font.draw_rel SB.text(:count_down), 400, 200, 0, 0.5, 0.5, 1, 1, 0xff000000 if @explosion_counter > 6
       SB.font.draw_rel @explosion_counter.to_s, 400, 220, 0, 0.5, 0.5, 1, 1, 0xff000000

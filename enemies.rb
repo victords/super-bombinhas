@@ -738,11 +738,15 @@ class Flep < Enemy
   end
 
   def update(section)
-    super(section) do
-      move_free @aim, 4
-      if @speed.x == 0 and @speed.y == 0
-        @aim = Vector.new(@x + (@facing_right ? -@movement : @movement), @y)
-        @facing_right = !@facing_right
+    if @invulnerable
+      super(section)
+    else
+      super(section) do
+        move_free @aim, 4
+        if @speed.x == 0 and @speed.y == 0
+          @aim = Vector.new(@x + (@facing_right ? -@movement : @movement), @y)
+          @facing_right = !@facing_right
+        end
       end
     end
   end

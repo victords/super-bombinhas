@@ -93,12 +93,20 @@ class Player
     @bomb = bomb
   end
 
+  def save_bomb_hps
+    @bombs[:azul].save_hp
+    @bombs[:vermelha].save_hp if @bombs[:vermelha]
+    @bombs[:amarela].save_hp  if @bombs[:amarela]
+    @bombs[:verde].save_hp    if @bombs[:verde]
+    @bombs[:branca].save_hp   if @bombs[:branca]
+  end
+
   def get_bomb_hps
-    s =  "#{@bombs[:azul].hp},"
-    s += "#{@bombs[:vermelha].hp}," if @bombs[:vermelha]
-    s += "#{@bombs[:amarela].hp},"  if @bombs[:amarela]
-    s += "#{@bombs[:verde].hp},"    if @bombs[:verde]
-    s += "#{@bombs[:branca].hp},"   if @bombs[:branca]
+    s =  "#{@bombs[:azul].saved_hp},"
+    s += "#{@bombs[:vermelha].saved_hp}," if @bombs[:vermelha]
+    s += "#{@bombs[:amarela].saved_hp},"  if @bombs[:amarela]
+    s += "#{@bombs[:verde].saved_hp},"    if @bombs[:verde]
+    s += "#{@bombs[:branca].saved_hp},"   if @bombs[:branca]
     s
   end
 
@@ -108,7 +116,7 @@ class Player
     @item_index = 0
     @stage_score = 0
     @dead = false
-    @bombs.each { |k, v| v.reset } unless loaded
+    @bombs.each { |k, v| v.reset(loaded) }
   end
 
   def game_over

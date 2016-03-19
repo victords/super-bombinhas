@@ -393,6 +393,7 @@ class Section
     @entrance = id
     SB.stage.set_switch obj
     SB.stage.save_switches
+    SB.player.save_bomb_hps
   end
 
   def activate_wall(id)
