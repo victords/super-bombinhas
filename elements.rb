@@ -235,12 +235,12 @@ class Elevator < GameObject
     type = a[0].to_i
     open = a[0][-1] == '!'
     case type
-      when 1 then w = 32; cols = rows = nil
-      when 2 then w = 64; cols = 4; rows = 1
-      when 3 then w = 64; cols = rows = nil
-      when 4 then w = 64; cols = rows = nil
+      when 1 then w = 32; cols = rows = nil; x_g = y_g = 0
+      when 2 then w = 64; cols = 4; rows = 1; x_g = y_g = 0
+      when 3 then w = 64; cols = rows = nil; x_g = 0; y_g = -3
+      when 4 then w = 64; cols = rows = nil; x_g = y_g = 0
     end
-    super x, y, w, 1, "sprite_Elevator#{type}", Vector.new(0, 0), cols, rows
+    super x, y, w, 1, "sprite_Elevator#{type}", Vector.new(x_g, y_g), cols, rows
     @passable = true
 
     @speed_m = a[1].to_i
