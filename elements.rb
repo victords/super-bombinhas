@@ -654,6 +654,15 @@ class Projectile < GameObject
   def update(section)
     move_free(@angle, @speed_m)
 
+    obst = section.get_obstacles(@x, @y)
+    obst.each do |o|
+      if o.bounds.intersect?(self)
+        @dead = true
+        break
+      end
+    end
+    return if @dead
+
     t = (@y + @img_gap.y).floor
     r = (@x + @img_gap.x + @img[0].width).ceil
     b = (@y + @img_gap.y + @img[0].height).ceil
@@ -661,6 +670,7 @@ class Projectile < GameObject
     if t > section.size.y || r < 0 || b < C::TOP_MARGIN || l > section.size.x
       @dead = true
     end
+    return if @dead
 
     if @visible
       @timer = 0 if @timer > 0
