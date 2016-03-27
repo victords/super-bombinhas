@@ -315,7 +315,9 @@ class Section
     i = (x / C::TILE_SIZE).round
     j = (y / C::TILE_SIZE).round
     ((i-offset_x)..(i+offset_x)).each do |k|
+      next if k < 0
       ((j-offset_y)..(j+offset_y)).each do |l|
+        next if l < 0
         if @tiles[k] and @tiles[k][l]
           if @tiles[k][l].pass >= 0
             obstacles << Block.new(k * C::TILE_SIZE, l * C::TILE_SIZE, C::TILE_SIZE, C::TILE_SIZE, true)

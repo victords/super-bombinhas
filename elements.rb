@@ -1088,10 +1088,12 @@ class Graphic < Sprite
     type = args.to_i
     cols = 1; rows = 1
     case type
-    when 1 then @w = 32; @h = 64
-    when 2 then x += 16; y += 16; @w = 64; @h = 64; cols = 2; rows = 2; @rot = -5
-    when 3..5 then x -= 16; @w = 64; @h = 32
-    when 6 then x -= 134; y -= 208; @w = 300; @h = 240
+      when 1 then @w = 32; @h = 64
+      when 2 then x += 16; y += 16; @w = 64; @h = 64; cols = 2; rows = 2; @rot = -5
+      when 3..5 then x -= 16; @w = 64; @h = 32
+      when 6 then x -= 134; y -= 208; @w = 300; @h = 240
+      when 7..9 then @w = 128; @h = 64
+      when 10 then x -= 236; y -= 416; @w = 600; @h = 480
     end
     super x, y, "sprite_graphic#{type}", cols, rows
     @active_bounds = Rectangle.new(x, y, @w, @h)
