@@ -64,7 +64,7 @@ class MapStage
 end
 
 class World
-  attr_reader :num, :stage_count
+  attr_reader :num, :stage_count, :song
 
   def initialize(num = 1, stage_num = 1, loaded = false)
     @num = num
@@ -116,6 +116,7 @@ class World
       @mark.move_free(@mark_aim, @mark_speed)
       if @trans_alpha == 0
         SB.world = World.new(@next_world)
+        SB.play_song(SB.world.song)
       end
       return
     elsif @trans_alpha < 0xff
@@ -123,8 +124,6 @@ class World
     end
 
     @stages.each { |i| i.update }
-    # @play_button.update
-    # @back_button.update
 
     if KB.key_pressed? Gosu::KbEscape or KB.key_pressed? Gosu::KbBackspace
       Menu.reset
