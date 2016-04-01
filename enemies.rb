@@ -180,7 +180,7 @@ module Boss
     @death_speech = "#{self.class.to_s.downcase}_death".to_sym
   end
 
-  def update_boss(section, &block)
+  def update_boss(section, do_super_update = true, &block)
     if @state == :waiting
       if SB.player.bomb.x >= @activation_x
         section.set_fixed_camera(@x + @w / 2 - C::SCREEN_WIDTH / 2, @y + @h / 2 - C::SCREEN_HEIGHT / 2)
@@ -192,6 +192,7 @@ module Boss
         section.unset_fixed_camera
         @state = :acting
         @timer = 119
+        SB.play_song(Res.song(:boss))
       end
     else
       if @dying
@@ -203,7 +204,11 @@ module Boss
         end
         return
       end
-      super_update(section, &block)
+      if do_super_update
+        super_update(section, &block)
+      elsif block_given?
+        yield
+      end
       if @dying
         set_animation 0
         section.set_fixed_camera(@x + @w / 2 - C::SCREEN_WIDTH / 2, @y + @h / 2 - C::SCREEN_HEIGHT / 2)
@@ -999,8 +1004,7 @@ end
 
 class Sahiss < FloorEnemy
   include Boss
-  alias :alt_super_update :update
-  alias :super_update :alt_update
+  alias :super_update :update
 
   def initialize(x, y, args, section)
     super x - 54, y - 148, args, 148, 180, :sprite_sahiss, Vector.new(-139, -3), 2, 3, [0, 1, 0, 2], 7, 2000
@@ -1009,12 +1013,8 @@ class Sahiss < FloorEnemy
     init
   end
 
-  def alt_update(section)
-    alt_super_update(section)
-  end
-
   def update(section)
-    update_boss(section) do
+    update_boss(section, false) do
       if @attacking
         move_free @aim, 6
         b = SB.player.bomb
@@ -1050,26 +1050,27 @@ class Sahiss < FloorEnemy
             @timer = 0
           end
         end
-      else
-        prev = @facing_right
-        super_update(section)
-        if @dead
-          section.finish
-        elsif @aim
-          @timer += 1
-          if @timer == @time
-            if @facing_right
-              @timer = @time - 1
-            else
-              set_bounds 1
-              @attacking = true
-              @img_index = 4
-              @timer = 0
-            end
+      end
+    end
+    if @state == :acting and not @attacking and not @dying
+      prev = @facing_right
+      super_update(section)
+      if @dead
+        section.finish
+      elsif @aim
+        @timer += 1
+        if @timer == @time
+          if @facing_right
+            @timer = @time - 1
+          else
+            set_bounds 1
+            @attacking = true
+            @img_index = 4
+            @timer = 0
           end
-        elsif @facing_right and not prev
-          @aim = Vector.new(@x, @y)
         end
+      elsif @facing_right and not prev
+        @aim = Vector.new(@x, @y)
       end
     end
   end
