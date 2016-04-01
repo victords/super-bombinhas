@@ -171,6 +171,58 @@ class FloorEnemy < Enemy
   end
 end
 
+module Boss
+  def init
+    @activation_x = @x + @w / 2 - C::SCREEN_WIDTH / 2
+    @timer = 0
+    @state = :waiting
+    @speech = "#{self.class.to_s.downcase}_speech".to_sym
+    @death_speech = "#{self.class.to_s.downcase}_death".to_sym
+  end
+
+  def update_boss(section, &block)
+    if @state == :waiting
+      if SB.player.bomb.x >= @activation_x
+        section.set_fixed_camera(@x + @w / 2 - C::SCREEN_WIDTH / 2, @y + @h / 2 - C::SCREEN_HEIGHT / 2)
+        @state = :speaking
+      end
+    elsif @state == :speaking
+      @timer += 1
+      if @timer >= 300 or KB.key_pressed? Gosu::KbReturn or KB.key_pressed? SB.key[:up]
+        section.unset_fixed_camera
+        @state = :acting
+        @timer = 119
+      end
+    else
+      if @dying
+        @timer += 1
+        if @timer >= 300 or KB.key_pressed? Gosu::KbReturn or KB.key_pressed? SB.key[:up]
+          section.unset_fixed_camera
+          section.finish
+          @dead = true
+        end
+        return
+      end
+      super_update(section, &block)
+      if @dying
+        set_animation 0
+        section.set_fixed_camera(@x + @w / 2 - C::SCREEN_WIDTH / 2, @y + @h / 2 - C::SCREEN_HEIGHT / 2)
+        @timer = 0
+      end
+    end
+  end
+
+  def draw_boss
+    if @state == :speaking or (@dying and not @dead)
+      G.window.draw_quad 5, 495, C::PANEL_COLOR,
+                         795, 495, C::PANEL_COLOR,
+                         5, 595, C::PANEL_COLOR,
+                         795, 595, C::PANEL_COLOR, 1
+      SB.text_helper.write_breaking SB.text(@state == :speaking ? @speech : @death_speech), 10, 500, 780, :justified, 0, 255, 1
+    end
+  end
+end
+
 ################################################################################
 
 class Wheeliam < FloorEnemy
@@ -438,14 +490,16 @@ class Turner < Enemy
 end
 
 class Chamal < Enemy
+  include Boss
+  alias :super_update :update
+
   X_OFFSET = 224
   MAX_MOVEMENT = 160
 
   def initialize(x, y, args, section)
-    super x - 25, y - 74, 82, 106, :sprite_chamal, Vector.new(-16, -8), 3, 1, [0, 1, 0, 2], 7, 5000, 3
+    super x - 25, y - 74, 82, 106, :sprite_chamal, Vector.new(-16, -8), 3, 1, [0, 1, 0, 2], 7, 5000 #, 3
     @left_limit = @x - X_OFFSET
     @right_limit = @x + X_OFFSET
-    @activation_x = @x + @w / 2 - C::SCREEN_WIDTH / 2
     @spawn_points = [
       Vector.new(@x + @w / 2 - 120, @y - 400),
       Vector.new(@x + @w / 2, @y - 400),
@@ -453,79 +507,50 @@ class Chamal < Enemy
     ]
     @spawns = []
     @speed_m = 4
-    @timer = 0
     @turn = 0
     @facing_right = false
-    @state = :waiting
+    init
   end
 
   def update(section)
-    if @state == :waiting
-      if SB.player.bomb.x >= @activation_x
-        section.set_fixed_camera(@x + @w / 2 - C::SCREEN_WIDTH / 2, @y + @h / 2 - C::SCREEN_HEIGHT / 2)
-        @state = :speaking
-      end
-    elsif @state == :speaking
-      @timer += 1
-      if @timer >= 300 or KB.key_pressed? Gosu::KbReturn or KB.key_pressed? SB.key[:up]
-        section.unset_fixed_camera
-        @state = :acting
-        @timer = 119
-      end
-    else
-      if @dying
+    update_boss(section) do
+      if @moving
+        move_free @aim, @speed_m
+        if @speed.x == 0 and @speed.y == 0
+          @moving = false
+          @timer = 0
+        end
+      else
         @timer += 1
-        if @timer >= 300 or KB.key_pressed? Gosu::KbReturn or KB.key_pressed? SB.key[:up]
-          section.unset_fixed_camera
-          section.finish
-          @dead = true
-        end
-        return
-      end
-      super(section) do
-        if @moving
-          move_free @aim, @speed_m
-          if @speed.x == 0 and @speed.y == 0
-            @moving = false
-            @timer = 0
-          end
-        else
-          @timer += 1
-          if @timer == 120
-            x = rand @left_limit..@right_limit
-            x = @x - MAX_MOVEMENT if @x - x > MAX_MOVEMENT
-            x = @x + MAX_MOVEMENT if x - @x > MAX_MOVEMENT
-            @aim = Vector.new x, @y
-            if x < @x; @facing_right = false
-            else; @facing_right = true; end
-            @moving = true
-            if @turn % 5 == 0 and @spawns.size < 3
-              @spawn_points.each do |p|
-                @spawns << Wheeliam.new(p.x, p.y, nil, section)
-                section.add(@spawns[-1])
-              end
-              @respawned = true
+        if @timer == 120
+          x = rand @left_limit..@right_limit
+          x = @x - MAX_MOVEMENT if @x - x > MAX_MOVEMENT
+          x = @x + MAX_MOVEMENT if x - @x > MAX_MOVEMENT
+          @aim = Vector.new x, @y
+          if x < @x; @facing_right = false
+          else; @facing_right = true; end
+          @moving = true
+          if @turn % 5 == 0 and @spawns.size < 3
+            @spawn_points.each do |p|
+              @spawns << Wheeliam.new(p.x, p.y, nil, section)
+              section.add(@spawns[-1])
             end
-            @turn += 1
+            @respawned = true
           end
+          @turn += 1
         end
-        spawns_dead = true
-        @spawns.each do |s|
-          if s.dying; @spawns.delete s
-          else; spawns_dead = false; end
-        end
-        if spawns_dead and @respawned and @gun_powder.nil?
-          @gun_powder = GunPowder.new(@x, @y + 74, nil, section, nil)
-          section.add(@gun_powder)
-          @respawned = false
-        end
-        @gun_powder = nil if @gun_powder && @gun_powder.dead?
       end
-      if @dying
-        set_animation 0
-        section.set_fixed_camera(@x + @w / 2 - C::SCREEN_WIDTH / 2, @y + @h / 2 - C::SCREEN_HEIGHT / 2)
-        @timer = 0
+      spawns_dead = true
+      @spawns.each do |s|
+        if s.dying; @spawns.delete s
+        else; spawns_dead = false; end
       end
+      if spawns_dead and @respawned and @gun_powder.nil?
+        @gun_powder = GunPowder.new(@x, @y + 74, nil, section, nil)
+        section.add(@gun_powder)
+        @respawned = false
+      end
+      @gun_powder = nil if @gun_powder && @gun_powder.dead?
     end
   end
 
@@ -551,13 +576,7 @@ class Chamal < Enemy
 
   def draw(map)
     super(map, 1, 1, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
-    if @state == :speaking or (@dying and not @dead)
-      G.window.draw_quad 5, 495, C::PANEL_COLOR,
-                         795, 495, C::PANEL_COLOR,
-                         5, 595, C::PANEL_COLOR,
-                         795, 595, C::PANEL_COLOR, 1
-      SB.text_helper.write_breaking SB.text(@state == :speaking ? :chamal_speech : :chamal_death), 10, 500, 790, :justified, 0, 255, 1
-    end
+    draw_boss
   end
 end
 
@@ -979,68 +998,78 @@ class Zep < Enemy
 end
 
 class Sahiss < FloorEnemy
+  include Boss
+  alias :alt_super_update :update
+  alias :super_update :alt_update
+
   def initialize(x, y, args, section)
-    super x - 54, y - 148, args, 148, 180, :sprite_sahiss, Vector.new(-139, -3), 2, 3, [0, 1, 0, 2], 7, 2000, 3
-    @timer = 0
+    super x - 54, y - 148, args, 148, 180, :sprite_sahiss, Vector.new(-139, -3), 2, 3, [0, 1, 0, 2], 7, 2000
     @time = 180 + rand(240)
     section.active_object = self
+    init
+  end
+
+  def alt_update(section)
+    alt_super_update(section)
   end
 
   def update(section)
-    if @attacking
-      move_free @aim, 6
-      b = SB.player.bomb
-      if b.over? self
-        b.bounce
-      elsif b.collide? self
-        b.hit
-      elsif @img_index == 5
-        r = Rectangle.new(@x + 170, @y, 1, 120)
-        b.hit if b.bounds.intersect? r
-      end
-      if @speed.x == 0
-        if @img_index == 5
-          set_bounds 3
-          @img_index = 4
+    update_boss(section) do
+      if @attacking
+        move_free @aim, 6
+        b = SB.player.bomb
+        if b.over? self
+          b.bounce
+        elsif b.collide? self
+          b.hit
+        elsif @img_index == 5
+          r = Rectangle.new(@x + 170, @y, 1, 120)
+          b.hit if b.bounds.intersect? r
         end
-        @timer += 1
-        if @timer == 5
-          set_bounds 4
-          @img_index = 0
-        elsif @timer == 60
-          @img_index = 0
-          @stored_forces.x = -3
-          @attacking = false
-          @timer = 0
-          @time = 180 + rand(240)
-        end
-      elsif @img_index == 4
-        @timer += 1
-        if @timer == 5
-          set_bounds 2
-          @img_index = 5
-          @timer = 0
-        end
-      end
-    else
-      prev = @facing_right
-      super(section)
-      if @dead
-        section.finish
-      elsif @aim
-        @timer += 1
-        if @timer == @time
-          if @facing_right
-            @timer = @time - 1
-          else
-            set_bounds 1
-            @attacking = true
+        if @speed.x == 0
+          if @img_index == 5
+            set_bounds 3
             @img_index = 4
+          end
+          @timer += 1
+          if @timer == 5
+            set_bounds 4
+            @img_index = 0
+          elsif @timer == 60
+            @img_index = 0
+            @stored_forces.x = -3
+            @attacking = false
+            @timer = 0
+            @time = 180 + rand(240)
+          end
+        elsif @img_index == 4
+          @timer += 1
+          if @timer == 5
+            set_bounds 2
+            @img_index = 5
             @timer = 0
           end
         end
-      elsif @facing_right and not prev
-        @aim = Vector.new(@x, @y)
+      else
+        prev = @facing_right
+        super_update(section)
+        if @dead
+          section.finish
+        elsif @aim
+          @timer += 1
+          if @timer == @time
+            if @facing_right
+              @timer = @time - 1
+            else
+              set_bounds 1
+              @attacking = true
+              @img_index = 4
+              @timer = 0
+            end
+          end
+        elsif @facing_right and not prev
+          @aim = Vector.new(@x, @y)
+        end
       end
     end
   end
@@ -1078,5 +1107,10 @@ class Sahiss < FloorEnemy
     super
     @indices = [0, 1, 0, 2]
     set_animation 0
+  end
+
+  def draw(map)
+    super(map)
+    draw_boss
   end
 end
