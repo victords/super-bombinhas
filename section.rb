@@ -44,6 +44,7 @@ class Section
     BoardItem,
     Bombie,
     Branch,
+    Butterflep,
     Chamal,
     Chrazer,
     Crack,

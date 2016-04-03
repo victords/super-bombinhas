@@ -1002,6 +1002,40 @@ class Zep < Enemy
   end
 end
 
+class Butterflep < Enemy
+  def initialize(x, y, args, section)
+    super(x - 12, y - 12, 56, 54, :sprite_Butterflep, Vector.new(-4, -4), 1, 1, [0], 0, 270)
+    @speed_m = 5
+    ps = args.split(':')
+    @points = []
+    ps.each do |p|
+      pp = p.split(',')
+      @points << Vector.new(pp[0].to_i * C::TILE_SIZE, pp[1].to_i * C::TILE_SIZE)
+    end
+    @points << Vector.new(@x, @y)
+    @timer = 0
+  end
+
+  def update(section)
+    super(section) do
+      if @moving
+        cycle(@points, @speed_m)
+        if @speed.x == 0 and @speed.y == 0
+          @moving = false
+          @timer = 0
+        end
+      else
+        @timer += 1
+        @moving = true if @timer == 120
+      end
+    end
+  end
+
+  def hit_by_bomb(section)
+    SB.player.bomb.hit
+  end
+end
+
 class Sahiss < FloorEnemy
   include Boss
   alias :super_update :update
