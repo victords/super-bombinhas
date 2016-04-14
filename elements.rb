@@ -1026,7 +1026,7 @@ class Monep < GameObject
       else
         if section.active_object == self
           section.active_object = nil
-          @state = :normal
+          @state = :waiting
         end
       end
     end
@@ -1043,7 +1043,7 @@ class Monep < GameObject
 
   def draw(map)
     super map
-    @balloon.draw @x - map.cam.x, @y + 30 - map.cam.y, 0 if @state == :waiting
+    @balloon.draw @x - map.cam.x, @y + 30 - map.cam.y, 0 if @state == :waiting and SB.player.bomb.collide?(self)
     speak(:msg_monep) if @state == :speaking
   end
 end
