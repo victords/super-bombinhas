@@ -532,7 +532,7 @@ class BallReceptor < GameObject
 
   def update(section)
     if @will_set
-      section.activate_wall @id
+      section.activate_object MovingWall, @id
       @is_set = true
       @img_index = 1
       @will_set = false
@@ -541,7 +541,7 @@ class BallReceptor < GameObject
 
   def set(section)
     SB.stage.set_switch self
-    section.activate_wall @id
+    section.activate_object MovingWall, @id
     @is_set = true
     @img_index = 1
   end
@@ -1066,6 +1066,97 @@ class StalactiteGenerator < GameObject
       if @timer == 60
         @active = true
       end
+    end
+  end
+end
+
+class TwinWalls < GameObject
+  attr_reader :id
+
+  def initialize(x, y, args, section)
+    super x + 2, y + C::TILE_SIZE, 28, 0, :sprite_MovingWall, Vector.new(0, 0), 1, 2
+    args = args.split ','
+    @id = args[0].to_i
+    @closed = args[1] == '.'
+    if @id != 0
+      section.add(@twin = TwinWalls.new(C::TILE_SIZE * args[2].to_i, C::TILE_SIZE * args[3].to_i, "0,#{@closed ? '!' : '.'}", section))
+    end
+
+    if @closed
+      until section.obstacle_at? @x, @y - 1
+        @y -= C::TILE_SIZE
+        @h += C::TILE_SIZE
+      end
+      @max_size = @h
+    else
+      @max_size = 0
+      y = @y
+      until section.obstacle_at? @x, y - 1
+        y -= C::TILE_SIZE
+        @max_size += C::TILE_SIZE
+      end
+    end
+    @active_bounds = Rectangle.new @x, @y, @w, @h
+    section.obstacles << self
+  end
+
+  def update(section)
+    if @active
+      @timer += 1
+      if @timer == 30
+        @y += @closed ? 16 : -16
+        @h += @closed ? -16 : 16
+        @active_bounds = Rectangle.new @x, @y, @w, @h
+        @timer = 0
+        if @closed && @h == 0 || !@closed && @h == @max_size
+          @closed = !@closed
+          @active = false
+        end
+      end
+    end
+  end
+
+  def activate
+    unless @active
+      @active = true
+      @timer = 0
+      @twin.activate if @twin
+    end
+  end
+
+  def draw(map)
+    @img[0].draw @x - map.cam.x, @y - map.cam.y, 0 if @h > 0
+    y = 16
+    while y < @h
+      @img[1].draw @x - map.cam.x, @y + y - map.cam.y, 0
+      y += 16
+    end
+  end
+end
+
+class WallButton < GameObject
+  def initialize(x, y, args, section)
+    super x, y + 16, 32, 16, :sprite_WallButton, Vector.new(0, 0), 1, 3
+    @id = args.to_i
+    @active_bounds = Rectangle.new(@x, @y, @w, @h)
+    @state = 0
+  end
+
+  def update(section)
+    b = SB.player.bomb
+    if @state == 1
+      animate([1, 2], 5) unless @img_index == 2
+      if @img_index == 2 && !b.collide?(self)
+        @state = 2
+      end
+    elsif @state == 2
+      animate([1, 0], 5)
+      if @img_index == 0 && !b.collide?(self)
+        @state = 0
+      end
+    elsif @state == 0 && b.collide?(self)
+      section.activate_object(TwinWalls, @id)
+      @state = 1
     end
   end
 end

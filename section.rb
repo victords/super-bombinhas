@@ -86,8 +86,10 @@ class Section
     Stalactite,
     StalactiteGenerator,
     Turner,
+    TwinWalls,
     Vamep,
     Vortex,
+    WallButton,
     Water,
     Wheeliam,
     Yaw,
@@ -252,7 +254,6 @@ class Section
     @inter_elements = [] # vetor de objetos que podem interagir com outros
     @obstacles = [] # vetor de obstáculos não-tile
     @effects = []
-    @locked_door = nil
     @reload = false
     @loaded = true
 
@@ -399,9 +400,9 @@ class Section
     SB.player.save_bomb_hps
   end
 
-  def activate_wall(id)
+  def activate_object(type, id)
     @elements.each do |e|
-      if e.class == MovingWall and e.id == id
+      if e.class == type && e.id == id
         e.activate
         break
       end
