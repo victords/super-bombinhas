@@ -230,6 +230,8 @@ class Crack < GameObject
 end
 
 class Elevator < GameObject
+  attr_reader :id
+
   def initialize(x, y, args, section)
     a = args.split(':')
     type = a[0].to_i
@@ -268,14 +270,22 @@ class Elevator < GameObject
     @points << Vector.new(x, y)
     @indices = *(0...@img.size)
     @active_bounds = Rectangle.new min_x, min_y, (max_x - min_x + w), (max_y - min_y + @img[0].height)
+    @active = a[1][-1] != ")"
+    @id = a[1].split('(')[1].to_i unless @active
 
     section.obstacles << self
   end
 
   def update(section)
-    b = SB.player.bomb
-    cycle @points, @speed_m, section.passengers, section.get_obstacles(b.x, b.y), section.ramps
+    if @active
+      b = SB.player.bomb
+      cycle @points, @speed_m, section.passengers, section.get_obstacles(b.x, b.y), section.ramps
+    end
     animate @indices, 8
+  end
+
+  def activate
+    @active = !@active
   end
 
   def is_visible(map)
@@ -1137,7 +1147,14 @@ end
 class WallButton < GameObject
   def initialize(x, y, args, section)
     super x, y + 16, 32, 16, :sprite_WallButton, Vector.new(0, 0), 1, 3
-    @id = args.to_i
+    args = args.split ','
+    @id = args[0].to_i
+    @type =
+      case args[1]
+      when '1' then TwinWalls
+      when '2' then Elevator
+      else          nil
+      end
     @active_bounds = Rectangle.new(@x, @y, @w, @h)
     @state = 0
   end
@@ -1155,8 +1172,14 @@ class WallButton < GameObject
         @state = 0
       end
     elsif @state == 0 && b.collide?(self)
-      section.activate_object(TwinWalls, @id)
+      if @type
+        section.activate_object(@type, @id)
+      else
+        section.activate_object(TwinWalls, @id)
+        section.activate_object(Elevator, @id)
+      end
       @state = 1
+      set_animation 1
     end
   end
 end
