@@ -67,6 +67,7 @@ class Section
     Jellep,
     Key,
     Life,
+    Lift,
     Monep,
     MovingWall,
     Owlep,

@@ -830,10 +830,10 @@ class Branch < GameObject
   def update(section); end
 
   def draw(map)
-    w = @w
-    @w = @img[0].width
+    # w = @w
+    # @w = @img[0].width
     super(map, @scale, 1, 255, 0xffffff, nil, @left ? nil : :horiz)
-    @w = w
+    # @w = w
   end
 end
 
@@ -1180,6 +1180,56 @@ class WallButton < GameObject
       end
       @state = 1
       set_animation 1
+    end
+  end
+end
+
+class Lift < GameObject
+  def initialize(x, y, args, section)
+    super x, section.size.y, 64, 1, :sprite_Elevator2, Vector.new(0, 0), 4, 1
+    @start = Vector.new(x, @y)
+    args = args.split(',')
+    @max_force = -(args[0].to_f)
+    @x_force = args[1].to_f
+    @passable = true
+    @active_bounds = Rectangle.new(x, @y - 5 * C::TILE_SIZE, 64, 5 * C::TILE_SIZE)
+    section.obstacles << self
+  end
+
+  def update(section)
+    b = SB.player.bomb
+    prev_max_speed = b.max_speed.x
+    b.max_speed.x = @max_speed.x
+    if @launched
+      move_carrying(Vector.new(0, @force), nil, section.passengers, section.get_obstacles(b.x, b.y), section.ramps)
+      @force += 1 if @force < 0
+      @force = 0 if @force > 0
+      if @y > section.size.y + C::TILE_SIZE
+        @x = @start.x; @y = @start.y
+        @speed.x = @speed.y = 0
+        @launched = false
+      end
+    else
+      move_carrying(Vector.new(@x_force, @max_force), nil, section.passengers, section.get_obstacles(b.x, b.y), section.ramps)
+      @launched = true
+      @force = @max_force * 0.25
+    end
+    b.max_speed.x = prev_max_speed
+
+    # atualizando active_bounds
+    t = (@y + @img_gap.y).floor
+    r = (@x + @img_gap.x + @img[0].width).ceil
+    b = (@y + @img_gap.y + @img[0].height).ceil
+    l = (@x + @img_gap.x).floor
+    if t < @active_bounds.y
+      @active_bounds.h += @active_bounds.y - t
+      @active_bounds.y = t
+    end
+    @active_bounds.w = r - @active_bounds.x if r > @active_bounds.x + @active_bounds.w
+    @active_bounds.h = b - @active_bounds.y if b > @active_bounds.y + @active_bounds.h
+    if l < @active_bounds.x
+      @active_bounds.w += @active_bounds.x - l
+      @active_bounds.x = l
     end
   end
 end
