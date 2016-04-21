@@ -1235,6 +1235,51 @@ class Lift < GameObject
   end
 end
 
+class Crusher < GameObject
+  def initialize(x, y, args, section)
+    super x, y, 32, 16, :sprite_Crusher, Vector.new(0, 0), 4, 1
+    @bottom = Block.new(x, y + 144, 32, 16, false)
+    @state = 0
+    @timer = 0
+    @active_bounds = Rectangle.new(x, y, 32, 160)
+    section.obstacles << self << @bottom
+  end
+
+  def update(section)
+    @timer += 1
+    if @state % 2 == 0
+      if @timer == 180
+        grow 14
+        set_animation @state == 0 ? 1 : 2
+        @timer = 0
+        @state += 1
+      end
+    else
+      animate(@state == 1 ? [1, 2, 3] : [2, 1, 0], 6)
+      if @timer == 6
+        grow 22
+      elsif @timer == 12
+        grow 28
+        @timer = 0
+        @state = @state == 1 ? 2 : 0
+      end
+    end
+    b = SB.player.bomb
+    if b.bottom == @bottom and @state == 2
+      b.hit
+    end
+  end
+
+  def grow(amount)
+    amount = -amount if @state > 1
+    @h += amount
+    @bottom.instance_eval { @y -= amount; @h += amount }
+    if SB.player.bomb.bottom == @bottom
+      SB.player.bomb.y -= amount
+    end
+  end
+end
+
 class SpecGate < GameObject
   def initialize(x, y, args, section)
     super x, y, 32, 32, :sprite_SpecGate

@@ -48,6 +48,7 @@ class Section
     Chamal,
     Chrazer,
     Crack,
+    Crusher,
     Door,
     Ekips,
     Electong,
