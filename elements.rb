@@ -138,7 +138,7 @@ class Bombie < GameObject
 end
 
 class Door < GameObject
-  attr_reader :locked
+  attr_reader :locked, :type
 
   def initialize(x, y, args, section, switch)
     args = args.split(',')
@@ -150,6 +150,7 @@ class Door < GameObject
     super x + 10, y + 63, 12, 1, "sprite_Door#{type}", Vector.new(x_g, y_g), 5, 1
     @entrance = args[0].to_i
     @locked = (switch[:state] != :taken and args[1] == '.')
+    @type = type.to_i if type
     @open = false
     @active_bounds = Rectangle.new x, y, 32, 64
     @lock = Res.img(:sprite_Lock) if @locked

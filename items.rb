@@ -14,8 +14,8 @@ module Item
     false
   end
 
-  def set_icon(type)
-    @icon = Res.img "icon_#{type}"
+  def set_icon(icon)
+    @icon = Res.img "icon_#{icon}"
   end
 
   def take(section, store)
@@ -39,7 +39,7 @@ module Item
 end
 
 class FloatingItem < GameObject
-  def initialize(x, y, w, h, img, img_gap = nil, sprite_cols = nil, sprite_rows = nil, indices = nil, interval = nil, type = nil)
+  def initialize(x, y, w, h, img, img_gap = nil, sprite_cols = nil, sprite_rows = nil, indices = nil, interval = nil, bomb_type = nil)
     super x, y, w, h, img, img_gap, sprite_cols, sprite_rows
     img_gap = Vector.new(0, 0) if img_gap.nil?
     @active_bounds = Rectangle.new x + img_gap.x, y + img_gap.y, @img[0].width, @img[0].height
@@ -47,11 +47,11 @@ class FloatingItem < GameObject
     @counter = 0
     @indices = indices
     @interval = interval
-    @type = type
+    @bomb_type = bomb_type
   end
 
   def update(section)
-    if SB.player.bomb.collide?(self) and (@type.nil? or SB.player.bomb.type == @type)
+    if SB.player.bomb.collide?(self) and (@bomb_type.nil? or SB.player.bomb.type == @bomb_type)
       yield
       @dead = true
       return
@@ -108,9 +108,11 @@ class Key < FloatingItem
   include Item
 
   def initialize(x, y, args, section, switch)
-    set_icon :Key
+    set_icon "Key#{args}"
     return if check switch
-    super x + 3, y + 3, 26, 26, :sprite_Key, Vector.new(-3, -3)
+    super x + 3, y + 3, 26, 26, "sprite_Key#{args}", Vector.new(-3, -3)
+    @type = args.to_i if args
+    switch[:extra] = @type if @type
   end
 
   def update(section)
@@ -121,7 +123,7 @@ class Key < FloatingItem
 
   def use(section, switch)
     obj = section.active_object
-    if obj.is_a? Door and obj.locked
+    if obj.is_a?(Door) && obj.locked && (((@type || obj.type) && @type == obj.type) || (!@type && !obj.type))
       obj.unlock(section)
       set_switch(switch)
     end
@@ -134,7 +136,7 @@ class Attack1 < FloatingItem
   def initialize(x, y, args, section, switch)
     set_icon :Attack1
     if check switch
-      @type = :azul
+      @bomb_type = :azul
       return
     end
     super x + 2, y + 2, 28, 28, :sprite_Attack1, nil, 8, 1,
@@ -149,7 +151,7 @@ class Attack1 < FloatingItem
 
   def use(section, switch)
     b = SB.player.bomb
-    return false if b.type != @type
+    return false if b.type != @bomb_type
     if b.facing_right; angle = 0
     else; angle = 180; end
     section.add Projectile.new(b.x, b.y, 1, angle, b)
@@ -318,7 +320,7 @@ class Attack2 < FloatingItem
   def initialize(x, y, args, section, switch)
     set_icon :attack2
     if check switch
-      @type = :vermelha
+      @bomb_type = :vermelha
       return
     end
     super x + 2, y + 2, 28, 28, :sprite_attack2, nil, 8, 1,
@@ -333,7 +335,7 @@ class Attack2 < FloatingItem
 
   def use(section, switch)
     b = SB.player.bomb
-    return false if b.type != @type
+    return false if b.type != @bomb_type
     section.add Projectile.new(b.x, b.y, 4, 270, b)
     set_switch(switch)
     true
