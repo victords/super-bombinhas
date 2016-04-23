@@ -1149,3 +1149,39 @@ class Sahiss < FloorEnemy
     draw_boss
   end
 end
+
+class Forsby < Enemy
+  def initialize(x, y, args, section)
+    super x + 3, y - 22, 58, 54, :sprite_Forsby, Vector.new(-6, -6), 2, 3, [0, 1, 0, 2], 15, 400
+    @facing_right = !args.nil?
+    @state = @timer = 0
+  end
+
+  def update(section)
+    super(section) do
+      @timer += 1
+      if @state == 0 && @timer > 180
+        @indices = [3]
+        set_animation 3
+        @state = 1
+      elsif @state == 1 && @timer > 240
+        @indices = [4]
+        set_animation 4
+        section.add(Projectile.new(@facing_right ? @x + @w - 16 : @x - 5, @y + 14, 5, @facing_right ? 0 : 180, self))
+        @state = 2
+      elsif @state == 2 && @timer > 270
+        @indices = [0, 1, 0, 2]
+        set_animation 0
+        @state = @timer = 0
+      end
+    end
+    if @dying
+      @indices = [5]
+      set_animation 5
+    end
+  end
+
+  def draw(map)
+    super map, 1, 1, 255, 0xffffff, nil, @facing_right ? nil : :horiz
+  end
+end

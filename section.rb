@@ -59,6 +59,7 @@ class Section
     FixedSpikes,
     Flep,
     ForceField,
+    Forsby,
     Fureel,
     Goal,
     Graphic,

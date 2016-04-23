@@ -649,12 +649,15 @@ class Projectile < GameObject
     when 2 then w = 8; h = 8; x_g = -2; y_g = -2; cols = 4; rows = 2; indices = [0, 1, 2, 3, 4, 5, 6, 7]; @speed_m = 2.5
     when 3 then w = 4; h = 40; x_g = 0; y_g = 0; cols = 1; rows = 1; indices = [0]; @speed_m = 6
     when 4 then w = 16; h = 22; x_g = -2; y_g = 0; cols = 1; rows = 1; indices = [0]; @speed_m = 5
+    when 5 then w = 21; h = 21; x_g = -16; y_g = -4; cols = 1; rows = 1; indices = [0]; @speed_m = 5
     end
 
-    super x - x_g, y - y_g, w, h, "sprite_Projectile#{type}", Vector.new(x_g, y_g), cols, rows
+    super x, y, w, h, "sprite_Projectile#{type}", Vector.new(0, 0), cols, rows
     # rads = angle * Math::PI / 180
     # @aim = Vector.new @x + (1000000 * Math.cos(rads)), @y + (1000000 * Math.sin(rads))
-    @active_bounds = Rectangle.new @x + @img_gap.x, @y + @img_gap.y, @img[0].width, @img[0].height
+    @active_bounds = Rectangle.new @x - 30, @y - 30, @w + 60, @h + 60
+    @center_x = (@w * 0.5 - x_g) / @img[0].width
+    @center_y = (@h * 0.5 - y_g) / @img[0].height
     @angle = angle
     @owner = owner
     @indices = indices
@@ -692,12 +695,12 @@ class Projectile < GameObject
 
     unless @dead
       animate @indices, 5
-      @active_bounds = Rectangle.new @x + @img_gap.x, @y + @img_gap.y, @img[0].width, @img[0].height
+      @active_bounds = Rectangle.new @x - 30, @y - 30, @w + 60, @h + 60
     end
   end
 
   def draw(map)
-    @img[@img_index].draw_rot @x + (@w / 2) - map.cam.x, @y + (@h / 2) - map.cam.y, 0, @angle
+    @img[@img_index].draw_rot @x + @w / 2 - map.cam.x, @y + @h / 2 - map.cam.y, 0, @angle, @center_x, @center_y
   end
 
   def is_visible(map)
