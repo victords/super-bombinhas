@@ -1280,6 +1280,45 @@ class Crusher < GameObject
   end
 end
 
+class Boulder < GameObject
+  def initialize(x, y, args, section)
+    super x + 20, y + 5, 56, 86, :sprite_Boulder, Vector.new(-20, -5)
+    @box = Rectangle.new(x + 5, y + 20, 86, 56)
+    @state = :waiting
+    @start_x = @x
+    @facing_right = args.nil?
+  end
+
+  def update(section)
+    b = SB.player.bomb
+    if @state == :waiting
+      if b.x > @x + 100 && b.y > @y
+        @state = :falling
+      end
+    else
+      move(Vector.new(0, 0), section.get_obstacles(@x - 15, @y, 86, 86), section.ramps)
+      if @x + @img_gap.x > section.size.x or @y + @img_gap.y > section.size.y
+        @dead = true
+        return
+      end
+
+      @stored_forces.x = @facing_right ? 3 : -3 if @bottom && @speed.x == 0
+      @box.x = @x - 15; @box.y = @y + 15
+      if b.collide?(self) or b.bounds.intersect?(@box)
+        b.hit
+      end
+    end
+  end
+
+  def draw(map)
+    super map, 1, 1, 255, 0xffffff, @x - @start_x
+  end
+
+  def is_visible(map)
+    true
+  end
+end
+
 class SpecGate < GameObject
   def initialize(x, y, args, section)
     super x, y, 32, 32, :sprite_SpecGate

@@ -43,6 +43,7 @@ class Section
     BallReceptor,
     BoardItem,
     Bombie,
+    Boulder,
     Branch,
     Butterflep,
     Chamal,
