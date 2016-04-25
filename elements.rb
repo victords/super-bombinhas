@@ -1322,6 +1322,66 @@ class Boulder < GameObject
   end
 end
 
+class HeatBomb < GameObject
+  def initialize(x, y, args, section)
+    # if switch[:state] == :taken
+    #   @dead = true
+    #   return
+    # end
+    super x, y, 32, 32, :sprite_HeatBomb, Vector.new(0, 0), 4, 2
+    @state = 0
+    @passable = false
+    section.obstacles << self
+  end
+
+  def update(section)
+    if @state == 0
+      animate [0, 1, 2, 1], 7
+      if SB.player.bomb.explode?(self)
+        @state = 1
+        @timer = 0
+        set_animation 3
+      end
+    elsif @state == 1
+      animate [3, 0], 3
+      @timer += 1
+      if @timer == 120
+        @state = 2
+        @timer = 0
+        section.add_effect(Explosion.new(@x + @w / 2, @y + @h / 2, 50))
+        set_animation 4
+      end
+    else
+      animate [4, 5, 6, 7], 5
+      @timer += 1
+      if @timer == 20
+        @dead = true
+      end
+    end
+  end
+
+  def is_visible(map)
+    true
+  end
+end
+
+class Explosion < Effect
+  attr_reader :c_x, :c_y, :radius
+
+  def initialize(x, y, radius)
+    super x - radius - 10, y - radius - 10, :fx_Explosion, 2, 2, 5, [0, 1, 2, 3], 60
+    size = 2 * radius + 20
+    @active_bounds = Rectangle.new(@x, @y, size, size)
+    @scale = size / 180.0
+    @radius = radius
+    @c_x = x; @c_y = y
+  end
+
+  def draw(map)
+    super map, @scale, @scale
+  end
+end
+
 class SpecGate < GameObject
   def initialize(x, y, args, section)
     super x, y, 32, 32, :sprite_SpecGate

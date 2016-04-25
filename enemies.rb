@@ -54,7 +54,7 @@ class Enemy < GameObject
       if b.over? self
         b.bounce
         hit_by_bomb(section)
-      elsif b.explode? self
+      elsif b.explode?(self) or section.explode?(self)
         hit_by_explosion(section)
       elsif section.projectile_hit? self
         hit_by_projectile(section)

@@ -66,6 +66,7 @@ class Section
     GunPowder,
     Hammer,
     Heart,
+    HeatBomb,
     Herb,
     Jellep,
     Key,
@@ -380,6 +381,17 @@ class Section
           @elements.delete e
           return true
         end
+      end
+    end
+    false
+  end
+
+  def explode?(obj)
+    o_c_x = obj.x + obj.w / 2; o_c_y = obj.y + obj.h / 2
+    @effects.each do |e|
+      if e.is_a? Explosion
+        sq_dist = (o_c_x - e.c_x)**2 + (o_c_y - e.c_y)**2
+        return true if sq_dist <= e.radius**2
       end
     end
     false
