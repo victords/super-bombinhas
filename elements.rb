@@ -214,13 +214,15 @@ end
 
 class Crack < GameObject
   def initialize(x, y, args, section, switch)
-    super x + 32, y, 32, 32, :sprite_Crack
-    @active_bounds = Rectangle.new x + 32, y, 32, 32
+    if args; y += 32
+    else; x += 32; end
+    super x, y, 32, 32, :sprite_Crack
+    @active_bounds = Rectangle.new x, y, 32, 32
     @broken = switch[:state] == :taken
   end
 
   def update(section)
-    if @broken or SB.player.bomb.explode? self
+    if @broken or SB.player.bomb.explode?(self) or section.explode?(self)
       i = (@x / C::TILE_SIZE).floor
       j = (@y / C::TILE_SIZE).floor
       section.tiles[i][j].broken = true
@@ -1324,10 +1326,6 @@ end
 
 class HeatBomb < GameObject
   def initialize(x, y, args, section)
-    # if switch[:state] == :taken
-    #   @dead = true
-    #   return
-    # end
     super x, y, 32, 32, :sprite_HeatBomb, Vector.new(0, 0), 4, 2
     @state = 0
     @passable = false
@@ -1337,7 +1335,7 @@ class HeatBomb < GameObject
   def update(section)
     if @state == 0
       animate [0, 1, 2, 1], 7
-      if SB.player.bomb.explode?(self)
+      if SB.player.bomb.explode?(self) or section.explode?(self)
         @state = 1
         @timer = 0
         set_animation 3
@@ -1348,7 +1346,7 @@ class HeatBomb < GameObject
       if @timer == 120
         @state = 2
         @timer = 0
-        section.add_effect(Explosion.new(@x + @w / 2, @y + @h / 2, 50))
+        section.add_effect(Explosion.new(@x + @w / 2, @y + @h / 2, 48))
         set_animation 4
       end
     else
