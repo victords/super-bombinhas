@@ -90,6 +90,7 @@ class Section
     Sprinny,
     Stalactite,
     StalactiteGenerator,
+    Stilty,
     Turner,
     TwinWalls,
     Vamep,

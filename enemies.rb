@@ -1185,3 +1185,38 @@ class Forsby < Enemy
     super map, 1, 1, 255, 0xffffff, nil, @facing_right ? nil : :horiz
   end
 end
+
+class Stilty < FloorEnemy
+  def initialize(x, y, args, section)
+    super(x + 6, y - 26, args, 20, 58, :sprite_Stilty, Vector.new(-6, -42), 5, 2, [0, 1, 0, 2], 7, 450, 2, 2)
+  end
+
+  def update(section)
+    if @rising
+      animate @indices, @interval
+      if @img_index == 7
+        @y -= 40; @h += 40
+        @img_gap.y = -2
+        @speed_m = 3
+        @indices = [7, 8, 7, 9]
+        set_animation 7
+        @rising = false
+      end
+    else
+      super(section)
+    end
+  end
+
+  def get_invulnerable
+    super
+    @indices = [3]
+    set_animation 3
+  end
+
+  def return_vulnerable
+    super
+    @rising = true
+    @indices = [4, 5, 4, 5, 6, 5, 6, 7]
+    set_animation 4
+  end
+end
