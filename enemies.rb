@@ -1188,7 +1188,7 @@ end
 
 class Stilty < FloorEnemy
   def initialize(x, y, args, section)
-    super(x + 6, y - 26, args, 20, 58, :sprite_Stilty, Vector.new(-6, -42), 5, 2, [0, 1, 0, 2], 7, 450, 2, 2)
+    super(x + 6, y - 26, args, 20, 58, :sprite_Stilty, Vector.new(-6, -42), 6, 2, [0, 1, 0, 2], 7, 450, 2, 2)
   end
 
   def update(section)
@@ -1198,6 +1198,11 @@ class Stilty < FloorEnemy
         @y -= 40; @h += 40
         @img_gap.y = -2
         @speed_m = 3
+        if @speed.x < 0
+          @speed.x = -3
+        elsif @speed.x > 0
+          @speed.x = 3
+        end
         @indices = [7, 8, 7, 9]
         set_animation 7
         @rising = false
@@ -1207,10 +1212,10 @@ class Stilty < FloorEnemy
     end
   end
 
-  def get_invulnerable
+  def hit(section)
     super
-    @indices = [3]
-    set_animation 3
+    @indices = (@hp == 0 ? [10] : [3])
+    set_animation(@hp == 0 ? 10 : 3)
   end
 
   def return_vulnerable
