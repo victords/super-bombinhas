@@ -72,6 +72,7 @@ class Section
     Key,
     Life,
     Lift,
+    Mantul,
     Monep,
     MovingWall,
     Owlep,

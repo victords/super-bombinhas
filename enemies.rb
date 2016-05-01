@@ -149,9 +149,8 @@ class FloorEnemy < Enemy
   def hit(section)
     super
     if @dying
-      @indices = [2, 3, 4]
-      set_animation 2
-      @interval = 5
+      @indices = [@img.size - 1]
+      set_animation @img.size - 1
     end
   end
 
@@ -232,7 +231,7 @@ end
 
 class Wheeliam < FloorEnemy
   def initialize(x, y, args, section)
-    super x, y, args, 32, 32, :sprite_Wheeliam, Vector.new(-4, -3), 5, 2, [0, 1], 8, 100
+    super x, y, args, 32, 32, :sprite_Wheeliam, Vector.new(-4, -3), 3, 1, [0, 1], 8, 100
     @max_speed.y = 10
   end
 end
@@ -275,7 +274,7 @@ end
 
 class Fureel < FloorEnemy
   def initialize(x, y, args, section)
-    super x - 4, y - 7, args, 40, 39, :sprite_Fureel, Vector.new(-10, 0), 5, 2, [0, 1], 8, 300, 2, 4
+    super x - 4, y - 7, args, 40, 39, :sprite_Fureel, Vector.new(-10, 0), 3, 1, [0, 1], 8, 300, 2, 4
   end
 
   def get_invulnerable
@@ -908,7 +907,7 @@ end
 
 class Armep < FloorEnemy
   def initialize(x, y, args, section)
-    super(x, y + 12, args, 41, 20, :sprite_armep, Vector.new(-21, -3), 1, 5, [0, 1, 0, 2], 8, 290, 1, 1.3)
+    super(x, y + 12, args, 41, 20, :sprite_armep, Vector.new(-21, -3), 1, 4, [0, 1, 0, 2], 8, 290, 1, 1.3)
   end
 
   def hit_by_bomb(section)
@@ -1223,5 +1222,11 @@ class Stilty < FloorEnemy
     @rising = true
     @indices = [4, 5, 4, 5, 6, 5, 6, 7]
     set_animation 4
+  end
+end
+
+class Mantul < FloorEnemy
+  def initialize(x, y, args, section)
+    super(x - 10, y - 24, args, 52, 56, :sprite_Mantul, Vector.new(-6, -8), 2, 2, [0, 1, 0, 2], 7, 700, 2)
   end
 end
