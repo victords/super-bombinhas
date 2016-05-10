@@ -70,6 +70,7 @@ class Section
     Herb,
     Jellep,
     Key,
+    Lambul,
     Life,
     Lift,
     Mantul,

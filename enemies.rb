@@ -1227,7 +1227,7 @@ end
 
 class Mantul < FloorEnemy
   def initialize(x, y, args, section)
-    super(x - 10, y - 24, args, 52, 56, :sprite_Mantul, Vector.new(-6, -8), 2, 2, [0, 1, 0, 2], 7, 700, 2, 1.5)
+    super(x - 10, y - 24, args, 52, 56, :sprite_Mantul, Vector.new(-6, -8), 2, 2, [0, 1, 0, 2], 7, 570, 2, 1.5)
     @timer = 0
   end
 
@@ -1241,5 +1241,11 @@ class Mantul < FloorEnemy
       section.add(Projectile.new(@x + 34, @y, 2, 300, self))
       @timer = 0
     end
+  end
+end
+
+class Lambul < FloorEnemy
+  def initialize(x, y, args, section)
+    super(x - 4, y - 38, args, 40, 70, :sprite_Lambul, Vector.new(-20, -10), 4, 2, [0, 1, 0, 2], 7, 680, 1, 2)
   end
 end
