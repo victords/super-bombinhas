@@ -1246,6 +1246,28 @@ end
 
 class Lambul < FloorEnemy
   def initialize(x, y, args, section)
-    super(x - 4, y - 38, args, 40, 70, :sprite_Lambul, Vector.new(-20, -10), 4, 2, [0, 1, 0, 2], 7, 680, 1, 2)
+    super(x - 4, y - 38, args, 30, 70, :sprite_Lambul, Vector.new(-42, -10), 4, 2, [0, 1, 0, 2], 7, 680, 1, 2)
+  end
+
+  def update(section)
+    b = SB.player.bomb
+    if @attacking
+      animate [3, 4, 5, 6], 5 if @timer == 0
+      if @img_index == 6
+        r = Rectangle.new(@facing_right ? @x : @x - 40, @y + 35, 80, 10)
+        b.hit if b.bounds.intersect?(r)
+        @timer += 1
+        if @timer == 120 or b.bounds.intersect?(r)
+          @attacking = false
+          set_animation 0
+        end
+      end
+    elsif b.y + b.h == @y + @h && (b.x + b.w/2 - @x - @w/2).abs <= 55 && (b.x < @x && !@facing_right || b.x > @x && @facing_right)
+      @attacking = true
+      @timer = 0
+      set_animation 3
+    else
+      super
+    end
   end
 end
