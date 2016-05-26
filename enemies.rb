@@ -3,8 +3,8 @@
 class Enemy < GameObject
   attr_reader :dying
 
-  def initialize(x, y, w, h, img, img_gap, sprite_cols, sprite_rows, indices, interval, score, hp = 1)
-    super x, y, w, h, img, img_gap, sprite_cols, sprite_rows
+  def initialize(x, y, w, h, img_gap, sprite_cols, sprite_rows, indices, interval, score, hp = 1)
+    super x, y, w, h, "sprite_#{self.class}", img_gap, sprite_cols, sprite_rows
 
     @indices = indices
     @interval = interval
@@ -111,8 +111,8 @@ class Enemy < GameObject
 end
 
 class FloorEnemy < Enemy
-  def initialize(x, y, args, w, h, img, img_gap, sprite_cols, sprite_rows, indices, interval, score, hp = 1, speed = 3)
-    super x, y, w, h, img, img_gap, sprite_cols, sprite_rows, indices, interval, score, hp
+  def initialize(x, y, args, w, h, img_gap, sprite_cols, sprite_rows, indices, interval, score, hp = 1, speed = 3)
+    super x, y, w, h, img_gap, sprite_cols, sprite_rows, indices, interval, score, hp
 
     @dont_fall = args.nil?
     @speed_m = speed
@@ -231,14 +231,14 @@ end
 
 class Wheeliam < FloorEnemy
   def initialize(x, y, args, section)
-    super x, y, args, 32, 32, :sprite_Wheeliam, Vector.new(-4, -3), 3, 1, [0, 1], 8, 100
+    super x, y, args, 32, 32, Vector.new(-4, -3), 3, 1, [0, 1], 8, 100
     @max_speed.y = 10
   end
 end
 
 class Sprinny < Enemy
   def initialize(x, y, args, section)
-    super x + 3, y - 4, 26, 36, :sprite_Sprinny, Vector.new(-2, -5), 6, 1, [0], 5, 350
+    super x + 3, y - 4, 26, 36, Vector.new(-2, -5), 6, 1, [0], 5, 350
 
     @leaps = 1000
     @max_leaps = args.to_i
@@ -274,7 +274,7 @@ end
 
 class Fureel < FloorEnemy
   def initialize(x, y, args, section)
-    super x - 4, y - 7, args, 40, 39, :sprite_Fureel, Vector.new(-10, 0), 3, 1, [0, 1], 8, 300, 2, 4
+    super x - 4, y - 7, args, 40, 39, Vector.new(-10, 0), 3, 1, [0, 1], 8, 300, 2, 4
   end
 
   def get_invulnerable
@@ -293,7 +293,7 @@ end
 
 class Yaw < Enemy
   def initialize(x, y, args, section)
-    super x, y, 32, 32, :sprite_Yaw, Vector.new(-4, -4), 8, 1, [0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 3, 4, 5, 6, 7], 6, 500
+    super x, y, 32, 32, Vector.new(-4, -4), 8, 1, [0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 3, 4, 5, 6, 7], 6, 500
     @moving_eye = false
     @eye_timer = 0
     @points = [
@@ -378,7 +378,7 @@ end
 
 class Faller < GameObject
   def initialize(x, y, args, section)
-    super x, y, 32, 32, :sprite_Faller1, Vector.new(0, 0), 4, 1
+    super x, y, 32, 32, :sprite_Faller, Vector.new(0, 0), 4, 1
     @range = args.to_i
     @start = Vector.new x, y
     @up = Vector.new x, y - @range * 32
@@ -438,7 +438,7 @@ end
 
 class Turner < Enemy
   def initialize(x, y, args, section)
-    super x + 2, y - 7, 60, 39, :sprite_Turner, Vector.new(-2, -25), 3, 2, [0, 1, 2, 1], 8, 300
+    super x + 2, y - 7, 60, 39, Vector.new(-2, -25), 3, 2, [0, 1, 2, 1], 8, 300
     @harmful = true
     @passable = true
 
@@ -501,7 +501,7 @@ class Chamal < Enemy
   MAX_MOVEMENT = 160
 
   def initialize(x, y, args, section)
-    super x - 25, y - 74, 82, 106, :sprite_chamal, Vector.new(-16, -8), 3, 1, [0, 1, 0, 2], 7, 5000 #, 3
+    super x - 25, y - 74, 82, 106, Vector.new(-16, -8), 3, 1, [0, 1, 0, 2], 7, 5000 #, 3
     @left_limit = @x - X_OFFSET
     @right_limit = @x + X_OFFSET
     @spawn_points = [
@@ -586,7 +586,7 @@ end
 
 class Electong < Enemy
   def initialize(x, y, args, section)
-    super x - 12, y - 11, 56, 43, :sprite_electong, Vector.new(-4, -91), 4, 2, [0, 1, 2, 1], 7, 500, 1
+    super x - 12, y - 11, 56, 43, Vector.new(-4, -91), 4, 2, [0, 1, 2, 1], 7, 500, 1
     @timer = 0
     @tongue_y = @y
   end
@@ -637,7 +637,7 @@ end
 
 class Chrazer < Enemy
   def initialize(x, y, args, section)
-    super x + 1, y - 11, 30, 43, :sprite_chrazer, Vector.new(-21, -20), 2, 2, [0, 1, 0, 2], 7, 600, 2
+    super x + 1, y - 11, 30, 43, Vector.new(-21, -20), 2, 2, [0, 1, 0, 2], 7, 600, 2
     @facing_right = false
   end
 
@@ -672,7 +672,7 @@ end
 
 class Robort < FloorEnemy
   def initialize(x, y, args, section)
-    super x - 12, y - 31, args, 56, 63, :sprite_robort, Vector.new(-14, -9), 3, 2, [0, 1, 2, 1], 6, 450, 3
+    super x - 12, y - 31, args, 56, 63, Vector.new(-14, -9), 3, 2, [0, 1, 2, 1], 6, 450, 3
   end
 
   def update(section)
@@ -709,7 +709,7 @@ end
 
 class Shep < FloorEnemy
   def initialize(x, y, args, section)
-    super x, y, args, 42, 32, :sprite_shep, Vector.new(-5, -2), 3, 2, [0, 1, 0, 2], 7, 200, 1, 2
+    super x, y, args, 42, 32, Vector.new(-5, -2), 3, 2, [0, 1, 0, 2], 7, 200, 1, 2
   end
 
   def update(section)
@@ -754,7 +754,7 @@ end
 
 class Flep < Enemy
   def initialize(x, y, args, section)
-    super x, y, 64, 20, :sprite_flep, Vector.new(0, 0), 1, 3, [0, 1, 2], 6, 300, 2
+    super x, y, 64, 20, Vector.new(0, 0), 1, 3, [0, 1, 2], 6, 300, 2
     @movement = C::TILE_SIZE * args.to_i
     @aim = Vector.new(@x - @movement, @y)
     @facing_right = false
@@ -781,7 +781,7 @@ end
 
 class Jellep < Enemy
   def initialize(x, y, args, section)
-    super x, section.size.y - 1, 32, 110, :sprite_jellep, Vector.new(-5, 0), 3, 1, [0, 1, 0, 2], 5, 500
+    super x, section.size.y - 1, 32, 110, Vector.new(-5, 0), 3, 1, [0, 1, 0, 2], 5, 500
     @max_y = y
     @state = 0
     @timer = 0
@@ -828,7 +828,7 @@ end
 
 class Snep < Enemy
   def initialize(x, y, args, section)
-    super x, y - 24, 32, 56, :sprite_snep, Vector.new(0, 4), 5, 2, [0, 1, 0, 2], 12, 200
+    super x, y - 24, 32, 56, Vector.new(0, 4), 5, 2, [0, 1, 0, 2], 12, 200
     @facing_right = args.nil?
   end
 
@@ -880,7 +880,7 @@ end
 
 class Vamep < Enemy
   def initialize(x, y, args, section)
-    super x, y, 29, 22, :sprite_vamep, Vector.new(-24, -18), 2, 2, [0, 1, 2, 3, 2, 1], 6, 300
+    super x, y, 29, 22, Vector.new(-24, -18), 2, 2, [0, 1, 2, 3, 2, 1], 6, 300
     @angle = 0
     if args
       args = args.split ','
@@ -907,7 +907,7 @@ end
 
 class Armep < FloorEnemy
   def initialize(x, y, args, section)
-    super(x, y + 12, args, 41, 20, :sprite_armep, Vector.new(-21, -3), 1, 4, [0, 1, 0, 2], 8, 290, 1, 1.3)
+    super(x, y + 12, args, 41, 20, Vector.new(-21, -3), 1, 4, [0, 1, 0, 2], 8, 290, 1, 1.3)
   end
 
   def hit_by_bomb(section)
@@ -919,7 +919,7 @@ end
 
 class Owlep < Enemy
   def initialize(x, y, args, section)
-    super x - 3, y - 34, 38, 55, :sprite_owlep, Vector.new(-3, 0), 4, 1, [0, 0, 1, 0, 0, 0, 2], 60, 250, 2
+    super x - 3, y - 34, 38, 55, Vector.new(-3, 0), 4, 1, [0, 0, 1, 0, 0, 0, 2], 60, 250, 2
   end
 
   def update(section)
@@ -954,7 +954,7 @@ end
 
 class Zep < Enemy
   def initialize(x, y, args, section)
-    super x, y - 18, 60, 50, :sprite_zep, Vector.new(-24, -30), 2, 3, [0, 1, 2, 3, 4], 5, 500, 3
+    super x, y - 18, 60, 50, Vector.new(-24, -30), 2, 3, [0, 1, 2, 3, 4], 5, 500, 3
     @passable = true
 
     @aim1 = Vector.new(@x, @y)
@@ -1003,7 +1003,7 @@ end
 
 class Butterflep < Enemy
   def initialize(x, y, args, section)
-    super(x - 12, y - 12, 56, 54, :sprite_Butterflep, Vector.new(-4, -4), 1, 1, [0], 0, 270)
+    super(x - 12, y - 12, 56, 54, Vector.new(-4, -4), 1, 1, [0], 0, 270)
     @speed_m = 5
     ps = args.split(':')
     @points = []
@@ -1040,7 +1040,7 @@ class Sahiss < FloorEnemy
   alias :super_update :update
 
   def initialize(x, y, args, section)
-    super x - 54, y - 148, args, 148, 180, :sprite_sahiss, Vector.new(-139, -3), 2, 3, [0, 1, 0, 2], 7, 2000
+    super x - 54, y - 148, args, 148, 180, Vector.new(-139, -3), 2, 3, [0, 1, 0, 2], 7, 2000
     @time = 180 + rand(240)
     section.active_object = self
     init
@@ -1151,7 +1151,7 @@ end
 
 class Forsby < Enemy
   def initialize(x, y, args, section)
-    super x + 3, y - 22, 58, 54, :sprite_Forsby, Vector.new(-6, -6), 2, 3, [0, 1, 0, 2], 15, 400
+    super x + 3, y - 22, 58, 54, Vector.new(-6, -6), 2, 3, [0, 1, 0, 2], 15, 400
     @facing_right = !args.nil?
     @state = @timer = 0
   end
@@ -1187,7 +1187,7 @@ end
 
 class Stilty < FloorEnemy
   def initialize(x, y, args, section)
-    super(x + 6, y - 26, args, 20, 58, :sprite_Stilty, Vector.new(-6, -42), 6, 2, [0, 1, 0, 2], 7, 450, 2, 2)
+    super(x + 6, y - 26, args, 20, 58, Vector.new(-6, -42), 6, 2, [0, 1, 0, 2], 7, 450, 2, 2)
   end
 
   def update(section)
@@ -1227,7 +1227,7 @@ end
 
 class Mantul < FloorEnemy
   def initialize(x, y, args, section)
-    super(x - 10, y - 24, args, 52, 56, :sprite_Mantul, Vector.new(-6, -8), 2, 2, [0, 1, 0, 2], 7, 570, 2, 1.5)
+    super(x - 10, y - 24, args, 52, 56, Vector.new(-6, -8), 2, 2, [0, 1, 0, 2], 7, 570, 2, 1.5)
     @timer = 0
   end
 
@@ -1246,7 +1246,7 @@ end
 
 class Lambul < FloorEnemy
   def initialize(x, y, args, section)
-    super(x - 4, y - 38, args, 30, 70, :sprite_Lambul, Vector.new(-42, -10), 4, 2, [0, 1, 0, 2], 7, 600, 1, 2)
+    super(x - 4, y - 38, args, 30, 70, Vector.new(-42, -10), 4, 2, [0, 1, 0, 2], 7, 600, 1, 2)
   end
 
   def update(section)
@@ -1273,3 +1273,9 @@ class Lambul < FloorEnemy
 
   def hit_by_bomb(section); end
 end
+
+# class Icel < Enemy
+#   def initialize(x, y, args, section)
+#     super x - 4, y + 2, 40, 28, :sprite_Icel,
+#   end
+# end
