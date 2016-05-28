@@ -69,6 +69,7 @@ class Section
     HeatBomb,
     Herb,
     Icel,
+    Ignel,
     Jellep,
     Key,
     Lambul,

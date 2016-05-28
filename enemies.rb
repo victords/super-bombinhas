@@ -1312,10 +1312,36 @@ class Icel < Enemy
   end
 
   def hit_by_bomb(section); end
+  def hit_by_projectile(section); end
+end
 
-  def draw(map)
-    super
-    G.window.draw_line @center.x - map.cam.x, @center.y - map.cam.y, 0xff000000,
-                       @center.x + 1 - map.cam.x, @center.y - map.cam.y, 0xff000000, 0
+class Ignel < Enemy
+  def initialize(x, y, args, section)
+    super x + 4, y - 16, 24, 48, Vector.new(-2, -12), 3, 1, [0, 1, 2], 5, 450
+    @radius = (args || 4).to_i
+    @timer = 0
+    @center = Vector.new(@x + @w/2, @y + @h)
+    @effs = []
   end
+
+  def update(section)
+    super(section) do
+      @timer += 1
+      if @timer == 120
+        (1..@radius).each do |i|
+          @effs << section.add_effect(Fire.new(@center.x + i * C::TILE_SIZE, @center.y))
+          @effs << section.add_effect(Fire.new(@center.x - i * C::TILE_SIZE, @center.y))
+        end
+      elsif @timer == 300
+        @effs.clear
+        @timer = 0
+      end
+    end
+  end
+
+  def hit_by_bomb(section)
+    SB.player.bomb.hit
+  end
+
+  def hit_by_explosion(section); end
 end
