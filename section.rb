@@ -68,6 +68,7 @@ class Section
     Heart,
     HeatBomb,
     Herb,
+    Icel,
     Jellep,
     Key,
     Lambul,
@@ -406,6 +407,7 @@ class Section
 
   def add_effect(e)
     @effects << e
+    e
   end
 
   def add_score_effect(x, y, score)

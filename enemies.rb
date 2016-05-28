@@ -1,5 +1,7 @@
 ############################### classes abstratas ##############################
 
+require 'minigl'
+
 class Enemy < GameObject
   attr_reader :dying
 
@@ -1274,8 +1276,46 @@ class Lambul < FloorEnemy
   def hit_by_bomb(section); end
 end
 
-# class Icel < Enemy
-#   def initialize(x, y, args, section)
-#     super x - 4, y + 2, 40, 28, :sprite_Icel,
-#   end
-# end
+class Icel < Enemy
+  def initialize(x, y, args, section)
+    super x - 4, y + 2, 40, 28, Vector.new(-4, -4), 1, 1, [0], 0, 450
+    @radius = (args || 64).to_i
+    @timer = @angle = 0
+    @state = 3
+    @center = Vector.new(@x + @w/2, @y + @h/2)
+  end
+
+  def update(section)
+    super(section) do
+      @timer += 1
+      if @timer == 120
+        @eff1 = section.add_effect(Ice.new(@center.x + @radius, @center.y))
+        @eff2 = section.add_effect(Ice.new(@center.x - @radius, @center.y))
+      elsif @timer == 300
+        @eff1 = @eff2 = nil
+        @timer = @angle = 0
+      elsif @timer > 120
+        @angle += 0.03
+        x_off = @radius * Math.cos(@angle)
+        y_off = @radius * Math.sin(@angle)
+        @eff1.move(@center.x + x_off, @center.y - y_off)
+        @eff2.move(@center.x - x_off, @center.y + y_off)
+      end
+
+      if @timer % 10 == 0
+        if @state == 0 or @state == 1; @y -= 1
+        else; @y += 1; end
+        @state += 1
+        @state = 0 if @state == 4
+      end
+    end
+  end
+
+  def hit_by_bomb(section); end
+
+  def draw(map)
+    super
+    G.window.draw_line @center.x - map.cam.x, @center.y - map.cam.y, 0xff000000,
+                       @center.x + 1 - map.cam.x, @center.y - map.cam.y, 0xff000000, 0
+  end
+end

@@ -1380,6 +1380,26 @@ class Explosion < Effect
   end
 end
 
+class Ice < Effect
+  def initialize(x, y)
+    @w = @h = 30
+    super x - @w/2, y - @h/2, :fx_ice, 2, 2, 5, nil, 180
+  end
+
+  def update
+    super
+    bounds = Rectangle.new(@x, @y, @w, @h)
+    if bounds.intersect?(SB.player.bomb.bounds)
+      SB.player.bomb.hit
+    end
+  end
+
+  def move(x, y)
+    @x = x - @w / 2
+    @y = y - @h / 2
+  end
+end
+
 class SpecGate < GameObject
   def initialize(x, y, args, section)
     super x, y, 32, 32, :sprite_SpecGate
