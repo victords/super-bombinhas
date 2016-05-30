@@ -1345,3 +1345,40 @@ class Ignel < Enemy
 
   def hit_by_explosion(section); end
 end
+
+class Warclops < Enemy
+  def initialize(x, y, args, section)
+    super x - 19, y - 84, 70, 116, Vector.new(-10, -4), 3, 1, [0, 1, 0, 2], 9, 800, 3
+  end
+
+  def update(section)
+    super(section) do
+      forces = Vector.new(0, 0)
+      unless @invulnerable
+        b = SB.player.bomb
+        d = b.x + b.w/2 - @x - @w/2
+        d = 150 if d > 150
+        d = -150 if d < -150
+        forces.x = d * 0.01666667
+        if d > 0 and not @facing_right
+          @facing_right = true
+        elsif d < 0 and @facing_right
+          @facing_right = false
+        end
+        @speed.x = 0
+      end
+      move forces, section.get_obstacles(@x, @y, @w, @h), section.ramps
+    end
+  end
+
+  def draw(map)
+    super map, 1, 1, 255, 0xffffff, nil, @facing_right ? :horiz : nil
+  end
+
+  def hit_by_bomb(section); end
+
+  def hit_by_explosion(section)
+    @hp -= 1
+    hit(section)
+  end
+end

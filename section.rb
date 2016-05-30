@@ -100,6 +100,7 @@ class Section
     Vamep,
     Vortex,
     WallButton,
+    Warclops,
     Water,
     Wheeliam,
     Yaw,
