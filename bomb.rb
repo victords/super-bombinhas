@@ -19,7 +19,6 @@ class Bomb < GameObject
     @max_speed.x = type == :amarela ? 6 : 4
     @max_speed.y = 20
     @jump_speed = type == :amarela ? 0.58 : 0.45
-    @indices = [0, 1, 0, 2]
     @facing_right = true
     @active = true
     @type = type
@@ -34,11 +33,10 @@ class Bomb < GameObject
   def update(section)
     forces = Vector.new 0, 0
     walking = false
-    if @celebrating
-      animate @indices, 8 unless @img_index == 7
-    elsif @dying
-      animate @indices, 8 unless @img_index == 10
+    if @dying
+      animate [9, 10, 11], 8 unless @img_index == 11
     elsif @exploding
+      animate [6, 7], 5
       @explosion.animate [0, 1, 2, 3], 5
       @explosion_counter += 1
       @exploding = false if @explosion_counter == 90
@@ -68,13 +66,13 @@ class Bomb < GameObject
       end
       if @bottom
         if @speed.x != 0
-          animate @indices, 30 / @speed.x.abs
+          animate [2, 3, 4, 3], 30 / @speed.x.abs
         else
-          set_animation 0
+          animate [0, 1], 10
         end
         if KB.key_pressed? SB.key[:jump]
           forces.y -= 12 + @jump_speed * @speed.x.abs
-          set_animation 3
+          set_animation 5
         end
       end
       SB.player.change_item if KB.key_pressed? SB.key[:next]
@@ -106,7 +104,6 @@ class Bomb < GameObject
     @speed.x = @speed.y = 0
     @x = x + C::TILE_SIZE / 2 - @w / 2; @y = y + C::TILE_SIZE - @h
     @facing_right = true
-    @indices = [0, 1, 0, 2]
     set_animation 0
   end
 
@@ -127,7 +124,7 @@ class Bomb < GameObject
                         end
     @explosion.x = @x + @w / 2 - @explosion_radius
     @explosion.y = @y + @h / 2 - @explosion_radius
-    set_animation 4
+    set_animation 6
   end
 
   def explode?(obj)
@@ -188,14 +185,12 @@ class Bomb < GameObject
 
   def celebrate
     @celebrating = true
-    @indices = [5, 6, 7]
-    set_animation 5
+    set_animation 8
   end
 
   def die
     @dying = true
-    @indices = [8, 9, 10]
-    set_animation 8
+    set_animation 9
     stop
   end
 
