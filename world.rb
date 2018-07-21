@@ -194,7 +194,7 @@ class World
     @stages.each { |s| s.draw @trans_alpha }
     # @play_button.draw
     # @back_button.draw
-    @bomb.draw nil, 1, 1, @trans_alpha
+    @bomb.draw nil, 2, 2, @trans_alpha
 
     SB.big_text_helper.write_line SB.text("world_#{@num}"), 525, 10, :center, 0, @trans_alpha
     SB.text_helper.write_breaking "#{@num}-#{@cur+1}: #{@stages[@cur].name}", 525, 55, 550, :center, 0, @trans_alpha

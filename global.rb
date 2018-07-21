@@ -35,6 +35,7 @@ class SB
     def initialize(save_dir)
       @state = :presentation
 
+      Res.retro_images = true
       @font = Res.font :minecraftia, 20
       @big_font = Res.font :minecraftia, 36
       @text_helper = TextHelper.new(@font, 5)

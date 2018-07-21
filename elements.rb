@@ -123,8 +123,8 @@ class Bombie < GameObject
   end
 
   def draw(map)
-    super(map, 1, 1, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
-    @balloon.draw @x - map.cam.x + 16, @y - map.cam.y - 32, 0 if @active
+    super(map, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
+    @balloon.draw @x - map.cam.x + 16, @y - map.cam.y - 32, 0, 2, 2 if @active
     speak(@msg_id, @page) if @speaking
   end
 end

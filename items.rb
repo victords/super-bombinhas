@@ -66,6 +66,10 @@ class FloatingItem < GameObject
     end
     animate @indices, @interval if @indices
   end
+
+  def draw(map)
+    super(map, 2, 2)
+  end
 end
 
 ################################################################################

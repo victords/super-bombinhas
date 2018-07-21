@@ -129,7 +129,7 @@ class Section
     }
     @border_exit = s[2].to_i # 0: top, 1: right, 2: down, 3: left, 4: none
     @tileset_num = s[3].to_i
-    @tileset = Res.tileset s[3]
+    @tileset = Res.tileset s[3], 16, 16
     @bgm = Res.song "s#{s[4]}"
     @map = Map.new C::TILE_SIZE, C::TILE_SIZE, t_x_count, t_y_count
     # @map.set_camera 4500, 1200
@@ -499,10 +499,10 @@ class Section
         if b >= 90 && b < 93; ind = 90 + (b - 90 + @tile_3_index) % 3
         elsif b >= 93 && b < 96; ind = 93 + (b - 93 + @tile_3_index) % 3
         elsif b >= 96; ind = 96 + (b - 96 + @tile_4_index) % 4; end
-        @tileset[ind].draw x, y, -2
+        @tileset[ind].draw x, y, -2, 2, 2
       end
-      @tileset[@tiles[i][j].pass].draw x, y, -2 if @tiles[i][j].pass >= 0
-      @tileset[@tiles[i][j].wall].draw x, y, -2 if @tiles[i][j].wall >= 0 and not @tiles[i][j].broken
+      @tileset[@tiles[i][j].pass].draw x, y, -2, 2, 2 if @tiles[i][j].pass >= 0
+      @tileset[@tiles[i][j].wall].draw x, y, -2, 2, 2 if @tiles[i][j].wall >= 0 and not @tiles[i][j].broken
     end
 
     @elements.each do |e|
@@ -520,7 +520,7 @@ class Section
         if f >= 90 && f < 93; ind = 90 + (f - 90 + @tile_3_index) % 3
         elsif f >= 93 && f < 96; ind = 93 + (f - 93 + @tile_3_index) % 3
         elsif f >= 96; ind = 96 + (f - 96 + @tile_4_index) % 4; end
-        @tileset[ind].draw x, y, 0
+        @tileset[ind].draw x, y, 0, 2, 2
       end
     end
 
