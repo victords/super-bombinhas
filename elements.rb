@@ -74,13 +74,14 @@ end
 
 class Bombie < GameObject
   def initialize(x, y, args, section)
-    super x - 16, y, 64, 32, :sprite_Bombie, Vector.new(17, -2), 6, 1
+    super x - 16, y, 64, 32, :sprite_Bombie, Vector.new(17, -2), 3, 1
     @msg_id = "msg#{args.to_i}".to_sym
     @pages = SB.text(@msg_id).split('/').size
     @balloon = Res.img :fx_Balloon1
     @facing_right = false
     @active = false
     @speaking = false
+    @indices = [0, 1, 2]
     @interval = 8
 
     @active_bounds = Rectangle.new x - 16, y, 64, 32
@@ -90,23 +91,16 @@ class Bombie < GameObject
     if SB.player.bomb.collide? self
       if not @facing_right and SB.player.bomb.bounds.x > @x + @w / 2
         @facing_right = true
-        @indices = [3, 4, 5]
-        set_animation 3
       elsif @facing_right and SB.player.bomb.bounds.x < @x + @w / 2
         @facing_right = false
-        @indices = [0, 1, 2]
-        set_animation 0
       end
       if KB.key_pressed? SB.key[:up]
         @speaking = (not @speaking)
         if @speaking
-          if @facing_right; @indices = [3, 4, 5]
-          else; @indices = [0, 1, 2]; end
           @active = false
         else
           @page = 0
-          if @facing_right; set_animation 3
-          else; set_animation 0; end
+          set_animation 0
         end
       elsif @speaking and KB.key_pressed? SB.key[:down]
         if @page < @pages - 1
@@ -114,8 +108,7 @@ class Bombie < GameObject
         else
           @page = 0
           @speaking = false
-          if @facing_right; set_animation 3
-          else; set_animation 0; end
+          set_animation 0
         end
       end
       @active = (not @speaking)
@@ -123,15 +116,14 @@ class Bombie < GameObject
       @page = 0
       @active = false
       @speaking = false
-      if @facing_right; set_animation 3
-      else; set_animation 0; end
+      set_animation 0
     end
 
     animate @indices, @interval if @speaking
   end
 
   def draw(map)
-    super map
+    super(map, 1, 1, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
     @balloon.draw @x - map.cam.x + 16, @y - map.cam.y - 32, 0 if @active
     speak(@msg_id, @page) if @speaking
   end

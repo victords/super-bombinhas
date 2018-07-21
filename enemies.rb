@@ -233,7 +233,7 @@ end
 
 class Wheeliam < FloorEnemy
   def initialize(x, y, args, section)
-    super x, y, args, 32, 32, Vector.new(-4, -3), 3, 1, [0, 1], 8, 100
+    super x, y, args, 32, 32, Vector.new(-4, -2), 3, 1, [0, 1], 8, 100
     @max_speed.y = 10
   end
 end
