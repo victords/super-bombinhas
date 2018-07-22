@@ -8,7 +8,7 @@ class SavedGameButton < Button
   include FormElement
 
   def initialize(x, y)
-    super(x: x, y: y, width: 370, height: 80)
+    super(x: x, y: y, width: 368, height: 80)
   end
 end
 
@@ -18,7 +18,7 @@ class NewGameButton < Button
   attr_reader :text_id
 
   def initialize(index, x, y, menu)
-    super(x: x, y: y, width: 370, height: 80) {
+    super(x: x, y: y, width: 368, height: 80) {
       menu.go_to_new_game(@index - 1)
       SB.play_sound @sound
     }
@@ -30,9 +30,9 @@ class NewGameButton < Button
   end
 
   def draw(alpha = 0xff, z_index = 0)
-    @img.draw @x, @y, 0
+    @img.draw @x, @y, 0, 2, 2
     SB.font.draw_rel @index.to_s, @x + 365, @y + 40, 0, 1, 0.5, 3, 3, 0x80000000
-    SB.text_helper.write_line @text, @x + 185, @y + 30, :center, 0xffffff, 255, :border
+    SB.big_text_helper.write_line @text, @x + 185, @y + 24, :center, 0xffffff, 255, :border, 0, 2
   end
 end
 
@@ -61,23 +61,23 @@ class SavedGame
   end
 
   def draw
-    @bg.draw @x, @y, 0
-    @bomb.draw @x + 5, @y + 5, 0
-    @map_icon.draw @x + 45, @y + 40, 0
-    @spec_icon.draw @x + 135, @y + 40, 0
-    @score_icon.draw @x + 227, @y + 42, 0
+    @bg.draw @x, @y, 0, 2, 2
+    @bomb.draw @x + 5, @y + 5, 0, 2, 2
+    @map_icon.draw @x + 45, @y + 40, 0, 2, 2
+    @spec_icon.draw @x + 135, @y + 40, 0, 2, 2
+    @score_icon.draw @x + 227, @y + 40, 0, 2, 2
     SB.font.draw_rel @index.to_s, @x + 365, @y + 40, 0, 1, 0.5, 3, 3, 0x80000000
-    SB.text_helper.write_line @name, @x + 45, @y + 5, :left, 0xffffff, 255, :border
-    SB.text_helper.write_line @world_stage, @x + 75, @y + 41
-    SB.text_helper.write_line @specs.to_s, @x + 165, @y + 41
-    SB.text_helper.write_line @score, @x + 255, @y + 41
+    SB.big_text_helper.write_line @name, @x + 45, @y + 5, :left, 0xffffff, 255, :border
+    SB.text_helper.write_line @world_stage, @x + 75, @y + 43
+    SB.text_helper.write_line @specs.to_s, @x + 165, @y + 43
+    SB.text_helper.write_line @score, @x + 255, @y + 43
   end
 end
 
 class Menu
   class << self
     def initialize
-      @bg = Res.img :bg_start1, true, false, '.jpg'
+      @bg = Res.img :bg_start1, true
       @title = Res.img :ui_title, true
 
       @form = Form.new([
@@ -172,15 +172,15 @@ class Menu
         next unless /^[0-9]$/ =~ file
         num = file.to_i
         (next_index...num).each do |i|
-          components << NewGameButton.new(i + 1, 20 + (i % 2) * 390, 95 + (i / 2) * 90, self)
+          components << NewGameButton.new(i + 1, 21 + (i % 2) * 390, 95 + (i / 2) * 90, self)
         end
         next_index = num + 1
         data = IO.readlines(g).map { |l| l.chomp }
-        saved_game = SavedGame.new(num + 1, 20 + (num % 2) * 390, 95 + (num / 2) * 90, data[0], data[3], data[2], data[6], data[5])
+        saved_game = SavedGame.new(num + 1, 21 + (num % 2) * 390, 95 + (num / 2) * 90, data[0], data[3], data[2], data[6], data[5])
         @saved_games << saved_game
         components << saved_game
         components <<
-          SavedGameButton.new(20 + (num % 2) * 390, 95 + (num / 2) * 90) {
+          SavedGameButton.new(21 + (num % 2) * 390, 95 + (num / 2) * 90) {
             @selected_game = g
             @form.go_to_section 2
             SB.play_sound sound
@@ -204,7 +204,7 @@ class Menu
     end
 
     def draw
-      @bg.draw 0, 0, 0
+      @bg.draw 0, 0, 0, 2, 2
       @title.draw @form.cur_section_index == 1 ? 20 : 50, 20, 0, @form.cur_section_index == 1 ? 1 : 2, @form.cur_section_index == 1 ? 1 : 2
       @form.draw
     end

@@ -9,7 +9,7 @@ class MenuImage < MenuElement
   end
 
   def draw
-    @img.draw @x, @y, 0
+    @img.draw @x, @y, 0, 2, 2
   end
 end
 
@@ -66,7 +66,7 @@ class StageMenu
         options_comps.concat(Options.get_menu)
 
         @stage_menu = Form.new([
-          MenuImage.new(275, 180, :ui_stageMenu),
+          MenuImage.new(280, 180, :ui_stageMenu),
           MenuButton.new(207, :resume, true) {
             SB.state = :main
           },
