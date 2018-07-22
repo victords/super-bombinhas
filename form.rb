@@ -82,7 +82,7 @@ class MenuButton < Button
   attr_reader :back, :text_id
 
   def initialize(y, text_id, back = false, x = 314, &action)
-    super(x, y, SB.font, SB.text(text_id), :ui_button1, 0, 0x808080, 0, 0, true, false, 0, 7, 0, 0, 0, &action)
+    super(x, y, SB.small_font, SB.text(text_id), :ui_button1, 0, 0x808080, 0, 0, true, true, 0, 7, 0, 0, 0, nil, 2, 2, &action)
     @text_id = text_id
     @back = back
     @sound = Res.sound(back ? :btn2 : :btn1)
@@ -98,7 +98,7 @@ class MenuArrowButton < Button
   include FormElement
 
   def initialize(x, y, type, &action)
-    super(x, y, nil, nil, "ui_button#{type}", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, &action)
+    super(x, y, nil, nil, "ui_button#{type}", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, 2, 2, &action)
     @sound = Res.sound :btn3
   end
 
@@ -112,7 +112,7 @@ class MenuTextField < TextField
   include FormElement
 
   def initialize(y, x = 314)
-    super x: x, y: y, font: SB.font, img: :ui_textField, margin_x: 10, margin_y: 8, locale: (SB.lang == :portuguese ? 'pt-br' : 'en-us')
+    super x: x, y: y, font: SB.small_font, img: :ui_textField, margin_x: 5, margin_y: 3, locale: (SB.lang == :portuguese ? 'pt-br' : 'en-us'), scale_x: 2, scale_y: 2
   end
 end
 
@@ -165,7 +165,7 @@ class FormSection
         @cur_btn.unfocus if @cur_btn.respond_to? :unfocus
       elsif KB.key_pressed? Gosu::KbReturn or (KB.key_pressed? Gosu::KbSpace and @cur_btn.is_a? Button)
         @cur_btn.click if @cur_btn.respond_to? :click
-      elsif @back_btn && (KB.key_pressed?(Gosu::KbEscape) || (KB.key_pressed?(Gosu::KbBackspace) && !@cur_btn.is_a?(TextField)))
+      elsif @back_btn && KB.key_pressed?(Gosu::KbEscape)
         @back_btn.click
       end
       @cur_btn = @buttons[@cur_btn_index]
@@ -278,7 +278,7 @@ class Form
     btn = @cur_section.cur_btn
     x = btn.x; y = btn.y; w = btn.w; h = btn.h
     (1..4).each do |n|
-      color = ((@highlight_alpha * (1 - (n-1) * 0.25)).round) << 24 | 0xffff00
+      color = ((@highlight_alpha * (1 - (n-1)/2 * 0.5)).round) << 24 | 0xffff00
       G.window.draw_line x - n, y - n + 1, color, x + w + n - 1, y - n + 1, color
       G.window.draw_line x - n, y + h + n, color, x + w + n, y + h + n, color
       G.window.draw_line x - n + 1, y - n + 1, color, x - n + 1, y + h + n - 1, color

@@ -29,18 +29,19 @@ end
 
 class SB
   class << self
-    attr_reader :font, :big_font, :text_helper, :big_text_helper, :small_text_helper, :save_dir, :save_data, :lang, :key
+    attr_reader :font, :big_font, :small_font, :text_helper, :big_text_helper, :small_text_helper, :save_dir, :save_data, :lang, :key
     attr_accessor :state, :player, :world, :stage, :movie, :music_volume, :sound_volume
 
     def initialize(save_dir)
       @state = :presentation
 
       Res.retro_images = true
-      @font = Res.font :minecraftia, 20
-      @big_font = Res.font :minecraftia, 36
+      @font = Res.font :minecraftia, 18
+      @big_font = Res.font :minecraftia, 32
+      @small_font = Res.font :minecraftia, 12
       @text_helper = TextHelper.new(@font, 5)
       @big_text_helper = TextHelper.new(@big_font, 8)
-      @small_text_helper = TextHelper.new(Res.font(:minecraftia, 16), -4)
+      @small_text_helper = TextHelper.new(@small_font, -4)
       @langs = []
       @texts = {}
       files = Dir["#{Res.prefix}text/*.txt"]
