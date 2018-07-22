@@ -205,7 +205,7 @@ class Menu
 
     def draw
       @bg.draw 0, 0, 0
-      @title.draw 0, 0, 0, @form.cur_section_index == 1 ? 0.5 : 1, @form.cur_section_index == 1 ? 0.5 : 1
+      @title.draw 50, 20, 0, @form.cur_section_index == 1 ? 1 : 2, @form.cur_section_index == 1 ? 1 : 2
       @form.draw
     end
   end
