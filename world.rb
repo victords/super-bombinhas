@@ -187,7 +187,7 @@ class World
       y += 40
     end
     @map.draw 0, 0, 0, 1, 1, (@trans_alpha << 24) | 0xffffff
-    @parchment.draw 0, 0, 0
+    @parchment.draw 0, 0, 0, 2, 2
     @secret_world.draw 0, 75, 0 if @secret_world
     @mark.draw
 
@@ -201,19 +201,19 @@ class World
     SB.text_helper.write_breaking(SB.text(:ch_st_instruct).gsub('\n', "\n"), 780, 545, 600, :right, 0, @trans_alpha)
 
     if @num > 1
-      @arrow.draw 260, 10, 0, 1, 1, (@trans_alpha << 24) | 0xffffff
+      @arrow.draw 260, 10, 0, 2, 2, (@trans_alpha << 24) | 0xffffff
       SB.small_text_helper.write_breaking SB.text(:left_shift), 315, 13, 60, :right, 0, @trans_alpha
     end
     if @num < SB.player.last_world
-      @arrow.draw 790, 10, 0, -1, 1, (@trans_alpha << 24) | 0xffffff
+      @arrow.draw 790, 10, 0, -2, 2, (@trans_alpha << 24) | 0xffffff
       SB.small_text_helper.write_breaking SB.text(:right_shift), 735, 13, 60, :left, 0, @trans_alpha
     end
     if @cur > 0
-      @arrow.draw 260, 47, 0, 1, 1, (@trans_alpha << 24) | 0xffffff
+      @arrow.draw 260, 47, 0, 2, 2, (@trans_alpha << 24) | 0xffffff
       SB.small_text_helper.write_breaking SB.text(:left_arrow), 315, 50, 60, :right, 0, @trans_alpha
     end
     if @cur < @enabled_stage_count - 1
-      @arrow.draw 790, 47, 0, -1, 1, (@trans_alpha << 24) | 0xffffff
+      @arrow.draw 790, 47, 0, -2, 2, (@trans_alpha << 24) | 0xffffff
       SB.small_text_helper.write_breaking SB.text(:right_arrow), 735, 50, 60, :left, 0, @trans_alpha
     end
   end
