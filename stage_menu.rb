@@ -211,16 +211,16 @@ class StageMenu
 
     def draw_player_stats
       p = SB.player
-      G.window.draw_quad 5, 5, C::PANEL_COLOR,
-                         205, 5, C::PANEL_COLOR,
-                         205, 55, C::PANEL_COLOR,
-                         5, 55, C::PANEL_COLOR, 0
-      @lives_icon.draw 12, 10, 0
-      SB.font.draw p.lives, 40, 10, 0, 1, 1, 0xff000000
-      @hp_icon.draw 105, 10, 0
-      SB.font.draw p.bomb.hp, 135, 10, 0, 1, 1, 0xff000000
-      @score_icon.draw 10, 32, 0
-      SB.font.draw p.stage_score, 40, 32, 0, 1, 1, 0xff000000
+      G.window.draw_quad 4, 4, C::PANEL_COLOR,
+                         204, 4, C::PANEL_COLOR,
+                         204, 60, C::PANEL_COLOR,
+                         4, 60, C::PANEL_COLOR, 0
+      @lives_icon.draw 12, 10, 0, 2, 2
+      SB.font.draw p.lives, 40, 12, 0, 1, 1, 0xff000000
+      @hp_icon.draw 105, 10, 0, 2, 2
+      SB.font.draw p.bomb.hp, 135, 12, 0, 1, 1, 0xff000000
+      @score_icon.draw 10, 32, 0, 2, 2
+      SB.font.draw p.stage_score, 40, 35, 0, 1, 1, 0xff000000
 
       ########## ITEM ##########
       G.window.draw_quad 745, 5, C::PANEL_COLOR,
@@ -229,7 +229,7 @@ class StageMenu
                          745, 55, C::PANEL_COLOR, 0
       if p.cur_item_type
         item_set = p.items[p.cur_item_type]
-        item_set[0][:obj].icon.draw 754, 14, 0
+        item_set[0][:obj].icon.draw 754, 14, 0, 2, 2
         SB.font.draw item_set.length.to_s, 780, 36, 0, 1, 1, 0xff000000
       end
       if p.items.length > 1
@@ -251,7 +251,7 @@ class StageMenu
       if b.type == :verde; icon = 'explode'
       elsif b.type == :branca; icon = 'time'
       else; return; end
-      Res.img("icon_#{icon}").draw(699, 14, 0, 1, 1, b.can_use_ability ? 0xffffffff : 0x66ffffff)
+      Res.img("icon_#{icon}").draw(699, 14, 0, 2, 2, b.can_use_ability ? 0xffffffff : 0x66ffffff)
       ##########################
     end
 
