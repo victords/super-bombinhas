@@ -629,7 +629,7 @@ class HideTile
 
   def draw(map)
     @points.each do |p|
-      @img[p[:img]].draw p[:x] - map.cam.x, p[:y] - map.cam.y, 0, 1, 1, @color
+      @img[p[:img]].draw p[:x] - map.cam.x, p[:y] - map.cam.y, 0, 2, 2, @color
     end
   end
 end
@@ -809,7 +809,7 @@ class AirMattress < GameObject
   end
 
   def draw(map)
-    super map, 1, 1, 255, @color
+    super map, 2, 2, 255, @color
   end
 end
 

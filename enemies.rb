@@ -97,6 +97,8 @@ class Enemy < GameObject
       SB.player.stage_score += @score
       section.add_score_effect(@x + @w / 2, @y, @score)
       @dying = true
+      @indices = [@img.size - 1]
+      set_animation @img.size - 1
     else
       get_invulnerable
     end
@@ -109,6 +111,10 @@ class Enemy < GameObject
   def return_vulnerable
     @invulnerable = false
     @control_timer = 0
+  end
+
+  def draw(map = nil, scale_x = 2, scale_y = 2, alpha = 0xff, color = 0xffffff, angle = nil, flip = nil, z_index = 0, round = false)
+    super(map, scale_x, scale_y, alpha, color, angle, flip, z_index, round)
   end
 end
 
@@ -145,14 +151,6 @@ class FloorEnemy < Enemy
           set_direction :right
         end
       end
-    end
-  end
-
-  def hit(section)
-    super
-    if @dying
-      @indices = [@img.size - 1]
-      set_animation @img.size - 1
     end
   end
 
@@ -240,11 +238,12 @@ end
 
 class Sprinny < Enemy
   def initialize(x, y, args, section)
-    super x + 3, y - 4, 26, 36, Vector.new(-2, -5), 6, 1, [0], 5, 350
+    super x + 3, y - 4, 26, 36, Vector.new(-2, -5), 2, 1, [0], 5, 350
 
     @leaps = 1000
     @max_leaps = args.to_i
     @facing_right = true
+    @indices = [0]
   end
 
   def update(section)
@@ -256,12 +255,8 @@ class Sprinny < Enemy
           @leaps = 1
           if @facing_right
             @facing_right = false
-            @indices = [0, 1, 2, 1]
-            set_animation 0
           else
             @facing_right = true
-            @indices = [3, 4, 5, 4]
-            set_animation 3
           end
         end
         @speed.x = 0
@@ -271,6 +266,10 @@ class Sprinny < Enemy
       end
       move forces, section.get_obstacles(@x, @y), section.ramps
     end
+  end
+
+  def draw(map)
+    super(map, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
   end
 end
 
