@@ -383,7 +383,7 @@ end
 
 class Faller < GameObject
   def initialize(x, y, args, section)
-    super x, y, 32, 32, :sprite_Faller, Vector.new(0, 0), 4, 1
+    super x, y, 32, 32, :sprite_Faller, Vector.new(-1, 0), 4, 1
     @range = args.to_i
     @start = Vector.new x, y
     @up = Vector.new x, y - @range * 32
@@ -436,8 +436,8 @@ class Faller < GameObject
   end
 
   def draw(map)
-    @img[@img_index].draw @x - map.cam.x, @y - map.cam.y, 0
-    @bottom_img.draw @x - map.cam.x, @start.y + 15 - map.cam.y, 0
+    @img[@img_index].draw @x - map.cam.x, @y - map.cam.y, 0, 2, 2
+    @bottom_img.draw @x - map.cam.x, @start.y + 15 - map.cam.y, 0, 2, 2
   end
 end
 
