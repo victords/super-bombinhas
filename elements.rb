@@ -56,6 +56,10 @@ class TwoStateObject < GameObject
       animate @s1_indices, @anim_interval if @anim_interval > 0
     end
   end
+
+  def draw(map)
+    super map, 2, 2
+  end
 end
 
 ################################################################################
@@ -182,8 +186,8 @@ class Door < GameObject
   end
 
   def draw(map)
-    super map
-    @lock.draw(@x + 9 - map.cam.x, @y - 38 - map.cam.y, 0) if @lock
+    super map, 2, 2
+    @lock.draw(@x + 9 - map.cam.x, @y - 38 - map.cam.y, 0, 2, 2) if @lock
   end
 end
 
@@ -205,6 +209,10 @@ class GunPowder < GameObject
       SB.stage.set_switch self if @switch
       @dead = true
     end
+  end
+
+  def draw(map)
+    super(map, 2, 2)
   end
 end
 
@@ -383,7 +391,7 @@ class Spikes < TwoStateObject
               when 2 then 180
               when 3 then 270
             end
-    @img[@img_index].draw_rot @x + @w/2 - map.cam.x, @y + @h/2 - map.cam.y, 0, angle
+    @img[@img_index].draw_rot @x + @w/2 - map.cam.x, @y + @h/2 - map.cam.y, 0, angle, 0.5, 0.5, 2, 2
   end
 end
 
@@ -643,7 +651,7 @@ class Projectile < GameObject
 
   def initialize(x, y, type, angle, owner)
     case type
-    when 1 then w = 20; h = 12; x_g = -2; y_g = -2; cols = 3; rows = 1; indices = [0, 1, 0, 2]; @speed_m = 3
+    when 1 then w = 20; h = 12; x_g = -2; y_g = -1; cols = 1; rows = 1; indices = [0]; @speed_m = 3
     when 2 then w = 8; h = 8; x_g = -2; y_g = -2; cols = 4; rows = 2; indices = [0, 1, 2, 3, 4, 5, 6, 7]; @speed_m = 2.5
     when 3 then w = 4; h = 40; x_g = 0; y_g = 0; cols = 1; rows = 1; indices = [0]; @speed_m = 6
     when 4 then w = 16; h = 22; x_g = -2; y_g = 0; cols = 1; rows = 1; indices = [0]; @speed_m = 5
@@ -651,11 +659,9 @@ class Projectile < GameObject
     end
 
     super x, y, w, h, "sprite_Projectile#{type}", Vector.new(0, 0), cols, rows
-    # rads = angle * Math::PI / 180
-    # @aim = Vector.new @x + (1000000 * Math.cos(rads)), @y + (1000000 * Math.sin(rads))
     @active_bounds = Rectangle.new @x - 30, @y - 30, @w + 60, @h + 60
-    @center_x = (@w * 0.5 - x_g) / @img[0].width
-    @center_y = (@h * 0.5 - y_g) / @img[0].height
+    # @center_x = (@w * 0.5 - x_g) / @img[0].width
+    # @center_y = (@h * 0.5 - y_g) / @img[0].height
     @angle = angle
     @owner = owner
     @indices = indices
@@ -698,7 +704,7 @@ class Projectile < GameObject
   end
 
   def draw(map)
-    @img[@img_index].draw_rot @x + @w / 2 - map.cam.x, @y + @h / 2 - map.cam.y, 0, @angle, @center_x, @center_y
+    @img[@img_index].draw_rot @x + @w / 2 - map.cam.x, @y + @h / 2 - map.cam.y, 0, @angle, 0.5, 0.5, 2, 2
   end
 
   def is_visible(map)
@@ -1449,8 +1455,8 @@ class Graphic < Sprite
 
   def draw(map)
     @rot ?
-      (@img[@img_index].draw_rot @x + @w / 2 - map.cam.x, @y + @h/2 - map.cam.y, -1, @angle) :
-      super(map, 1, 1, 255, 0xffffff, nil, nil, -1)
+      (@img[@img_index].draw_rot @x + @w / 2 - map.cam.x, @y + @h/2 - map.cam.y, -1, @angle, 0.5, 0.5, 2, 2) :
+      super(map, 2, 2, 255, 0xffffff, nil, nil, -1)
   end
 
   def is_visible(map)
