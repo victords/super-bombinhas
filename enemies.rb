@@ -294,9 +294,7 @@ end
 
 class Yaw < Enemy
   def initialize(x, y, args, section)
-    super x, y, 32, 32, Vector.new(-4, -4), 8, 1, [0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 3, 4, 5, 6, 7], 6, 500
-    @moving_eye = false
-    @eye_timer = 0
+    super x, y, 32, 32, Vector.new(-4, -4), 3, 2, [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 2, 3, 4, 5], 6, 500
     @points = [
       Vector.new(x + 64, y),
       Vector.new(x + 96, y + 32),
