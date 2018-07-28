@@ -302,7 +302,7 @@ end
 
 class SaveBombie < GameObject
   def initialize(x, y, args, section, switch)
-    super x - 16, y, 64, 32, :sprite_Bombie2, Vector.new(-16, -26), 4, 2
+    super x - 16, y, 64, 32, :sprite_Bombie2, Vector.new(-16, -26), 2, 2
     @id = args.to_i
     @active_bounds = Rectangle.new x - 32, y - 26, 96, 58
     @saved = switch[:state] == :taken
@@ -319,6 +319,10 @@ class SaveBombie < GameObject
     if @saved
       animate @indices, 8
     end
+  end
+
+  def draw(map)
+    super(map, 2, 2)
   end
 end
 
@@ -349,9 +353,11 @@ class Spikes < TwoStateObject
   def initialize(x, y, args, section)
     @dir = args.to_i
     if @dir % 2 == 0
-      x += 2; w = 28; h = 32
+      x += 2; w = 28; h = 34
+      y -= 2 if @dir == 2
     else
-      y += 2; w = 32; h = 28
+      y += 2; w = 34; h = 28
+      x -= 2 if @dir == 1
     end
     super x, y, w, h, :sprite_Spikes, Vector.new(0, 0), 5, 1, 120, 0, 2, [0], [4], [1, 2, 3, 4, 0], [3, 2, 1, 0, 4]
     @active_bounds = Rectangle.new x, y, 32, 32
