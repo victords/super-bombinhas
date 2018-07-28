@@ -539,7 +539,7 @@ class Ball < GameObject
   end
 
   def draw(map)
-    @img[0].draw_rot @x + (@w / 2) - map.cam.x, @y + (@h / 2) - map.cam.y, 0, @rotation
+    @img[0].draw_rot @x + (@w / 2) - map.cam.x, @y + (@h / 2) - map.cam.y, 0, @rotation, 0.5, 0.5, 2, 2
   end
 end
 
@@ -568,6 +568,8 @@ class BallReceptor < GameObject
     @is_set = true
     @img_index = 1
   end
+
+  def draw(map); super(map, 2, 2); end
 end
 
 class HideTile
