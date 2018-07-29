@@ -181,15 +181,15 @@ class World
       x = 0
       while x < C::SCREEN_WIDTH
         @water.x = x; @water.y = y
-        @water.draw
+        @water.draw(nil, 2, 2)
         x += 40
       end
       y += 40
     end
-    @map.draw 0, 0, 0, 1, 1, (@trans_alpha << 24) | 0xffffff
+    @map.draw 0, 0, 0, 2, 2, (@trans_alpha << 24) | 0xffffff
     @parchment.draw 0, 0, 0, 2, 2
     @secret_world.draw 0, 75, 0 if @secret_world
-    @mark.draw
+    @mark.draw nil, 2, 2
 
     @stages.each { |s| s.draw @trans_alpha }
     # @play_button.draw
