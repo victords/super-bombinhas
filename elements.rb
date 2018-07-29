@@ -234,6 +234,8 @@ class Crack < GameObject
       @dead = true
     end
   end
+
+  def draw(map); super(map, 2, 2); end
 end
 
 class Elevator < GameObject
@@ -993,7 +995,7 @@ class Board < GameObject
   end
 
   def draw(map)
-    super(map, 1, 1, 255, 0xffffff, nil, @facing_right ? nil : :horiz)
+    super(map, 2, 2, 255, 0xffffff, nil, @facing_right ? nil : :horiz)
   end
 end
 

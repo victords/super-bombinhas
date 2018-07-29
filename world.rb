@@ -59,7 +59,7 @@ class MapStage
 
   def draw(alpha)
     a = ((alpha / 255.0) * (@alpha / 255.0) * 255).round
-    @img.draw @x, @y, 0, 1, 1, (a << 24) | 0xffffff
+    @img.draw @x, @y, 0, 2, 2, (a << 24) | 0xffffff
   end
 end
 
