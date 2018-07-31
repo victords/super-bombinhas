@@ -407,11 +407,11 @@ class FixedSpikes < GameObject
   def initialize(x, y, args, section)
     @dir = args.to_i
     if @dir % 2 == 0
-      super x + 2, y, 28, 32, :sprite_Spikes, Vector.new(0, 0), 5, 1
+      super x + 2, @dir == 2 ? y - 2 : y, 28, 34, :sprite_Spikes, Vector.new(0, 0), 5, 1
     else
-      super x, y + 2, 32, 28, :sprite_Spikes, Vector.new(0, 0), 5, 1
+      super @dir == 1 ? x - 2 : x, y + 2, 34, 28, :sprite_Spikes, Vector.new(0, 0), 5, 1
     end
-    @active_bounds = Rectangle.new x, y, 32, 32
+    @active_bounds = Rectangle.new x - 2, y - 2, 36, 36
     section.obstacles << Block.new(x + 2, y + 2, 28, 28)
   end
 
@@ -434,7 +434,7 @@ class FixedSpikes < GameObject
               when 2 then 180
               when 3 then 270
             end
-    @img[4].draw_rot @x + @w/2 - map.cam.x, @y + @h/2 - map.cam.y, 0, angle
+    @img[4].draw_rot @x + @w/2 - map.cam.x, @y + @h/2 - map.cam.y, 0, angle, 0.5, 0.5, 2, 2
   end
 end
 
@@ -772,7 +772,7 @@ class Vortex < GameObject
   end
 
   def draw(map)
-    @img[@img_index].draw_rot @x + @w / 2 - map.cam.x, @y + @h/2 - map.cam.y, 0, @angle
+    @img[@img_index].draw_rot @x + @w / 2 - map.cam.x, @y + @h/2 - map.cam.y, 0, @angle, 0.5, 0.5, 2, 2
   end
 end
 
