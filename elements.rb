@@ -300,6 +300,10 @@ class Elevator < GameObject
   def is_visible(map)
     true
   end
+
+  def draw(map)
+    super map, 2, 2
+  end
 end
 
 class SaveBombie < GameObject
