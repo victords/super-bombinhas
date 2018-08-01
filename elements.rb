@@ -739,6 +739,8 @@ class Poison < GameObject
       SB.player.bomb.hit
     end
   end
+
+  def draw(map); super map, 2, 2; end
 end
 
 class Vortex < GameObject
