@@ -107,7 +107,7 @@ class Section
     Zep
   ]
 
-  attr_reader :reload, :tiles, :obstacles, :ramps, :passengers, :size, :default_entrance
+  attr_reader :reload, :tiles, :obstacles, :ramps, :passengers, :size, :default_entrance, :tileset_num
   attr_accessor :entrance, :warp, :loaded, :active_object
 
   def initialize(file, entrances, switches, taken_switches, used_switches)
@@ -510,7 +510,7 @@ class Section
     end
     SB.player.bomb.draw @map
     @effects.each do |e|
-      e.draw @map
+      e.draw @map, 2, 2
     end
 
     @map.foreach do |i, j, x, y|

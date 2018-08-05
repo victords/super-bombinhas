@@ -223,6 +223,7 @@ class Crack < GameObject
     super x, y, 32, 32, :sprite_Crack
     @active_bounds = Rectangle.new x, y, 32, 32
     @broken = switch[:state] == :taken
+    @type = section.tileset_num
   end
 
   def update(section)
@@ -230,6 +231,7 @@ class Crack < GameObject
       i = (@x / C::TILE_SIZE).floor
       j = (@y / C::TILE_SIZE).floor
       section.tiles[i][j].broken = true
+      section.add_effect(Effect.new(@x, @y, "fx_WallCrack#{@type}", 2, 2))
       SB.stage.set_switch self
       @dead = true
     end
