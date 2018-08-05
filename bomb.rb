@@ -208,6 +208,6 @@ class Bomb < GameObject
       SB.font.draw_rel SB.text(:count_down), 400, 200, 0, 0.5, 0.5, 1, 1, 0xff000000 if @explosion_counter > 6
       SB.font.draw_rel @explosion_counter.to_s, 400, 220, 0, 0.5, 0.5, 1, 1, 0xff000000
     end
-    @explosion.draw map, @explosion_radius.to_f / 90, @explosion_radius.to_f / 90 if @exploding
+    @explosion.draw map, 2 * @explosion_radius.to_f / 90, 2 * @explosion_radius.to_f / 90 if @exploding
   end
 end
