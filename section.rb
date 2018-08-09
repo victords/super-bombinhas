@@ -28,7 +28,7 @@ class ScoreEffect
     @timer += 1
   end
 
-  def draw(map)
+  def draw(map, scale_x, scale_y)
     SB.small_text_helper.write_line @text, @x - map.cam.x, @y - map.cam.y, :center, 0xffffff, @alpha, :border, 0, 1, @alpha
   end
 end

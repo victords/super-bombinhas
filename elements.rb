@@ -844,22 +844,18 @@ end
 class Branch < GameObject
   def initialize(x, y, args, section)
     a = args ? args.split(',') : []
-    size = a[0] ? a[0].to_i : 2
-    super x, y, size * C::TILE_SIZE, 1, :sprite_branch, Vector.new(0, 0)
+    @scale = a[0] ? a[0].to_i : 2
+    super x, y, @scale * C::TILE_SIZE, 1, :sprite_branch, Vector.new(0, 0)
     @passable = true
     @active_bounds = Rectangle.new(@x, @y, @w, @img[0].height)
     @left = a[1].nil?
-    @scale = size.to_f / 2
     section.obstacles << self
   end
 
   def update(section); end
 
   def draw(map)
-    # w = @w
-    # @w = @img[0].width
-    super(map, @scale, 1, 255, 0xffffff, nil, @left ? nil : :horiz)
-    # @w = w
+    super(map, @scale, 2, 255, 0xffffff, nil, @left ? nil : :horiz)
   end
 end
 
