@@ -778,7 +778,7 @@ class Flep < Enemy
   end
 
   def draw(map)
-    super map, 1, 1, 255, 0xffffff, nil, @facing_right ? :horiz : nil
+    super map, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil
   end
 end
 

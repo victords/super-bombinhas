@@ -311,9 +311,9 @@ class Spring < GameObject
   end
 
   def draw(map)
-    super
+    super(map, 2, 2)
     if SB.player.bomb.collide?(self)
-      Res.img(:fx_Balloon1).draw(@x - map.cam.x, @y - map.cam.y - 40, 0)
+      Res.img(:fx_Balloon1).draw(@x - map.cam.x, @y - map.cam.y - 40, 0, 2, 2)
     end
   end
 end
