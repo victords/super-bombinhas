@@ -487,10 +487,10 @@ class MovingWall < GameObject
   end
 
   def draw(map)
-    @img[0].draw @x - map.cam.x, @y - map.cam.y, 0 if @h > 0
+    @img[0].draw @x - map.cam.x, @y - map.cam.y, 0, 2, 2 if @h > 0
     y = 16
     while y < @h
-      @img[1].draw @x - map.cam.x, @y + y - map.cam.y, 0
+      @img[1].draw @x - map.cam.x, @y + y - map.cam.y, 0, 2, 2
       y += 16
     end
   end

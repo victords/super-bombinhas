@@ -825,7 +825,7 @@ class Jellep < Enemy
   end
 
   def draw(map)
-    super map, 1, 1, 255, 0xffffff, nil, @state == 2 ? :vert : nil
+    super map, 2, 2, 255, 0xffffff, nil, @state == 2 ? :vert : nil
   end
 end
 
@@ -877,7 +877,7 @@ class Snep < Enemy
   end
 
   def draw(map)
-    super map, 1, 1, 255, 0xffffff, nil, @facing_right ? nil : :horiz
+    super map, 2, 2, 255, 0xffffff, nil, @facing_right ? nil : :horiz
   end
 end
 
