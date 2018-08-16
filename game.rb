@@ -16,7 +16,7 @@ class SBGame < MiniGL::GameWindow
       else
         "#{Dir.home}/AppData/Local/Aleva Games/Super Bombinhas"
       end
-	SB.initialize dir
+	  SB.initialize dir
 
     @logo = Res.img(:ui_alevaLogo)
     @timer = @state = @alpha = 0
@@ -31,6 +31,7 @@ class SBGame < MiniGL::GameWindow
     Mouse.update
 
     close if KB.key_pressed? Gosu::KbTab
+    toggle_fullscreen if KB.key_pressed? Gosu::KbF4
 
     if SB.state == :presentation
       @timer += 1

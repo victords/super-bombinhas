@@ -929,8 +929,8 @@ class Owlep < Enemy
     super(section) do
       b = SB.player.bomb
       if !@attacking && b.x + b.w > @x && b.x < @x + @w && b.y > @y + @h && b.y < @y + C::SCREEN_HEIGHT
-        section.add(Projectile.new(@x + 10, @y + 10, 3, 270, self))
-        section.add(Projectile.new(@x + 20, @y + 10, 3, 270, self))
+        section.add(Projectile.new(@x + 10, @y + 10, 3, 90, self))
+        section.add(Projectile.new(@x + 20, @y + 10, 3, 90, self))
         @indices = [0]
         set_animation 0
         @attacking = true
@@ -1006,7 +1006,7 @@ end
 
 class Butterflep < Enemy
   def initialize(x, y, args, section)
-    super(x - 12, y - 12, 56, 54, Vector.new(-4, -4), 1, 1, [0], 0, 270)
+    super(x - 12, y - 12, 56, 54, Vector.new(-4, -4), 2, 2, [0, 1, 2, 1], 10, 270)
     @speed_m = 5
     ps = args.split(':')
     @points = []
