@@ -957,7 +957,7 @@ end
 
 class Zep < Enemy
   def initialize(x, y, args, section)
-    super x, y - 18, 60, 50, Vector.new(-24, -30), 2, 3, [0, 1, 2, 3, 4], 5, 500, 3
+    super x, y - 18, 60, 50, Vector.new(-38, -30), 3, 2, [0, 1, 2, 3, 4], 5, 500, 3
     @passable = true
 
     @aim1 = Vector.new(@x, @y)
@@ -1000,7 +1000,7 @@ class Zep < Enemy
   end
 
   def draw(map)
-    super map, 1, 1, 255, 0xffffff, nil, @aim == @aim1 ? nil : :horiz
+    super map, 2, 2, 255, 0xffffff, nil, @aim == @aim1 ? nil : :horiz
   end
 end
 
