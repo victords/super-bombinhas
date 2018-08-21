@@ -1024,6 +1024,10 @@ class Rock < GameObject
   end
 
   def update(section); end
+
+  def draw(map)
+    super map, 2, 2
+  end
 end
 
 class Monep < GameObject
