@@ -188,7 +188,7 @@ class World
     end
     @map.draw 0, 0, 0, 2, 2, (@trans_alpha << 24) | 0xffffff
     @parchment.draw 0, 0, 0, 2, 2
-    @secret_world.draw 0, 75, 0 if @secret_world
+    @secret_world.draw 88, 112, 0, 2, 2 if @secret_world
     @mark.draw nil, 2, 2
 
     @stages.each { |s| s.draw @trans_alpha }
