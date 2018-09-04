@@ -3,6 +3,12 @@ include MiniGL
 
 ############################### classes abstratas ##############################
 
+class SBGameObject < GameObject
+  def draw(map)
+    super(map, 2, 2)
+  end
+end
+
 class TwoStateObject < GameObject
   def initialize(x, y, w, h, img, img_gap, sprite_cols, sprite_rows,
     change_interval, anim_interval, change_anim_interval, s1_indices, s2_indices, s1_s2_indices, s2_s1_indices, s2_first = false)
@@ -56,7 +62,9 @@ class TwoStateObject < GameObject
       animate @s1_indices, @anim_interval if @anim_interval > 0
     end
   end
+end
 
+class SBEffect < Effect
   def draw(map)
     super map, 2, 2
   end
@@ -64,7 +72,7 @@ end
 
 ################################################################################
 
-class Goal < GameObject
+class Goal < SBGameObject
   def initialize(x, y, args, section)
     super x - 4, y - 118, 40, 150, :sprite_goal1, nil, 4, 1
     @active_bounds = Rectangle.new x - 4, y - 118, 40, 150
@@ -73,10 +81,6 @@ class Goal < GameObject
   def update(section)
     animate [0, 1, 2, 3], 7
     section.finish if SB.player.bomb.collide? self
-  end
-
-  def draw(map)
-    super(map, 2, 2)
   end
 end
 
@@ -191,7 +195,7 @@ class Door < GameObject
   end
 end
 
-class GunPowder < GameObject
+class GunPowder < SBGameObject
   def initialize(x, y, args, section, switch)
     return if switch && switch[:state] == :taken
     super x + 3, y + 19, 26, 13, :sprite_GunPowder, Vector.new(-2, -2)
@@ -210,13 +214,9 @@ class GunPowder < GameObject
       @dead = true
     end
   end
-
-  def draw(map)
-    super(map, 2, 2)
-  end
 end
 
-class Crack < GameObject
+class Crack < SBGameObject
   def initialize(x, y, args, section, switch)
     if args; y += 32
     else; x += 32; end
@@ -236,11 +236,9 @@ class Crack < GameObject
       @dead = true
     end
   end
-
-  def draw(map); super(map, 2, 2); end
 end
 
-class Elevator < GameObject
+class Elevator < SBGameObject
   attr_reader :id
 
   def initialize(x, y, args, section)
@@ -302,13 +300,9 @@ class Elevator < GameObject
   def is_visible(map)
     true
   end
-
-  def draw(map)
-    super map, 2, 2
-  end
 end
 
-class SaveBombie < GameObject
+class SaveBombie < SBGameObject
   def initialize(x, y, args, section, switch)
     super x - 16, y, 64, 32, :sprite_Bombie2, Vector.new(-16, -26), 2, 2
     @id = args.to_i
@@ -327,10 +321,6 @@ class SaveBombie < GameObject
     if @saved
       animate @indices, 8
     end
-  end
-
-  def draw(map)
-    super(map, 2, 2)
   end
 end
 
@@ -551,7 +541,7 @@ class Ball < GameObject
   end
 end
 
-class BallReceptor < GameObject
+class BallReceptor < SBGameObject
   attr_reader :id, :is_set
 
   def initialize(x, y, args, section, switch)
@@ -576,8 +566,6 @@ class BallReceptor < GameObject
     @is_set = true
     @img_index = 1
   end
-
-  def draw(map); super(map, 2, 2); end
 end
 
 class HideTile
@@ -729,7 +717,7 @@ class Projectile < GameObject
   end
 end
 
-class Poison < GameObject
+class Poison < SBGameObject
   def initialize(x, y, args, section)
     super x, y + 31, 32, 1, :sprite_poison, Vector.new(0, -19), 3, 1
     @active_bounds = Rectangle.new(x, y - 19, 32, 28)
@@ -741,8 +729,6 @@ class Poison < GameObject
       SB.player.bomb.hit
     end
   end
-
-  def draw(map); super map, 2, 2; end
 end
 
 class Vortex < GameObject
@@ -923,11 +909,11 @@ class ForceField < GameObject
   end
 
   def draw(map)
-    super map, 1, 1, @alpha
+    super map, 2, 2, @alpha
   end
 end
 
-class Stalactite < GameObject
+class Stalactite < SBGameObject
   def initialize(x, y, args, section)
     super x + 11, y - 16, 10, 48, :sprite_stalactite, Vector.new(-9, 0), 3, 2
     @active_bounds = Rectangle.new(x + 2, y, 28, 48)
@@ -1003,7 +989,7 @@ class Board < GameObject
   end
 end
 
-class Rock < GameObject
+class Rock < SBGameObject
   def initialize(x, y, args, section)
     case args
       when '1' then
@@ -1024,10 +1010,6 @@ class Rock < GameObject
   end
 
   def update(section); end
-
-  def draw(map)
-    super map, 2, 2
-  end
 end
 
 class Monep < GameObject
@@ -1084,9 +1066,9 @@ class Monep < GameObject
   end
 end
 
-class StalactiteGenerator < GameObject
+class StalactiteGenerator < SBGameObject
   def initialize(x, y, args, section)
-    super x, y, 96, 32, :sprite_stalacGen, Vector.new(0, 0)
+    super x, y, 96, 32, :sprite_graphic11, Vector.new(0, -16)
     @active_bounds = Rectangle.new(@x, @y, @w, @h)
     @active = true
     @limit = args.to_i * C::TILE_SIZE
@@ -1170,7 +1152,7 @@ class TwinWalls < GameObject
   end
 end
 
-class WallButton < GameObject
+class WallButton < SBGameObject
   def initialize(x, y, args, section)
     super x, y + 16, 32, 16, :sprite_WallButton, Vector.new(0, 0), 1, 3
     args = args.split ','
@@ -1210,7 +1192,7 @@ class WallButton < GameObject
   end
 end
 
-class Lift < GameObject
+class Lift < SBGameObject
   def initialize(x, y, args, section)
     super x, section.size.y, 64, 1, :sprite_Elevator2, Vector.new(0, 0), 4, 1
     @start = Vector.new(x, @y)
@@ -1260,7 +1242,7 @@ class Lift < GameObject
   end
 end
 
-class Crusher < GameObject
+class Crusher < SBGameObject
   def initialize(x, y, args, section)
     super x, y, 32, 16, :sprite_Crusher, Vector.new(0, 0), 4, 1
     @bottom = Block.new(x, y + 144, 32, 16, false)
@@ -1336,7 +1318,7 @@ class Boulder < GameObject
   end
 
   def draw(map)
-    super map, 1, 1, 255, 0xffffff, @x - @start_x
+    super map, 2, 2, 255, 0xffffff, @x - @start_x
   end
 
   def is_visible(map)
@@ -1344,7 +1326,7 @@ class Boulder < GameObject
   end
 end
 
-class HeatBomb < GameObject
+class HeatBomb < SBGameObject
   def initialize(x, y, args, section)
     super x, y, 32, 32, :sprite_HeatBomb, Vector.new(0, 0), 4, 2
     @state = 0
@@ -1400,7 +1382,7 @@ class Explosion < Effect
   end
 end
 
-class Ice < Effect
+class Ice < SBEffect
   def initialize(x, y)
     @w = @h = 30
     super x - @w/2, y - @h/2, :fx_ice, 2, 2, 5, nil, 180
@@ -1420,7 +1402,7 @@ class Ice < Effect
   end
 end
 
-class Fire < Effect
+class Fire < SBEffect
   def initialize(x, y)
     @w = 28; @h = 32
     super x - @w/2, y - @h, :fx_fire, 3, 1, 5, nil, 180
@@ -1435,7 +1417,7 @@ class Fire < Effect
   end
 end
 
-class SpecGate < GameObject
+class SpecGate < SBGameObject
   def initialize(x, y, args, section)
     super x, y, 32, 32, :sprite_SpecGate
     @active_bounds = Rectangle.new(x, y, 32, 32)
