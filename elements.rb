@@ -65,7 +65,7 @@ class TwoStateObject < GameObject
 end
 
 class SBEffect < Effect
-  def draw(map)
+  def draw(map, scale_x = nil, scale_y = nil)
     super map, 2, 2
   end
 end

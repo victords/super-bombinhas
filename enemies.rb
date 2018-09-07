@@ -1184,19 +1184,19 @@ class Forsby < Enemy
   end
 
   def draw(map)
-    super map, 1, 1, 255, 0xffffff, nil, @facing_right ? nil : :horiz
+    super map, 2, 2, 255, 0xffffff, nil, @facing_right ? nil : :horiz
   end
 end
 
 class Stilty < FloorEnemy
   def initialize(x, y, args, section)
-    super(x + 6, y - 26, args, 20, 58, Vector.new(-6, -42), 6, 2, [0, 1, 0, 2], 7, 450, 2, 2)
+    super(x + 6, y - 26, args, 20, 58, Vector.new(-6, -42), 5, 2, [0, 1, 0, 2], 7, 450, 2, 2)
   end
 
   def update(section)
     if @rising
       animate @indices, @interval
-      if @img_index == 7
+      if @img_index == 6
         @y -= 40; @h += 40
         @img_gap.y = -2
         @speed_m = 3
@@ -1205,8 +1205,8 @@ class Stilty < FloorEnemy
         elsif @speed.x > 0
           @speed.x = 3
         end
-        @indices = [7, 8, 7, 9]
-        set_animation 7
+        @indices = [6, 7, 6, 8]
+        set_animation 6
         @rising = false
       end
     else
@@ -1216,15 +1216,15 @@ class Stilty < FloorEnemy
 
   def hit(section)
     super
-    @indices = (@hp == 0 ? [10] : [3])
-    set_animation(@hp == 0 ? 10 : 3)
+    @indices = (@hp == 0 ? [9] : [3])
+    set_animation(@hp == 0 ? 9 : 3)
   end
 
   def return_vulnerable
     super
     @rising = true
-    @indices = [4, 5, 4, 5, 6, 5, 6, 7]
-    set_animation 4
+    @indices = [0, 4, 0, 4, 5, 4, 5, 6]
+    set_animation 0
   end
 end
 
@@ -1279,7 +1279,7 @@ end
 
 class Icel < Enemy
   def initialize(x, y, args, section)
-    super x - 4, y + 2, 40, 28, Vector.new(-4, -4), 1, 1, [0], 0, 450
+    super x - 4, y + 2, 40, 28, Vector.new(-4, -4), 2, 3, [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5], 7, 450
     @radius = (args || 64).to_i
     @timer = @angle = 0
     @state = 3
@@ -1349,7 +1349,7 @@ end
 
 class Warclops < Enemy
   def initialize(x, y, args, section)
-    super x - 19, y - 84, 70, 116, Vector.new(-10, -4), 3, 1, [0, 1, 0, 2], 9, 800, 3
+    super x - 19, y - 84, 70, 116, Vector.new(-10, -4), 2, 2, [0, 1, 0, 2], 9, 800, 3
   end
 
   def update(section)
@@ -1373,7 +1373,7 @@ class Warclops < Enemy
   end
 
   def draw(map)
-    super map, 1, 1, 255, 0xffffff, nil, @facing_right ? :horiz : nil
+    super map, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil
   end
 
   def hit_by_bomb(section); end
