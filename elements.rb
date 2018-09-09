@@ -659,7 +659,7 @@ class Projectile < GameObject
     when 2 then w = 8; h = 8; x_g = -2; y_g = -2; cols = 2; rows = 2; indices = [0, 1, 2, 3]; @speed_m = 2.5
     when 3 then w = 4; h = 40; x_g = 0; y_g = 0; cols = 1; rows = 1; indices = [0]; @speed_m = 6
     when 4 then w = 16; h = 22; x_g = -2; y_g = 0; cols = 1; rows = 1; indices = [0]; @speed_m = 5
-    when 5 then w = 21; h = 21; x_g = -16; y_g = -4; cols = 1; rows = 1; indices = [0]; @speed_m = 5
+    when 5 then w = 20; h = 20; x_g = -16; y_g = -4; cols = 1; rows = 2; indices = [0, 1]; @speed_m = 5
     end
 
     super x, y, w, h, "sprite_Projectile#{type}", Vector.new(0, 0), cols, rows
