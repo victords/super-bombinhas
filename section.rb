@@ -134,6 +134,7 @@ class Section
     @map = Map.new C::TILE_SIZE, C::TILE_SIZE, t_x_count, t_y_count
     # @map.set_camera 4500, 1200
     @size = @map.get_absolute_size
+    @dark = s.length > 5
   end
 
   def set_bgs(s)
@@ -533,6 +534,38 @@ class Section
 
     @hide_tiles.each do |t|
       t.draw @map if t.is_visible @map
+    end
+
+    if @dark
+      b_x = SB.player.bomb.x + SB.player.bomb.w / 2 - @map.cam.x
+      b_y = SB.player.bomb.y + SB.player.bomb.h / 2 - @map.cam.y
+      s_w = C::SCREEN_WIDTH
+      s_h = C::SCREEN_HEIGHT
+      r = 100
+      G.window.draw_quad(b_x - s_w, b_y - s_h, 0xff000000,
+                         b_x + s_w, b_y - s_h, 0xff000000,
+                         b_x - s_w, b_y - r, 0xff000000,
+                         b_x + s_w, b_y - r, 0xff000000, 0)
+      G.window.draw_quad(b_x - s_w, b_y + r, 0xff000000,
+                         b_x + s_w, b_y + r, 0xff000000,
+                         b_x - s_w, b_y + s_h, 0xff000000,
+                         b_x + s_w, b_y + s_h, 0xff000000, 0)
+      G.window.draw_quad(b_x - s_w, b_y - r, 0xff000000,
+                         b_x - r, b_y - r, 0xff000000,
+                         b_x - s_w, b_y + r, 0xff000000,
+                         b_x - r, b_y + r, 0xff000000, 0)
+      G.window.draw_quad(b_x + r, b_y - r, 0xff000000,
+                         b_x + s_w, b_y - r, 0xff000000,
+                         b_x + r, b_y + r, 0xff000000,
+                         b_x + s_w, b_y + r, 0xff000000, 0)
+      ((b_x-r)..(b_x+r-4)).step(4) do |x|
+        ((b_y-r)..(b_y+r-4)).step(4) do |y|
+          a = (Math::sqrt((x - b_x)**2 + (y - b_y)**2) / r * 255).round
+          a = 255 if a > 255
+          c = a << 24
+          G.window.draw_quad x, y, c, x + 4, y, c, x, y + 4, c, x + 4, y + 4, c, 0
+        end
+      end
     end
   end
 
