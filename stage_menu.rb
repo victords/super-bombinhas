@@ -261,8 +261,8 @@ class StageMenu
                          C::SCREEN_WIDTH, 0, c,
                          0, C::SCREEN_HEIGHT, c,
                          C::SCREEN_WIDTH, C::SCREEN_HEIGHT, c, 0
-      SB.big_text_helper.write_line SB.text(@dead_text), 400, 250, :center, 0, @alpha
-      SB.text_helper.write_line SB.text(:restart), 400, 300, :center, 0, @alpha
+      SB.big_text_helper.write_line SB.text(@dead_text), 400, 250, :center, 0xffffff, @alpha, :border, 0, 1, 255, 1
+      SB.text_helper.write_line SB.text(:restart), 400, 300, :center, 0xffffff, @alpha, :border, 0, 1, 255, 1
     end
 
     def draw_menu
