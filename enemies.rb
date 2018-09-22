@@ -1,6 +1,7 @@
 ############################### classes abstratas ##############################
 
 require 'minigl'
+Vector = MiniGL::Vector
 
 class Enemy < GameObject
   attr_reader :dying
@@ -1381,5 +1382,11 @@ class Warclops < Enemy
   def hit_by_explosion(section)
     @hp -= 1
     hit(section)
+  end
+end
+
+class Necrul < Enemy
+  def initialize(x, y, args, section)
+    super(x, y, 32, 32, Vector.new(0, 0), 2, 3, [1,0,1,2], 7, 400, 2)
   end
 end
