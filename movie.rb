@@ -63,7 +63,7 @@ end
 
 class MovieScene
   def initialize(file_name)
-    @bg = Res.img "movie_#{file_name.split('/')[-1]}", false, false, '.jpg'
+    @bg = Res.img "movie_#{file_name.split('/')[-1]}"
     f = File.open(file_name)
     es = f.read.split "\n\n"
     f.close

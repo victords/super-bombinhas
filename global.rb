@@ -144,8 +144,9 @@ class SB
       @save_file_name = "#{@save_dir}/#{index}"
       @save_data = Array.new(12)
 
-      @movie = Movie.new 0
-      @state = :movie
+      # @movie = Movie.new 0
+      # @state = :movie
+      SB.start_new_game
     end
 
     def start_new_game

@@ -127,37 +127,52 @@ class FloorEnemy < Enemy
     @speed_m = speed
     @forces = Vector.new -@speed_m, 0
     @facing_right = false
+    @turning = false
   end
 
-  def update(section)
+  def update(section, &block)
     if @invulnerable
       super section
+    elsif @turning
+      if block_given?
+        super(section, &block)
+        set_direction unless @turning
+      else
+        set_direction
+        @turning = false
+        super(section)
+      end
     else
       super section do
         move(@forces, section.get_obstacles(@x, @y, @w, @h), @dont_fall ? [] : section.ramps)
         @forces.x = 0
         if @left
-          set_direction :right
+          prepare_turn :right
         elsif @right
-          set_direction :left
+          prepare_turn :left
         elsif @dont_fall
           if @facing_right
-            set_direction :left unless section.obstacle_at?(@x + @w, @y + @h)
+            prepare_turn :left unless section.obstacle_at?(@x + @w, @y + @h)
           elsif not section.obstacle_at?(@x - 1, @y + @h)
-            set_direction :right
+            prepare_turn :right
           end
         elsif @facing_right
-          set_direction :left if @speed.x < 0
+          prepare_turn :left if @speed.x < 0
         elsif @speed.x > 0
-          set_direction :right
+          prepare_turn :right
         end
       end
     end
   end
 
-  def set_direction(dir)
+  def prepare_turn(dir)
+    @turning = true
     @speed.x = 0
-    if dir == :left
+    @next_dir = dir
+  end
+
+  def set_direction
+    if @next_dir == :left
       @forces.x = -@speed_m
       @facing_right = false
     else
@@ -680,34 +695,24 @@ class Robort < FloorEnemy
   end
 
   def update(section)
-    if @attacking
+    super(section) do
       @timer += 1
-      set_direction @next_dir if @timer == 150
-      animate @indices, @interval
-      if SB.player.bomb.explode? self
-        hit_by_explosion(section)
-      elsif SB.player.bomb.collide? self
+      if @timer == 150
+        @indices = [0, 1, 2, 1]
+        @interval = 7
+        @turning = false
+      end
+      if SB.player.bomb.collide? self
         SB.player.bomb.hit
       end
-    else
-      super(section)
     end
   end
 
-  def set_direction(dir)
-    if @attacking
-      super(dir)
-      @attacking = false
-      @indices = [0, 1, 2, 1]
-      @interval = 7
-    else
-      @speed.x = 0
-      @next_dir = dir
-      @attacking = true
-      @indices = [3, 4, 5, 4]
-      @interval = 4
-      @timer = 0
-    end
+  def prepare_turn(dir)
+    @indices = [3, 4, 5, 4]
+    @interval = 4
+    @timer = 0
+    super(dir)
   end
 end
 
@@ -717,42 +722,22 @@ class Shep < FloorEnemy
   end
 
   def update(section)
-    if @attacking
+    super(section) do
       @timer += 1
       if @timer == 35
         section.add(Projectile.new(@facing_right ? @x + @w - 4 : @x - 4, @y + 10, 2, @facing_right ? 0 : 180, self))
-        set_direction @next_dir
+        @indices = [0, 1, 0, 2]
+        set_animation(@indices[0])
+        @turning = false
       end
-      animate @indices, @interval
-      b = SB.player.bomb
-      if b.over? self
-        hit_by_bomb(section)
-        b.bounce
-      elsif b.explode? self
-        hit_by_explosion(section)
-      elsif section.projectile_hit? self
-        hit(section)
-      elsif b.collide? self
-        b.hit
-      end
-    else
-      super(section)
     end
   end
 
-  def set_direction(dir)
-    if @attacking
-      super(dir)
-      @attacking = false
-      @indices = [0, 1, 0, 2]
-    else
-      @speed.x = 0
-      @next_dir = dir
-      @attacking = true
-      @indices = [0, 3, 4, 5, 5]
-      @timer = 0
-    end
+  def prepare_turn(dir)
+    @timer = 0
+    @indices = [0, 3, 4, 5, 5]
     set_animation @indices[0]
+    super(dir)
   end
 end
 
@@ -1385,8 +1370,27 @@ class Warclops < Enemy
   end
 end
 
-class Necrul < Enemy
+class Necrul < FloorEnemy
   def initialize(x, y, args, section)
     super(x, y, 32, 32, Vector.new(0, 0), 2, 3, [1,0,1,2], 7, 400, 2)
+  end
+
+  def update(section)
+    super(section) do
+      @timer += 1
+      if @timer == 28
+        section.add(Projectile.new(@facing_right ? @x + @w - 4 : @x - 4, @y + 10, 2, @facing_right ? 0 : 180, self))
+        @indices = [1, 0, 1, 2]
+        set_animation(@indices[0])
+        @turning = false
+      end
+    end
+  end
+
+  def prepare_turn(dir)
+    @timer = 0
+    @indices = [1, 3, 4, 4]
+    set_animation @indices[0]
+    super(dir)
   end
 end

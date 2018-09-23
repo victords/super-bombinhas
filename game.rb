@@ -1,4 +1,5 @@
 require 'rbconfig'
+require 'gosu'
 require_relative 'menu'
 require_relative 'stage_menu'
 require_relative 'movie'
@@ -30,7 +31,7 @@ class SBGame < MiniGL::GameWindow
     KB.update
     Mouse.update
 
-    close if KB.key_pressed? Gosu::KbTab
+    close if KB.key_pressed? Gosu.
     toggle_fullscreen if KB.key_pressed? Gosu::KbF4
 
     if SB.state == :presentation
@@ -75,7 +76,7 @@ class SBGame < MiniGL::GameWindow
     elsif SB.state == :movie
       SB.movie.update
     elsif SB.state == :game_end || SB.state == :game_end_2
-      if KB.key_pressed? Gosu::KbReturn or KB.key_pressed? Gosu::KbSpace
+      if KB.key_pressed? Gosu:: or KB.key_pressed? Gosu::KbSpace
         Menu.reset
         SB.state = :menu
       end
