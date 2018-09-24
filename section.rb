@@ -78,6 +78,7 @@ class Section
     Mantul,
     Monep,
     MovingWall,
+    Necrul,
     Owlep,
     Pin,
     Poison,

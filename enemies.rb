@@ -136,10 +136,8 @@ class FloorEnemy < Enemy
     elsif @turning
       if block_given?
         super(section, &block)
-        set_direction unless @turning
       else
         set_direction
-        @turning = false
         super(section)
       end
     else
@@ -172,6 +170,7 @@ class FloorEnemy < Enemy
   end
 
   def set_direction
+    @turning = false
     if @next_dir == :left
       @forces.x = -@speed_m
       @facing_right = false
@@ -700,7 +699,7 @@ class Robort < FloorEnemy
       if @timer == 150
         @indices = [0, 1, 2, 1]
         @interval = 7
-        @turning = false
+        set_direction
       end
       if SB.player.bomb.collide? self
         SB.player.bomb.hit
@@ -728,7 +727,7 @@ class Shep < FloorEnemy
         section.add(Projectile.new(@facing_right ? @x + @w - 4 : @x - 4, @y + 10, 2, @facing_right ? 0 : 180, self))
         @indices = [0, 1, 0, 2]
         set_animation(@indices[0])
-        @turning = false
+        set_direction
       end
     end
   end
@@ -1372,25 +1371,32 @@ end
 
 class Necrul < FloorEnemy
   def initialize(x, y, args, section)
-    super(x, y, 32, 32, Vector.new(0, 0), 2, 3, [1,0,1,2], 7, 400, 2)
+    super(x - 20, y - 36, nil, 72, 68, Vector.new(-34, -6), 2, 3, [1,0,1,2], 7, 400, 2)
   end
 
   def update(section)
     super(section) do
       @timer += 1
-      if @timer == 28
-        section.add(Projectile.new(@facing_right ? @x + @w - 4 : @x - 4, @y + 10, 2, @facing_right ? 0 : 180, self))
-        @indices = [1, 0, 1, 2]
-        set_animation(@indices[0])
-        @turning = false
+      if @timer % 28 == 0
+        section.add(Projectile.new(@facing_right ? @x + @w + 34 : @x - 34, @y + 30, 6, @facing_right ? 0 : 180, self))
+        if @timer == 84
+          @indices = [1, 0, 1, 2]
+          set_animation(@indices[0])
+          set_direction
+        end
       end
     end
   end
 
   def prepare_turn(dir)
     @timer = 0
-    @indices = [1, 3, 4, 4]
+    @indices = [1, 3, 4, 3, 1, 3, 4, 3, 1, 3, 4, 3]
     set_animation @indices[0]
     super(dir)
+  end
+
+  def set_direction
+    @img_gap.x = @facing_right ? -34 : -14
+    super
   end
 end
