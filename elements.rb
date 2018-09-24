@@ -246,10 +246,10 @@ class Elevator < SBGameObject
     type = a[0].to_i
     open = a[0][-1] == '!'
     case type
-      when 1 then w = 32; cols = rows = nil; x_g = y_g = 0
-      when 2 then w = 64; cols = 4; rows = 1; x_g = y_g = 0
-      when 3 then w = 64; cols = rows = nil; x_g = 0; y_g = -3
-      when 4 then w = 64; cols = rows = nil; x_g = y_g = 0
+    when 1 then w = 32; cols = rows = nil; x_g = y_g = 0
+    when 2 then w = 64; cols = 4; rows = 1; x_g = y_g = 0
+    when 3 then w = 64; cols = rows = nil; x_g = 0; y_g = -3
+    when 4 then w = 64; cols = rows = nil; x_g = y_g = 0
     end
     super x, y, w, 1, "sprite_Elevator#{type}", Vector.new(x_g, y_g), cols, rows
     @passable = true
@@ -349,7 +349,9 @@ end
 
 class Spikes < TwoStateObject
   def initialize(x, y, args, section)
-    @dir = args.to_i
+    args ||= '0'
+    a = args.split(',')
+    @dir = a[0].to_i
     if @dir % 2 == 0
       x += 2; w = 28; h = 34
       y -= 2 if @dir == 2
@@ -357,7 +359,7 @@ class Spikes < TwoStateObject
       y += 2; w = 34; h = 28
       x -= 2 if @dir == 1
     end
-    super x, y, w, h, :sprite_Spikes, Vector.new(0, 0), 5, 1, 120, 0, 2, [0], [4], [1, 2, 3, 4, 0], [3, 2, 1, 0, 4]
+    super x, y, w, h, "sprite_Spikes#{a[1]}", Vector.new(0, 0), 5, 1, 120, 0, 2, [0], [4], [1, 2, 3, 4, 0], [3, 2, 1, 0, 4]
     @active_bounds = Rectangle.new x, y, 32, 32
     @obst = Block.new(x + 2, y + 2, 28, 28)
   end
@@ -390,10 +392,10 @@ class Spikes < TwoStateObject
 
   def draw(map)
     angle = case @dir
-              when 0 then 0
-              when 1 then 90
-              when 2 then 180
-              when 3 then 270
+            when 0 then 0
+            when 1 then 90
+            when 2 then 180
+            else        270
             end
     @img[@img_index].draw_rot @x + @w/2 - map.cam.x, @y + @h/2 - map.cam.y, 0, angle, 0.5, 0.5, 2, 2
   end
@@ -401,11 +403,12 @@ end
 
 class FixedSpikes < GameObject
   def initialize(x, y, args, section)
-    @dir = args.to_i
+    a = args.split(',')
+    @dir = a[0].to_i
     if @dir % 2 == 0
-      super x + 2, @dir == 2 ? y - 2 : y, 28, 34, :sprite_Spikes, Vector.new(0, 0), 5, 1
+      super x + 2, @dir == 2 ? y - 2 : y, 28, 34, "sprite_fixedSpikes#{a[1]}", Vector.new(0, 0), 1, 1
     else
-      super @dir == 1 ? x - 2 : x, y + 2, 34, 28, :sprite_Spikes, Vector.new(0, 0), 5, 1
+      super @dir == 1 ? x - 2 : x, y + 2, 34, 28, "sprite_fixedSpikes#{a[1]}", Vector.new(0, 0), 1, 1
     end
     @active_bounds = Rectangle.new x - 2, y - 2, 36, 36
     section.obstacles << Block.new(x + 2, y + 2, 28, 28)
@@ -425,12 +428,12 @@ class FixedSpikes < GameObject
 
   def draw(map)
     angle = case @dir
-              when 0 then 0
-              when 1 then 90
-              when 2 then 180
-              when 3 then 270
+            when 0 then 0
+            when 1 then 90
+            when 2 then 180
+            else        270
             end
-    @img[4].draw_rot @x + @w/2 - map.cam.x, @y + @h/2 - map.cam.y, 0, angle, 0.5, 0.5, 2, 2
+    @img[0].draw_rot @x + @w/2 - map.cam.x, @y + @h/2 - map.cam.y, 0, angle, 0.5, 0.5, 2, 2
   end
 end
 
@@ -993,11 +996,14 @@ end
 class Rock < SBGameObject
   def initialize(x, y, args, section)
     case args
-      when '1' then
-        objs = [['l', 0, 0, 26, 96], [26, 0, 32, 96], [58, 27, 31, 69], ['r', 89, 27, 18, 35], [89, 62, 30, 34]]
-        w = 120; h = 96; x -= 44; y -= 64
-      else
-        objs = []; w = h = 0
+    when '1' then
+      objs = [['l', 0, 0, 26, 96], [26, 0, 32, 96], [58, 27, 31, 69], ['r', 89, 27, 18, 35], [89, 62, 30, 34]]
+      w = 120; h = 96; x -= 44; y -= 64
+    when '2' then
+      objs = [[4, 54, 186, 42], [56, 26, 108, 28], [164, 46, 20, 8], ['l', 60, 0, 56, 26], ['r', 116, 0, 46, 26]]
+      w = 192; h = 96; x -= 80; y -= 64
+    else
+      objs = []; w = h = 0
     end
     objs.each do |o|
       if o[0].is_a? String
