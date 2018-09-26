@@ -60,6 +60,7 @@ class Section
     Flep,
     ForceField,
     Forsby,
+    FragileFloor,
     Fureel,
     Goal,
     Graphic,

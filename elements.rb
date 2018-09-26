@@ -4,6 +4,11 @@ include MiniGL
 ############################### classes abstratas ##############################
 
 class SBGameObject < GameObject
+  def initialize(*args)
+    super(*args)
+    @active_bounds = Rectangle.new(@x, @y, @w, @h)
+  end
+
   def draw(map)
     super(map, 2, 2)
   end
@@ -75,7 +80,6 @@ end
 class Goal < SBGameObject
   def initialize(x, y, args, section)
     super x - 4, y - 118, 40, 150, :sprite_goal1, nil, 4, 1
-    @active_bounds = Rectangle.new x - 4, y - 118, 40, 150
   end
 
   def update(section)
@@ -221,7 +225,6 @@ class Crack < SBGameObject
     if args; y += 32
     else; x += 32; end
     super x, y, 32, 32, :sprite_Crack
-    @active_bounds = Rectangle.new x, y, 32, 32
     @broken = switch[:state] == :taken
     @type = section.tileset_num
   end
@@ -1013,7 +1016,6 @@ class Rock < SBGameObject
       end
     end
     super x, y, w, h, "sprite_rock#{args}", Vector.new(0, 0)
-    @active_bounds = Rectangle.new(x, y, w, h)
   end
 
   def update(section); end
@@ -1076,7 +1078,6 @@ end
 class StalactiteGenerator < SBGameObject
   def initialize(x, y, args, section)
     super x, y, 96, 32, :sprite_graphic11, Vector.new(0, -16)
-    @active_bounds = Rectangle.new(@x, @y, @w, @h)
     @active = true
     @limit = args.to_i * C::TILE_SIZE
   end
@@ -1170,7 +1171,6 @@ class WallButton < SBGameObject
       when '2' then Elevator
       else          nil
       end
-    @active_bounds = Rectangle.new(@x, @y, @w, @h)
     @state = 0
   end
 
@@ -1369,6 +1369,37 @@ class HeatBomb < SBGameObject
 
   def is_visible(map)
     true
+  end
+end
+
+class FragileFloor < SBGameObject
+  def initialize(x, y, args, section)
+    super x, y, 32, 32, "sprite_fragileFloor#{args}", Vector.new(0, 0), 4, 1
+    @life = 60
+    section.obstacles << self
+  end
+
+  def update(section)
+    if @falling
+      if @img_index < 3
+        animate([0, 1, 2, 3], 7)
+      else
+        unless @removed
+          section.obstacles.delete(self)
+          @removed = true
+        end
+        move(Vector.new(0, 0), section.obstacles, section.ramps)
+      end
+      @dead = true if @bottom || @y > section.size.y
+    else
+      b = SB.player.bomb
+      if b.bottom == self
+        @life -= 1
+        if @life == 0
+          @falling = true
+        end
+      end
+    end
   end
 end
 
