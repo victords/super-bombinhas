@@ -1403,6 +1403,30 @@ class FragileFloor < SBGameObject
   end
 end
 
+class Box < SBGameObject
+  MOVE_SPEED = 2
+
+  def initialize(x, y, args, section)
+    super(x, y, 32, 32, :sprite_box, Vector.new(0, 0))
+    section.obstacles << self
+    @max_speed.x = 2
+  end
+
+  def update(section)
+    b = SB.player.bomb
+    obst = section.get_obstacles(@x, @y)
+    if b.left == self && KB.key_down?(Gosu::KbLeft)
+      move(Vector.new(-MOVE_SPEED, 0), obst, section.ramps)
+      b.move(Vector.new(-MOVE_SPEED, 0), section.get_obstacles(b.x, b.y), section.ramps)
+    elsif b.right == self && KB.key_down?(Gosu::KbRight)
+      move(Vector.new(MOVE_SPEED, 0), obst, section.ramps)
+      b.move(Vector.new(MOVE_SPEED, 0), section.get_obstacles(b.x, b.y), section.ramps)
+    else
+      move(Vector.new(@bottom ? -@speed.x : 0, 0), obst, section.ramps)
+    end
+  end
+end
+
 class Explosion < Effect
   attr_reader :c_x, :c_y, :radius
 

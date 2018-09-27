@@ -44,6 +44,7 @@ class Section
     BoardItem,
     Bombie,
     Boulder,
+    Box,
     Branch,
     Butterflep,
     Chamal,
