@@ -14,7 +14,7 @@ class SBGameObject < GameObject
   end
 end
 
-class TwoStateObject < GameObject
+class TwoStateObject < SBGameObject
   def initialize(x, y, w, h, img, img_gap, sprite_cols, sprite_rows,
     change_interval, anim_interval, change_anim_interval, s1_indices, s2_indices, s1_s2_indices, s2_s1_indices, s2_first = false)
     super x, y, w, h, img, img_gap, sprite_cols, sprite_rows
@@ -75,6 +75,62 @@ class SBEffect < Effect
   end
 end
 
+module Speech
+  def init_speech(msg_id)
+    @speaking = false
+    @msg = SB.text(msg_id.to_sym).split('/')
+  end
+
+  def update_speech
+    if SB.player.bomb.collide? self
+      if not @facing_right and SB.player.bomb.bounds.x > @x + @w / 2
+        @facing_right = true
+      elsif @facing_right and SB.player.bomb.bounds.x < @x + @w / 2
+        @facing_right = false
+      end
+      if KB.key_pressed? SB.key[:up]
+        @speaking = !@speaking
+        if @speaking
+          @active = false
+        else
+          @page = 0
+          set_animation 0
+        end
+      elsif @speaking and KB.key_pressed? SB.key[:down]
+        if @page < @msg.size - 1
+          @page += 1
+        else
+          @page = 0
+          @speaking = false
+          set_animation 0
+        end
+      end
+      @active = !@speaking
+    else
+      @page = 0
+      @active = false
+      @speaking = false
+      set_animation 0
+    end
+
+    animate @indices, @interval if @speaking
+  end
+
+  def draw_speech
+    return if !@speaking || SB.state == :paused
+    G.window.draw_quad 5, 495, C::PANEL_COLOR,
+                       795, 495, C::PANEL_COLOR,
+                       5, 595, C::PANEL_COLOR,
+                       795, 595, C::PANEL_COLOR, 1
+    SB.text_helper.write_breaking @msg[@page], 10, 495, 780, :justified, 0, 255, 1
+    if @msg.size > 1 && @page < @msg.size - 1
+      G.window.draw_triangle 780, 585, C::ARROW_COLOR,
+                             790, 585, C::ARROW_COLOR,
+                             785, 590, C::ARROW_COLOR, 1
+    end
+  end
+end
+
 ################################################################################
 
 class Goal < SBGameObject
@@ -89,59 +145,27 @@ class Goal < SBGameObject
 end
 
 class Bombie < GameObject
+  include Speech
+
   def initialize(x, y, args, section)
     super x - 16, y, 64, 32, :sprite_Bombie, Vector.new(17, -2), 3, 1
-    @msg_id = "msg#{args.to_i}".to_sym
-    @pages = SB.text(@msg_id).split('/').size
     @balloon = Res.img :fx_Balloon1
     @facing_right = false
-    @active = false
-    @speaking = false
     @indices = [0, 1, 2]
     @interval = 8
-
     @active_bounds = Rectangle.new x - 16, y, 64, 32
+
+    init_speech("msg#{args}")
   end
 
   def update(section)
-    if SB.player.bomb.collide? self
-      if not @facing_right and SB.player.bomb.bounds.x > @x + @w / 2
-        @facing_right = true
-      elsif @facing_right and SB.player.bomb.bounds.x < @x + @w / 2
-        @facing_right = false
-      end
-      if KB.key_pressed? SB.key[:up]
-        @speaking = (not @speaking)
-        if @speaking
-          @active = false
-        else
-          @page = 0
-          set_animation 0
-        end
-      elsif @speaking and KB.key_pressed? SB.key[:down]
-        if @page < @pages - 1
-          @page += 1
-        else
-          @page = 0
-          @speaking = false
-          set_animation 0
-        end
-      end
-      @active = (not @speaking)
-    else
-      @page = 0
-      @active = false
-      @speaking = false
-      set_animation 0
-    end
-
-    animate @indices, @interval if @speaking
+    update_speech
   end
 
   def draw(map)
     super(map, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
     @balloon.draw @x - map.cam.x + 16, @y - map.cam.y - 32, 0, 2, 2 if @active
-    speak(@msg_id, @page) if @speaking
+    draw_speech
   end
 end
 
@@ -332,7 +356,6 @@ class Pin < TwoStateObject
     super x, y, 32, 32, :sprite_Pin, Vector.new(0, 0), 5, 1,
       60, 0, 3, [0], [4], [1, 2, 3, 4, 0], [3, 2, 1, 0, 4], (not args.nil?)
 
-    @active_bounds = Rectangle.new x, y, 32, 32
     @obst = Block.new(x, y, 32, 32, true)
     section.obstacles << @obst if args
   end
@@ -1022,12 +1045,16 @@ class Rock < SBGameObject
 end
 
 class Monep < GameObject
+  include Speech
+
   def initialize(x, y, args, section, switch)
     super x, y, 62, 224, :sprite_monep, Vector.new(0, 0), 3, 2
     @active_bounds = Rectangle.new(x, y, 62, 224)
     @blocking = switch[:state] != :taken
     @state = :normal
     @balloon = Res.img :fx_Balloon3
+    init_speech(:msg_monep)
+    @page = 0
   end
 
   def update(section)
@@ -1059,6 +1086,7 @@ class Monep < GameObject
     end
     if @state == :speaking; animate [3, 4, 5, 4, 5, 3, 5], 10
     else; animate [0, 1, 0, 2], 10; end
+    @speaking = @state == :speaking
   end
 
   def activate(section)
@@ -1070,8 +1098,8 @@ class Monep < GameObject
 
   def draw(map)
     super map, 2, 2
-    @balloon.draw @x - map.cam.x, @y + 30 - map.cam.y, 0 if @state == :waiting and SB.player.bomb.collide?(self)
-    speak(:msg_monep) if @state == :speaking
+    @balloon.draw @x - map.cam.x, @y + 30 - map.cam.y, 0, 2, 2 if @state == :waiting and SB.player.bomb.collide?(self)
+    draw_speech
   end
 end
 
@@ -1425,6 +1453,10 @@ class Box < SBGameObject
       move(Vector.new(@bottom ? -@speed.x : 0, 0), obst, section.ramps)
     end
   end
+end
+
+class MountainBombie < SBGameObject
+
 end
 
 class Explosion < Effect

@@ -9,7 +9,7 @@ class SBGame < MiniGL::GameWindow
     super(C::SCREEN_WIDTH, C::SCREEN_HEIGHT, false, Vector.new(0, 0.7))
     G.ramp_slip_threshold = 0.8
     G.ramp_slip_force = 0.8
-    
+
     os = RbConfig::CONFIG['host_os']
     dir =
       if /linux/ =~ os
@@ -129,21 +129,6 @@ class MiniGL::GameObject
 
   def position
     Vector.new(@x, @y)
-  end
-
-  def speak(msg_id, page = 0)
-    return if SB.state == :paused
-    msg = SB.text(msg_id).split('/')
-    G.window.draw_quad 5, 495, C::PANEL_COLOR,
-                       795, 495, C::PANEL_COLOR,
-                       5, 595, C::PANEL_COLOR,
-                       795, 595, C::PANEL_COLOR, 1
-    SB.text_helper.write_breaking msg[page], 10, 495, 780, :justified, 0, 255, 1
-    if msg.size > 1 && page < msg.size - 1
-      G.window.draw_triangle 780, 585, C::ARROW_COLOR,
-                             790, 585, C::ARROW_COLOR,
-                             785, 590, C::ARROW_COLOR, 1
-    end
   end
 end
 
