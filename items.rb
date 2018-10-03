@@ -372,6 +372,32 @@ class Herb < GameObject
   end
 end
 
+class JillisStone < FloatingItem
+  include Item
+
+  def initialize(x, y, args, section, switch)
+    set_icon :jillisStone
+    return if check(switch)
+    super(x, y, 20, 20, :sprite_jillisStone)
+    @active_bounds = Rectangle.new(x, y, 20, 20)
+  end
+
+  def update(section)
+    if SB.player.bomb.collide?(self)
+      take(section, true)
+      @dead = true
+    end
+  end
+
+  def use(section, switch)
+    obj = section.active_object
+    if obj.is_a? MountainBombie
+      obj.activate(section)
+      set_switch(switch)
+    end
+  end
+end
+
 class Spec < FloatingItem
   def initialize(x, y, args, section)
     return if SB.player.specs.index(SB.stage.id)
