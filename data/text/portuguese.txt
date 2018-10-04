@@ -54,6 +54,8 @@ msg9			Tente rolar aquela bola sobre essa pequena marca de estrela no chão, e v
 msg10			Bom... É isso, para a demo. Mas fique atento ao alevagames.com para novidades sobre o próximo lançamento!
 msg11			Olá, bem-vindo à floresta dos sábios. Não, eu não sou um deles, e nem sei onde eles estão.../Mas uma coisa é certa: esta floresta esconde muitos segredos. Mantenha os dois olhos abertos!
 msg_monep		Ei! Alto lá! Se você quiser passar por aqui, tem que me trazer uma erva florestal. Isso mesmo, uma deliciosa erva florestal... Agora suma daqui e volte apenas quando tiver arranjado uma para mim!
+msg_mnt_bomb	Hi, I was taking a walk in the mountains and I lost my precious Jillis Stone. It's a big, shiny, green gem... Do you think you could find it for me?
+msg_mnt_bomb2	Thanks a lot, mate! Well... I don't have much to offer in return, but you can use this float machine if you want. It will help you reach the highest parts of the mountain./It's a wonderful view from there!
 chamal_speech	Então... você veio. Porém, temo que este seja o fim de sua vã jornada, pequena bomba. WHEELIAMS, PEGUEM-NO!
 chamal_death	Nããããããoooo...!! Como eu fui perder para um fracote como esse...?! Não... Não é poss...
 count_down		Contagem regressiva para explodir!

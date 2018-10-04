@@ -4,8 +4,8 @@ include MiniGL
 ############################### classes abstratas ##############################
 
 class SBGameObject < GameObject
-  def initialize(*args)
-    super(*args)
+  def initialize(x, y, w, h, img, img_gap = Vector.new(0, 0), sprite_cols = nil, sprite_rows = nil)
+    super(x, y, w, h, img, img_gap, sprite_cols, sprite_rows)
     @active_bounds = Rectangle.new(@x, @y, @w, @h)
   end
 
@@ -1456,7 +1456,21 @@ class Box < SBGameObject
 end
 
 class MountainBombie < SBGameObject
+  include Speech
 
+  def initialize(x, y, args, section, switch)
+    super(x, y, 32, 32, :sprite_Bombie3)
+    init_speech(:msg_mnt_bombie)
+  end
+
+  def update(section)
+    update_speech
+  end
+
+  def draw(map)
+    super(map)
+    draw_speech
+  end
 end
 
 class Explosion < Effect

@@ -54,6 +54,8 @@ msg9			Intenta rodar aquella pelota sobre esa pequeña marca de estrella en el s
 msg10			Bueno... Eso es todo para la demo. Pero mantenga los ojos en alevagames.com para noticias sobre la próxima versión!
 msg11			Hola, bienvenido al Bosque de los Sabios. No, yo no soy uno de ellos, ni sé donde están.../Pero una cosa es cierta: este bosque esconde muchos secretos... ¡Mantenga los ojos bien abiertos!
 msg_monep		¡Hey! ¡Espera un minuto! Si quieres ir adelante debe traerme una Hierba del Bosque. Sí, una deliciosa Hierba del Bosque... ¡Ahora va y solo vuelve aquí cuando la tuvieres!
+msg_mnt_bomb	Hi, I was taking a walk in the mountains and I lost my precious Jillis Stone. It's a big, shiny, green gem... Do you think you could find it for me?
+msg_mnt_bomb2	Thanks a lot, mate! Well... I don't have much to offer in return, but you can use this float machine if you want. It will help you reach the highest parts of the mountain./It's a wonderful view from there!
 chamal_speech	Entonces... veniste. Bien, temo que esto es el final de su viaje inútil. ¡WHEELIAMS, ATRAPARLO!
 chamal_death	¡Noooooo...! ¡¿Como pude perder a alguién tan débil...?! No... No es posib...
 count_down		¡Cuenta regresiva para explodir!
