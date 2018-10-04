@@ -9,8 +9,8 @@ class SBGameObject < GameObject
     @active_bounds = Rectangle.new(@x, @y, @w, @h)
   end
 
-  def draw(map)
-    super(map, 2, 2)
+  def draw(map, scale_x = 2, scale_y = 2, alpha = 0xff, color = 0xffffff, angle = nil, flip = nil, z_index = 0, round = false)
+    super(map, 2, 2, alpha, color, angle, flip, z_index, round)
   end
 end
 
@@ -81,7 +81,7 @@ module Speech
     @msg = SB.text(msg_id.to_sym).split('/')
   end
 
-  def update_speech
+  def update_speech(section)
     if SB.player.bomb.collide? self
       if not @facing_right and SB.player.bomb.bounds.x > @x + @w / 2
         @facing_right = true
@@ -113,7 +113,13 @@ module Speech
       set_animation 0
     end
 
+    def change_speech(msg_id)
+      @msg = SB.text(msg_id.to_sym).split('/')
+      @page = 0
+    end
+
     animate @indices, @interval if @speaking
+    section.active_object = self if @active
   end
 
   def draw_speech
@@ -159,7 +165,7 @@ class Bombie < GameObject
   end
 
   def update(section)
-    update_speech
+    update_speech(section)
   end
 
   def draw(map)
@@ -1460,15 +1466,21 @@ class MountainBombie < SBGameObject
 
   def initialize(x, y, args, section, switch)
     super(x, y, 32, 32, :sprite_Bombie3)
-    init_speech(:msg_mnt_bombie)
+    init_speech(switch[:state] == :taken ? :msg_mnt_bomb2 : :msg_mnt_bomb)
   end
 
   def update(section)
-    update_speech
+    update_speech(section)
+  end
+
+  def activate
+    change_speech(:msg_mnt_bomb2)
+    SB.stage.set_switch(self)
   end
 
   def draw(map)
-    super(map)
+    super(map, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
+    @balloon.draw @x - map.cam.x + 16, @y - map.cam.y - 32, 0, 2, 2 if @active
     draw_speech
   end
 end
