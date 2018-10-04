@@ -94,7 +94,7 @@ module Speech
           @active = false
         else
           @page = 0
-          set_animation 0
+          set_animation(@indices[0])
         end
       elsif @speaking and KB.key_pressed? SB.key[:down]
         if @page < @msg.size - 1
@@ -102,7 +102,7 @@ module Speech
         else
           @page = 0
           @speaking = false
-          set_animation 0
+          set_animation(@indices[0])
         end
       end
       @active = !@speaking
@@ -110,7 +110,7 @@ module Speech
       @page = 0
       @active = false
       @speaking = false
-      set_animation 0
+      set_animation(@indices[0])
     end
 
     def change_speech(msg_id)
@@ -1465,17 +1465,23 @@ class MountainBombie < SBGameObject
   include Speech
 
   def initialize(x, y, args, section, switch)
-    super(x, y, 32, 32, :sprite_Bombie3)
+    super(x - 20, y, 72, 32, :sprite_Bombie3, Vector.new(12, -6), 4, 2)
     init_speech(switch[:state] == :taken ? :msg_mnt_bomb2 : :msg_mnt_bomb)
+    @indices = [0, 1, 2]
+    @interval = 8
+    @balloon = Res.img :fx_Balloon1
   end
 
   def update(section)
     update_speech(section)
+    @img_gap.x = @facing_right ? 16 : 12
   end
 
   def activate
     change_speech(:msg_mnt_bomb2)
     SB.stage.set_switch(self)
+    @indices = [3, 4, 5]
+    set_animation 3
   end
 
   def draw(map)

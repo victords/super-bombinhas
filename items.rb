@@ -378,21 +378,19 @@ class JillisStone < FloatingItem
   def initialize(x, y, args, section, switch)
     set_icon :jillisStone
     return if check(switch)
-    super(x, y, 20, 20, :sprite_jillisStone)
-    @active_bounds = Rectangle.new(x, y, 20, 20)
+    super(x, y, 20, 20, :sprite_jillisStone, nil, 3, 2, [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5], 7)
   end
 
   def update(section)
-    if SB.player.bomb.collide?(self)
+    super(section) do
       take(section, true)
-      @dead = true
     end
   end
 
   def use(section, switch)
     obj = section.active_object
     if obj.is_a? MountainBombie
-      obj.activate(section)
+      obj.activate
       set_switch(switch)
     end
   end
