@@ -108,6 +108,7 @@ class Section
     Warclops,
     Water,
     Wheeliam,
+    WindMachine,
     Yaw,
     Zep
   ]
