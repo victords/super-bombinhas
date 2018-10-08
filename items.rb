@@ -76,12 +76,18 @@ end
 
 class FireRock < FloatingItem
   def initialize(x, y, args, section)
-    super x + 6, y + 7, 20, 20, :sprite_FireRock, Vector.new(-2, -17), 4, 1, [0, 1, 2, 3], 5
+    super x + 6, y + 7, 20, 20, "sprite_FireRock#{args}", Vector.new(-2, -17), 4, 1, [0, 1, 2, 3], 5
+    @score = case args
+             when '1' then 10
+             when '2' then 20
+             when '3' then 50
+             else          10
+             end
   end
 
   def update(section)
     super(section) do
-      SB.player.stage_score += 10
+      SB.player.stage_score += @score
     end
   end
 end
@@ -323,7 +329,7 @@ class Attack2 < FloatingItem
 
   def initialize(x, y, args, section, switch)
     set_icon :attack2
-    if check switch
+    if check(switch)
       @bomb_type = :vermelha
       return
     end
@@ -393,6 +399,34 @@ class JillisStone < FloatingItem
       obj.activate
       set_switch(switch)
     end
+  end
+end
+
+class Attack3 < FloatingItem
+  include Item
+
+  def initialize(x, y, args, section, switch)
+    set_icon :Attack3
+    if check(switch)
+      @bomb_type = :amarela
+      return
+    end
+    super x + 2, y + 2, 28, 28, :sprite_Attack3, nil, 8, 1,
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7], 6, :amarela
+  end
+
+  def update(section)
+    super(section) do
+      take section, true
+    end
+  end
+
+  def use(section, switch)
+    b = SB.player.bomb
+    return false if b.type != @bomb_type
+    b.set_aura(2, 900)
+    set_switch(switch)
+    true
   end
 end
 

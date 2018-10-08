@@ -80,7 +80,7 @@ class Enemy < GameObject
   end
 
   def hit_by_bomb(section)
-    hit(section)
+    hit(section, SB.player.bomb.power)
   end
 
   def hit_by_explosion(section)
@@ -92,8 +92,8 @@ class Enemy < GameObject
     hit(section)
   end
 
-  def hit(section)
-    @hp -= 1
+  def hit(section, amount = 1)
+    @hp -= amount
     if @hp == 0
       SB.player.stage_score += @score
       section.add_score_effect(@x + @w / 2, @y, @score)
@@ -806,7 +806,12 @@ class Jellep < Enemy
   end
 
   def hit_by_bomb(section)
-    SB.player.bomb.hit
+    let b = SB.player.bomb
+    if b.power > 1
+      hit(section)
+    else
+      b.hit
+    end
   end
 
   def draw(map)
@@ -899,7 +904,12 @@ class Armep < FloorEnemy
   end
 
   def hit_by_bomb(section)
-    SB.player.bomb.hit
+    b = SB.player.bomb
+    if b.power > 1
+      hit(section)
+    else
+      b.hit
+    end
   end
 
   def hit_by_projectile(section); end
@@ -928,14 +938,6 @@ class Owlep < Enemy
           @attacking = false
         end
       end
-    end
-  end
-
-  def hit(section)
-    super
-    if @dying
-      @indices = [3]
-      set_animation 3
     end
   end
 end
@@ -1019,7 +1021,12 @@ class Butterflep < Enemy
   end
 
   def hit_by_bomb(section)
-    SB.player.bomb.hit
+    let b = SB.player.bomb
+    if b.power > 1
+      hit(section)
+    else
+      b.hit
+    end
   end
 end
 
@@ -1139,7 +1146,7 @@ end
 
 class Forsby < Enemy
   def initialize(x, y, args, section)
-    super x + 3, y - 22, 58, 54, Vector.new(-6, -6), 2, 3, [0, 1, 0, 2], 15, 400
+    super x + 3, y - 22, 58, 54, Vector.new(-6, -6), 2, 3, [0, 1, 0, 2], 15, 400, 2
     @facing_right = !args.nil?
     @state = @timer = 0
   end
@@ -1259,7 +1266,9 @@ class Lambul < FloorEnemy
     end
   end
 
-  def hit_by_bomb(section); end
+  def hit_by_bomb(section)
+    hit(section) if SB.player.bomb.power > 1
+  end
 end
 
 class Icel < Enemy
@@ -1298,6 +1307,7 @@ class Icel < Enemy
   end
 
   def hit_by_bomb(section); end
+
   def hit_by_projectile(section); end
 end
 
@@ -1361,7 +1371,9 @@ class Warclops < Enemy
     super map, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil
   end
 
-  def hit_by_bomb(section); end
+  def hit_by_bomb(section)
+    hit(section) if SB.player.bomb.power > 1
+  end
 
   def hit_by_explosion(section)
     @hp -= 1

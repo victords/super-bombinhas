@@ -39,6 +39,7 @@ class Section
     Armep,
     Attack1,
     Attack2,
+    Attack3,
     Ball,
     BallReceptor,
     BoardItem,

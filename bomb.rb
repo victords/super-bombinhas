@@ -2,7 +2,7 @@ require 'minigl'
 
 class Bomb < GameObject
   attr_reader :type, :name, :hp, :saved_hp, :facing_right, :can_use_ability, :will_explode
-  attr_accessor :active
+  attr_accessor :active, :power
 
   def initialize(type, hp)
     case type
@@ -22,10 +22,13 @@ class Bomb < GameObject
     @facing_right = true
     @active = true
     @type = type
+    @power = 1
 
-    @explosion = Sprite.new 0, 0, :fx_Explosion, 2, 2
+    @explosion = Sprite.new(0, 0, :fx_Explosion, 2, 2)
     @explosion_timer = 0
     @explosion_counter = 10
+
+    @aura_fx = Sprite.new(0, 0, :fx_aura, 2, 1)
 
     @can_use_ability = true
   end
@@ -45,6 +48,14 @@ class Bomb < GameObject
       if @invulnerable
         @invulnerable_timer += 1
         @invulnerable = false if @invulnerable_timer == @invulnerable_time
+      end
+      if @aura
+        @aura_fx.animate([0, 1], 5)
+        @aura_timer += 1
+        if @aura_timer == @aura_duration
+          @power = 1
+          @aura = false
+        end
       end
       if @will_explode
         @explosion_timer += 1
@@ -140,8 +151,9 @@ class Bomb < GameObject
   end
 
   def over?(obj)
+    tolerance = @speed.y > C::PLAYER_OVER_TOLERANCE ? @speed.y : C::PLAYER_OVER_TOLERANCE
     @x + @w > obj.x and obj.x + obj.w > @x and
-      @y + @h > obj.y and @y + @h <= obj.y + C::PLAYER_OVER_TOLERANCE
+      @y + @h > obj.y and @y + @h <= obj.y + tolerance
   end
 
   def bounce
@@ -175,8 +187,15 @@ class Bomb < GameObject
     @invulnerable_time = time || C::INVULNERABLE_TIME
   end
 
+  def set_aura(power, duration)
+    @power = power
+    @aura = true
+    @aura_timer = 0
+    @aura_duration = duration
+  end
+
   def reset(loaded = false)
-    @will_explode = @exploding = @celebrating = @dying = false
+    @will_explode = @exploding = @aura = @celebrating = @dying = false
     @speed.x = @speed.y = @stored_forces.x = @stored_forces.y = 0
     if loaded; @hp = @saved_hp
     else; @saved_hp = @hp = @def_hp; end
@@ -204,6 +223,10 @@ class Bomb < GameObject
 
   def draw(map)
     super(map, 2, 2, 255, 0xffffff, nil, @facing_right ? nil : :horiz) unless @invulnerable && @invulnerable_timer % 6 < 3
+    if @aura
+      @aura_fx.x = @x - 10; @aura_fx.y = @y - 30
+      @aura_fx.draw(map, 2, 2)
+    end
     if @will_explode && !SB.player.dead?
       SB.text_helper.write_line SB.text(:count_down), 400, 200, :center, 0xffffff, 255, :border, 0, 1, 255, 1 if @explosion_counter > 6
       SB.text_helper.write_line @explosion_counter.to_s, 400, 220, :center, 0xffffff, 255, :border, 0, 1, 255, 1
