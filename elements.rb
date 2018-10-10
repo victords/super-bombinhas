@@ -10,7 +10,7 @@ class SBGameObject < GameObject
   end
 
   def draw(map, scale_x = 2, scale_y = 2, alpha = 0xff, color = 0xffffff, angle = nil, flip = nil, z_index = 0, round = false)
-    super(map, 2, 2, alpha, color, angle, flip, z_index, round)
+    super(map, scale_x, scale_y, alpha, color, angle, flip, z_index, round)
   end
 end
 
@@ -234,7 +234,18 @@ class GunPowder < SBGameObject
     return if switch && switch[:state] == :taken
     super x + 3, y + 19, 26, 13, :sprite_GunPowder, Vector.new(-2, -2)
     @switch = !switch.nil?
-    @life = 10
+    @life = case args
+            when '1' then 10
+            when '2' then 5
+            when '3' then 2
+            else          10
+            end
+    @color = case args
+             when '1' then 0x222222
+             when '2' then 0x0033cc
+             when '3' then 0xffff00
+             else          0x222222
+             end
     @counter = 0
 
     @active_bounds = Rectangle.new x + 1, y + 17, 30, 15
@@ -243,10 +254,14 @@ class GunPowder < SBGameObject
   def update(section)
     b = SB.player.bomb
     if b.collide? self and not b.will_explode
-      b.set_exploding
+      b.set_exploding(@life)
       SB.stage.set_switch self if @switch
       @dead = true
     end
+  end
+
+  def draw(map)
+    super(map, 2, 2, 255, @color)
   end
 end
 

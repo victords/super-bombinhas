@@ -118,10 +118,10 @@ class Bomb < GameObject
     set_animation 0
   end
 
-  def set_exploding
+  def set_exploding(time)
     @will_explode = true
     @explosion_timer = 0
-    @explosion_counter = 10
+    @explosion_counter = time
   end
 
   def explode(gun_powder = true)

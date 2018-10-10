@@ -67,8 +67,8 @@ class FloatingItem < GameObject
     animate @indices, @interval if @indices
   end
 
-  def draw(map)
-    super(map, 2, 2)
+  def draw(map, scale_x = 2, scale_y = 2, alpha = 255, color = 0xffffff)
+    super(map, scale_x, scale_y, alpha, color)
   end
 end
 
@@ -76,12 +76,18 @@ end
 
 class FireRock < FloatingItem
   def initialize(x, y, args, section)
-    super x + 6, y + 7, 20, 20, "sprite_FireRock#{args}", Vector.new(-2, -17), 4, 1, [0, 1, 2, 3], 5
+    super x + 6, y + 7, 20, 20, :sprite_FireRock, Vector.new(-2, -17), 4, 1, [0, 1, 2, 3], 5
     @score = case args
              when '1' then 10
              when '2' then 20
              when '3' then 50
              else          10
+             end
+    @color = case args
+             when '1' then 0xff9933
+             when '2' then 0x99ff99
+             when '3' then 0x3399ff
+             else          0xff8033
              end
   end
 
@@ -89,6 +95,10 @@ class FireRock < FloatingItem
     super(section) do
       SB.player.stage_score += @score
     end
+  end
+
+  def draw(map)
+    super(map, 2, 2, 255, @color)
   end
 end
 
