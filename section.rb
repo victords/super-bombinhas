@@ -80,6 +80,7 @@ class Section
     Life,
     Lift,
     Mantul,
+    Masstalactite,
     Monep,
     MountainBombie,
     MovingWall,

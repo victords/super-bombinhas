@@ -1545,6 +1545,43 @@ class WindMachine < SBGameObject
   end
 end
 
+class Masstalactite < SBGameObject
+  def initialize(x, y, args, section)
+    super x + 1, y - 8, 30, 96, :sprite_masstalactite, Vector.new(-69, 0), 2, 3
+  end
+
+  def update(section)
+    b = SB.player.bomb
+    if @dying
+      animate [0, 1, 2, 3, 4, 5, 5, 5, 5, 5, 5, 5], 5
+      @timer += 1
+      @dead = true if @timer == 60
+      b.hit if b.bounds.intersect?(@impact_area) && @timer <= 30
+    elsif @moving
+      move Vector.new(0, 0), section.get_obstacles(@x, @y, @w, @h), section.ramps
+      b.hit if b.collide?(self)
+      if @bottom
+        @dying = true
+        @moving = false
+        @timer = 0
+        @impact_area = Rectangle.new(@x - 60, @y + @h - 4, 150, 4)
+      end
+    elsif @will_move
+      if @timer % 4 == 0
+        if @timer % 8 == 0; @x += 2
+        else; @x -= 2; end
+      end
+      @timer += 1
+      @moving = true if @timer == 30
+    else
+      if b.x + b.w > @x - 120 && b.x < @x + @w + 120 && b.y > @y && b.y < @y + 320
+        @will_move = true
+        @timer = 0
+      end
+    end
+  end
+end
+
 class Explosion < Effect
   attr_reader :c_x, :c_y, :radius
 
