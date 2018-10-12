@@ -1582,6 +1582,27 @@ class Masstalactite < SBGameObject
   end
 end
 
+class SideSpring < SBGameObject
+  FORCE = 50
+
+  def initialize(x, y, args, section)
+    super(x, y, 32, 32, :sprite_Spring, Vector.new(-2, -16), 3, 2)
+    @to_left = args.nil?
+  end
+
+  def update(section)
+    b = SB.player.bomb
+    if b.collide?(self)
+      factor = @to_left && b.speed.x > 0 ? b.speed.x : !@to_left && b.speed.x < 0 ? -b.speed.x : 1
+      b.stored_forces.x += (@to_left ? -1 : 1) * FORCE * (factor < 1 ? 1 : factor)
+    end
+  end
+
+  def draw(map)
+    super(map, 2, 2, 255, 0xffffff, @to_left ? -90 : 90)
+  end
+end
+
 class Explosion < Effect
   attr_reader :c_x, :c_y, :radius
 

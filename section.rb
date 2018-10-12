@@ -93,6 +93,7 @@ class Section
     Sahiss,
     SaveBombie,
     Shep,
+    SideSpring,
     Snep,
     Spec,
     SpecGate,
