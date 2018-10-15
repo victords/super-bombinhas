@@ -16,7 +16,7 @@ class Bomb < GameObject
     super -1000, -1000, 20, 27, "sprite_Bomba#{type.to_s.capitalize}", Vector.new(r_img_gap, t_img_gap), 6, 2
     @hp = hp == 0 ? @def_hp : hp
     @saved_hp = @hp
-    @max_speed.x = type == :amarela ? 6 : 4
+    @max_speed_x = type == :amarela ? 6 : 4
     @max_speed.y = 20
     @jump_speed = type == :amarela ? 0.58 : 0.45
     @facing_right = true
@@ -107,7 +107,10 @@ class Bomb < GameObject
       hit if section.projectile_hit?(self)
     end
 
-    forces.x -= 0.3 * @speed.x if @bottom and not walking
+    friction_factor = @speed.x / @max_speed_x
+    friction_factor = 1 if friction_factor > 1
+    friction_factor = -1 if friction_factor < -1
+    forces.x -= 0.3 * friction_factor
     move forces, section.get_obstacles(@x, @y), section.ramps if @active
   end
 

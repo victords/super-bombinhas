@@ -1583,7 +1583,7 @@ class Masstalactite < SBGameObject
 end
 
 class SideSpring < SBGameObject
-  FORCE = 50
+  FORCE = 4
 
   def initialize(x, y, args, section)
     super(x, y, 32, 32, :sprite_Spring, Vector.new(-2, -16), 3, 2)
