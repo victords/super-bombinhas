@@ -1593,14 +1593,32 @@ class SideSpring < SBGameObject
   def update(section)
     b = SB.player.bomb
     if b.collide?(self)
-      factor = @to_left && b.speed.x > 0 ? b.speed.x : !@to_left && b.speed.x < 0 ? -b.speed.x : 1
-      b.stored_forces.x += (@to_left ? -1 : 1) * FORCE * (factor < 1 ? 1 : factor)
+      unless @active
+        factor = @to_left && b.speed.x > 0 ? b.speed.x : !@to_left && b.speed.x < 0 ? -b.speed.x : 1
+        b.stored_forces.x += (@to_left ? -1 : 1) * FORCE * (factor < 1 ? 1 : factor > 2.5 ? 2.5 : factor)
+        @active = true
+      end
+    elsif @active
+      @active = false
     end
   end
 
   def draw(map)
     super(map, 2, 2, 255, 0xffffff, @to_left ? -90 : 90)
   end
+end
+
+class IcyFloor < SBGameObject
+  def initialize(x, y, args, section)
+    super(x, y + C::TILE_SIZE - 1, 32, 1, :fx_ice)
+  end
+
+  def update(section)
+    b = SB.player.bomb
+    b.slipping = true if b.collide?(self)
+  end
+
+  def draw(map); end
 end
 
 class Explosion < Effect

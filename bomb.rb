@@ -2,7 +2,7 @@ require 'minigl'
 
 class Bomb < GameObject
   attr_reader :type, :name, :hp, :saved_hp, :facing_right, :can_use_ability, :will_explode
-  attr_accessor :active, :power
+  attr_accessor :active, :power, :slipping
 
   def initialize(type, hp)
     case type
@@ -17,6 +17,7 @@ class Bomb < GameObject
     @hp = hp == 0 ? @def_hp : hp
     @saved_hp = @hp
     @max_speed_x = type == :amarela ? 6 : 4
+    @max_speed_x_sq = @max_speed_x ** 2
     @max_speed.y = 20
     @jump_speed = type == :amarela ? 0.58 : 0.45
     @facing_right = true
@@ -107,11 +108,12 @@ class Bomb < GameObject
       hit if section.projectile_hit?(self)
     end
 
-    friction_factor = @speed.x / @max_speed_x
+    friction_factor = @slipping ? (@speed.x**2 / @max_speed_x_sq) : -((@speed.x.abs - @max_speed_x)**2 / @max_speed_x_sq) + 1
     friction_factor = 1 if friction_factor > 1
     friction_factor = -1 if friction_factor < -1
-    forces.x -= 0.3 * friction_factor
+    forces.x -= 0.3 * friction_factor * (@speed.x <=> 0)
     move forces, section.get_obstacles(@x, @y), section.ramps if @active
+    @slipping = false
   end
 
   def do_warp(x, y)

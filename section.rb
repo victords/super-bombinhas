@@ -72,6 +72,7 @@ class Section
     HeatBomb,
     Herb,
     Icel,
+    IcyFloor,
     Ignel,
     Jellep,
     JillisStone,
