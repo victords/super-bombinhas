@@ -1621,6 +1621,47 @@ class IcyFloor < SBGameObject
   def draw(map); end
 end
 
+class Puzzle < SBGameObject
+  def initialize(x, y, args, section, switch)
+    super(x - 24, y - 46, 80, 78, :sprite_puzzle)
+    @pieces = [nil, nil, nil, nil]
+    @id = args.to_i
+    @will_set = switch[:state] == :taken
+  end
+
+  def update(section)
+    if @will_set
+      seciton.activate_object(MovingWall, @id)
+      @will_set = false
+    end
+
+    if SB.player.bomb.collide?(self)
+      section.active_object = self
+    elsif section.active_object == self
+      section.active_object = nil
+    end
+  end
+
+  def add_piece(section, number)
+    @pieces[number - 1] = Res.img("sprite_puzzlePiece#{number}")
+    if @pieces.all?
+      SB.stage.set_switch(self)
+      section.activate_object(MovingWall, @id)
+      section.active_object = nil
+    end
+  end
+
+  def draw(map)
+    super(map)
+    @pieces.each_with_index do |p, i|
+      next unless p
+      x_off = i == 1 ? -10 : i == 3 ? -2 : 0
+      y_off = i == 2 ? -2 : i == 3 ? -10 : 0
+      p.draw(@x + 8 + (i % 2) * 32 + x_off - map.cam.x, @y + 4 + (i / 2) * 32 + y_off - map.cam.y, 0, 2, 2)
+    end
+  end
+end
+
 class Explosion < Effect
   attr_reader :c_x, :c_y, :radius
 

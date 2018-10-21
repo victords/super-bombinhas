@@ -42,7 +42,7 @@ class FloatingItem < GameObject
   def initialize(x, y, w, h, img, img_gap = nil, sprite_cols = nil, sprite_rows = nil, indices = nil, interval = nil, bomb_type = nil)
     super x, y, w, h, img, img_gap, sprite_cols, sprite_rows
     img_gap = Vector.new(0, 0) if img_gap.nil?
-    @active_bounds = Rectangle.new x + img_gap.x, y + img_gap.y, @img[0].width, @img[0].height
+    @active_bounds = Rectangle.new x + img_gap.x, y + img_gap.y, @img[0].width * 2, @img[0].height * 2
     @state = 3
     @counter = 0
     @indices = indices
@@ -383,6 +383,33 @@ class Herb < GameObject
     obj = section.active_object
     if obj.is_a? Monep
       obj.activate(section)
+      set_switch(switch)
+    end
+  end
+end
+
+class PuzzlePiece < FloatingItem
+  include Item
+
+  def initialize(x, y, args, section, switch)
+    set_icon :puzzlePiece
+    return if check(switch)
+    @number = args.to_i
+    x_off = @number == 2 ? -8 : 0
+    y_off = @number == 4 ? -8 : 0
+    super(x + x_off, y + y_off, 32, 32, "sprite_puzzlePiece#{@number}")
+  end
+
+  def update(section)
+    super(section) do
+      take(section, true)
+    end
+  end
+
+  def use(section, switch)
+    obj = section.active_object
+    if obj.is_a? Puzzle
+      obj.add_piece(section, @number)
       set_switch(switch)
     end
   end

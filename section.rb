@@ -89,6 +89,8 @@ class Section
     Owlep,
     Pin,
     Poison,
+    Puzzle,
+    PuzzlePiece,
     Robort,
     Rock,
     Sahiss,
