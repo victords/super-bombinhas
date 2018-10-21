@@ -89,6 +89,7 @@ class Section
     Owlep,
     Pin,
     Poison,
+    PoisonGas,
     Puzzle,
     PuzzlePiece,
     Robort,

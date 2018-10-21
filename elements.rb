@@ -6,7 +6,7 @@ include MiniGL
 class SBGameObject < GameObject
   def initialize(x, y, w, h, img, img_gap = Vector.new(0, 0), sprite_cols = nil, sprite_rows = nil)
     super(x, y, w, h, img, img_gap, sprite_cols, sprite_rows)
-    @active_bounds = Rectangle.new(@x, @y, @w, @h)
+    @active_bounds = Rectangle.new(@x + @img_gap.x, @y + @img_gap.y, @img[0].width * 2, @img[0].height * 2)
   end
 
   def draw(map, scale_x = 2, scale_y = 2, alpha = 0xff, color = 0xffffff, angle = nil, flip = nil, z_index = 0, round = false)
@@ -1658,6 +1658,42 @@ class Puzzle < SBGameObject
       x_off = i == 1 ? -10 : i == 3 ? -2 : 0
       y_off = i == 2 ? -2 : i == 3 ? -10 : 0
       p.draw(@x + 8 + (i % 2) * 32 + x_off - map.cam.x, @y + 4 + (i / 2) * 32 + y_off - map.cam.y, 0, 2, 2)
+    end
+  end
+end
+
+class PoisonGas < SBGameObject
+  @@instance_counter = 0
+
+  def initialize(x, y, args, section)
+    @@player = false
+    @@timer = 0
+    super(x - 12, y - 12, 56, 56, :sprite_poisonGas, Vector.new(-2, -2), 3, 1)
+    @index = (@@instance_counter += 1)
+  end
+
+  def update(section)
+    animate([0, 1, 2], 7)
+
+    @@player = true if SB.player.bomb.collide?(self)
+    if @index == @@instance_counter
+      if @@player
+        @@timer += 1
+        if @@timer == 180
+          SB.player.bomb.hit
+          @@timer = 0
+        end
+      else
+        @@timer = 0
+      end
+    end
+  end
+
+  def draw(map)
+    super(map)
+    if @index == @@instance_counter
+      SB.text_helper.write_line(((180 - @@timer).to_f / 60).ceil.to_s, 400, 250, :center, 0xffffff, 255, :border, 0, 1, 255, 1) if @@player && !SB.player.dead?
+      @@player = false
     end
   end
 end
