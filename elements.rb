@@ -1698,6 +1698,37 @@ class PoisonGas < SBGameObject
   end
 end
 
+class Cannon < SBGameObject
+  def initialize(x, y, args, section)
+    super(x, y, 32, 32, :sprite_Cannon)
+    @angles = args.split(',').map(&:to_i)
+    @a_index = 0
+    @angle = @angles[@a_index]
+    @timer = 0
+  end
+
+  def update(section)
+    @timer += 1
+    if @timer == 150
+      @a_index += 1
+      @a_index = 0 if @a_index >= @angles.length
+      @rotating = true
+      @timer = 0
+    end
+    if @rotating
+      @angle = (@angle + 1) % 360
+      if @angle == @angles[@a_index]
+        # lançar projétil
+        @rotating = false
+      end
+    end
+  end
+
+  def draw(map)
+    super(map, 2, 2, 255, 0xffffff, @angle)
+  end
+end
+
 class Explosion < Effect
   attr_reader :c_x, :c_y, :radius
 

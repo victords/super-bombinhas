@@ -48,6 +48,7 @@ class Section
     Box,
     Branch,
     Butterflep,
+    Cannon,
     Chamal,
     Chrazer,
     Crack,

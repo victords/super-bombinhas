@@ -1,6 +1,6 @@
 ind = ARGV.shift.to_i
 puts "Índice: #{ind}"
-files = Dir['/home/victor/Projects/super-bombinhas/data/stage/*/*']
+files = Dir['data/stage/*/*']
 files.each do |f_name|
   next if ['world', 'times'].include? f_name.split('/')[-1]
   puts "processing #{f_name}..."
