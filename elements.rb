@@ -711,6 +711,7 @@ class Projectile < GameObject
     when 4 then w = 16; h = 22; x_g = -2; y_g = 0; cols = 1; rows = 1; indices = [0]; @speed_m = 5
     when 5 then w = 20; h = 20; x_g = -16; y_g = -4; cols = 1; rows = 2; indices = [0, 1]; @speed_m = 5
     when 6 then w = 10; h = 10; x_g = -2; y_g = 0; cols = 2; rows = 2; indices = [0, 1, 2, 3]; @speed_m = 4
+    when 7 then w = 16; h = 16; x_g = -2; y_g = -2; cols = 1; rows = 1; indices = [0]; @speed_m = 5
     end
 
     super x, y, w, h, "sprite_Projectile#{type}", Vector.new(x_g, y_g), cols, rows
@@ -1699,33 +1700,46 @@ class PoisonGas < SBGameObject
 end
 
 class Cannon < SBGameObject
+  ROT_SPEED = 3
+
   def initialize(x, y, args, section)
     super(x, y, 32, 32, :sprite_Cannon)
     @angles = args.split(',').map(&:to_i)
     @a_index = 0
-    @angle = @angles[@a_index]
+    @angle = @angles[0]
     @timer = 0
+
+    @base = Res.img(:sprite_cannonBase)
+    @base_angle = if section.obstacle_at?(x, y + C::TILE_SIZE)
+                    0
+                  elsif section.obstacle_at?(x - C::TILE_SIZE, y)
+                    90
+                  elsif section.obstacle_at?(x, y - C::TILE_SIZE)
+                    180
+                  else
+                    270
+                  end
   end
 
   def update(section)
-    @timer += 1
-    if @timer == 150
-      @a_index += 1
-      @a_index = 0 if @a_index >= @angles.length
-      @rotating = true
-      @timer = 0
-    end
     if @rotating
-      @angle = (@angle + 1) % 360
-      if @angle == @angles[@a_index]
-        # lançar projétil
-        @rotating = false
+      @angle = (@angle + ROT_SPEED) % 360
+      @rotating = false if @angle == @angles[@a_index]
+    else
+      section.add(Projectile.new(@x + @w / 2 - 8, @y + @h / 2 - 8, 7, @angle - 90, self)) if @timer == 0
+      @timer += 1
+      if @timer == 150
+        @a_index += 1
+        @a_index = 0 if @a_index >= @angles.length
+        @rotating = true
+        @timer = 0
       end
     end
   end
 
   def draw(map)
     super(map, 2, 2, 255, 0xffffff, @angle)
+    @base.draw_rot(@x + @w / 2 - map.cam.x, @y + @h / 2 - map.cam.y, 0, @base_angle, 0.5, -0.33333, 2, 2)
   end
 end
 
