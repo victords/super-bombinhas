@@ -58,6 +58,7 @@ class Section
     Electong,
     Elevator,
     Faller,
+    FallingWall,
     FireRock,
     FixedSpikes,
     Flep,
