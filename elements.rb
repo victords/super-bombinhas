@@ -1752,7 +1752,7 @@ class FallingWall < GameObject
   RADIUS = C::TILE_SIZE * Math.sqrt(2) / 2
 
   def initialize(x, y, args, section)
-    super(x, y + C::TILE_SIZE, 0, 0, :sprite_fallingWall, Vector.new(0, 0), 1, 2)
+    super(x, y + C::TILE_SIZE, 0, 0, :sprite_fallingWall, Vector.new(0, 0), 4, 2)
     size = args.to_i
     @active_bounds = Rectangle.new(x, y - (size - 1) * C::TILE_SIZE, C::TILE_SIZE, size * C::TILE_SIZE)
     @blocks = []
@@ -1761,19 +1761,37 @@ class FallingWall < GameObject
       section.obstacles << b; @blocks << b
     end
     @angle = Math::PI / 2
+    @img_index = @timer = 0
   end
 
   def update(section)
-    @angle += DEGREE * @angle**3 * 0.1
-    c_angle = @angle - Math::PI / 4
-    c_a = Math.cos(@angle); s_a = Math.sin(@angle)
-    c_c = Math.cos(c_angle); s_c = Math.sin(c_angle)
-    @blocks.each_with_index do |b, i|
-      b.x = @x + c_a * i * C::TILE_SIZE + c_c * RADIUS - C::TILE_SIZE / 2
-      b.y = @y - s_a * i * C::TILE_SIZE - s_c * RADIUS - C::TILE_SIZE / 2
+    p = SB.player.bomb
+    if @crashing
+      @timer += 1
+      if @timer == 6
+        if @img_index < 3
+          @img_index += 1
+        else
+          @dead = true
+        end
+        @timer = 0
+      end
+    elsif @falling
+      @angle += DEGREE * @angle**3.5 * 0.1
+      @angle = Math::PI if @angle > Math::PI
+      c_angle = @angle - Math::PI / 4
+      c_a = Math.cos(@angle); s_a = Math.sin(@angle)
+      c_c = Math.cos(c_angle); s_c = Math.sin(c_angle)
+      @blocks.each_with_index do |b, i|
+        b.x = @x + c_a * i * C::TILE_SIZE + c_c * RADIUS - C::TILE_SIZE / 2
+        b.y = @y - s_a * i * C::TILE_SIZE - s_c * RADIUS - C::TILE_SIZE / 2
+        p.hit if p.collide?(b)
+      end
+      @crashing = true if @angle == Math::PI
+    elsif p.y > @y - @blocks.length * C::TILE_SIZE && p.y + p.h <= @y && p.x > @x - @blocks.length * C::TILE_SIZE && p.x < @x
+      @blocks.each { |b| section.obstacles.delete(b) }
+      @falling = true
     end
-
-    @dead = true if @angle >= Math::PI
   end
 
   def draw(map)
@@ -1781,7 +1799,7 @@ class FallingWall < GameObject
     x_off = C::TILE_SIZE / 2 - map.cam.x
     y_off = C::TILE_SIZE / 2 - map.cam.y
     @blocks.each_with_index do |b, i|
-      @img[i == @blocks.size - 1 ? 0 : 1].draw_rot(b.x + x_off, b.y + y_off, 0, img_angle, 0.5, 0.5, 2, 2)
+      @img[i == @blocks.size - 1 ? @img_index : @img_index + 4].draw_rot(b.x + x_off, b.y + y_off, 0, img_angle, 0.5, 0.5, 2, 2)
     end
   end
 end
