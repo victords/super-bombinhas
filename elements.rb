@@ -450,7 +450,7 @@ end
 
 class FixedSpikes < GameObject
   def initialize(x, y, args, section)
-    a = args.split(',')
+    a = args ? args.split(',') : [0, 1]
     @dir = a[0].to_i
     if @dir % 2 == 0
       super x + 2, @dir == 2 ? y - 2 : y, 28, 34, "sprite_fixedSpikes#{a[1]}", Vector.new(0, 0), 1, 1
@@ -1800,6 +1800,31 @@ class FallingWall < GameObject
     y_off = C::TILE_SIZE / 2 - map.cam.y
     @blocks.each_with_index do |b, i|
       @img[i == @blocks.size - 1 ? @img_index : @img_index + 4].draw_rot(b.x + x_off, b.y + y_off, 0, img_angle, 0.5, 0.5, 2, 2)
+    end
+  end
+end
+
+class Bell < SBGameObject
+  def initialize(x, y, args, section)
+    super x, y, 32, 56, :sprite_bell, Vector.new(-16, 0), 1, 5
+    @img_index = 2
+  end
+
+  def update(section)
+    if @active
+      animate(@timer >= 180 ? [1, 2, 3, 2] : [1, 0, 1, 2, 3, 4, 3, 2], 10)
+      @timer += 1
+      if @timer == 180
+        set_animation 1
+      elsif @timer == 360
+        @active = false
+        set_animation 2
+      end
+    elsif SB.player.bomb.collide?(self)
+      SB.stage.stop_time(360, false)
+      @active = true
+      set_animation 1
+      @timer = 0
     end
   end
 end

@@ -42,6 +42,7 @@ class Section
     Attack3,
     Ball,
     BallReceptor,
+    Bell,
     BoardItem,
     Bombie,
     Boulder,
@@ -464,9 +465,9 @@ class Section
   end
 
   def update(stopped)
-    unless stopped
+    unless stopped == :all
       @elements.each do |e|
-        e.update self if e.is_visible @map
+        e.update(self) if e.is_visible(@map) && !(e.is_a?(Enemy) && stopped == :enemies)
         @elements.delete e if e.dead?
       end
     end

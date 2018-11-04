@@ -85,8 +85,8 @@ class Stage
       end
       if @stopped
         @stopped_timer += 1
-        if @stopped_timer == C::STOP_TIME_DURATION
-          @stopped = false
+        if @stopped_timer == @stop_time_duration
+          @stopped = nil
         end
       end
     end
@@ -164,9 +164,10 @@ class Stage
     @switches.select{ |s| s[:state] == state }.map{ |s| s[:index] }.join(',')
   end
 
-  def stop_time
-    @stopped = true
+  def stop_time(duration = 1200, all = true)
+    @stopped = all ? :all : :enemies
     @stopped_timer = 0
+    @stop_time_duration = duration
   end
 
   def draw
