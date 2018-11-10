@@ -19,7 +19,8 @@ class Bomb < GameObject
     @max_speed_x = type == :amarela ? 6 : 4
     @max_speed_x_sq = @max_speed_x ** 2
     @max_speed.y = 20
-    @jump_speed = type == :amarela ? 0.58 : 0.45
+    @jump_speed = type == :amarela ? 0.2 : 0.1
+    @jump_frames = 0
     @facing_right = true
     @active = true
     @type = type
@@ -67,11 +68,11 @@ class Bomb < GameObject
       end
       if KB.key_down? SB.key[:left]
         @facing_right = false
-        forces.x -= @slipping ? 0.15 : 0.3
+        forces.x -= @slipping ? 0.15 : 0.4
       end
-      if KB.key_down? SB.key[:right]
+      if KB.key_down?(SB.key[:right])
         @facing_right = true
-        forces.x += @slipping ? 0.15 : 0.3
+        forces.x += @slipping ? 0.15 : 0.4
       end
       if @bottom
         if @speed.x != 0
@@ -79,10 +80,13 @@ class Bomb < GameObject
         else
           animate [0, 1], 10
         end
-        if KB.key_pressed? SB.key[:jump]
-          forces.y -= 12 + @jump_speed * @speed.x.abs
-          set_animation 5
-        end
+        @jump_frames = 0
+      else
+        @jump_frames += 1 if @jump_frames < 30
+      end
+      if @jump_frames == 0 && KB.key_pressed?(SB.key[:jump]) || @jump_frames > 0 && KB.key_down?(SB.key[:jump])
+        forces.y -= (1 + @jump_speed * @speed.x.abs) / (0.3 * @jump_frames + 0.33) - 0.1
+        set_animation 5
       end
       SB.player.change_item if KB.key_pressed? SB.key[:next]
       SB.player.use_item section if KB.key_pressed? SB.key[:item]
@@ -108,7 +112,7 @@ class Bomb < GameObject
     friction_factor = @slipping ? @speed.x**2 / @max_speed_x_sq : @speed.x.abs / @max_speed_x
     friction_factor = 1 if friction_factor > 1
     friction_factor = -1 if friction_factor < -1
-    forces.x -= (@slipping ? 0.15 : 0.3) * friction_factor * (@speed.x <=> 0)
+    forces.x -= (@slipping ? 0.15 : 0.4) * friction_factor * (@speed.x <=> 0)
     move forces, section.get_obstacles(@x, @y), section.ramps if @active
     @slipping = false
   end
