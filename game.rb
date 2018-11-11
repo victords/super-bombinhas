@@ -6,7 +6,7 @@ require_relative 'movie'
 
 class SBGame < MiniGL::GameWindow
   def initialize
-    super(C::SCREEN_WIDTH, C::SCREEN_HEIGHT, false, Vector.new(0, 0.5))
+    super(C::SCREEN_WIDTH, C::SCREEN_HEIGHT, false, Vector.new(0, 0.55))
     G.ramp_slip_threshold = 0.8
     G.ramp_slip_force = 0.8
 
