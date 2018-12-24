@@ -146,7 +146,7 @@ class Section
     @border_exit = s[2].to_i # 0: top, 1: right, 2: down, 3: left, 4: none
     @tileset_num = s[3].to_i
     @tileset = Res.tileset s[3], 16, 16
-    @bgm = Res.song "s#{s[4]}"
+    @bgm = Res.song s[4]
     @map = Map.new C::TILE_SIZE, C::TILE_SIZE, t_x_count, t_y_count
     # @map.set_camera 4500, 1200
     @size = @map.get_absolute_size
@@ -184,26 +184,24 @@ class Section
               @default_entrance = index if e[-1] == '!'
             else
               t, a = element_type e[(i+1)..-1]
-              if t != :none # teste poderá ser removido no final
-                el = {x: x * C::TILE_SIZE, y: y * C::TILE_SIZE, type: t, args: a}
-                if e[i] == '$'
-                  if s_index == used_switches[0]
-                    used_switches.shift
-                    el[:state] = :used
-                  elsif s_index == taken_switches[0]
-                    taken_switches.shift
-                    el[:state] = :taken
-                  else
-                    el[:state] = :normal
-                  end
-                  el[:section] = self
-                  el[:index] = s_index
-                  switches << el
-                  s_index += 1
+              el = {x: x * C::TILE_SIZE, y: y * C::TILE_SIZE, type: t, args: a}
+              if t.instance_method(:initialize).parameters.length == 5
+                if s_index == used_switches[0]
+                  used_switches.shift
+                  el[:state] = :used
+                elsif s_index == taken_switches[0]
+                  taken_switches.shift
+                  el[:state] = :taken
                 else
-                  @element_info << el
+                  el[:state] = :normal
                 end
-              end           # teste poderá ser removido no final
+                el[:section] = self
+                el[:index] = s_index
+                switches << el
+                s_index += 1
+              else
+                @element_info << el
+              end
             end
             i += 1000 # forçando e[i].nil? a retornar true
           end

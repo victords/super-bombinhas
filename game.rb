@@ -31,7 +31,6 @@ class SBGame < MiniGL::GameWindow
     KB.update
     Mouse.update
 
-    close if KB.key_pressed? Gosu.
     toggle_fullscreen if KB.key_pressed? Gosu::KbF4
 
     if SB.state == :presentation
