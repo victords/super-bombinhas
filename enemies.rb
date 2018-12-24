@@ -275,9 +275,9 @@ class Sprinny < Enemy
           end
         end
         @speed.x = 0
-        if @facing_right; forces.x = 4
-        else; forces.x = -4; end
-        forces.y = -11.5
+        if @facing_right; forces.x = 3
+        else; forces.x = -3; end
+        forces.y = -9
       end
       move forces, section.get_obstacles(@x, @y), section.ramps
     end
