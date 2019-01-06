@@ -155,9 +155,11 @@ class FloorEnemy < Enemy
             prepare_turn :right
           end
         elsif @facing_right
+          @forces.x = @speed_m if @speed.x == 0
           prepare_turn :left if @speed.x < 0
-        elsif @speed.x > 0
-          prepare_turn :right
+        else
+          @forces.x = -@speed_m if @speed.x == 0
+          prepare_turn :right if @speed.x > 0
         end
       end
     end
@@ -268,16 +270,12 @@ class Sprinny < Enemy
         @leaps += 1
         if @leaps > @max_leaps
           @leaps = 1
-          if @facing_right
-            @facing_right = false
-          else
-            @facing_right = true
-          end
+          @facing_right = !@facing_right
         end
         @speed.x = 0
         if @facing_right; forces.x = 3
         else; forces.x = -3; end
-        forces.y = -9
+        forces.y = -11.5
       end
       move forces, section.get_obstacles(@x, @y), section.ramps
     end
