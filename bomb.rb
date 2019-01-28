@@ -68,11 +68,11 @@ class Bomb < GameObject
       end
       if KB.key_down? SB.key[:left]
         @facing_right = false
-        forces.x -= @slipping ? 0.15 : 0.4
+        forces.x -= @slipping ? 0.15 : 0.5
       end
       if KB.key_down?(SB.key[:right])
         @facing_right = true
-        forces.x += @slipping ? 0.15 : 0.4
+        forces.x += @slipping ? 0.15 : 0.5
       end
       if @bottom
         if @speed.x != 0
@@ -112,7 +112,7 @@ class Bomb < GameObject
     friction_factor = @slipping ? @speed.x**2 / @max_speed_x_sq : @speed.x.abs / @max_speed_x
     friction_factor = 1 if friction_factor > 1
     friction_factor = -1 if friction_factor < -1
-    forces.x -= (@slipping ? 0.15 : 0.4) * friction_factor * (@speed.x <=> 0)
+    forces.x -= (@slipping ? 0.15 : 0.5) * friction_factor * (@speed.x <=> 0)
     move forces, section.get_obstacles(@x, @y), section.ramps if @active
     @slipping = false
   end

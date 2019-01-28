@@ -37,7 +37,7 @@ class SB
       @state = :presentation
 
       Res.retro_images = true
-      @font = Res.font :minecraftia, 18
+      @font = Res.font :minecraftia, 24
       @big_font = Res.font :minecraftia, 32
       @small_font = Res.font :minecraftia, 12
       @text_helper = TextHelper.new(@font, 5)

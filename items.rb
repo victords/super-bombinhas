@@ -87,7 +87,7 @@ class FireRock < FloatingItem
              when '1' then 0xff9933
              when '2' then 0x99ff99
              when '3' then 0x3399ff
-             else          0xff8033
+             else          0xff9933
              end
   end
 
