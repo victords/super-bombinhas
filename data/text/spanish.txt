@@ -43,10 +43,10 @@ dead			¡Moriste!
 restart			Pulsa 'Enter' para reanudar
 game_over		¡Fin del juego!
 msg1			¡Hola! Como ya debe haber notado, puede utilizar las flechas (o 'A' y 'D') para moverse y la barra espaciadora (o 'J') para saltar. Utilice 'Esc' para pausar el juego y la flecha hacia arriba (o 'W') para abrir puertas y hablar con bombies como yo. (flecha hacia abajo o 'S'...)/Esta es la isla de Tars, un lugar antiguamente pacífico, hasta el día en que Chamal invadió con sus animales mecánicos...
-msg2			Usted puede utilizar ítenes como este en frente de mí pulsando 'A' (o 'K') después que usted lo consiguió. Los ítenes que ha recogido aparecerán en la esquina superior derecha de la pantalla./Si usted ha recogido más de un tipo de íten, puede utilizar 'Shift' (o 'L') para cambiar entre ellos.
-msg3			Esta criatura delante es muy peligrosa... puede intentar a usar uno de estos misiles que ha estado recogiendo, o simplemente colarse debajo de ella, si es posible.
-msg4			Siempre presta atención al paisaje que te rodea, porque puede esconder muchos secretos como este.
-msg5			Este artefacto brillante es un Spec. La leyenda dice que hay muchos de ellos repartidos por todo el mundo, y aquél que es capaz de reunir a todos ellos tendrá la llave de una ruta de acceso al bosque mágico de Lae.../Pero es sólo una leyenda, ¿verdad? Jajaja...
+msg2			En la cima de esta torre hay un artefacto llamado Spec. La leyenda dice que hay muchos de ellos repartidos por todo el mundo, y aquél que es capaz de reunir a todos ellos tendrá la llave de una ruta de acceso al bosque mágico de Lae.../Pero es sólo una leyenda, ¿verdad? Subir hasta la cima parece muy peligroso...
+msg3			Usted puede utilizar ítenes como este arriba pulsando 'A' (o 'K') después que usted lo consiguió. Los ítenes que ha recogido aparecerán en la esquina superior derecha de la pantalla./Si usted ha recogido más de un tipo de íten, puede utilizar 'Shift' (o 'L') para cambiar entre ellos.
+msg4			Esta criatura saltarina delante es muy peligrosa... puede intentar a usar uno de aquellos misiles, si o tuviere, o simplemente intentar colarse debajo de ella...
+msg5			
 msg6			Mira, es la pólvora! Ahora usted puede dar rienda suelta a su poder de bomba! Busque grietas en las paredes para abrir caminos o simplemente matar a tus enemigos sin necesidad de tocarlos./Pero presta atención al tiempo! Usted sólo tiene 10 segundos después de hacer contacto con la pólvora.
 msg7			¿Usted ve esta tabla de madera allí? Usted puede adjuntarlo al suelo para extenderlo, cuando necesitar de saltar sobre un gran abismo. Una vez conectado, usted necesitará un martillo para liberarla y poder usarla de nuevo.
 msg8			Esta es la fortaleza de Chamal, y sólo peligro te espera. Tenga mucho cuidado a partir de ahora.

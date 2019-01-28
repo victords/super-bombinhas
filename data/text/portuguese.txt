@@ -43,10 +43,10 @@ dead			Você morreu!
 restart			Pressione 'Enter' para recomeçar
 game_over		Fim de jogo!
 msg1			Olá! Como você já deve ter percebido, você pode usar as setas (ou 'A' e 'D') para se mover e a barra de espaço (ou 'J') para pular. Use 'Esc' para pausar o jogo e a seta para cima (ou 'W') para abrir portas e falar com bombies como eu. (seta para baixo ou 'S' para avançar...)/Essa é a ilha de Tars, um lugar outrora pacífico, até o dia em que Chamal invadiu com seus animais mecânicos...
-msg2			Você pode usar itens como esse à minha frente apertando 'A' (ou 'K') uma vez que o tenha pagado. Itens que você pegou aparecerão no canto superior direito da tela./Se você tiver pegado mais de um tipo de item, use 'Shift' (ou 'L') para alternar entre eles.
-msg3			Essa criatura à frente é um tanto perigosa... Você pode tentar usar um desses mísseis que veio coletando ou se esgueirar por baixo dela, se possível.
-msg4			Sempre preste atenção ao cenário ao seu redor, pois ele pode esconder muitos segredos como esse.
-msg5			Esse artefato brilhante é um Spec. A lenda diz que há muitos desses espalhados pelo mundo, e aquele que for capaz de juntar todos eles terá a chave para um caminho para a floresta mágica Lae.../Mas é apenas uma lenda, não é mesmo? Hahaha...
+msg2			No topo desta torre há um artefato chamado de Spec. A lenda diz que há muitos desses espalhados pelo mundo, e aquele que for capaz de juntar todos eles terá a chave para um caminho para a floresta mágica Lae.../Mas é apenas uma lenda, não é mesmo? Chegar até o topo parece bem perigoso...
+msg3			Você pode usar itens como esse acima apertando 'A' (ou 'K') uma vez que o tenha pagado. Itens que você pegou aparecerão no canto superior direito da tela./Se você tiver pegado mais de um tipo de item, use 'Shift' (ou 'L') para alternar entre eles.
+msg4			A criatura saltitante à frente é bastante perigosa. Você pode usar um daqueles mísseis, se você tiver algum, ou tentar se esgueirar por baixo dela.
+msg5			
 msg6			Veja, é pólvora! Agora você pode liberar seus poderes de bomba! Procure por rachaduras em paredes para abrir caminho, ou simplesmente elimine seus inimigos sem precisar tocá-los./Mas atente ao tempo! Você só tem 10 segundos após fazer contato com a pólvora.
 msg7			Você vê essa tábua ali? Você pode fixá-la ao chão para estendê-lo, quando precisar saltar sobre um abismo muito largo. Uma vez fixada, você precisará de um martelo para soltá-la e poder usá-la novamente.
 msg8			Essa é a fortaleza de Chamal, e apenas perigo o aguarda. Seja muito cuidadoso daqui em diante.

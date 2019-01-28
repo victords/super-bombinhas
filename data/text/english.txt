@@ -43,10 +43,10 @@ dead			You died!
 restart			Press 'Enter' to restart
 game_over		Game over!
 msg1			Hello! As you may have already noticed, you can use the arrow keys (or 'A' and 'D') to move around and the space bar (or 'J') to jump. Use 'Esc' to pause the game and the up arrow (or 'W') to open doors and talk to bombies like me. (down arrow or 'S' to advance...)/This is Tars Island, a formerly peaceful place, until the day that Chamal invaded with his mechanic animals...
-msg2			You can use items like this one before me by pressing 'A' (or 'K') after you collected it. Items you have collected will appear on the top right corner of the screen./If you have collected more than one type of item, you can use 'Shift' (or 'L') to switch between them.
-msg3			This creature ahead is quite dangerous... you can try using one of these missiles you have been collecting, or just sneak under it, if possible.
-msg4			Always pay attention to the scenery around you, for it can hide many secrets like this.
-msg5			This glittering artifact is a Spec. Legend says there are many of them scattered around the world, and one who is able to gather them all will have the key to a path to the magical forest of Lae.../But it's just a legend, right? Hahaha...
+msg2			On the top of this tower lies an artifact called a Spec. Legend says there are many of them scattered around the world, and one who is able to gather them all will have the key to a path to the magical forest of Lae.../But it's just a legend, right? Getting to the top looks quite dangerous...
+msg3			You can use items like these above by pressing 'A' (or 'K') after you collected it. Items you have collected will appear on the top right corner of the screen./If you have collected more than one type of item, you can use 'Shift' (or 'L') to switch between them.
+msg4			The jumping creature ahead is quite dangerous... you can try using one of those missiles, if you have collected some, or just try and sneak under it.
+msg5			
 msg6			Look, it's gunpowder! Now you can unleash your bomb power! Look for cracks in walls to open paths or just kill your enemies without needing to touch them./But mind the time! You only have 10 seconds after you made contact with the gunpowder.
 msg7			You see this wooden board over there? You can attach it to the floor to extend it, when needing to leap over a large chasm. Once attached, you will need a hammer to release it and be able to use it again.
 msg8			This is Chamal's fortress, and only danger awaits you... Be very careful from now on.
