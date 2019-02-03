@@ -267,18 +267,18 @@ end
 
 class Crack < SBGameObject
   def initialize(x, y, args, section, switch)
-    if args; y += 32
-    else; x += 32; end
     super x, y, 32, 32, :sprite_Crack
     @broken = switch[:state] == :taken
     @type = section.tileset_num
+    i = (@x / C::TILE_SIZE).floor
+    j = (@y / C::TILE_SIZE).floor
+    @tile = section.tiles[i][j]
+    @tile.wall = (args || 13).to_i
   end
 
   def update(section)
     if @broken or SB.player.bomb.explode?(self) or section.explode?(self)
-      i = (@x / C::TILE_SIZE).floor
-      j = (@y / C::TILE_SIZE).floor
-      section.tiles[i][j].broken = true
+      @tile.broken = true
       section.add_effect(Effect.new(@x, @y, "fx_WallCrack#{@type}", 2, 2))
       SB.stage.set_switch self
       @dead = true
@@ -456,10 +456,11 @@ class FixedSpikes < GameObject
   def initialize(x, y, args, section)
     a = args ? args.split(',') : [0, 1]
     @dir = a[0].to_i
+    type = a[1] || '1'
     if @dir % 2 == 0
-      super x + 2, @dir == 2 ? y - 2 : y, 28, 34, "sprite_fixedSpikes#{a[1]}", Vector.new(0, 0), 1, 1
+      super x + 2, @dir == 2 ? y - 2 : y, 28, 34, "sprite_fixedSpikes#{type}", Vector.new(0, 0), 1, 1
     else
-      super @dir == 1 ? x - 2 : x, y + 2, 34, 28, "sprite_fixedSpikes#{a[1]}", Vector.new(0, 0), 1, 1
+      super @dir == 1 ? x - 2 : x, y + 2, 34, 28, "sprite_fixedSpikes#{type}", Vector.new(0, 0), 1, 1
     end
     @active_bounds = Rectangle.new x - 2, y - 2, 36, 36
     section.obstacles << Block.new(x + 2, y + 2, 28, 28)

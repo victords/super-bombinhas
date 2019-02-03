@@ -624,7 +624,7 @@ class Electong < Enemy
         end
       elsif @attacking
         @timer += 1
-        if @timer == 150
+        if @timer == 60
           @indices = [4, 3, 0]
           set_animation 4
           @attacking = false
@@ -633,12 +633,12 @@ class Electong < Enemy
         @tongue_y += 91 / 14.0
         if @img_index == 0
           @indices = [0, 1, 2, 1]
-          @timer = -30
+          @timer = -60
           @tongue_y = @y
         end
       else
         @timer += 1 if @timer < 0
-        if @timer == 0 and b.x + b.w > @x - 20 and b.x < @x + @w + 20
+        if @timer == 0 and b.x + b.w > @x - 40 and b.x < @x + @w + 40
           @indices = [3, 4, 5]
           set_animation 3
           @will_attack = true
