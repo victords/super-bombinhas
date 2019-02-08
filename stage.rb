@@ -141,9 +141,9 @@ class Stage
 
   def reset_switches
     @switches.each do |s|
-      if s[:state] == :temp_taken or s[:state] == :temp_taken_used
+      if s[:state] == :temp_taken || s[:state] == :temp_taken_used
         s[:state] = :normal
-      elsif s[:state] == :temp_used
+      elsif s[:state] == :temp_used || s[:state] == :taken_temp_used
         s[:state] = :taken
       end
       s[:obj] = s[:type].new(s[:x], s[:y], s[:args], s[:section], s)
@@ -154,14 +154,14 @@ class Stage
     @switches.each do |s|
       if s[:state] == :temp_taken
         s[:state] = :taken
-      elsif s[:state] == :temp_used or s[:state] == :temp_taken_used
+      elsif s[:state] == :temp_used || s[:state] == :temp_taken_used || s[:state] == :taken_temp_used
         s[:state] = :used
       end
     end
   end
 
   def switches_by_state(state)
-    @switches.select{ |s| s[:state] == state }.map{ |s| s[:index] }.join(',')
+    @switches.select{ |s| s[:state] == state }.map{ |s| s[:index] }
   end
 
   def stop_time(duration = 1200, all = true)

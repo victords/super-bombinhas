@@ -30,7 +30,9 @@ module Item
   end
 
   def set_switch(switch)
-    if switch[:state] == :temp_taken
+    if switch[:state] == :taken
+      switch[:state] = :taken_temp_used
+    elsif switch[:state] == :temp_taken
       switch[:state] = :temp_taken_used
     else
       switch[:state] = :temp_used

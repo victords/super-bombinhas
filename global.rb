@@ -287,8 +287,8 @@ class SB
       @save_data[6] = @player.specs.join(',')
       @save_data[7] = stage_num ? '0' : @stage.cur_entrance[:index].to_s
       @save_data[8] = @player.get_bomb_hps
-      @save_data[9] = stage_num ? '' : @stage.switches_by_state(:taken)
-      @save_data[10] = stage_num ? '' : @stage.switches_by_state(:used)
+      @save_data[9] = stage_num ? '' : @stage.switches_by_state(:taken).concat(@stage.switches_by_state(:taken_temp_used)).sort.join(',')
+      @save_data[10] = stage_num ? '' : @stage.switches_by_state(:used).sort.join(',')
       @save_data[11] = special_world.to_s || ''
       File.open(@save_file_name, 'w') do |f|
         @save_data.each { |s| f.print(s + "\n") }

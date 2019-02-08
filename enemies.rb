@@ -15,7 +15,7 @@ class Enemy < GameObject
     @hp = hp
     @control_timer = 0
 
-    @active_bounds = Rectangle.new x + img_gap.x, y + img_gap.y, @img[0].width, @img[0].height
+    @active_bounds = Rectangle.new x + img_gap.x, y + img_gap.y, @img[0].width * 2, @img[0].height * 2
   end
 
   def set_active_bounds(section)
