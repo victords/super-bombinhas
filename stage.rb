@@ -3,22 +3,25 @@ require_relative 'section'
 class Stage
   attr_reader :num, :id, :starting, :cur_entrance, :switches
 
-  def initialize(world, num, loaded = false, time = nil)
+  def initialize(world, num)
     @world = world
     @num = num
+    @id = "#{world}-#{num}"
+  end
+
+  def start(loaded = false, time = nil)
     if time
       @time = time
       @counter = 0
     end
-    @id = "#{world}-#{num}"
-    @sections = []
-    @entrances = []
-    @switches = []
 
+    @switches = []
     taken_switches = loaded ? eval("[#{SB.save_data[9]}]") : []
     used_switches = loaded ? eval("[#{SB.save_data[10]}]") : []
 
-    sections = Dir["#{Res.prefix}stage/#{world}/#{num}-*"]
+    @sections = []
+    @entrances = []
+    sections = Dir["#{Res.prefix}stage/#{@world}/#{@num}-*"]
     sections.sort.each do |s|
       @sections << Section.new(s, @entrances, @switches, taken_switches, used_switches)
     end
@@ -27,9 +30,11 @@ class Stage
     reset_switches
     @cur_entrance = @entrances[loaded ? SB.save_data[7].to_i : 0]
     @cur_section = @cur_entrance[:section]
+
+    reset
   end
 
-  def start
+  def reset
     @panel_x = -600
     @timer = 0
     @alpha = 255
@@ -103,7 +108,7 @@ class Stage
         SB.player.reset
         reset_switches
         @cur_section = @cur_entrance[:section]
-        start
+        reset
       end
     end
   end

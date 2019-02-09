@@ -221,7 +221,7 @@ class BoardItem < FloatingItem
     b = SB.player.bomb
     @board = Board.new(b.x + (b.facing_right ? 0 : b.w - 50), b.y + b.h - 2, b.facing_right, section, switch)
     section.add(@board)
-    switch[:state] = :normal
+    set_switch(switch)
   end
 end
 
@@ -470,20 +470,30 @@ class Attack3 < FloatingItem
 end
 
 class Spec < FloatingItem
-  def initialize(x, y, args, section)
+  include Item
+
+  def initialize(x, y, args, section, switch)
     return if SB.player.specs.index(SB.stage.id)
+    if check(switch)
+      SB.set_spec_taken
+      return
+    end
     super x - 1, y - 1, 34, 34, :sprite_Spec, Vector.new(-12, -12), 2, 2, [0,1,2,3], 5
   end
 
   def update(section)
     super(section) do
-      SB.player.stage_score += 1000
-      SB.set_spec_taken
+      take(section, false)
     end
     if rand < 0.05
       x = @x + rand(@w) - 7
       y = @y + rand(@h) - 7
       section.add_effect(Effect.new(x, y, :fx_Glow1, 3, 2, 6, [0, 1, 2, 3, 4, 5, 4, 3, 2, 1, 0], 66))
     end
+  end
+
+  def use(section, switch)
+    SB.player.stage_score += 1000
+    SB.set_spec_taken
   end
 end

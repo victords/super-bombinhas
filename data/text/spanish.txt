@@ -46,13 +46,11 @@ msg1			¡Hola! Como ya debe haber notado, puede utilizar las flechas (o 'A' y 'D
 msg2			En la cima de esta torre hay un artefacto llamado Spec./La leyenda dice que hay muchos de ellos repartidos por todo el mundo, y aquél que es capaz de reunir a todos ellos tendrá la llave de una ruta de acceso al bosque mágico de Lae.../Pero es sólo una leyenda, ¿verdad? Subir hasta la cima parece muy peligroso...
 msg3			Usted puede utilizar ítenes como este arriba pulsando 'A' (o 'K') después que usted lo consiguió. Los ítenes que ha recogido aparecerán en la esquina superior derecha de la pantalla./Si usted ha recogido más de un tipo de íten, puede utilizar 'Shift' (o 'L') para cambiar entre ellos.
 msg4			Esta criatura saltarina delante es muy peligrosa... puede intentar a usar uno de aquellos misiles, si o tuviere, o simplemente intentar colarse debajo de ella...
-msg5
-msg6			Mira, es la pólvora! Ahora usted puede dar rienda suelta a su poder de bomba! Busque grietas en las paredes para abrir caminos o simplemente matar a tus enemigos sin necesidad de tocarlos./Pero presta atención al tiempo! Usted sólo tiene 10 segundos después de hacer contacto con la pólvora.
-msg7			¿Usted ve esta tabla de madera allí? Usted puede adjuntarlo al suelo para extenderlo, cuando necesitar de saltar sobre un gran abismo. Una vez conectado, usted necesitará un martillo para liberarla y poder usarla de nuevo.
-msg8			Esta es la fortaleza de Chamal, y sólo peligro te espera. Tenga mucho cuidado a partir de ahora.
-msg9			Intenta rodar aquella pelota sobre esa pequeña marca de estrella en el suelo, ¡y mira qué pasa!
-msg10			Bueno... Eso es todo para la demo. Pero mantenga los ojos en alevagames.com para noticias sobre la próxima versión!
-msg11			Hola, bienvenido al Bosque de los Sabios. No, yo no soy uno de ellos, ni sé donde están.../Pero una cosa es cierta: este bosque esconde muchos secretos... ¡Mantenga los ojos bien abiertos!
+msg5			Mira adelante, ¡es pólvora! ¡Ahora puede liberar sus poderes de bomba!/Utilice la explosión para romper paredes agrietadas o para atacar enemigos.
+msg6			¡Cuidado! Hay pozas de veneno en el piso adelante... ¡No las toque!
+msg7			La criatura por delante se llama Turner. Cuando se enfrenta a una dirección, es completamente amenazante.../Sin embargo, cuando se dirige a la otra, puede saltar sobre ella e incluso le llevará.
+msg8			¿Sabía que puede controlar la dirección en la que va mientras cae libremente?
+msg9			Esta tabla de madera se puede fijar al piso cerca de las repisas para darle espacio extra para caminar y saltar./¡Adelante, pruébelo! Ah, y si encuentra un martillo, incluso puede retirarla del suelo y usarla de nuevo.
 msg_monep		¡Hey! ¡Espera un minuto! Si quieres ir adelante debe traerme una Hierba del Bosque. Sí, una deliciosa Hierba del Bosque... ¡Ahora va y solo vuelve aquí cuando la tuvieres!
 msg_mnt_bomb	Hi, I was taking a walk in the mountains and I lost my precious Jillis Stone. It's a big, shiny, green gem... Do you think you could find it for me?
 msg_mnt_bomb2	Thanks a lot, mate! Well... I don't have much to offer in return, but you can use this float machine if you want. It will help you reach the highest parts of the mountain./It's a wonderful view from there!

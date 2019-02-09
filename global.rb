@@ -197,8 +197,8 @@ class SB
       if @bonus
         StageMenu.initialize
         time = IO.read("#{Res.prefix}stage/bonus/times").split[@bonus-1].to_i
-        @stage = Stage.new('bonus', @bonus, false, time)
-        @stage.start
+        @stage = Stage.new('bonus', @bonus)
+        @stage.start(false, time)
         @state = :main
       else
         @stage = @prev_stage if @prev_stage

@@ -46,13 +46,11 @@ msg1			Hello! As you may have already noticed, you can use the arrow keys (or 'A
 msg2			On the top of this tower lies an artifact called a Spec./Legend says there are many of them scattered around the world, and one who is able to gather them all will have the key to a path to the magical forest of Lae.../But it's just a legend, right? Getting to the top looks quite dangerous...
 msg3			You can use items like these above by pressing 'A' (or 'K') after you collected it. Items you have collected will appear on the top right corner of the screen./If you have collected more than one type of item, you can use 'Shift' (or 'L') to switch between them.
 msg4			The jumping creature ahead is quite dangerous... you can try using one of those missiles, if you have collected some, or just try and sneak under it.
-msg5
-msg6			Look, it's gunpowder! Now you can unleash your bomb power! Look for cracks in walls to open paths or just kill your enemies without needing to touch them./But mind the time! You only have 10 seconds after you made contact with the gunpowder.
-msg7			You see this wooden board over there? You can attach it to the floor to extend it, when needing to leap over a large chasm. Once attached, you will need a hammer to release it and be able to use it again.
-msg8			This is Chamal's fortress, and only danger awaits you... Be very careful from now on.
-msg9			Try rolling that ball over this little star mark in the floor, and see what happens!
-msg10			Well... That's it for the demo. But keep your eyes on alevagames.com for news on the next release!
-msg11			Hello, welcome to the Wisemen's forest. No, I'm not one of them, and neither do I know where they are.../But one thing is sure: this forest hides many secrets. Keep both eyes open!
+msg5			Look, it's gunpowder! Now you can release your bomb power!/Use the blast to break cracked walls or to attack enemies.
+msg6			Beware! The floor ahead has pools of poison... don't touch it!
+msg7			The creature ahead is called Turner. When it's facing one direction it is completely threatening.../However, when going to the other, you can jump on it and it will even carry you!
+msg8			Did you know you can control the direction you go while free-falling?
+msg9			This wooden plank can be fixed to the floor near ledges to give you some extra space to walk and jump./Go ahead, try it! Oh, and if you happen to find a hammer, you can even remove it from the ground and use it again.
 msg_monep		Hey! Hold on! If you want to go any further, you must bring me a Forest Herb. Yes, a delicious Forest Herb... Now get lost and only come back here when you have it!
 msg_mnt_bomb	Hi, I was taking a walk in the mountains and I lost my precious Jillis Stone. It's a big, shiny, green gem... Do you think you could find it for me?
 msg_mnt_bomb2	Thanks a lot, mate! Well... I don't have much to offer in return, but you can use this float machine if you want. It will help you reach the highest parts of the mountain./It's a wonderful view from there!
