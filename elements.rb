@@ -182,8 +182,8 @@ class Door < GameObject
     args = args.split(',')
     type = args[2]
     case type
-    when '2' then x_g = -19; y_g = -89
-    else          x_g = -10; y_g = -63
+    when nil then x_g = -10; y_g = -63
+    else          x_g = -19; y_g = -89
     end
     super x + 10, y + 63, 12, 1, "sprite_Door#{type}", Vector.new(x_g, y_g), 5, 1
     @entrance = args[0].to_i
