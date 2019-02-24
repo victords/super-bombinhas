@@ -514,20 +514,20 @@ class Chamal < Enemy
   alias :super_update :update
 
   X_OFFSET = 224
-  MAX_MOVEMENT = 160
+  WALK_AMOUNT = 96
 
   def initialize(x, y, args, section)
-    super x - 25, y - 74, 82, 106, Vector.new(-16, -8), 3, 1, [0, 1, 0, 2], 7, 5000 #, 3
+    super x - 25, y - 74, 82, 106, Vector.new(-16, -8), 3, 1, [0, 1, 0, 2], 7, 5000, 3
     @left_limit = @x - X_OFFSET
     @right_limit = @x + X_OFFSET
     @spawn_points = [
-      Vector.new(@x + @w / 2 - 120, @y - 400),
-      Vector.new(@x + @w / 2, @y - 400),
-      Vector.new(@x + @w / 2 + 120, @y - 400)
+      Vector.new(@x + @w / 2 - 40, @y - 400),
+      Vector.new(@x + @w / 2 + 80, @y - 400),
+      Vector.new(@x + @w / 2 + 200, @y - 400)
     ]
     @spawns = []
+    @turn = 2
     @speed_m = 4
-    @turn = 0
     @facing_right = false
     init
   end
@@ -543,32 +543,40 @@ class Chamal < Enemy
       else
         @timer += 1
         if @timer == 120
-          x = rand @left_limit..@right_limit
-          x = @x - MAX_MOVEMENT if @x - x > MAX_MOVEMENT
-          x = @x + MAX_MOVEMENT if x - @x > MAX_MOVEMENT
-          @aim = Vector.new x, @y
-          if x < @x; @facing_right = false
-          else; @facing_right = true; end
-          @moving = true
-          if @turn % 5 == 0 and @spawns.size < 3
-            @spawn_points.each do |p|
-              @spawns << Wheeliam.new(p.x, p.y, nil, section)
-              section.add(@spawns[-1])
+          if @facing_right
+            if @x >= @right_limit
+              x = @x - WALK_AMOUNT
+              @facing_right = false
+            else
+              x = @x + WALK_AMOUNT
             end
-            @respawned = true
+          elsif @x <= @left_limit
+            x = @x + WALK_AMOUNT
+            @facing_right = true
+          else
+            x = @x - WALK_AMOUNT
           end
-          @turn += 1
+          @aim = Vector.new x, @y
+          @moving = true
+          if @spawns.size == 0
+            @turn += 1
+            if @turn == 3
+              @spawn_points.each do |p|
+                @spawns << Wheeliam.new(p.x, p.y, '!', section)
+                section.add(@spawns[-1])
+              end
+              @respawned = true
+            end
+          end
         end
       end
-      spawns_dead = true
-      @spawns.each do |s|
-        if s.dying; @spawns.delete s
-        else; spawns_dead = false; end
-      end
-      if spawns_dead and @respawned and @gun_powder.nil?
+      if @spawns.all?(&:dead?) && @respawned && @gun_powder.nil?
+        @spawns = []
+        @respawned = false
         @gun_powder = GunPowder.new(@x, @y + 74, nil, section, nil)
         section.add(@gun_powder)
-        @respawned = false
+        section.add_effect(Effect.new(@x - 14, @y + 10, :fx_arrow, 3, 1, 8, [0, 1, 2, 1], 180))
+        @turn = 0
       end
       @gun_powder = nil if @gun_powder && @gun_powder.dead?
     end

@@ -1905,20 +1905,20 @@ class Graphic < Sprite
     cols = 1; rows = 1
     case type
       when 1 then @w = 32; @h = 64
-      when 2 then x += 16; y += 16; @w = 64; @h = 64; cols = 2; rows = 2; @rot = -5
+      when 2 then x += 16; y += 16; @w = 64; @h = 64; cols = 2; rows = 2; @indices = [0, 1, 2, 3]; @interval = 7; @rot = -5
       when 3..5 then x -= 16; @w = 64; @h = 32
       when 6 then x -= 134; y -= 208; @w = 300; @h = 240
       when 7..9 then @w = 128; @h = 64
       when 10 then x -= 236; y -= 416; @w = 600; @h = 480
+      when 12 then x += 2; @w = 126; @h = 128; cols = 2; rows = 2; @indices = [0, SB.lang == :portuguese ? 1 : SB.lang == :english ? 2 : 3]; @interval = 60
     end
     super x, y, "sprite_graphic#{type}", cols, rows
     @active_bounds = Rectangle.new(x, y, @w, @h)
-    @indices = *(0...(cols * rows)) if cols * rows > 1
     @angle = 0 if @rot
   end
 
   def update(section)
-    animate @indices, 7 if @indices
+    animate @indices, @interval if @indices
     @angle += @rot if @rot
   end
 
