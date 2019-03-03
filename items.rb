@@ -277,9 +277,9 @@ class Spring < GameObject
       @timer += 1
       if @timer == 10
         case @state
-          when 0 then @y += 8; @img_gap.y -= 8; b.y += 8
-          when 1 then @y += 6; @img_gap.y -= 6; b.y += 6
-          when 2 then @y += 4; @img_gap.y -= 4; b.y += 4
+        when 0 then @y += 8; @img_gap.y -= 8; b.y += 8
+        when 1 then @y += 6; @img_gap.y -= 6; b.y += 6
+        when 2 then @y += 4; @img_gap.y -= 4; b.y += 4
         end
         @state += 1
         if @state == 4
