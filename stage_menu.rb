@@ -47,7 +47,7 @@ class BombButton < Button
                        @x + @w, @y, C::PANEL_COLOR,
                        @x, @y + @h, C::PANEL_COLOR,
                        @x + @w, @y + @h, C::PANEL_COLOR, 0
-    @bomb_img.draw @x + 40 - @bomb_img.width / 2, @y + 30 - @bomb_img.height / 2, 0
+    @bomb_img.draw @x + 40 - @bomb_img.width, @y + 30 - @bomb_img.height, 0, 2, 2
     SB.small_text_helper.write_breaking @bomb.name, @x + 40, @y + 52, 64, :center
   end
 end
@@ -134,8 +134,14 @@ class StageMenu
     end
 
     def update_end
-      @stage_end_timer += 1 if @stage_end_timer < 30 * @stage_end_comps.length
-      @stage_menu.update
+      if @stage_end_timer < 30 * @stage_end_comps.length
+        if KB.key_pressed?(Gosu::KbReturn)
+          @stage_end_timer = 30 * @stage_end_comps.length
+        else
+          @stage_end_timer += 1
+        end
+      end
+      @stage_menu.update if @stage_end_timer >= 30 * @stage_end_comps.length
       @stage_end_comps.each_with_index do |c, i|
         c.update_movement if @stage_end_timer >= i * 30
       end
@@ -216,11 +222,11 @@ class StageMenu
                          204, 60, C::PANEL_COLOR,
                          4, 60, C::PANEL_COLOR, 0
       @lives_icon.draw 12, 10, 0, 2, 2
-      SB.font.draw p.lives, 40, 12, 0, 1, 1, 0xff000000
+      SB.font.draw_text p.lives, 40, 12, 0, 1, 1, 0xff000000
       @hp_icon.draw 105, 10, 0, 2, 2
-      SB.font.draw p.bomb.hp, 135, 12, 0, 1, 1, 0xff000000
+      SB.font.draw_text p.bomb.hp, 135, 12, 0, 1, 1, 0xff000000
       @score_icon.draw 10, 32, 0, 2, 2
-      SB.font.draw p.stage_score, 40, 35, 0, 1, 1, 0xff000000
+      SB.font.draw_text p.stage_score, 40, 35, 0, 1, 1, 0xff000000
 
       ########## ITEM ##########
       G.window.draw_quad 745, 5, C::PANEL_COLOR,
@@ -230,7 +236,7 @@ class StageMenu
       if p.cur_item_type
         item_set = p.items[p.cur_item_type]
         item_set[0][:obj].icon.draw 754, 14, 0, 2, 2
-        SB.font.draw item_set.length.to_s, 780, 36, 0, 1, 1, 0xff000000
+        SB.font.draw_text item_set.length.to_s, 780, 36, 0, 1, 1, 0xff000000
       end
       if p.items.length > 1
         G.window.draw_triangle 745, 30, C::ARROW_COLOR,

@@ -31,7 +31,7 @@ class NewGameButton < Button
 
   def draw(alpha = 0xff, z_index = 0)
     @img.draw @x, @y, 0, 2, 2
-    SB.font.draw_rel @index.to_s, @x + 365, @y + 40, 0, 1, 0.5, 3, 3, 0x80000000
+    SB.font.draw_text_rel @index.to_s, @x + 365, @y + 40, 0, 1, 0.5, 3, 3, 0x80000000
     SB.big_text_helper.write_line @text, @x + 185, @y + 24, :center, 0xffffff, 255, :border, 0, 2
   end
 end
@@ -66,7 +66,7 @@ class SavedGame
     @map_icon.draw @x + 45, @y + 40, 0, 2, 2
     @spec_icon.draw @x + 135, @y + 40, 0, 2, 2
     @score_icon.draw @x + 227, @y + 40, 0, 2, 2
-    SB.font.draw_rel @index.to_s, @x + 365, @y + 40, 0, 1, 0.5, 3, 3, 0x80000000
+    SB.font.draw_text_rel @index.to_s, @x + 365, @y + 40, 0, 1, 0.5, 3, 3, 0x80000000
     SB.big_text_helper.write_line @name, @x + 45, @y + 5, :left, 0xffffff, 255, :border
     SB.text_helper.write_line @world_stage, @x + 75, @y + 43
     SB.text_helper.write_line @specs.to_s, @x + 165, @y + 43

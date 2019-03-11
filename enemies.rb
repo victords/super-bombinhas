@@ -812,7 +812,7 @@ class Jellep < Enemy
   end
 
   def hit_by_bomb(section)
-    let b = SB.player.bomb
+    b = SB.player.bomb
     if b.power > 1
       hit(section)
     else
