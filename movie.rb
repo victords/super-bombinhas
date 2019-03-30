@@ -1,3 +1,20 @@
+# Copyright 2019 Victor David Santos
+#
+# This file is part of Super Bombinhas.
+#
+# Super Bombinhas is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Super Bombinhas is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Super Bombinhas.  If not, see <https://www.gnu.org/licenses/>.
+
 require_relative 'global'
 
 class MovieElement < GameObject
@@ -113,7 +130,7 @@ class MovieScene
           @cam_x += @speed_x
           @cam_y += @speed_y
         end
-        
+
         unless @cam_moves.empty?
           @cam_timer += 16.666667
           if @cur_cam && @cam_timer >= @cur_cam[:duration]
@@ -130,7 +147,7 @@ class MovieScene
             @cam_timer = 0
           end
         end
-        
+
         unless @texts.empty?
           @text_timer += 16.666667
           if @cur_text && @text_timer >= @cur_text[:duration]
