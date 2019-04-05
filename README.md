@@ -2,6 +2,16 @@
 
 This is an ongoing platformer game project, built with Ruby and the Gosu and MiniGL libraries.
 
+## Screenshots
+
+![Super Bombinhas 1](https://raw.githubusercontent.com/victords/super-bombinhas/master/screenshot/game-menu.png)
+
+![Super Bombinhas 2](https://raw.githubusercontent.com/victords/super-bombinhas/master/screenshot/map.png)
+
+![Super Bombinhas 3](https://raw.githubusercontent.com/victords/super-bombinhas/master/screenshot/main1.png)
+
+![Super Bombinhas 4](https://raw.githubusercontent.com/victords/super-bombinhas/master/screenshot/main2.png)
+
 ## Running the game
 
 1. Install Ruby.
