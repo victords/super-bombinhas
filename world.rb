@@ -20,7 +20,7 @@ require_relative 'stage'
 include MiniGL
 
 class MapStage
-  attr_reader :x, :y
+  attr_reader :x, :y, :img
 
   def initialize(world, num, x, y, img)
     @x = x
@@ -193,6 +193,7 @@ class World
 
   def draw
     G.window.clear 0x6ab8ff
+    tint_color = (@trans_alpha << 24) | 0xffffff
     y = 0
     while y < C::SCREEN_HEIGHT
       x = 0
@@ -203,12 +204,30 @@ class World
       end
       y += 40
     end
-    @map.draw 0, 0, 0, 2, 2, (@trans_alpha << 24) | 0xffffff
+    @map.draw 0, 0, 0, 2, 2, tint_color
     @parchment.draw 0, 0, 0, 2, 2
     @secret_world.draw 88, 112, 0, 2, 2 if @secret_world
     @mark.draw nil, 2, 2
 
-    @stages.each { |s| s.draw @trans_alpha }
+    line_color = @trans_alpha << 24
+    @stages.each_with_index do |s, i|
+      s.draw @trans_alpha
+      if i < @stages.size - 1
+        sx = s.x + s.img.width
+        sy = s.y + s.img.height
+        dx = @stages[i + 1].x + @stages[i + 1].img.width - sx
+        dy = @stages[i + 1].y + @stages[i + 1].img.height - sy
+        d = Math.sqrt(dx * dx + dy * dy)
+        p = s.img.width + 2
+        while p <= d - s.img.width - 2
+          x = sx + p / d * dx
+          y = sy + p / d * dy
+          G.window.draw_quad(x - 2, y - 2, tint_color, x + 2, y - 2, tint_color, x - 2, y + 2, tint_color, x + 2, y + 2, tint_color, 0)
+          G.window.draw_quad(x - 1, y - 1, line_color, x + 1, y - 1, line_color, x - 1, y + 1, line_color, x + 1, y + 1, line_color, 0)
+          p += 10
+        end
+      end
+    end
     # @play_button.draw
     # @back_button.draw
     @bomb.draw nil, 2, 2, @trans_alpha
@@ -218,19 +237,19 @@ class World
     SB.text_helper.write_breaking(SB.text(:ch_st_instruct).gsub('\n', "\n"), 780, 545, 600, :right, 0, @trans_alpha)
 
     if @num > 1
-      @arrow.draw 260, 10, 0, 2, 2, (@trans_alpha << 24) | 0xffffff
+      @arrow.draw 260, 10, 0, 2, 2, tint_color
       SB.small_text_helper.write_breaking SB.text(:left_shift), 315, 13, 60, :right, 0, @trans_alpha
     end
     if @num < SB.player.last_world
-      @arrow.draw 790, 10, 0, -2, 2, (@trans_alpha << 24) | 0xffffff
+      @arrow.draw 790, 10, 0, -2, 2, tint_color
       SB.small_text_helper.write_breaking SB.text(:right_shift), 735, 13, 60, :left, 0, @trans_alpha
     end
     if @cur > 0
-      @arrow.draw 260, 47, 0, 2, 2, (@trans_alpha << 24) | 0xffffff
+      @arrow.draw 260, 47, 0, 2, 2, tint_color
       SB.small_text_helper.write_breaking SB.text(:left_arrow), 315, 50, 60, :right, 0, @trans_alpha
     end
     if @cur < @enabled_stage_count - 1
-      @arrow.draw 790, 47, 0, -2, 2, (@trans_alpha << 24) | 0xffffff
+      @arrow.draw 790, 47, 0, -2, 2, tint_color
       SB.small_text_helper.write_breaking SB.text(:right_arrow), 735, 50, 60, :left, 0, @trans_alpha
     end
   end
