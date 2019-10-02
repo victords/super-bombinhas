@@ -34,3 +34,5 @@ This is an ongoing platformer game project, built with Ruby and the Gosu and Min
 The first goal of this repository is for people to play the game and give feedback on the gameplay, graphics, soundtrack, etc. However, improvements to the source code and new ideas will also be welcome.
 
 If you're interested in contributing with the source code, contact me on [victordavidsantos@gmail.com](mailto:victordavidsantos@gmail.com) so I can give you an overview of the project's structure. If there are many people interested, I will then include such overview in this README.
+
+Also, if you want to support my work, you can donate bitcoins to this wallet: bc1qvypzxnvtp2wzx8l5ecm0u6e7wshjxznzh0440c
