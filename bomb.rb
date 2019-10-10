@@ -38,6 +38,7 @@ class Bomb < GameObject
     @max_speed.y = 18
     @jump_speed = 0.05
     @jump_frames = 0
+    @stored_jump = 0
     @facing_right = true
     @active = true
     @type = type
@@ -100,11 +101,17 @@ class Bomb < GameObject
         @jump_frames = 0
       else
         @jump_frames += 1 if @jump_frames < 30
+        @stored_jump -= 1 if @stored_jump > 0
+        if KB.key_pressed?(SB.key[:jump])
+          @stored_jump = 5
+        end
       end
-      if @jump_frames == 0 && KB.key_pressed?(SB.key[:jump]) || @jump_frames > 0 && KB.key_down?(SB.key[:jump])
+      if @jump_frames == 0 && (KB.key_pressed?(SB.key[:jump]) || @stored_jump > 0) || @jump_frames > 0 && KB.key_down?(SB.key[:jump])
         forces.y -= (1.5 + @jump_speed * @speed.x.abs) / (0.3 * @jump_frames + 0.33) - 0.1
         set_animation 5
       end
+      @stored_jump = 0 if @bottom
+
       SB.player.change_item if KB.key_pressed? SB.key[:next]
       SB.player.use_item section if KB.key_pressed? SB.key[:item]
 
