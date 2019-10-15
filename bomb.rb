@@ -39,6 +39,7 @@ class Bomb < GameObject
     @jump_speed = 0.05
     @jump_frames = 0
     @stored_jump = 0
+    @prev_bottom = 0
     @facing_right = true
     @active = true
     @type = type
@@ -99,14 +100,20 @@ class Bomb < GameObject
           animate [0, 1], 10
         end
         @jump_frames = 0
+        @prev_bottom = C::JUMP_TOLERANCE
       else
-        @jump_frames += 1 if @jump_frames < 30
+        if @prev_bottom > 0
+          @prev_bottom -= 1
+        else
+          @jump_frames += 1 if @jump_frames < 30
+        end
         @stored_jump -= 1 if @stored_jump > 0
         if KB.key_pressed?(SB.key[:jump])
-          @stored_jump = 5
+          @stored_jump = C::JUMP_TOLERANCE
         end
       end
       if @jump_frames == 0 && (KB.key_pressed?(SB.key[:jump]) || @stored_jump > 0) || @jump_frames > 0 && KB.key_down?(SB.key[:jump])
+        @prev_bottom = 0
         forces.y -= (1.5 + @jump_speed * @speed.x.abs) / (0.3 * @jump_frames + 0.33) - 0.1
         set_animation 5
       end
