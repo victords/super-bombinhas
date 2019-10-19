@@ -272,7 +272,7 @@ end
 
 class Sprinny < Enemy
   def initialize(x, y, args, section)
-    super x + 3, y - 4, 26, 36, Vector.new(-2, -5), 2, 1, [0], 5, 350
+    super x + 3, y + 4, 26, 28, Vector.new(-2, -5), 2, 1, [0], 5, 350
 
     @leaps = 1000
     @max_leaps = args.to_i
