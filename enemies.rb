@@ -411,7 +411,7 @@ end
 
 class Faller < GameObject
   def initialize(x, y, args, section)
-    super x, y, 32, 32, :sprite_Faller, Vector.new(-1, 0), 4, 1
+    super x, y, 32, 12, :sprite_Faller, Vector.new(-1, 0), 4, 1
     @range = args.to_i
     @start = Vector.new x, y
     @up = Vector.new x, y - @range * 32
@@ -441,7 +441,7 @@ class Faller < GameObject
       return
     elsif b.bottom == @bottom
       b.hit
-    elsif b.collide? self
+    elsif b.bounds.intersect?(Rectangle.new(@x, @y + 12, @w, 2))
       b.hit
     end
 
@@ -454,7 +454,7 @@ class Faller < GameObject
         @act_timer = 0
       end
     elsif @step == 1 # subindo
-      move_carrying @up, 2, [b], section.get_obstacles(b.x, b.y), section.ramps
+      move_carrying @up, 1, [b], section.get_obstacles(b.x, b.y), section.ramps
       @step += 1 if @speed.y == 0
     else # descendo
       diff = ((@start.y - @y) / 5).ceil
