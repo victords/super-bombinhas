@@ -272,27 +272,34 @@ end
 
 class Sprinny < Enemy
   def initialize(x, y, args, section)
-    super x + 3, y + 4, 26, 28, Vector.new(-2, -5), 2, 1, [0], 5, 350
+    super x + 3, y, 26, 32, Vector.new(-2, -5), 3, 1, [0, 1], 7, 350
 
     @leaps = 1000
     @max_leaps = args.to_i
     @facing_right = true
     @indices = [0]
+    @idle_timer = 0
   end
 
   def update(section)
     super section do
       forces = Vector.new 0, 0
       if @bottom
-        @leaps += 1
-        if @leaps > @max_leaps
-          @leaps = 1
-          @facing_right = !@facing_right
-        end
         @speed.x = 0
-        if @facing_right; forces.x = 3
-        else; forces.x = -3; end
-        forces.y = -11.5
+        @indices = [0, 1]
+        @idle_timer += 1
+        if @idle_timer > 20
+          @leaps += 1
+          if @leaps > @max_leaps
+            @leaps = 1
+            @facing_right = !@facing_right
+          end
+          if @facing_right; forces.x = 3
+          else; forces.x = -3; end
+          forces.y = -11.5
+          @idle_timer = 0
+          @indices = [0]
+        end
       end
       move forces, section.get_obstacles(@x, @y), section.ramps
     end
