@@ -1,4 +1,4 @@
 #!/bin/sh
 set -e
-gem2.0 install minigl -v 2.0.5
+gem install minigl -v 2.2.6
 exit 0
