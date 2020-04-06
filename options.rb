@@ -21,8 +21,7 @@ class Options
   class << self
     def initialize
       @controls = [
-        [Gosu::KbUp, Gosu::KbRight, Gosu::KbDown, Gosu::KbLeft, Gosu::KbSpace, Gosu::KbA, Gosu::KbLeftShift, Gosu::KbS],
-        [Gosu::KbW, Gosu::KbD, Gosu::KbS, Gosu::KbA, Gosu::KbJ, Gosu::KbK, Gosu::KbL, Gosu::KbI]
+        [Gosu::KbUp, Gosu::KbRight, Gosu::KbDown, Gosu::KbLeft, Gosu::KbSpace, Gosu::KbX, Gosu::KbZ, Gosu::KbC]
       ]
     end
 
@@ -34,13 +33,13 @@ class Options
       @lang = SB.lang
       @sound_volume = SB.sound_volume
       @music_volume = SB.music_volume
-      @controls_opt = SB.key[:up] == Gosu::KbUp ? 0 : 1
-      set_controls_text
+      @controls_opt = 0
+      # set_controls_text
     end
 
-    def set_controls_text
-      @controls_text.text = SB.text("controls_#{@controls_opt}".to_sym)
-    end
+    # def set_controls_text
+    #   @controls_text.text = SB.text("controls_#{@controls_opt}".to_sym)
+    # end
 
     def get_menu
       @menu = [
@@ -58,11 +57,11 @@ class Options
         MenuText.new(:lang_name, 590, 200, 320, :center),
         MenuArrowButton.new(400, 192, 'Left') {
           SB.change_lang(-1)
-          set_controls_text
+          # set_controls_text
         },
         MenuArrowButton.new(744, 192, 'Right') {
           SB.change_lang
-          set_controls_text
+          # set_controls_text
         },
         MenuText.new(:sound_volume, 20, 270),
         (@s_v_text = MenuNumber.new(SB.sound_volume, 590, 270, :center)),
@@ -83,18 +82,6 @@ class Options
         MenuArrowButton.new(744, 332, 'Right') {
           SB.change_volume('music')
           @m_v_text.num = SB.music_volume
-        },
-        MenuText.new(:controls, 20, 410),
-        (@controls_text = MenuText.new(:controls, 590, 410, 320, :center)),
-        MenuArrowButton.new(400, 402, 'Left') {
-          @controls_opt -= 1
-          @controls_opt = 1 if @controls_opt < 0
-          set_controls_text
-        },
-        MenuArrowButton.new(744, 402, 'Right') {
-          @controls_opt += 1
-          @controls_opt = 0 if @controls_opt > 1
-          set_controls_text
         }
       ] if @menu.nil?
       @menu

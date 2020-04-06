@@ -82,30 +82,26 @@ class SB
           @lang = data[0].to_sym
           @sound_volume = data[1].to_i
           @music_volume = data[2].to_i
-          @key = {}
-          keys = data[3..-1].map { |i| i.to_i }
-          keys_keys = [:up, :right, :down, :left, :jump, :item, :next, :ab]
-          keys.each_with_index { |k, i| @key[keys_keys[i]] = k }
         end
       else
         @lang = :english
         @sound_volume = 10
         @music_volume = 10
-        @key = {
-          up:    Gosu::KbUp,
-          right: Gosu::KbRight,
-          down:  Gosu::KbDown,
-          left:  Gosu::KbLeft,
-          jump:  Gosu::KbSpace,
-          item:  Gosu::KbA,
-          next:  Gosu::KbLeftShift,
-          ab:    Gosu::KbS
-        }
         FileUtils.mkdir_p save_dir
         File.open(options_path, 'w') do |f|
           f.print "#{@lang},#{@sound_volume},#{@music_volume},#{@key.values.join(',')}"
         end
       end
+      @key = {
+        up:    Gosu::KbUp,
+        right: Gosu::KbRight,
+        down:  Gosu::KbDown,
+        left:  Gosu::KbLeft,
+        jump:  Gosu::KbSpace,
+        item:  Gosu::KbX,
+        next:  Gosu::KbZ,
+        ab:    Gosu::KbC
+      }
 
       Options.initialize
       Menu.initialize
