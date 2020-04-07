@@ -140,7 +140,7 @@ class Section
     Zep
   ]
 
-  attr_reader :reload, :tiles, :obstacles, :ramps, :passengers, :size, :default_entrance, :tileset_num
+  attr_reader :reload, :tiles, :obstacles, :ramps, :passengers, :size, :default_entrance, :tileset_num, :map
   attr_accessor :entrance, :warp, :loaded, :active_object
 
   def initialize(file, entrances, switches, taken_switches, used_switches)

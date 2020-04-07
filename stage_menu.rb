@@ -69,6 +69,45 @@ class BombButton < Button
   end
 end
 
+class ItemEffect
+  attr_reader :dead
+
+  def initialize(x, y, target_x, target_y)
+    @x = x; @y = y; @target_x = target_x; @target_y = target_y
+    @d_x = target_x - x; @d_y = target_y - y
+    @time = 0
+    @effects = []
+  end
+
+  def update
+    if @time >= 30
+      unless @finished
+        @effects << Effect.new(@target_x - 16, @target_y - 16, :fx_glow2, 3, 2)
+        @finished = true
+      end
+    else
+      pos_x = @x + (@time / 30.0) * @d_x
+      pos_y = @y + (@time / 30.0) * @d_y
+      @effects << Effect.new(pos_x - 7, pos_y - 7, :fx_Glow1, 3, 2,7, [0, 1, 2, 3, 4, 5, 4, 3, 2, 1, 0])
+
+      @time += 1
+    end
+
+    @effects.each do |e|
+      e.update
+      @effects.delete(e) if e.dead
+    end
+
+    @dead = true if @finished && @effects.empty?
+  end
+
+  def draw(map, scale_x, scale_y)
+    @effects.each do |e|
+      e.draw(map, scale_x, scale_y)
+    end
+  end
+end
+
 class StageMenu
   class << self
     attr_reader :ready
@@ -113,6 +152,8 @@ class StageMenu
         @score_icon = Res.img :icon_score
       end
       Options.form = @stage_menu
+
+      @effects = []
     end
 
     def set_bomb_screen_comps
@@ -141,6 +182,10 @@ class StageMenu
     end
 
     def update_main
+      @effects.each do |e|
+        e.update
+        @effects.delete(e) if e.dead
+      end
       if SB.player.dead?
         @dead_text = (SB.player.lives == 0 ? :game_over : :dead) if @dead_text.nil?
         @alpha += 17 if @alpha < 255
@@ -221,9 +266,16 @@ class StageMenu
       @stage_menu.update_lang if StageMenu.ready
     end
 
+    def play_get_item_effect(origin_x, origin_y, is_life = false)
+      @effects << ItemEffect.new(origin_x, origin_y, is_life ? 20 : 770, is_life ? 20 : 30)
+    end
+
     def draw
       if SB.state == :main
         draw_player_stats unless SB.stage.starting
+        @effects.each do |e|
+          e.draw(nil, 2, 2)
+        end
         draw_player_dead if SB.player.dead?
       elsif SB.state == :paused
         draw_menu

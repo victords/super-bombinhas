@@ -35,10 +35,11 @@ module Item
     @icon = Res.img "icon_#{icon}"
   end
 
-  def take(section, store)
+  def take(section, store, x = nil, y = nil)
     info = SB.stage.find_switch self
     if store
-      SB.player.add_item info
+      SB.player.add_item(info)
+      StageMenu.play_get_item_effect(x, y) if x && y
       info[:state] = :temp_taken
     else
       use section, info
@@ -58,6 +59,8 @@ module Item
 end
 
 class FloatingItem < GameObject
+  include Item
+
   def initialize(x, y, w, h, img, img_gap = nil, sprite_cols = nil, sprite_rows = nil, indices = nil, interval = nil, bomb_type = nil)
     super x, y, w, h, img, img_gap, sprite_cols, sprite_rows
     img_gap = Vector.new(0, 0) if img_gap.nil?
@@ -84,6 +87,10 @@ class FloatingItem < GameObject
       @counter = 0
     end
     animate @indices, @interval if @indices
+  end
+
+  def take_anim(section, store)
+    take(section, store, @x - section.map.cam.x + @w, @y - section.map.cam.y)
   end
 
   def draw(map, scale_x = 2, scale_y = 2, alpha = 255, color = 0xffffff)
@@ -122,8 +129,6 @@ class FireRock < FloatingItem
 end
 
 class Life < FloatingItem
-  include Item
-
   def initialize(x, y, args, section, switch)
     return if check switch
     super x + 2, y + 2, 28, 28, :sprite_Life, nil, 8, 1,
@@ -133,6 +138,7 @@ class Life < FloatingItem
   def update(section)
     super(section) do
       take section, false
+      StageMenu.play_get_item_effect(@x - section.map.cam.x + @w / 2, @y - section.map.cam.y + @h / 2, true)
     end
   end
 
@@ -144,8 +150,6 @@ class Life < FloatingItem
 end
 
 class Key < FloatingItem
-  include Item
-
   def initialize(x, y, args, section, switch)
     set_icon "Key#{args}"
     return if check switch
@@ -156,7 +160,7 @@ class Key < FloatingItem
 
   def update(section)
     super(section) do
-      take section, true
+      take_anim(section, true)
     end
   end
 
@@ -170,8 +174,6 @@ class Key < FloatingItem
 end
 
 class Attack1 < FloatingItem
-  include Item
-
   def initialize(x, y, args, section, switch)
     set_icon :Attack1
     if check switch
@@ -184,7 +186,7 @@ class Attack1 < FloatingItem
 
   def update(section)
     super(section) do
-      take section, true
+      take_anim(section, true)
     end
   end
 
@@ -219,8 +221,6 @@ class Heart < FloatingItem
 end
 
 class BoardItem < FloatingItem
-  include Item
-
   def initialize(x, y, args, section, switch)
     set_icon :board
     return if check switch
@@ -230,7 +230,7 @@ class BoardItem < FloatingItem
 
   def update(section)
     super(section) do
-      take section, true
+      take_anim(section, true)
     end
   end
 
@@ -243,8 +243,6 @@ class BoardItem < FloatingItem
 end
 
 class Hammer < FloatingItem
-  include Item
-
   def initialize(x, y, args, section, switch)
     set_icon :hammer
     return if check(switch)
@@ -253,7 +251,7 @@ class Hammer < FloatingItem
 
   def update(section)
     super(section) do
-      take section, true
+      take_anim(section, true)
     end
   end
 
@@ -307,7 +305,7 @@ class Spring < GameObject
         @timer = 0
       end
     elsif b.collide?(self) and KB.key_pressed?(SB.key[:up])
-      take(section, true)
+      take(section, true, @x - section.map.cam.x + @w / 2, @y - section.map.cam.y + @h / 2)
       @dead = true
       section.obstacles.delete self
     elsif @state > 0 and @state < 4
@@ -354,8 +352,6 @@ class Spring < GameObject
 end
 
 class Attack2 < FloatingItem
-  include Item
-
   def initialize(x, y, args, section, switch)
     set_icon :attack2
     if check(switch)
@@ -368,7 +364,7 @@ class Attack2 < FloatingItem
 
   def update(section)
     super(section) do
-      take section, true
+      take_anim(section, true)
     end
   end
 
@@ -393,7 +389,7 @@ class Herb < GameObject
 
   def update(section)
     if SB.player.bomb.collide?(self)
-      take(section, true)
+      take(section, true, @x - section.map.cam.x + @w / 2, @y - section.map.cam.y + @h / 2)
       @dead = true
     end
   end
@@ -408,8 +404,6 @@ class Herb < GameObject
 end
 
 class PuzzlePiece < FloatingItem
-  include Item
-
   def initialize(x, y, args, section, switch)
     set_icon :puzzlePiece
     return if check(switch)
@@ -421,7 +415,7 @@ class PuzzlePiece < FloatingItem
 
   def update(section)
     super(section) do
-      take(section, true)
+      take_anim(section, true)
     end
   end
 
@@ -435,8 +429,6 @@ class PuzzlePiece < FloatingItem
 end
 
 class JillisStone < FloatingItem
-  include Item
-
   def initialize(x, y, args, section, switch)
     set_icon :jillisStone
     return if check(switch)
@@ -445,7 +437,7 @@ class JillisStone < FloatingItem
 
   def update(section)
     super(section) do
-      take(section, true)
+      take_anim(section, true)
     end
   end
 
@@ -459,8 +451,6 @@ class JillisStone < FloatingItem
 end
 
 class Attack3 < FloatingItem
-  include Item
-
   def initialize(x, y, args, section, switch)
     set_icon :Attack3
     if check(switch)
@@ -473,7 +463,7 @@ class Attack3 < FloatingItem
 
   def update(section)
     super(section) do
-      take section, true
+      take_anim(section, true)
     end
   end
 
@@ -487,8 +477,6 @@ class Attack3 < FloatingItem
 end
 
 class Spec < FloatingItem
-  include Item
-
   def initialize(x, y, args, section, switch)
     return if SB.player.specs.index(SB.stage.id)
     if check(switch)
