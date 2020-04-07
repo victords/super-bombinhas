@@ -1920,6 +1920,7 @@ class Graphic < Sprite
   def initialize(x, y, args, section)
     type = args.to_i
     cols = 1; rows = 1
+    img_index = nil
     case type
     when 1 then @w = 32; @h = 64
     when 2 then x += 16; y += 16; @w = 64; @h = 64; cols = 2; rows = 2; @indices = [0, 1, 2, 3]; @interval = 7; @rot = -5
@@ -1928,9 +1929,10 @@ class Graphic < Sprite
     when 7..9 then @w = 128; @h = 64
     when 10 then x -= 236; y -= 416; @w = 600; @h = 480
     when 12 then x += 2; @w = 126; @h = 128; cols = 2; rows = 2; @indices = [0, SB.lang == :portuguese ? 1 : SB.lang == :english ? 2 : 3]; @interval = 60
-    when 13..15 then x -= 64; y -= 88; @w = 160; @h = 120; cols = 1; rows = 3; @img_index = SB.lang == :portuguese ? 1 : SB.lang == :english ? 0 : 2
+    when 13..15 then x -= 64; y -= 88; @w = 160; @h = 120; cols = 1; rows = 3; img_index = SB.lang == :portuguese ? 1 : SB.lang == :english ? 0 : 2
     end
     super x, y, "sprite_graphic#{type}", cols, rows
+    @img_index = img_index if img_index
     @active_bounds = Rectangle.new(x, y, @w, @h)
     @angle = 0 if @rot
   end
