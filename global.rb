@@ -75,23 +75,6 @@ class SB
       end
 
       @save_dir = save_dir
-      options_path = "#{save_dir}/options"
-      if File.exist?(options_path)
-        File.open(options_path) do |f|
-          data = f.readline.chomp.split ','
-          @lang = data[0].to_sym
-          @sound_volume = data[1].to_i
-          @music_volume = data[2].to_i
-        end
-      else
-        @lang = :english
-        @sound_volume = 10
-        @music_volume = 10
-        FileUtils.mkdir_p save_dir
-        File.open(options_path, 'w') do |f|
-          f.print "#{@lang},#{@sound_volume},#{@music_volume},#{@key.values.join(',')}"
-        end
-      end
       @key = {
         up:    Gosu::KbUp,
         right: Gosu::KbRight,
@@ -102,9 +85,35 @@ class SB
         next:  Gosu::KbZ,
         ab:    Gosu::KbC
       }
+      options_path = "#{save_dir}/options"
+      if File.exist?(options_path)
+        File.open(options_path) do |f|
+          content = f.read
+          if content.empty?
+            create_options(options_path)
+          else
+            data = content.chomp.split(',')
+            @lang = data[0].to_sym
+            @sound_volume = data[1].to_i
+            @music_volume = data[2].to_i
+          end
+        end
+      else
+        create_options(options_path)
+      end
 
       Options.initialize
       Menu.initialize
+    end
+
+    def create_options(options_path)
+      @lang = :english
+      @sound_volume = 10
+      @music_volume = 10
+      FileUtils.mkdir_p(@save_dir)
+      File.open(options_path, 'w') do |f|
+        f.print "#{@lang},#{@sound_volume},#{@music_volume},#{@key.values.join(',')}"
+      end
     end
 
     def text(id)
