@@ -498,7 +498,7 @@ class Section
       SB.player.bomb.update(self)
 
       if SB.player.dead?
-        @reload = true if KB.key_pressed? Gosu::KbReturn
+        @reload = true if SB.key_pressed?(:confirm)
         return
       end
 
@@ -514,8 +514,8 @@ class Section
         return
       end
 
-      @map.set_camera (SB.player.bomb.x - @margin.x).round, (SB.player.bomb.y - @margin.y).round
-      if KB.key_pressed? Gosu::KbEscape
+      @map.set_camera((SB.player.bomb.x - @margin.x).round, (SB.player.bomb.y - @margin.y).round)
+      if SB.key_pressed?(:pause)
         SB.state = :paused
       end
     end

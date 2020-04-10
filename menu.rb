@@ -160,7 +160,7 @@ class Menu
     end
 
     def update
-      if @form.cur_section_index == 3 && @form.section(3).cur_btn == @txt_name && KB.key_pressed?(Gosu::KbReturn)
+      if @form.cur_section_index == 3 && @form.section(3).cur_btn == @txt_name && SB.key_pressed?(:confirm)
         SB.new_game(@txt_name.text.downcase, @new_game_index) unless @txt_name.text.empty?
       end
       @form.update

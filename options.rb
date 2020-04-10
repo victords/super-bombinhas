@@ -19,12 +19,6 @@ require_relative 'form'
 
 class Options
   class << self
-    def initialize
-      @controls = [
-        [Gosu::KbUp, Gosu::KbRight, Gosu::KbDown, Gosu::KbLeft, Gosu::KbSpace, Gosu::KbX, Gosu::KbZ, Gosu::KbC]
-      ]
-    end
-
     def form=(form)
       @form = form
     end
@@ -33,18 +27,12 @@ class Options
       @lang = SB.lang
       @sound_volume = SB.sound_volume
       @music_volume = SB.music_volume
-      @controls_opt = 0
-      # set_controls_text
     end
-
-    # def set_controls_text
-    #   @controls_text.text = SB.text("controls_#{@controls_opt}".to_sym)
-    # end
 
     def get_menu
       @menu = [
         MenuButton.new(550, :save, false, 219) {
-          SB.save_options(@controls[@controls_opt])
+          SB.save_options
           @form.go_to_section 0
         },
         MenuButton.new(550, :cancel, true, 409) {
@@ -57,11 +45,9 @@ class Options
         MenuText.new(:lang_name, 590, 200, 320, :center),
         MenuArrowButton.new(400, 192, 'Left') {
           SB.change_lang(-1)
-          # set_controls_text
         },
         MenuArrowButton.new(744, 192, 'Right') {
           SB.change_lang
-          # set_controls_text
         },
         MenuText.new(:sound_volume, 20, 270),
         (@s_v_text = MenuNumber.new(SB.sound_volume, 590, 270, :center)),

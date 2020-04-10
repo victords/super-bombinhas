@@ -172,17 +172,17 @@ class FormSection
           break
         end
       end
-      if KB.key_pressed? Gosu::KbDown or (KB.key_pressed? Gosu::KbRight and @cur_btn.is_a? Button)
+      if SB.key_pressed?(:down) || SB.key_pressed?(:right) && @cur_btn.is_a?(Button)
         @cur_btn_index += 1
         @cur_btn_index = 0 if @cur_btn_index == @buttons.length
         @cur_btn.unfocus if @cur_btn.respond_to? :unfocus
-      elsif KB.key_pressed? Gosu::KbUp or (KB.key_pressed? Gosu::KbLeft and @cur_btn.is_a? Button)
+      elsif SB.key_pressed?(:up) || SB.key_pressed?(:left) && @cur_btn.is_a?(Button)
         @cur_btn_index -= 1
         @cur_btn_index = @buttons.length - 1 if @cur_btn_index < 0
         @cur_btn.unfocus if @cur_btn.respond_to? :unfocus
-      elsif KB.key_pressed? Gosu::KbReturn or (KB.key_pressed? Gosu::KbSpace and @cur_btn.is_a? Button)
+      elsif SB.key_pressed?(:confirm)
         @cur_btn.click if @cur_btn.respond_to? :click
-      elsif @back_btn && KB.key_pressed?(Gosu::KbEscape)
+      elsif @back_btn && SB.key_pressed?(:back)
         @back_btn.click
       end
       @cur_btn = @buttons[@cur_btn_index]

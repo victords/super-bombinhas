@@ -51,7 +51,7 @@ class SBGame < MiniGL::GameWindow
     toggle_fullscreen if KB.key_pressed? Gosu::KbF4
 
     if SB.state == :presentation
-      if KB.key_pressed?(Gosu::KbReturn)
+      if SB.key_pressed?(:confirm)
         SB.state = :menu
         SB.play_song Res.song(:main)
         return
@@ -93,11 +93,15 @@ class SBGame < MiniGL::GameWindow
       SB.player.bomb.update(nil)
       StageMenu.update_end
     elsif SB.state == :paused
+      if SB.key_pressed?(:pause)
+        SB.state = :main
+        return
+      end
       StageMenu.update_paused
     elsif SB.state == :movie
       SB.movie.update
     elsif SB.state == :game_end || SB.state == :game_end_2
-      if KB.key_pressed?(Gosu::KbReturn) || KB.key_pressed?(Gosu::KbSpace)
+      if SB.key_pressed?(:confirm)
         Menu.reset
         SB.state = :menu
       end

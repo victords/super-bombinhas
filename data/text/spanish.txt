@@ -13,7 +13,7 @@ delete			Borrar
 delete_confirm	¿Estás seguro que deseas borrar este juego?
 yes				Sí
 no				No
-help_text		Este es un juego de plataformas. Dependiendo de la opción de controles que hay eligido, utilice las teclas de flecha derecha e izquierda o 'A' y 'D' para mover, barra espaciadora o 'J' para saltar, 'A' o 'K' para ítenes, Shift o 'L' para cambiar el íten y 'S' o 'I' para habilidades. Utilice la flecha hacia arriba para abrir puertas y hablar con bombas amigas, y la flecha hacia abajo para avanzar el texto cuando hablando con ellas.\nDesafortunadamente el juego no ofrece soporte para joystick, pero se puede usar programas como AntiMicro para mapear las teclas a su joystick.
+help_text		Este es un juego de plataformas. Utilice las teclas de flecha derecha e izquierda para moverse, barra espaciadora para saltar, X para ítenes, Z o V para cambiar el íten y C para habilidades. Utilice la flecha hacia arriba para abrir puertas y hablar con bombas amigas, y la flecha hacia abajo para avanzar el texto cuando hablando con ellas.\nEl juego también ofrece soporte para joystick, pero el mapeo de botones puede variar.\nUtilice F4 para alternar entre pantalla completa y ventana.
 save			Guardar
 cancel			Cancelar
 language		Lenguaje

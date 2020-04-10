@@ -304,7 +304,7 @@ class Spring < GameObject
         end
         @timer = 0
       end
-    elsif b.collide?(self) and KB.key_pressed?(SB.key[:up])
+    elsif b.collide?(self) and SB.key_pressed?(:up)
       take(section, true, @x - section.map.cam.x + @w / 2, @y - section.map.cam.y + @h / 2)
       @dead = true
       section.obstacles.delete self

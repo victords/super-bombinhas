@@ -85,11 +85,11 @@ class Bomb < GameObject
           @explosion_timer = 0
         end
       end
-      if KB.key_down? SB.key[:left]
+      if SB.key_down?(:left)
         @facing_right = false
         forces.x -= @slipping ? 0.15 : 0.5
       end
-      if KB.key_down?(SB.key[:right])
+      if SB.key_down?(:right)
         @facing_right = true
         forces.x += @slipping ? 0.15 : 0.5
       end
@@ -108,22 +108,22 @@ class Bomb < GameObject
           @jump_frames += 1 if @jump_frames < 30
         end
         @stored_jump -= 1 if @stored_jump > 0
-        if KB.key_pressed?(SB.key[:jump])
+        if SB.key_pressed?(:jump)
           @stored_jump = C::JUMP_TOLERANCE
         end
       end
-      if @jump_frames == 0 && (KB.key_pressed?(SB.key[:jump]) || @stored_jump > 0) || @jump_frames > 0 && KB.key_down?(SB.key[:jump])
+      if @jump_frames == 0 && (SB.key_pressed?(:jump) || @stored_jump > 0) || @jump_frames > 0 && SB.key_down?(:jump)
         @prev_bottom = 0
         forces.y -= (1.5 + @jump_speed * @speed.x.abs) / (0.3 * @jump_frames + 0.33) - 0.1
         set_animation 5
       end
       @stored_jump = 0 if @bottom
 
-      SB.player.change_item if KB.key_pressed? SB.key[:next]
-      SB.player.use_item section if KB.key_pressed? SB.key[:item]
+      SB.player.change_item if SB.key_pressed?(:prev) || SB.key_pressed?(:next)
+      SB.player.use_item section if SB.key_pressed? :item
 
       if @can_use_ability
-        if KB.key_pressed? SB.key[:ab]
+        if SB.key_pressed? :ability
           if @type == :verde
             explode(false); @can_use_ability = false; @cooldown = C::EXPLODE_COOLDOWN
           elsif @type == :branca

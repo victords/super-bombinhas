@@ -142,20 +142,20 @@ class World
 
     @stages.each { |i| i.update }
 
-    if KB.key_pressed? Gosu::KbEscape or KB.key_pressed? Gosu::KbBackspace
+    if SB.key_pressed?(:back)
       Menu.reset
       SB.state = :menu
-    elsif KB.key_pressed? Gosu::KbSpace or KB.key_pressed? Gosu::KbReturn
+    elsif SB.key_pressed?(:confirm)
       @stages[@cur].select(@loaded_stage)
-    elsif @cur > 0 and (KB.key_pressed? Gosu::KbLeft or KB.key_pressed? Gosu::KbDown)
+    elsif @cur > 0 && (SB.key_pressed?(:left) || SB.key_pressed?(:down))
       @cur -= 1
       set_bomb_position
-    elsif @cur < @enabled_stage_count - 1 and (KB.key_pressed? Gosu::KbRight or KB.key_pressed? Gosu::KbUp)
+    elsif @cur < @enabled_stage_count - 1 && (SB.key_pressed?(:right) || SB.key_pressed?(:up))
       @cur += 1
       set_bomb_position
-    elsif KB.key_pressed? Gosu::KbLeftShift and @num > 1
+    elsif SB.key_pressed?(:prev) and @num > 1
       change_world(@num - 1)
-    elsif KB.key_pressed? Gosu::KbRightShift and @num < SB.player.last_world
+    elsif SB.key_pressed?(:next) and @num < SB.player.last_world
       change_world(@num + 1)
     end
   end

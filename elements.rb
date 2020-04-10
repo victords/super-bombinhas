@@ -105,7 +105,7 @@ module Speech
       elsif @facing_right and SB.player.bomb.bounds.x < @x + @w / 2
         @facing_right = false
       end
-      if KB.key_pressed? SB.key[:up]
+      if SB.key_pressed? :up
         @speaking = !@speaking
         if @speaking
           @active = false
@@ -113,7 +113,7 @@ module Speech
           @page = 0
           set_animation(@indices[0])
         end
-      elsif @speaking and KB.key_pressed? SB.key[:down]
+      elsif @speaking and SB.key_pressed? :down
         if @page < @msg.size - 1
           @page += 1
         else
@@ -219,7 +219,7 @@ class Door < GameObject
       section.active_object = nil
     end
     if not @locked and not @opening and collide
-      if KB.key_pressed? SB.key[:up]
+      if SB.key_pressed? :up
         set_animation 1
         @opening = true
       end
@@ -1113,7 +1113,7 @@ class Monep < GameObject
           @timer = 0
         elsif @state == :speaking
           @timer += 1
-          if @timer == 600 or KB.key_pressed? Gosu::KbReturn or KB.key_pressed? SB.key[:up]
+          if @timer == 600 or SB.key_pressed?(:confirm)
             section.unset_fixed_camera
             set_animation 0
             @state = :waiting
@@ -1487,10 +1487,10 @@ class Box < SBGameObject
   def update(section)
     b = SB.player.bomb
     obst = section.get_obstacles(@x, @y)
-    if b.left == self && KB.key_down?(Gosu::KbLeft)
+    if b.left == self && SB.key_down?(:left)
       move(Vector.new(-MOVE_SPEED, 0), obst, section.ramps)
       b.move(Vector.new(-MOVE_SPEED, 0), section.get_obstacles(b.x, b.y), section.ramps)
-    elsif b.right == self && KB.key_down?(Gosu::KbRight)
+    elsif b.right == self && SB.key_down?(:right)
       move(Vector.new(MOVE_SPEED, 0), obst, section.ramps)
       b.move(Vector.new(MOVE_SPEED, 0), section.get_obstacles(b.x, b.y), section.ramps)
     else

@@ -197,7 +197,7 @@ class StageMenu
 
     def update_end
       if @stage_end_timer < 30 * @stage_end_comps.length
-        if KB.key_pressed?(Gosu::KbReturn)
+        if SB.key_pressed?(:confirm)
           @stage_end_timer = 30 * @stage_end_comps.length
         else
           @stage_end_timer += 1

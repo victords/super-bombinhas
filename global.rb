@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Super Bombinhas.  If not, see <https://www.gnu.org/licenses/>.
 
-# require 'joystick'
 require 'minigl'
 require 'fileutils'
 
@@ -48,7 +47,7 @@ end
 
 class SB
   class << self
-    attr_reader :font, :big_font, :small_font, :text_helper, :big_text_helper, :small_text_helper, :save_dir, :save_data, :lang, :key
+    attr_reader :font, :big_font, :small_font, :text_helper, :big_text_helper, :small_text_helper, :save_dir, :save_data, :lang
     attr_accessor :state, :player, :world, :stage, :movie, :music_volume, :sound_volume
 
     def initialize(save_dir)
@@ -76,14 +75,18 @@ class SB
 
       @save_dir = save_dir
       @key = {
-        up:    Gosu::KbUp,
-        right: Gosu::KbRight,
-        down:  Gosu::KbDown,
-        left:  Gosu::KbLeft,
-        jump:  Gosu::KbSpace,
-        item:  Gosu::KbX,
-        next:  Gosu::KbZ,
-        ab:    Gosu::KbC
+        up:      [Gosu::KB_UP, Gosu::GP_0_UP],
+        right:   [Gosu::KB_RIGHT, Gosu::GP_0_RIGHT],
+        down:    [Gosu::KB_DOWN, Gosu::GP_0_DOWN],
+        left:    [Gosu::KB_LEFT, Gosu::GP_0_LEFT],
+        jump:    [Gosu::KB_SPACE, Gosu::GP_0_BUTTON_0],
+        item:    [Gosu::KB_X, Gosu::GP_0_BUTTON_1],
+        ability: [Gosu::KB_C, Gosu::GP_0_BUTTON_2],
+        prev:    [Gosu::KB_Z, Gosu::GP_0_BUTTON_9],
+        next:    [Gosu::KB_V, Gosu::GP_0_BUTTON_10],
+        confirm: [Gosu::KB_RETURN, Gosu::GP_0_BUTTON_1],
+        back:    [Gosu::KB_ESCAPE, Gosu::KB_BACKSPACE, Gosu::GP_0_BUTTON_0],
+        pause:   [Gosu::KB_ESCAPE, Gosu::KB_BACKSPACE, Gosu::GP_0_BUTTON_6]
       }
       options_path = "#{save_dir}/options"
       if File.exist?(options_path)
@@ -102,7 +105,6 @@ class SB
         create_options(options_path)
       end
 
-      Options.initialize
       Menu.initialize
     end
 
@@ -112,8 +114,16 @@ class SB
       @music_volume = 10
       FileUtils.mkdir_p(@save_dir)
       File.open(options_path, 'w') do |f|
-        f.print "#{@lang},#{@sound_volume},#{@music_volume},#{@key.values.join(',')}"
+        f.print "#{@lang},#{@sound_volume},#{@music_volume}"
       end
+    end
+
+    def key_down?(id)
+      @key[id].any? { |k| KB.key_down?(k) }
+    end
+
+    def key_pressed?(id)
+      @key[id].any? { |k| KB.key_pressed?(k) }
     end
 
     def text(id)
@@ -153,10 +163,9 @@ class SB
       Gosu::Song.current_song.volume = vol * 0.1 if Gosu::Song.current_song and type == 'music'
     end
 
-    def save_options(controls)
-      @key.keys.each_with_index { |k, i| @key[k] = controls[i] }
+    def save_options
       File.open("#{@save_dir}/options", 'w') do |f|
-        f.print("#{@lang},#{@sound_volume},#{@music_volume},#{@key.values.join(',')}")
+        f.print("#{@lang},#{@sound_volume},#{@music_volume}")
       end
     end
 
@@ -330,98 +339,3 @@ class SB
     end
   end
 end
-
-# class JSHelper
-#   attr_reader :is_valid
-#
-#   def initialize(index)
-#     @j = Joystick::Device.new "/dev/input/js#{index}"
-#     @axes = {}
-#     @axes_prev = {}
-#     @btns = {}
-#     @btns_prev = {}
-#     if @j
-#       e = @j.event(true)
-#       while e
-#         if e.type == :axis
-#           @axes[e.number] = @axes_prev[e.number] = 0
-#         else
-#           @btns[e.number] = @btns_prev[e.number] = 0
-#         end
-#         e = @j.event(true)
-#       end
-#       @is_valid = true
-#     else
-#       @is_valid = false
-#     end
-#   end
-#
-#   def update
-#     return unless @is_valid
-#
-#     @axes_prev.keys.each do |k|
-#       @axes_prev[k] = 0
-#     end
-#     @btns_prev.keys.each do |k|
-#       @btns_prev[k] = 0
-#     end
-#
-#     e = @j.event(true)
-#     while e
-#       if e.type == :axis
-#         @axes_prev[e.number] = @axes[e.number]
-#         @axes[e.number] = e.value
-#       else
-#         @btns_prev[e.number] = @btns[e.number]
-#         @btns[e.number] = e.value
-#       end
-#       e = @j.event(true)
-#     end
-#   end
-#
-#   def button_down(btn)
-#     return false unless @is_valid
-#     @btns[btn] == 1
-#   end
-#
-#   def button_pressed(btn)
-#     return false unless @is_valid
-#     @btns[btn] == 1 && @btns_prev[btn] == 0
-#   end
-#
-#   def button_released(btn)
-#     return false unless @is_valid
-#     @btns[btn] == 0 && @btns_prev[btn] == 1
-#   end
-#
-#   def axis_down(axis, dir)
-#     return false unless @is_valid
-#     return @axes[axis+1] < 0 if dir == :up
-#     return @axes[axis] > 0 if dir == :right
-#     return @axes[axis+1] > 0 if dir == :down
-#     return @axes[axis] < 0 if dir == :left
-#     false
-#   end
-#
-#   def axis_pressed(axis, dir)
-#     return false unless @is_valid
-#     return @axes[axis+1] < 0 && @axes_prev[axis+1] >= 0 if dir == :up
-#     return @axes[axis] > 0 && @axes_prev[axis] <= 0 if dir == :right
-#     return @axes[axis+1] > 0 && @axes_prev[axis+1] <= 0 if dir == :down
-#     return @axes[axis] < 0 && @axes_prev[axis] >= 0 if dir == :left
-#     false
-#   end
-#
-#   def axis_released(axis, dir)
-#     return false unless @is_valid
-#     return @axes[axis+1] >= 0 && @axes_prev[axis+1] < 0 if dir == :up
-#     return @axes[axis] <= 0 && @axes_prev[axis] > 0 if dir == :right
-#     return @axes[axis+1] <= 0 && @axes_prev[axis+1] > 0 if dir == :down
-#     return @axes[axis] >= 0 && @axes_prev[axis] < 0 if dir == :left
-#     false
-#   end
-#
-#   def close
-#     @j.close if @is_valid
-#   end
-# end

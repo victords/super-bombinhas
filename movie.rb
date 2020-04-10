@@ -209,7 +209,7 @@ class Movie
       end
     else
       status = @scenes[@scene].update
-      @changing = 0 if status == :finish or KB.key_pressed? Gosu::KbReturn or KB.key_pressed? Gosu::KbSpace
+      @changing = 0 if status == :finish or SB.key_pressed?(:confirm)
     end
   end
 

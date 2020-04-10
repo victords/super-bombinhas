@@ -61,7 +61,7 @@ class Stage
 
   def update
     if @starting
-      @timer = 240 if @timer < 240 and (KB.key_pressed? Gosu::KbReturn or KB.key_pressed? Gosu::KbSpace)
+      @timer = 240 if @timer < 240 && SB.key_pressed?(:confirm)
       if @timer < 240
         @alpha -= 5 if @alpha > 125
       else

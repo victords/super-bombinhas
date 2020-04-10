@@ -13,7 +13,7 @@ delete			Apagar
 delete_confirm	Tem certeza que quer apagar este jogo?
 yes				Sim
 no				Não
-help_text		Este é um jogo de plataforma. Dependendo da opção de controles que você escolher, use as setas esquerda e direita ou 'A' e 'D' para se mover, espaço ou 'J' para pular, 'A' ou 'K' para itens, Shift ou 'L' para alternar entre itens e 'S' ou 'I' para habilidades. Use a seta para cima ou 'W' para abrir portas e falar com bombas amigas, e a seta para baixo ou 'S' para avançar o texto enquanto fala com elas.\nInfelizmente, o jogo não suporta joysticks, mas você pode usar programas como o AntiMicro para mapear as teclas para o seu joystick.
+help_text		Este é um jogo de plataforma. Use as setas esquerda e direita para se mover, espaço para pular, X para itens, Z ou V para alternar entre itens e C para habilidades. Use a seta para cima para abrir portas e falar com bombas amigas, e a seta para baixo para avançar o texto enquanto fala com elas.\nO jogo também suporta joysticks, mas o mapeamento de botões pode variar.\nUse F4 para alternar entre tela cheia e janela.
 save			Salvar
 cancel			Cancelar
 language		Idioma
