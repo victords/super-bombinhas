@@ -165,7 +165,6 @@ class Section
     @tileset = Res.tileset s[3], 16, 16
     @bgm = Res.song s[4]
     @map = Map.new C::TILE_SIZE, C::TILE_SIZE, t_x_count, t_y_count
-    # @map.set_camera 4500, 1200
     @size = @map.get_absolute_size
     @dark = s.length > 5
   end
@@ -326,7 +325,7 @@ class Section
     @tile_3_index = 0
     @tile_4_index = 0
 
-    @margin = MiniGL::Vector.new((C::SCREEN_WIDTH - SB.player.bomb.w) / 2, (C::SCREEN_HEIGHT - SB.player.bomb.h) / 2)
+    @margin = Vector.new((C::SCREEN_WIDTH - SB.player.bomb.w) / 2, (C::SCREEN_HEIGHT - SB.player.bomb.h) / 2)
     do_warp bomb_x, bomb_y
 
     SB.play_song @bgm
@@ -334,8 +333,15 @@ class Section
 
   def do_warp(x, y)
     SB.player.bomb.do_warp x, y
-    @map.set_camera SB.player.bomb.x - @margin.x, SB.player.bomb.y - @margin.y
+    @camera_timer = 0
+    @camera_moving = false
+    @camera_ref_pos = Vector.new(SB.player.bomb.x, SB.player.bomb.y)
+    update_camera
     @warp = nil
+  end
+
+  def update_camera
+    @map.set_camera(@camera_ref_pos.x - @margin.x, @camera_ref_pos.y - @margin.y)
   end
 
   def get_obstacles(x, y, w = 0, h = 0)
@@ -514,7 +520,31 @@ class Section
         return
       end
 
-      @map.set_camera((SB.player.bomb.x - @margin.x).round, (SB.player.bomb.y - @margin.y).round)
+      d_x = SB.player.bomb.x - @camera_ref_pos.x
+      d_y = SB.player.bomb.y - @camera_ref_pos.y
+      should_move_x = d_x.abs > 0.5
+      should_move_y = d_y.abs > 0.5
+      moved_y = false
+      if should_move_x
+        @camera_ref_pos.x += C::CAMERA_HORIZ_SPEED * d_x
+      end
+      if should_move_y
+        if @camera_moving
+          @camera_ref_pos.y += C::CAMERA_VERTICAL_SPEED * d_y
+          moved_y = true
+        else
+          @camera_timer += 1
+          if @camera_timer >= C::CAMERA_VERTICAL_DELAY
+            @camera_moving = true
+          end
+        end
+      elsif @camera_moving
+        @camera_moving = false
+        @camera_timer = 0
+      end
+
+      update_camera if should_move_x || moved_y
+
       if SB.key_pressed?(:pause)
         SB.state = :paused
       end
