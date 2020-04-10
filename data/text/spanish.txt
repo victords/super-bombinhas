@@ -26,10 +26,6 @@ controls_1		WASD, JKLI
 full_screen		Pulsa F4 para alternar entre ventana y pantalla completa
 credits_text	- Design, Programación y Gráficos -\nVictor David Santos\n\n- Música -\nZergananda (zergananda.bandcamp.com)\n\n- Agradecimientos Especiales -\n...\n...
 ch_st_instruct	Pulsa 'Enter' para empezar.\nPulsa 'Esc' o 'Backspace' para volver.
-left_shift		shift izq.
-right_shift		shift der.
-left_arrow		flecha izq.
-right_arrow		flecha der.
 stage			Etapa
 loading			Cargando
 lives			Vidas

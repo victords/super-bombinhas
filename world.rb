@@ -238,19 +238,19 @@ class World
 
     if @num > 1
       @arrow.draw 260, 10, 0, 2, 2, tint_color
-      SB.small_text_helper.write_breaking SB.text(:left_shift), 315, 13, 60, :right, 0, @trans_alpha
+      SB.text_helper.write_line 'Z', 297, 15, :center, 0, @trans_alpha
     end
     if @num < SB.player.last_world
       @arrow.draw 790, 10, 0, -2, 2, tint_color
-      SB.small_text_helper.write_breaking SB.text(:right_shift), 735, 13, 60, :left, 0, @trans_alpha
+      SB.text_helper.write_line 'V', 753, 15, :center, 0, @trans_alpha
     end
     if @cur > 0
       @arrow.draw 260, 47, 0, 2, 2, tint_color
-      SB.small_text_helper.write_breaking SB.text(:left_arrow), 315, 50, 60, :right, 0, @trans_alpha
+      SB.text_helper.write_line '←', 297, 52, :center, 0, @trans_alpha
     end
     if @cur < @enabled_stage_count - 1
       @arrow.draw 790, 47, 0, -2, 2, tint_color
-      SB.small_text_helper.write_breaking SB.text(:right_arrow), 735, 50, 60, :left, 0, @trans_alpha
+      SB.text_helper.write_line '→', 753, 52, :center, 0, @trans_alpha
     end
   end
 end
