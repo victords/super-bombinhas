@@ -23,8 +23,9 @@ music_volume	Music volume
 controls		Controls
 controls_0		Arrows, Space, Shift, A, S
 controls_1		WASD, JKLI
-credits_text	- Design, Programming, Graphics and Music -\nVictor David Santos\n\n- Special Thanks -\n...\n...\n...
-ch_st_instruct	Press 'Enter' or 'Space' to start.\nPress 'Esc' or 'Backspace' to go back.
+full_screen		Press F4 to alternate between window and full screen
+credits_text	- Design, Programming and Graphics -\nVictor David Santos\n\n- Music -\nZergananda (zergananda.bandcamp.com)\n\n- Special Thanks -\n...\n...\n...
+ch_st_instruct	Press 'Enter' to start.\nPress 'Esc' or 'Backspace' to go back.
 left_shift		left shift
 right_shift		right shift
 left_arrow		left arrow

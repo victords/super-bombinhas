@@ -23,10 +23,6 @@ require_relative 'movie'
 
 class SBGame < MiniGL::GameWindow
   def initialize
-    super(C::SCREEN_WIDTH, C::SCREEN_HEIGHT, false, Vector.new(0, 0.7))
-    G.ramp_slip_threshold = 0.8
-    G.ramp_slip_force = 0.8
-
     os = RbConfig::CONFIG['host_os']
     dir =
       if /linux/ =~ os
@@ -34,7 +30,12 @@ class SBGame < MiniGL::GameWindow
       else
         "#{Dir.home}/AppData/Local/Aleva Games/Super Bombinhas"
       end
-	  SB.initialize dir
+    SB.load_options(dir)
+
+    super(C::SCREEN_WIDTH, C::SCREEN_HEIGHT, SB.full_screen, Vector.new(0, 0.7))
+    G.ramp_slip_threshold = 0.8
+    G.ramp_slip_force = 0.8
+	  SB.initialize
 
     @logo = Res.img(:ui_alevaLogo)
     @timer = @state = @alpha = 0
@@ -48,7 +49,8 @@ class SBGame < MiniGL::GameWindow
     KB.update
     Mouse.update
 
-    toggle_fullscreen if KB.key_pressed? Gosu::KbF4
+    SB.toggle_full_screen if KB.key_pressed?(Gosu::KB_F4)
+    SB.full_screen_toggled if KB.key_down?(Gosu::KB_LEFT_ALT) && KB.key_pressed?(Gosu::KB_RETURN)
 
     if SB.state == :presentation
       if SB.key_pressed?(:confirm)
@@ -158,3 +160,4 @@ class MiniGL::GameObject
 end
 
 SBGame.new.show
+SB.save_options

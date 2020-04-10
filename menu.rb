@@ -112,6 +112,7 @@ class Menu
           @form.go_to_section 6
         },
         MenuButton.new(470, :exit, true) {
+          SB.save_options
           exit
         }
       ], [], [

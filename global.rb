@@ -47,10 +47,31 @@ end
 
 class SB
   class << self
-    attr_reader :font, :big_font, :small_font, :text_helper, :big_text_helper, :small_text_helper, :save_dir, :save_data, :lang
+    attr_reader :font, :big_font, :small_font, :text_helper, :big_text_helper, :small_text_helper, :save_dir, :save_data, :lang, :full_screen
     attr_accessor :state, :player, :world, :stage, :movie, :music_volume, :sound_volume
 
-    def initialize(save_dir)
+    def load_options(save_dir)
+      @save_dir = save_dir
+      options_path = "#{save_dir}/options"
+      if File.exist?(options_path)
+        File.open(options_path) do |f|
+          content = f.read
+          if content.empty?
+            create_options
+          else
+            data = content.chomp.split(',')
+            @lang = data[0].to_sym
+            @sound_volume = data[1].to_i
+            @music_volume = data[2].to_i
+            @full_screen = data[3].to_i > 0
+          end
+        end
+      else
+        create_options
+      end
+    end
+
+    def initialize
       @state = :presentation
 
       Res.retro_images = true
@@ -73,7 +94,6 @@ class SB
         end
       end
 
-      @save_dir = save_dir
       @key = {
         up:      [Gosu::KB_UP, Gosu::GP_0_UP],
         right:   [Gosu::KB_RIGHT, Gosu::GP_0_RIGHT],
@@ -88,34 +108,32 @@ class SB
         back:    [Gosu::KB_ESCAPE, Gosu::KB_BACKSPACE, Gosu::GP_0_BUTTON_0],
         pause:   [Gosu::KB_ESCAPE, Gosu::KB_BACKSPACE, Gosu::GP_0_BUTTON_6]
       }
-      options_path = "#{save_dir}/options"
-      if File.exist?(options_path)
-        File.open(options_path) do |f|
-          content = f.read
-          if content.empty?
-            create_options(options_path)
-          else
-            data = content.chomp.split(',')
-            @lang = data[0].to_sym
-            @sound_volume = data[1].to_i
-            @music_volume = data[2].to_i
-          end
-        end
-      else
-        create_options(options_path)
-      end
 
       Menu.initialize
     end
 
-    def create_options(options_path)
+    def create_options
       @lang = :english
       @sound_volume = 10
       @music_volume = 10
+      @full_screen = false
       FileUtils.mkdir_p(@save_dir)
-      File.open(options_path, 'w') do |f|
-        f.print "#{@lang},#{@sound_volume},#{@music_volume}"
+      save_options
+    end
+
+    def save_options
+      File.open("#{@save_dir}/options", 'w') do |f|
+        f.print("#{@lang},#{@sound_volume},#{@music_volume},#{@full_screen ? 1 : 0}")
       end
+    end
+
+    def toggle_full_screen
+      @full_screen = !@full_screen
+      G.window.toggle_fullscreen
+    end
+
+    def full_screen_toggled
+      @full_screen = !@full_screen
     end
 
     def key_down?(id)
@@ -161,12 +179,6 @@ class SB
       vol = 10 if vol > 10
       instance_eval("@#{type}_volume = #{vol}")
       Gosu::Song.current_song.volume = vol * 0.1 if Gosu::Song.current_song and type == 'music'
-    end
-
-    def save_options
-      File.open("#{@save_dir}/options", 'w') do |f|
-        f.print("#{@lang},#{@sound_volume},#{@music_volume}")
-      end
     end
 
     def new_game(name, index)

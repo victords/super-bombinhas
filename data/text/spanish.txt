@@ -23,8 +23,9 @@ music_volume	Volumen de la música
 controls		Controles
 controls_0		Flechas, Espacio, Shift, A, S
 controls_1		WASD, JKLI
-credits_text	- Design, Programación, Gráficos y Música -\nVictor David Santos\n\n- Agradecimientos Especiales -\n...\n...
-ch_st_instruct	Pulsa 'Enter' o 'Espacio' para empezar.\nPulsa 'Esc' o 'Backspace' para volver.
+full_screen		Pulsa F4 para alternar entre ventana y pantalla completa
+credits_text	- Design, Programación y Gráficos -\nVictor David Santos\n\n- Música -\nZergananda (zergananda.bandcamp.com)\n\n- Agradecimientos Especiales -\n...\n...
+ch_st_instruct	Pulsa 'Enter' para empezar.\nPulsa 'Esc' o 'Backspace' para volver.
 left_shift		shift izq.
 right_shift		shift der.
 left_arrow		flecha izq.

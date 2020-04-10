@@ -68,7 +68,8 @@ class Options
         MenuArrowButton.new(744, 332, 'Right') {
           SB.change_volume('music')
           @m_v_text.num = SB.music_volume
-        }
+        },
+        MenuText.new(:full_screen, C::SCREEN_WIDTH / 2, 410, C::SCREEN_WIDTH, :center)
       ] if @menu.nil?
       @menu
     end
