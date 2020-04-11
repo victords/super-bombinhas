@@ -324,7 +324,15 @@ class Elevator < SBGameObject
     @points = []
     min_x = x; min_y = y
     max_x = x; max_y = y
-    ps = a[2..-1]
+
+    if a[2].index(',')
+      @stop_time = 30
+      ps = a[2..-1]
+    else
+      @stop_time = a[2].to_i
+      ps = a[3..-1]
+    end
+
     ps.each do |p|
       coords = p.split ','
       p_x = coords[0].to_i * C::TILE_SIZE; p_y = coords[1].to_i * C::TILE_SIZE
@@ -353,7 +361,7 @@ class Elevator < SBGameObject
   def update(section)
     if @active
       b = SB.player.bomb
-      cycle @points, @speed_m, section.passengers, section.get_obstacles(b.x, b.y), section.ramps
+      cycle @points, @speed_m, section.passengers, section.get_obstacles(b.x, b.y), section.ramps, @stop_time
     end
     animate @indices, 8
   end
