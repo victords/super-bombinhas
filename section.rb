@@ -523,23 +523,27 @@ class Section
       d_x = SB.player.bomb.x - @camera_ref_pos.x
       d_y = SB.player.bomb.y - @camera_ref_pos.y
       should_move_x = d_x.abs > 0.5
-      should_move_y = d_y.abs > 0.5
       moved_y = false
+
       if should_move_x
         @camera_ref_pos.x += C::CAMERA_HORIZ_SPEED * d_x
       end
-      if should_move_y
-        if @camera_moving
+
+      d_y_abs = d_y.abs
+      if @camera_moving
+        if d_y_abs > 0.5
           @camera_ref_pos.y += C::CAMERA_VERTICAL_SPEED * d_y
           moved_y = true
         else
-          @camera_timer += 1
-          if @camera_timer >= C::CAMERA_VERTICAL_DELAY
-            @camera_moving = true
-          end
+          @camera_moving = false
+          @camera_timer = 0
         end
-      elsif @camera_moving
-        @camera_moving = false
+      elsif d_y_abs > C::CAMERA_VERTICAL_TOLERANCE
+        @camera_timer += d_y_abs / C::CAMERA_VERTICAL_TOLERANCE
+        if @camera_timer >= C::CAMERA_VERTICAL_DELAY
+          @camera_moving = true
+        end
+      else
         @camera_timer = 0
       end
 
