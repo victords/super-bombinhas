@@ -44,14 +44,24 @@ class Stage
     end
 
     SB.player.reset(loaded)
-    reset_switches
     @cur_entrance = @entrances[loaded ? SB.save_data[7].to_i : 0]
     @cur_section = @cur_entrance[:section]
+    if SB.player.startup_item
+      @switches << {
+        type: Section::ELEMENT_TYPES[SB.player.startup_item],
+        x: 0,
+        y: 0,
+        section: @cur_section,
+        state: used_switches.size > 0 ? :used : :taken,
+        index: @switches.length
+      }
+    end
 
     reset
   end
 
   def reset
+    reset_switches
     @panel_x = -600
     @timer = 0
     @alpha = 255
@@ -123,7 +133,6 @@ class Stage
           s.loaded = false
         end
         SB.player.reset
-        reset_switches
         @cur_section = @cur_entrance[:section]
         reset
       end

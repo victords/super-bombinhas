@@ -19,9 +19,9 @@ require_relative 'bomb'
 
 class Player
   attr_reader :score, :items, :cur_item_type, :specs
-  attr_accessor :name, :last_world, :last_stage, :lives, :stage_score
+  attr_accessor :name, :last_world, :last_stage, :lives, :stage_score, :startup_item, :temp_startup_item
 
-  def initialize(name, last_world = 1, last_stage = 1, bomb = :azul, hps = nil, lives = 5, score = 0, specs = '')
+  def initialize(name, last_world = 1, last_stage = 1, bomb = :azul, hps = nil, lives = 5, score = 0, specs = '', startup_item = nil)
     @name = name
     @last_world = last_world
     @last_stage = last_stage
@@ -43,6 +43,7 @@ class Player
     @stage_score = 0
     @specs = specs.split(',')
     @items = {}
+    @startup_item = startup_item
   end
 
   def dead?

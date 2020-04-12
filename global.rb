@@ -205,7 +205,7 @@ class SB
       data = IO.readlines(file_name).map { |l| l.chomp }
       world_stage = data[1].split('-')
       last_world_stage = data[2].split('-')
-      @player = Player.new(data[0], last_world_stage[0].to_i, last_world_stage[1].to_i, data[3].to_sym, data[8], data[4].to_i, data[5].to_i, data[6])
+      @player = Player.new(data[0], last_world_stage[0].to_i, last_world_stage[1].to_i, data[3].to_sym, data[8], data[4].to_i, data[5].to_i, data[6], data[12].to_i)
       @world = World.new(world_stage[0].to_i, world_stage[1].to_i, true)
       @save_file_name = file_name
       @save_data = data
@@ -256,6 +256,8 @@ class SB
 
     def next_stage(continue = true)
       # Res.clear
+      @player.startup_item = @player.temp_startup_item
+      @player.temp_startup_item = nil
       @prev_stage = @bonus = nil
       if @world.num < @player.last_world ||
          @stage.num != @player.last_stage ||
@@ -338,6 +340,7 @@ class SB
       @save_data[9] = stage_num ? '' : @stage.switches_by_state(:taken).concat(@stage.switches_by_state(:taken_temp_used)).sort.join(',')
       @save_data[10] = stage_num ? '' : @stage.switches_by_state(:used).sort.join(',')
       @save_data[11] = special_world.to_s || ''
+      @save_data[12] = @player.startup_item.to_s
       File.open(@save_file_name, 'w') do |f|
         @save_data.each { |s| f.print(s + "\n") }
       end

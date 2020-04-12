@@ -746,8 +746,6 @@ class Projectile < GameObject
 
     super x, y, w, h, "sprite_Projectile#{type}", Vector.new(x_g, y_g), cols, rows
     @active_bounds = Rectangle.new @x - 30, @y - 30, @w + 60, @h + 60
-    # @center_x = (@w * 0.5 - x_g) / @img[0].width
-    # @center_y = (@h * 0.5 - y_g) / @img[0].height
     @angle = angle
     @owner = owner
     @indices = indices
