@@ -117,6 +117,7 @@ class Section
     Sahiss,
     SaveBombie,
     Shep,
+    Shield,
     SideSpring,
     Snep,
     Spec,

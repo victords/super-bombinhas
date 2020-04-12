@@ -201,6 +201,33 @@ class Attack1 < FloatingItem
   end
 end
 
+class Shield < FloatingItem
+  def initialize(x, y, args, section, switch)
+    set_icon :shield
+    if check(switch)
+      @bomb_type = :azul
+      return
+    end
+    super x + 2, y + 2, 28, 28, :sprite_shield, nil, 4, 2,
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7], 6, :azul
+  end
+
+  def update(section)
+    super(section) do
+      take_anim(section, true)
+    end
+  end
+
+  def use(section, switch)
+    b = SB.player.bomb
+    return false if b.type != @bomb_type || b.shielded
+
+    b.set_shield
+    set_switch(switch)
+    true
+  end
+end
+
 class Heart < FloatingItem
   def initialize(x, y, args, section)
     args = (args || '1').to_i

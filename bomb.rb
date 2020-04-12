@@ -18,7 +18,7 @@
 require 'minigl'
 
 class Bomb < GameObject
-  attr_reader :type, :name, :hp, :saved_hp, :facing_right, :can_use_ability, :will_explode
+  attr_reader :type, :name, :hp, :saved_hp, :facing_right, :can_use_ability, :will_explode, :shielded
   attr_accessor :active, :power, :slipping
 
   def initialize(type, hp)
@@ -49,6 +49,7 @@ class Bomb < GameObject
     @explosion_timer = 0
     @explosion_counter = 10
 
+    @shield_fx = Sprite.new(0, 0, :fx_shield, 2, 1)
     @aura_fx = Sprite.new(0, 0, :fx_aura, 2, 1)
 
     @can_use_ability = true
@@ -68,6 +69,9 @@ class Bomb < GameObject
       if @invulnerable
         @invulnerable_timer += 1
         @invulnerable = false if @invulnerable_timer == @invulnerable_time
+      end
+      if @shielded
+        @shield_fx.animate([0, 0, 0, 0, 0, 0, 1], 5)
       end
       if @aura
         @aura_fx.animate([0, 1], 5)
@@ -183,6 +187,12 @@ class Bomb < GameObject
     sq_dist <= (obj.is_a?(Chamal) ? @explosion_radius * 1.25 : @explosion_radius)**2
   end
 
+  def set_shield
+    @max_hp += 1
+    @hp += 1
+    @shielded = true
+  end
+
   def collide?(obj)
     bounds.intersect? obj.bounds
   end
@@ -204,6 +214,10 @@ class Bomb < GameObject
       if @hp == 0
         SB.player.die
         return
+      end
+      if @shielded
+        @max_hp -= 1
+        @shielded = false
       end
       set_invulnerable
     end
@@ -260,6 +274,11 @@ class Bomb < GameObject
 
   def draw(map)
     super(map, 2, 2, 255, 0xffffff, nil, @facing_right ? nil : :horiz) unless @invulnerable && @invulnerable_timer % 6 < 3
+    if @shielded
+      @shield_fx.x = @x + @img_gap.x + @img[0].width * 2 - 6
+      @shield_fx.y = @y + @img_gap.y - 8
+      @shield_fx.draw(map, 2, 2)
+    end
     if @aura
       @aura_fx.x = @x - 10; @aura_fx.y = @y - 30
       @aura_fx.draw(map, 2, 2)
