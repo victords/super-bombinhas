@@ -266,8 +266,8 @@ class StageMenu
       @stage_menu.update_lang if StageMenu.ready
     end
 
-    def play_get_item_effect(origin_x, origin_y, is_life = false)
-      @effects << ItemEffect.new(origin_x, origin_y, is_life ? 20 : 770, is_life ? 20 : 30)
+    def play_get_item_effect(origin_x, origin_y, type = nil)
+      @effects << ItemEffect.new(origin_x, origin_y, type == :life ? 20 : type == :star ? 400 : 770, type == :life || type == :star ? 20 : 30)
     end
 
     def draw
@@ -277,6 +277,7 @@ class StageMenu
           e.draw(nil, 2, 2)
         end
         draw_player_dead if SB.player.dead?
+        SB.text_helper.write_line "#{SB.stage.star_count}/5", 400, 10, :center, 0
       elsif SB.state == :paused
         draw_menu
       else # :stage_end

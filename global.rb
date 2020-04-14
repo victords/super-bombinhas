@@ -205,7 +205,7 @@ class SB
       data = IO.readlines(file_name).map { |l| l.chomp }
       world_stage = data[1].split('-')
       last_world_stage = data[2].split('-')
-      @player = Player.new(data[0], last_world_stage[0].to_i, last_world_stage[1].to_i, data[3].to_sym, data[8], data[4].to_i, data[5].to_i, data[6], data[12].to_i)
+      @player = Player.new(data[0], last_world_stage[0].to_i, last_world_stage[1].to_i, data[3].to_sym, data[8], data[4].to_i, data[5].to_i, data[6], data[12] && !data[12].empty? ? data[12].to_i : nil)
       @world = World.new(world_stage[0].to_i, world_stage[1].to_i, true)
       @save_file_name = file_name
       @save_data = data

@@ -138,7 +138,7 @@ class Life < FloatingItem
   def update(section)
     super(section) do
       take section, false
-      StageMenu.play_get_item_effect(@x - section.map.cam.x + @w / 2, @y - section.map.cam.y + @h / 2, true)
+      StageMenu.play_get_item_effect(@x - section.map.cam.x + @w / 2, @y - section.map.cam.y + @h / 2, :life)
     end
   end
 
@@ -500,6 +500,29 @@ class Attack3 < FloatingItem
     b.set_aura(2, 900)
     set_switch(switch)
     true
+  end
+end
+
+class Star < FloatingItem
+  def initialize(x, y, args, section, switch)
+    if switch[:state] == :used
+      SB.stage.get_star
+      return
+    end
+    super x + 4, y + 4, 24, 24, :sprite_star, Vector.new(-8, -8), 3, 1, [0, 1, 2, 1], 10
+  end
+
+  def update(section)
+    super(section) do
+      switch = SB.stage.find_switch(self)
+      use(section, switch)
+      StageMenu.play_get_item_effect(@x - section.map.cam.x + @w / 2, @y - section.map.cam.y + @h / 2, :star)
+    end
+  end
+
+  def use(section, switch)
+    SB.stage.get_star
+    switch[:state] = :temp_used
   end
 end
 

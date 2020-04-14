@@ -127,6 +127,7 @@ class Section
     Sprinny,
     Stalactite,
     StalactiteGenerator,
+    Star,
     Stilty,
     Turner,
     TwinWalls,

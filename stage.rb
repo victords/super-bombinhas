@@ -18,7 +18,7 @@
 require_relative 'section'
 
 class Stage
-  attr_reader :num, :id, :starting, :cur_entrance, :switches
+  attr_reader :num, :id, :starting, :cur_entrance, :switches, :star_count
 
   def initialize(world, num)
     @world = world
@@ -32,6 +32,7 @@ class Stage
       @counter = 0
     end
 
+    @star_count = 0
     @switches = []
     taken_switches = loaded ? eval("[#{SB.save_data[9]}]") : []
     used_switches = loaded ? eval("[#{SB.save_data[10]}]") : []
@@ -61,11 +62,12 @@ class Stage
   end
 
   def reset
-    reset_switches
     @panel_x = -600
     @timer = 0
     @alpha = 255
     @starting = true
+    @star_count = 0
+    reset_switches
     @cur_section.start @switches, @cur_entrance[:x], @cur_entrance[:y]
   end
 
@@ -199,6 +201,10 @@ class Stage
     @stopped = all ? :all : :enemies
     @stopped_timer = 0
     @stop_time_duration = duration
+  end
+
+  def get_star
+    @star_count += 1
   end
 
   def draw
