@@ -35,7 +35,7 @@ module Item
     @icon = Res.img "icon_#{icon}"
   end
 
-  def take(section, store, x = nil, y = nil)
+  def take(section, store, x = nil, y = nil, sound_id = :getItem)
     info = SB.stage.find_switch self
     if store
       SB.player.add_item(info)
@@ -45,6 +45,7 @@ module Item
       use section, info
       info[:state] = :temp_taken_used
     end
+    SB.play_sound(Res.sound(sound_id))
   end
 
   def set_switch(switch)
@@ -120,6 +121,7 @@ class FireRock < FloatingItem
   def update(section)
     super(section) do
       SB.player.stage_score += @score
+      SB.play_sound(Res.sound(:getFire))
     end
   end
 
@@ -137,7 +139,7 @@ class Life < FloatingItem
 
   def update(section)
     super(section) do
-      take section, false
+      take(section, false)
       StageMenu.play_get_item_effect(@x - section.map.cam.x + @w / 2, @y - section.map.cam.y + @h / 2, :life)
     end
   end
@@ -517,6 +519,7 @@ class Star < FloatingItem
       switch = SB.stage.find_switch(self)
       use(section, switch)
       StageMenu.play_get_item_effect(@x - section.map.cam.x + @w / 2, @y - section.map.cam.y + @h / 2, :star)
+      SB.play_sound(Res.sound(:getItem))
     end
   end
 

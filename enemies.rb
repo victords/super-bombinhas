@@ -366,26 +366,28 @@ class Ekips < GameObject
   end
 
   def update(section)
-    if SB.player.bomb.explode?(self) || section.projectile_hit?(self) && !@attacking
+    b = SB.player.bomb
+    if b.explode?(self) || section.projectile_hit?(self) && !@attacking
       SB.player.stage_score += @score
       section.add_score_effect(@x + @w / 2, @y, @score)
       @dead = true
       return
     end
 
-    if SB.player.bomb.over? self
+    if b.over? self
       if @attacking
+        b.bounce
         SB.player.stage_score += @score
         section.add_score_effect(@x + @w / 2, @y, @score)
         @dead = true
         return
       else
-        SB.player.bomb.hit
+        b.hit
       end
-    elsif @attacking and SB.player.bomb.bounds.intersect? @attack_bounds
-      SB.player.bomb.hit
-    elsif SB.player.bomb.collide? self
-      SB.player.bomb.hit
+    elsif @attacking and b.bounds.intersect? @attack_bounds
+      b.hit
+    elsif b.collide? self
+      b.hit
     end
 
     @act_timer += 1

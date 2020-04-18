@@ -120,6 +120,7 @@ class Bomb < GameObject
         @prev_bottom = 0
         forces.y -= (1.5 + @jump_speed * @speed.x.abs) / (0.3 * @jump_frames + 0.33) - 0.1
         set_animation 5
+        SB.play_sound(Res.sound(:jump)) if @jump_frames == 0
       end
       @stored_jump = 0 if @bottom
 
@@ -205,6 +206,7 @@ class Bomb < GameObject
 
   def bounce
     @speed.y = -(C::BOUNCE_SPEED_BASE + (@speed.y / @max_speed.y) * C::BOUNCE_SPEED_INCREMENT)
+    SB.play_sound(Res.sound(:stomp))
   end
 
   def hit(damage = 1)

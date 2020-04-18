@@ -238,6 +238,7 @@ class Door < GameObject
     @lock = nil
     section.active_object = nil
     SB.stage.set_switch self
+    SB.play_sound(Res.sound(:unlock))
   end
 
   def draw(map)
@@ -389,6 +390,7 @@ class SaveBombie < SBGameObject
     if not @saved and SB.player.bomb.collide? self
       section.save_check_point @id, self
       @saved = true
+      SB.play_sound(Res.sound(:checkPoint))
     end
 
     if @saved
