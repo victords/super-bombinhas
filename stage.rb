@@ -97,8 +97,9 @@ class Stage
       return :finish if @time == 0
       status = @cur_section.update(@stopped)
       if status == :finish
-        SB.play_sound Res.sound(:victory)
+        SB.play_sound(Res.sound(:victory), SB.music_volume * 0.1)
         Gosu::Song.current_song.stop
+        SB.player.temp_startup_item = get_startup_item if @star_count >= C::STARS_PER_STAGE
         return :finish
       elsif status == :next_section
         index = @sections.index @cur_section
@@ -205,6 +206,16 @@ class Stage
 
   def get_star
     @star_count += 1
+  end
+
+  def get_startup_item
+    possible_items = [
+      2,  # Attack1
+      8,  # Board
+      44, # Key
+      65, # Shield
+    ]
+    possible_items[rand(possible_items.size)]
   end
 
   def draw

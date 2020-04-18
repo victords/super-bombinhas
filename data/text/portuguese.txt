@@ -36,6 +36,8 @@ save_exit		Salvar e Sair
 stage_complete	Fase completa!
 total			Total
 spec_taken		Spec encontrado?
+stars			Estrelas
+all_stars_found	Obteve um item!
 dead			Você morreu!
 restart			Pressione 'Enter' para recomeçar
 game_over		Fim de jogo!

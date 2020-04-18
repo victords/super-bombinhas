@@ -137,10 +137,10 @@ class StageMenu
             SB.save_and_exit
           }
         ], [], options_comps, [
-          MenuButton.new(350, :continue, false, 219) {
+          MenuButton.new(400, :continue, false, 219) {
             SB.next_stage
           },
-          MenuButton.new(350, :save_exit, false, 409) {
+          MenuButton.new(400, :save_exit, false, 409) {
             SB.next_stage false
           }
         ])
@@ -150,6 +150,7 @@ class StageMenu
         @lives_icon = Res.img :icon_lives
         @hp_icon = Res.img :icon_hp
         @score_icon = Res.img :icon_score
+        @star_icon = Res.img :icon_star
       end
       Options.form = @stage_menu
 
@@ -232,6 +233,7 @@ class StageMenu
       t5 = MenuNumber.new(SB.player.score, 590, 860, :right, next_bonus ? 0xff0000 : 0)
       t5.init_movement
       t5.move_to 590, 260
+      t10 = nil
       unless bonus
         t6 = MenuText.new(:spec_taken, 210, 900)
         t6.init_movement
@@ -239,9 +241,21 @@ class StageMenu
         t7 = MenuText.new(SB.player.specs.index(SB.stage.id) ? :yes : :no, 590, 900, 300, :right)
         t7.init_movement
         t7.move_to 590, 300
+        t8 = MenuText.new(:stars, 210, 940)
+        t8.init_movement
+        t8.move_to 210, 340
+        t9 = MenuText.new("#{SB.stage.star_count}/#{C::STARS_PER_STAGE}", 590, 940, 300, :right)
+        t9.init_movement
+        t9.move_to(590, 340)
+        if SB.stage.star_count >= C::STARS_PER_STAGE
+          t10 = MenuText.new(:all_stars_found, 590, 968, 300, :right)
+          t10.init_movement
+          t10.move_to(590, 368)
+        end
       end
       @stage_end_comps = [p, t1, t2, t3, t4, t5]
-      @stage_end_comps << t6 << t7 unless bonus
+      @stage_end_comps << t6 << t7 << t8 << t9 unless bonus
+      @stage_end_comps << t10 if t10
       @stage_end_timer = 0
       if next_world or next_bonus
         @stage_menu.section(3).clear
@@ -267,17 +281,20 @@ class StageMenu
     end
 
     def play_get_item_effect(origin_x, origin_y, type = nil)
-      @effects << ItemEffect.new(origin_x, origin_y, type == :life ? 20 : type == :star ? 400 : 770, type == :life || type == :star ? 20 : 30)
+      @effects << ItemEffect.new(origin_x, origin_y, type == :life ? 20 : type == :star ? 372 : 770, type == :life || type == :star ? 19 : 30)
     end
 
     def draw
       if SB.state == :main
-        draw_player_stats unless SB.stage.starting
+        unless SB.stage.starting
+          draw_player_stats
+          @star_icon.draw(363, 10, 0, 2, 2)
+          SB.text_helper.write_line("#{SB.stage.star_count}/#{C::STARS_PER_STAGE}", 411, 8, :center, 0)
+        end
         @effects.each do |e|
           e.draw(nil, 2, 2)
         end
         draw_player_dead if SB.player.dead?
-        SB.text_helper.write_line "#{SB.stage.star_count}/5", 400, 10, :center, 0
       elsif SB.state == :paused
         draw_menu
       else # :stage_end
@@ -291,12 +308,12 @@ class StageMenu
                          204, 4, C::PANEL_COLOR,
                          204, 60, C::PANEL_COLOR,
                          4, 60, C::PANEL_COLOR, 0
-      @lives_icon.draw 12, 10, 0, 2, 2
-      SB.font.draw_text p.lives, 40, 12, 0, 1, 1, 0xff000000
-      @hp_icon.draw 105, 10, 0, 2, 2
-      SB.font.draw_text p.bomb.hp, 135, 12, 0, 1, 1, 0xff000000
+      @lives_icon.draw 12, 9, 0, 2, 2
+      SB.font.draw_text p.lives, 40, 8, 0, 1, 1, 0xff000000
+      @hp_icon.draw 105, 9, 0, 2, 2
+      SB.font.draw_text p.bomb.hp, 135, 8, 0, 1, 1, 0xff000000
       @score_icon.draw 10, 32, 0, 2, 2
-      SB.font.draw_text p.stage_score, 40, 35, 0, 1, 1, 0xff000000
+      SB.font.draw_text p.stage_score, 40, 30, 0, 1, 1, 0xff000000
 
       ########## ITEM ##########
       G.window.draw_quad 745, 5, C::PANEL_COLOR,

@@ -83,6 +83,13 @@ end
 class World
   attr_reader :num, :stage_count, :song
 
+  ITEM_ICONS = {
+    2 => :icon_Attack1,
+    8 => :icon_board,
+    44 => :icon_Key,
+    65 => :icon_shield
+  }
+
   def initialize(num = 1, stage_num = 1, loaded = false)
     @num = num
     @loaded_stage = loaded ? stage_num : nil
@@ -93,6 +100,7 @@ class World
     @parchment = Res.img :ui_parchment
     @secret_world = Res.img :ui_secretWorld if SB.player.last_world == C::LAST_WORLD
     @map = Res.img "bg_world#{num}"
+    @startup_item_frame = Res.img(:ui_startupItem)
     @song = Res.song("w#{@num}")
 
     @stages = []
@@ -140,7 +148,7 @@ class World
       @trans_alpha += 17
     end
 
-    @stages.each { |i| i.update }
+    @stages.each(&:update)
 
     if SB.key_pressed?(:back)
       Menu.reset
@@ -228,9 +236,12 @@ class World
         end
       end
     end
-    # @play_button.draw
-    # @back_button.draw
+
     @bomb.draw nil, 2, 2, @trans_alpha
+    if SB.player.startup_item
+      @startup_item_frame.draw(265, 546, 0, 2, 2, tint_color)
+      Res.img(ITEM_ICONS[SB.player.startup_item]).draw(273, 554, 0, 2, 2, tint_color)
+    end
 
     SB.big_text_helper.write_line SB.text("world_#{@num}"), 525, 10, :center, 0, @trans_alpha
     SB.text_helper.write_breaking "#{@num}-#{@cur+1}: #{@stages[@cur].name}", 525, 55, 550, :center, 0, @trans_alpha

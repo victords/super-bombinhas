@@ -36,6 +36,8 @@ save_exit		Save and Exit
 stage_complete	Stage Complete!
 total			Total
 spec_taken		Spec found?
+stars			Stars
+all_stars_found	Got an item!
 dead			You died!
 restart			Press 'Enter' to restart
 game_over		Game over!

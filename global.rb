@@ -47,6 +47,7 @@ module C
   CAMERA_VERTICAL_SPEED = 0.05
   CAMERA_VERTICAL_DELAY = 45
   CAMERA_VERTICAL_TOLERANCE = 3 * TILE_SIZE
+  STARS_PER_STAGE = 5
 end
 
 class SB
@@ -213,8 +214,8 @@ class SB
       StageMenu.initialize
     end
 
-    def play_sound(sound)
-      sound.play @sound_volume * 0.1 if @sound_volume > 0
+    def play_sound(sound, volume = 1)
+      sound.play @sound_volume * 0.1 * volume if @sound_volume > 0
     end
 
     def set_spec_taken

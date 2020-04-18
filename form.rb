@@ -61,9 +61,14 @@ class MenuText < MenuElement
   attr_reader :text_id
   attr_writer :text
 
-  def initialize(text_id, x, y, width = 760, mode = :justified, big = false)
-    @text_id = text_id
-    @text = SB.text(text_id).gsub("\\n", "\n")
+  def initialize(text_or_id, x, y, width = 760, mode = :justified, big = false)
+    if text_or_id.is_a?(String)
+      @text = text_or_id
+      @text_id = nil
+    else
+      @text_id = text_or_id
+      @text = SB.text(text_or_id).gsub("\\n", "\n")
+    end
     @x = x
     @y = y
     @width = width
