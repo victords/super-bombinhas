@@ -60,7 +60,7 @@ class Enemy < GameObject
     end
   end
 
-  def update(section)
+  def update(section, tolerance = nil)
     if @dying
       @control_timer += 1
       @dead = true if @control_timer == 150
@@ -71,7 +71,7 @@ class Enemy < GameObject
 
     unless @invulnerable or SB.player.dead?
       b = SB.player.bomb
-      if b.over? self
+      if b.over?(self, tolerance)
         b.bounce
         hit_by_bomb(section)
       elsif b.explode?(self) or section.explode?(self)
@@ -282,7 +282,7 @@ class Sprinny < Enemy
   end
 
   def update(section)
-    super section do
+    super(section, 24) do
       forces = Vector.new 0, 0
       if @bottom
         @speed.x = 0

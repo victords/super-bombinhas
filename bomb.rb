@@ -198,8 +198,8 @@ class Bomb < GameObject
     bounds.intersect? obj.bounds
   end
 
-  def over?(obj)
-    tolerance = @speed.y > C::PLAYER_OVER_TOLERANCE ? @speed.y : C::PLAYER_OVER_TOLERANCE
+  def over?(obj, tolerance = nil)
+    tolerance ||= @speed.y > C::PLAYER_OVER_TOLERANCE ? @speed.y : C::PLAYER_OVER_TOLERANCE
     @x + @w > obj.x and obj.x + obj.w > @x and
       @y + @h > obj.y and @y + @h <= obj.y + tolerance
   end
