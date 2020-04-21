@@ -109,8 +109,8 @@ class SB
         ability: [Gosu::KB_C, Gosu::GP_0_BUTTON_2],
         prev:    [Gosu::KB_Z, Gosu::GP_0_BUTTON_9],
         next:    [Gosu::KB_V, Gosu::GP_0_BUTTON_10],
-        confirm: [Gosu::KB_RETURN, Gosu::GP_0_BUTTON_1],
-        back:    [Gosu::KB_ESCAPE, Gosu::KB_BACKSPACE, Gosu::GP_0_BUTTON_0],
+        confirm: [Gosu::KB_RETURN, Gosu::GP_0_BUTTON_0],
+        back:    [Gosu::KB_ESCAPE, Gosu::KB_BACKSPACE, Gosu::GP_0_BUTTON_1],
         pause:   [Gosu::KB_ESCAPE, Gosu::KB_BACKSPACE, Gosu::GP_0_BUTTON_6]
       }
 

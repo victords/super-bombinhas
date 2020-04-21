@@ -13,7 +13,7 @@ delete			Apagar
 delete_confirm	Tem certeza que quer apagar este jogo?
 yes				Sim
 no				Não
-help_text		Este é um jogo de plataforma. Use as setas esquerda e direita para se mover, espaço para pular, X para itens, Z ou V para alternar entre itens e C para habilidades. Use a seta para cima para abrir portas e falar com bombas amigas, e a seta para baixo para avançar o texto enquanto fala com elas.\nO jogo também suporta joysticks, mas o mapeamento de botões pode variar.\nUse F4 para alternar entre tela cheia e janela.
+help_text		Este é um jogo de plataforma. Use as setas esquerda e direita para se mover, espaço para pular, X para itens, Z ou V para alternar entre itens e C para habilidades, seta para cima para abrir portas, Start para pausar.\nO jogo também suporta joysticks (conecte antes de abrir o jogo), mas o mapeamento de botões pode variar. Para um controle de XBOX 360, use o analógico esquerdo ou direcionais como as setas, A para pular e confirmar, B para itens e cancelar, X para habilidades, LB e RB para trocar itens, Start para pausar.\nUse F4 para alternar entre tela cheia e janela.
 save			Salvar
 cancel			Cancelar
 language		Idioma

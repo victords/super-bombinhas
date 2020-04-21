@@ -153,7 +153,7 @@ class Menu
         MenuButton.new(550, :back, true) {
           @form.go_to_section 0
         },
-        MenuText.new(:help_text, 400, 200, 600, :center)
+        MenuText.new(:help_text, 400, 200, 700, :center)
       ])
       Options.form = @form
 

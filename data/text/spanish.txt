@@ -13,7 +13,7 @@ delete			Borrar
 delete_confirm	¿Estás seguro que deseas borrar este juego?
 yes				Sí
 no				No
-help_text		Este es un juego de plataformas. Utilice las teclas de flecha derecha e izquierda para moverse, barra espaciadora para saltar, X para ítenes, Z o V para cambiar el ítem y C para habilidades. Utilice la flecha hacia arriba para abrir puertas y hablar con bombas amigas, y la flecha hacia abajo para avanzar el texto cuando hablando con ellas.\nEl juego también ofrece soporte para joystick, pero el mapeo de botones puede variar.\nUtilice F4 para alternar entre pantalla completa y ventana.
+help_text		Este es un juego de plataformas. Utilice las teclas de flecha derecha e izquierda para moverse, barra espaciadora para saltar, X para ítenes, Z o V para cambiar el ítem y C para habilidades, flecha hacia arriba para abrir puertas, Esc para pausar.\nEl juego también ofrece soporte para joystick (conecta antes de iniciar el juego), pero el mapeo de botones puede variar. Para un gamepad XBOX 360, utilice el mando analógico o los direccionales como las flechas, A para saltar o confirmar, B para ítenes o cancelar, X para habilidades, LB y RB para cambiar ítenes, Start para pausar.\nUtilice F4 para alternar entre pantalla completa y ventana.
 save			Guardar
 cancel			Cancelar
 language		Lenguaje
