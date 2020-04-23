@@ -80,9 +80,10 @@ class Player
     end
   end
 
-  def change_item
-    @item_index += 1
+  def change_item(delta = 1)
+    @item_index += delta
     @item_index = 0 if @item_index >= @items.length
+    @item_index = @items.length - 1 if @item_index < 0
     @cur_item_type = @items.keys[@item_index]
   end
 

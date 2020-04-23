@@ -124,7 +124,8 @@ class Bomb < GameObject
       end
       @stored_jump = 0 if @bottom
 
-      SB.player.change_item if SB.key_pressed?(:prev) || SB.key_pressed?(:next)
+      SB.player.change_item(-1) if SB.key_pressed?(:prev)
+      SB.player.change_item if SB.key_pressed?(:next)
       SB.player.use_item section if SB.key_pressed? :item
 
       if @can_use_ability

@@ -151,6 +151,7 @@ class StageMenu
         @hp_icon = Res.img :icon_hp
         @score_icon = Res.img :icon_score
         @star_icon = Res.img :icon_star
+        @selected_item = Res.img :ui_startupItem
       end
       Options.form = @stage_menu
 
@@ -316,35 +317,32 @@ class StageMenu
       SB.font.draw_text p.stage_score, 40, 30, 0, 1, 1, 0xff000000
 
       ########## ITEM ##########
-      G.window.draw_quad 745, 5, C::PANEL_COLOR,
-                         795, 5, C::PANEL_COLOR,
-                         795, 55, C::PANEL_COLOR,
-                         745, 55, C::PANEL_COLOR, 0
-      if p.cur_item_type
-        item_set = p.items[p.cur_item_type]
-        item_set[0][:obj].icon.draw 754, 14, 0, 2, 2
-        SB.font.draw_text item_set.length.to_s, 780, 36, 0, 1, 1, 0xff000000
-      end
-      if p.items.length > 1
-        G.window.draw_triangle 745, 30, C::ARROW_COLOR,
-                               749, 26, C::ARROW_COLOR,
-                               749, 34, C::ARROW_COLOR, 0
-        G.window.draw_triangle 791, 25, C::ARROW_COLOR,
-                               796, 30, C::ARROW_COLOR,
-                               791, 35, C::ARROW_COLOR, 0
+      if p.items.size > 0
+        p.items.each_with_index do |(k, v), i|
+          x = 754 - 40 * (p.items.size - i - 1)
+          @selected_item.draw(x - 8, 6, 0, 2, 2) if k == p.cur_item_type
+          v[0][:obj].icon.draw(x, 14, 0, 2, 2, k == p.cur_item_type ? 0xffffffff : C::DISABLED_COLOR)
+          SB.text_helper.write_line(v.length.to_s, x + 36, 28, :right, 0, k == p.cur_item_type ? 255 : 127)
+        end
       end
       ##########################
 
       ######### ABILITY ########
-      G.window.draw_quad 690, 5, C::PANEL_COLOR,
-                         740, 5, C::PANEL_COLOR,
-                         740, 55, C::PANEL_COLOR,
-                         690, 55, C::PANEL_COLOR, 0
       b = p.bomb
-      if b.type == :verde; icon = 'explode'
-      elsif b.type == :branca; icon = 'time'
-      else; return; end
-      Res.img("icon_#{icon}").draw(699, 14, 0, 2, 2, b.can_use_ability ? 0xffffffff : 0x66ffffff)
+      icon = if b.type == :verde
+               'explode'
+             elsif b.type == :branca
+               'time'
+             else
+               nil
+             end
+      if icon
+        G.window.draw_quad 745, 60, C::PANEL_COLOR,
+                           795, 60, C::PANEL_COLOR,
+                           795, 110, C::PANEL_COLOR,
+                           745, 110, C::PANEL_COLOR, 0
+        Res.img("icon_#{icon}").draw(745, 69, 0, 2, 2, b.can_use_ability ? 0xffffffff : C::DISABLED_COLOR)
+      end
       ##########################
     end
 
