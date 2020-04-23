@@ -265,7 +265,7 @@ end
 
 class Wheeliam < FloorEnemy
   def initialize(x, y, args, section)
-    super x, y, args, 32, 32, Vector.new(-4, -2), 3, 1, [0, 1], 8, 100, 1, 2.2
+    super x, y, args, 32, 32, Vector.new(-4, -2), 3, 1, [0, 1], 8, 100, 1, 1.6
     @max_speed.y = 10
   end
 end
@@ -288,7 +288,7 @@ class Sprinny < Enemy
         @speed.x = 0
         @indices = [0, 1]
         @idle_timer += 1
-        if @idle_timer > 20
+        if @idle_timer > 30
           @leaps += 1
           if @leaps > @max_leaps
             @leaps = 1
@@ -296,12 +296,15 @@ class Sprinny < Enemy
           end
           if @facing_right; forces.x = 3
           else; forces.x = -3; end
-          forces.y = -11.5
+          forces.y = -8.5
           @idle_timer = 0
           @indices = [0]
         end
       end
+      prev_g = G.gravity.y
+      G.gravity.y *= 0.75
       move forces, section.get_obstacles(@x, @y), section.ramps
+      G.gravity.y = prev_g
     end
   end
 
@@ -312,7 +315,7 @@ end
 
 class Fureel < FloorEnemy
   def initialize(x, y, args, section)
-    super x - 4, y - 7, args, 40, 39, Vector.new(-10, 0), 3, 1, [0, 1], 8, 300, 2
+    super x - 4, y - 7, args, 40, 39, Vector.new(-10, 0), 3, 1, [0, 1], 8, 300, 2, 2.3
   end
 
   def get_invulnerable
@@ -361,7 +364,7 @@ class Ekips < GameObject
 
     @act_timer = 0
     @active_bounds = Rectangle.new x - 32, y - 18, 96, 50
-    @attack_bounds = Rectangle.new x - 32, y + 10, 96, 12
+    @attack_bounds = Rectangle.new x - 26, y + 10, 84, 12
     @score = 240
   end
 
