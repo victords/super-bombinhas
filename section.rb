@@ -300,6 +300,7 @@ class Section
     @effects = []
     @reload = false
     @loaded = true
+    @dead_timer = 0
 
     @ball_receptors = []
     switches.each do |s|
@@ -506,7 +507,8 @@ class Section
       SB.player.bomb.update(self)
 
       if SB.player.dead?
-        @reload = true if SB.key_pressed?(:confirm)
+        @dead_timer += 1 if @dead_timer < 120
+        @reload = true if SB.key_pressed?(:confirm) && (SB.player.lives > 0 || @dead_timer >= 120)
         return
       end
 
