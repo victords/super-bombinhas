@@ -541,7 +541,11 @@ class Section
           @camera_timer = 0
         end
       elsif d_y_abs > C::CAMERA_VERTICAL_TOLERANCE
-        @camera_timer += d_y_abs / C::CAMERA_VERTICAL_TOLERANCE
+        if d_y_abs >= C::CAMERA_VERTICAL_LIMIT
+          @camera_timer = C::CAMERA_VERTICAL_DELAY
+        else
+          @camera_timer += 1
+        end
         if @camera_timer >= C::CAMERA_VERTICAL_DELAY
           @camera_moving = true
         end

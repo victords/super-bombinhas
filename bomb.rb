@@ -35,7 +35,7 @@ class Bomb < GameObject
     @saved_hp = @hp
     @max_speed_x = type == :amarela ? 6 : 4
     @max_speed_x_sq = @max_speed_x ** 2
-    @max_speed.y = 18
+    @max_speed.y = 15
     @jump_speed = 0.05
     @jump_frames = 0
     @stored_jump = 0
