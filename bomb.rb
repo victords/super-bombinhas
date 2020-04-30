@@ -104,7 +104,7 @@ class Bomb < GameObject
           animate [0, 1], 10
         end
         @jump_frames = 0
-        @prev_bottom = C::JUMP_TOLERANCE
+        @prev_bottom = C::LEDGE_JUMP_TOLERANCE
       else
         if @prev_bottom > 0
           @prev_bottom -= 1
@@ -113,7 +113,7 @@ class Bomb < GameObject
         end
         @stored_jump -= 1 if @stored_jump > 0
         if SB.key_pressed?(:jump)
-          @stored_jump = C::JUMP_TOLERANCE
+          @stored_jump = C::EARLY_JUMP_TOLERANCE
         end
       end
       if @jump_frames == 0 && (SB.key_pressed?(:jump) || @stored_jump > 0) || @jump_frames > 0 && SB.key_down?(:jump)
@@ -249,7 +249,7 @@ class Bomb < GameObject
   end
 
   def reset(loaded = false)
-    @will_explode = @exploding = @aura = @celebrating = @dying = false
+    @will_explode = @exploding = @aura = @celebrating = @dying = @shielded = false
     @speed.x = @speed.y = @stored_forces.x = @stored_forces.y = 0
     if loaded; @hp = @saved_hp
     else; @saved_hp = @hp = @def_hp; end

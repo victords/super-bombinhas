@@ -486,6 +486,7 @@ class Turner < Enemy
     super x + 2, y - 7, 60, 39, Vector.new(-2, -25), 3, 2, [0, 1, 2, 1], 8, 300
     @harmful = true
     @passable = true
+    @speed_m = 1.5
 
     @aim1 = Vector.new(@x, @y)
     while not section.obstacle_at? @aim1.x - 3, @aim1.y and
@@ -509,7 +510,7 @@ class Turner < Enemy
     super section do
       if @harmful
         SB.player.bomb.hit if SB.player.bomb.bounds.intersect? @harm_bounds
-        move_free @aim1, 2
+        move_free @aim1, @speed_m
         if @speed.x == 0 and @speed.y == 0
           @harmful = false
           @indices = [3, 4, 5, 4]
@@ -518,7 +519,7 @@ class Turner < Enemy
         end
       else
         b = SB.player.bomb
-        move_carrying @aim2, 2, [b], section.get_obstacles(b.x, b.y), section.ramps
+        move_carrying @aim2, @speed_m, [b], section.get_obstacles(b.x, b.y), section.ramps
         if @speed.x == 0 and @speed.y == 0
           @harmful = true
           @indices = [0, 1, 2, 1]
