@@ -63,7 +63,7 @@ class Player
     item_type = item[:extra] || item[:type]
     @items[item_type] = [] if @items[item_type].nil?
     @items[item_type] << item
-    @cur_item_type = item_type if @cur_item_type.nil?
+    @cur_item_type = item_type
   end
 
   def use_item(section)
