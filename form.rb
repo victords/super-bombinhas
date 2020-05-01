@@ -275,6 +275,7 @@ class Form
   def go_to_section(index)
     @cur_section.hide
     @cur_section = @sections[@cur_section_index = index]
+    @cur_section.reset
     @cur_section.show
   end
 

@@ -31,16 +31,6 @@ class Options
 
     def get_menu
       @menu = [
-        MenuButton.new(550, :save, false, 219) {
-          SB.save_options
-          @form.go_to_section 0
-        },
-        MenuButton.new(550, :cancel, true, 409) {
-          SB.lang = @lang
-          SB.sound_volume = @s_v_text.num = @sound_volume
-          SB.music_volume = @m_v_text.num = @music_volume
-          @form.go_to_section 0
-        },
         MenuText.new(:language, 20, 200),
         MenuText.new(:lang_name, 590, 200, 320, :center),
         MenuArrowButton.new(400, 192, 'Left') {
@@ -69,7 +59,17 @@ class Options
           SB.change_volume('music')
           @m_v_text.num = SB.music_volume
         },
-        MenuText.new(:full_screen, C::SCREEN_WIDTH / 2, 410, C::SCREEN_WIDTH, :center)
+        MenuText.new(:full_screen, C::SCREEN_WIDTH / 2, 410, C::SCREEN_WIDTH, :center),
+        MenuButton.new(550, :save, false, 219) {
+          SB.save_options
+          @form.go_to_section 0
+        },
+        MenuButton.new(550, :cancel, true, 409) {
+          SB.lang = @lang
+          SB.sound_volume = @s_v_text.num = @sound_volume
+          SB.music_volume = @m_v_text.num = @music_volume
+          @form.go_to_section 0
+        }
       ] if @menu.nil?
       @menu
     end

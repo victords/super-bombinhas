@@ -135,6 +135,7 @@ class StageMenu
           },
           MenuButton.new(357, :save_exit) {
             SB.save_and_exit
+            @stage_menu.reset
           }
         ], [], options_comps, [
           MenuButton.new(400, :continue, false, 219) {
