@@ -333,6 +333,8 @@ class Fureel < FloorEnemy
 end
 
 class Yaw < Enemy
+  TRACK_POINTS_DISTANCE = 10.66
+
   def initialize(x, y, args, section)
     super x, y, 32, 32, Vector.new(-4, -4), 3, 2, [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 2, 3, 4, 5], 6, 500
     @points = [
@@ -345,6 +347,23 @@ class Yaw < Enemy
       Vector.new(x - 32, y + 32),
       Vector.new(x, y)
     ]
+
+    @track = []
+    @points.each_with_index do |p, i|
+      n_p = i == @points.size - 1 ? @points[0] : @points[i + 1]
+      d_x = n_p.x - p.x; d_y = n_p.y - p.y
+      d = Math.sqrt(d_x**2 + d_y**2)
+      amount = (d / TRACK_POINTS_DISTANCE).to_i
+      ratio = TRACK_POINTS_DISTANCE / d
+      (0...amount).each do |j|
+        @track << [p.x + j * ratio * d_x - 1 + @w / 2, p.y + j * ratio * d_y - 1 + @h / 2,
+                   p.x + j * ratio * d_x + 1 + @w / 2, p.y + j * ratio * d_y - 1 + @h / 2,
+                   p.x + j * ratio * d_x - 1 + @w / 2, p.y + j * ratio * d_y + 1 + @h / 2,
+                   p.x + j * ratio * d_x + 1 + @w / 2, p.y + j * ratio * d_y + 1 + @h / 2]
+      end
+    end
+
+    @active_bounds = Rectangle.new(x - 32, y, 160, 160)
   end
 
   def update(section)
@@ -355,6 +374,16 @@ class Yaw < Enemy
 
   def hit_by_bomb(section)
     SB.player.bomb.hit
+  end
+
+  def draw(map)
+    @track.each do |t|
+      G.window.draw_quad(t[0] - map.cam.x, t[1] - map.cam.y, 0xffffffff,
+                         t[2] - map.cam.x, t[3] - map.cam.y, 0xffffffff,
+                         t[4] - map.cam.x, t[5] - map.cam.y, 0xffffffff,
+                         t[6] - map.cam.x, t[7] - map.cam.y, 0xffffffff, 0)
+    end
+    super(map)
   end
 end
 

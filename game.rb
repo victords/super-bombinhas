@@ -33,6 +33,7 @@ class SBGame < MiniGL::GameWindow
     SB.load_options(dir)
 
     super(C::SCREEN_WIDTH, C::SCREEN_HEIGHT, SB.full_screen, Vector.new(0, 0.7))
+    self.caption = 'Super Bombinhas'
     G.ramp_slip_threshold = 0.8
     G.ramp_slip_force = 0.8
 	  SB.initialize

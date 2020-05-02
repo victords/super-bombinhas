@@ -64,16 +64,18 @@ class Player
     @items[item_type] = [] if @items[item_type].nil?
     @items[item_type] << item
     @cur_item_type = item_type
+    @item_index = @items.keys.index(item_type)
   end
 
   def use_item(section)
     return if @cur_item_type.nil?
-    item_set = @items[@cur_item_type]
+    item_type = @cur_item_type
+    item_set = @items[item_type]
     item = item_set[0]
-    if item[:obj].use section, item
+    if item[:obj].use(section, item)
       item_set.delete item
       if item_set.length == 0
-        @items.delete @cur_item_type
+        @items.delete item_type
         @item_index = 0 if @item_index >= @items.length
         @cur_item_type = @items.keys[@item_index]
       end

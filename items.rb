@@ -289,7 +289,9 @@ class Hammer < FloatingItem
     if obj.is_a? Board
       obj.take(section)
       set_switch(switch)
+      return true
     end
+    false
   end
 end
 
