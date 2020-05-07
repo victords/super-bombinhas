@@ -328,17 +328,18 @@ class Section
     @tile_3_index = 0
     @tile_4_index = 0
 
-    @margin = Vector.new((C::SCREEN_WIDTH - SB.player.bomb.w) / 2, (C::SCREEN_HEIGHT - SB.player.bomb.h) / 2)
+    @margin = Vector.new(C::SCREEN_WIDTH / 2, C::SCREEN_HEIGHT / 2)
     do_warp bomb_x, bomb_y
 
     SB.play_song @bgm
   end
 
   def do_warp(x, y)
-    SB.player.bomb.do_warp x, y
+    bomb = SB.player.bomb
+    bomb.do_warp x, y
     @camera_timer = 0
     @camera_moving = false
-    @camera_ref_pos = Vector.new(SB.player.bomb.x, SB.player.bomb.y)
+    @camera_ref_pos = Vector.new(bomb.x + bomb.w / 2, bomb.y + bomb.h / 2)
     update_camera
     @warp = nil
   end
@@ -467,14 +468,14 @@ class Section
   def activate_object(type, id)
     @elements.each do |e|
       if e.class == type && e.id == id
-        e.activate
+        e.activate(self)
         break
       end
     end
   end
 
   def set_fixed_camera(x, y)
-    @map.set_camera x, y
+    @camera_target_pos = Vector.new(x, y)
     @fixed_camera = true
     SB.player.bomb.stop
   end
@@ -503,8 +504,44 @@ class Section
       t.update self if t.is_visible @map
     end
 
+    bomb = SB.player.bomb
+
+    @camera_target_pos = Vector.new(bomb.x + bomb.w / 2, bomb.y + bomb.h / 2) unless @fixed_camera
+    d_x = @camera_target_pos.x - @camera_ref_pos.x
+    d_y = @camera_target_pos.y - @camera_ref_pos.y
+    should_move_x = d_x.abs > 0.5
+    moved_y = false
+
+    if should_move_x
+      @camera_ref_pos.x += (@fixed_camera ? 0.1 : C::CAMERA_HORIZ_SPEED) * d_x
+    end
+
+    d_y_abs = d_y.abs
+    if @camera_moving
+      if d_y_abs > 0.5
+        @camera_ref_pos.y += C::CAMERA_VERTICAL_SPEED * d_y
+        moved_y = true
+      else
+        @camera_moving = false
+        @camera_timer = 0
+      end
+    elsif d_y_abs > C::CAMERA_VERTICAL_TOLERANCE
+      if d_y_abs >= C::CAMERA_VERTICAL_LIMIT
+        @camera_timer = C::CAMERA_VERTICAL_DELAY
+      else
+        @camera_timer += 1
+      end
+      if @camera_timer >= C::CAMERA_VERTICAL_DELAY
+        @camera_moving = true
+      end
+    else
+      @camera_timer = 0
+    end
+
+    update_camera if should_move_x || moved_y
+
     unless @fixed_camera
-      SB.player.bomb.update(self)
+      bomb.update(self)
 
       if SB.player.dead?
         @dead_timer += 1 if @dead_timer < 120
@@ -514,48 +551,15 @@ class Section
 
       if @finished
         return :finish
-      elsif @border_exit == 0 && SB.player.bomb.y + SB.player.bomb.h <= -C::EXIT_MARGIN ||
-            @border_exit == 1 && SB.player.bomb.x >= @size.x - C::EXIT_MARGIN ||
-            @border_exit == 2 && SB.player.bomb.y >= @size.x + C::EXIT_MARGIN ||
-            @border_exit == 3 && SB.player.bomb.x + SB.player.bomb.w <= C::EXIT_MARGIN
+      elsif @border_exit == 0 && bomb.y + bomb.h <= -C::EXIT_MARGIN ||
+            @border_exit == 1 && bomb.x >= @size.x - C::EXIT_MARGIN ||
+            @border_exit == 2 && bomb.y >= @size.x + C::EXIT_MARGIN ||
+            @border_exit == 3 && bomb.x + bomb.w <= C::EXIT_MARGIN
         return :next_section
-      elsif @border_exit != 2 && SB.player.bomb.y >= @size.y + C::EXIT_MARGIN # abismo
+      elsif @border_exit != 2 && bomb.y >= @size.y + C::EXIT_MARGIN # abismo
         SB.player.die
         return
       end
-
-      d_x = SB.player.bomb.x - @camera_ref_pos.x
-      d_y = SB.player.bomb.y - @camera_ref_pos.y
-      should_move_x = d_x.abs > 0.5
-      moved_y = false
-
-      if should_move_x
-        @camera_ref_pos.x += C::CAMERA_HORIZ_SPEED * d_x
-      end
-
-      d_y_abs = d_y.abs
-      if @camera_moving
-        if d_y_abs > 0.5
-          @camera_ref_pos.y += C::CAMERA_VERTICAL_SPEED * d_y
-          moved_y = true
-        else
-          @camera_moving = false
-          @camera_timer = 0
-        end
-      elsif d_y_abs > C::CAMERA_VERTICAL_TOLERANCE
-        if d_y_abs >= C::CAMERA_VERTICAL_LIMIT
-          @camera_timer = C::CAMERA_VERTICAL_DELAY
-        else
-          @camera_timer += 1
-        end
-        if @camera_timer >= C::CAMERA_VERTICAL_DELAY
-          @camera_moving = true
-        end
-      else
-        @camera_timer = 0
-      end
-
-      update_camera if should_move_x || moved_y
 
       if SB.key_pressed?(:pause)
         SB.state = :paused

@@ -291,8 +291,9 @@ class SB
         else
           save(nil, @world.num)
         end
-        @movie = Movie.new(@world.num)
-        @state = :movie
+        # @movie = Movie.new(@world.num)
+        # @state = :movie
+        next_world
       end
       StageMenu.initialize
     end

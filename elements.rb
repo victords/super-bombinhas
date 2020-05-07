@@ -538,23 +538,28 @@ class MovingWall < GameObject
   def update(section)
     if @active
       @timer += 1
-      if @timer == 30
+      if @timer % 15 == 0
         @y += @closed ? 16 : -16
         @h += @closed ? -16 : 16
         @active_bounds = Rectangle.new @x, @y, @w, @h
-        @timer = 0
         if @closed and @h == 0
+          section.unset_fixed_camera
           @dead = true
         elsif not @closed and @h == @max_size
+          section.unset_fixed_camera
           @active = false
         end
+      end
+      if @timer == 150
+        section.unset_fixed_camera
       end
     end
   end
 
-  def activate
+  def activate(section)
     @active = true
     @timer = 0
+    section.set_fixed_camera(@x + @w / 2, @y + @h / 2)
   end
 
   def draw(map)
@@ -1113,7 +1118,7 @@ class Monep < GameObject
       b = SB.player.bomb
       if b.collide? self
         if @state == :normal
-          section.set_fixed_camera(@x + @w / 2 - C::SCREEN_WIDTH / 2, @y + 50 - C::SCREEN_HEIGHT / 2)
+          section.set_fixed_camera(@x + @w / 2, @y + 50)
           section.active_object = self
           set_animation 3
           @state = :speaking
@@ -1221,11 +1226,11 @@ class TwinWalls < GameObject
     end
   end
 
-  def activate
+  def activate(section)
     unless @active
       @active = true
       @timer = 0
-      @twin.activate if @twin
+      @twin.activate(section) if @twin
     end
   end
 

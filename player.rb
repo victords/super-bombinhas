@@ -146,6 +146,7 @@ class Player
     @last_stage = 1
     @lives = 5
     @specs.delete_if { |s| s =~ /^#{@last_world}-/ }
+    @startup_item = nil
     reset
   end
 end

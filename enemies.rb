@@ -216,7 +216,7 @@ module Boss
   def update_boss(section, do_super_update = true, &block)
     if @state == :waiting
       if SB.player.bomb.x >= @activation_x
-        section.set_fixed_camera(@x + @w / 2 - C::SCREEN_WIDTH / 2, @y + @h / 2 - C::SCREEN_HEIGHT / 2)
+        section.set_fixed_camera(@x + @w / 2, @y + @h / 2)
         @state = :speaking
       end
     elsif @state == :speaking
@@ -244,7 +244,7 @@ module Boss
       end
       if @dying
         set_animation 0
-        section.set_fixed_camera(@x + @w / 2 - C::SCREEN_WIDTH / 2, @y + @h / 2 - C::SCREEN_HEIGHT / 2)
+        section.set_fixed_camera(@x + @w / 2, @y + @h / 2)
         @timer = 0
       end
     end
@@ -586,7 +586,7 @@ class Chamal < Enemy
     ]
     @spawns = []
     @turn = 2
-    @speed_m = 4
+    @speed_m = 3
     @facing_right = false
     init
   end
@@ -634,7 +634,7 @@ class Chamal < Enemy
         @respawned = false
         @gun_powder = GunPowder.new(@x, @y + 74, nil, section, nil)
         section.add(@gun_powder)
-        section.add_effect(Effect.new(@x - 14, @y + 10, :fx_arrow, 3, 1, 8, [0, 1, 2, 1], 180))
+        section.add_effect(Effect.new(@x - 14, @y + 10, :fx_arrow, 3, 1, 8, [0, 1, 2, 1], 300))
         @turn = 0
       end
       @gun_powder = nil if @gun_powder && @gun_powder.dead?
@@ -645,6 +645,7 @@ class Chamal < Enemy
 
   def hit_by_explosion(section)
     hit(section)
+    @speed_m = 4 if @hp == 1
     @moving = false
     @timer = -C::INVULNERABLE_TIME
   end
@@ -766,9 +767,6 @@ class Robort < FloorEnemy
         @interval = 7
         set_direction
       end
-      if SB.player.bomb.collide? self
-        SB.player.bomb.hit
-      end
     end
   end
 
@@ -777,6 +775,14 @@ class Robort < FloorEnemy
     @interval = 4
     @timer = 0
     super(dir)
+  end
+
+  def hit_by_bomb(section)
+    if @turning
+      SB.player.bomb.hit
+    else
+      super(section)
+    end
   end
 end
 
