@@ -477,11 +477,12 @@ class Section
   def set_fixed_camera(x, y)
     @camera_target_pos = Vector.new(x, y)
     @fixed_camera = true
-    SB.player.bomb.stop
+    SB.player.bomb.active = false
   end
 
   def unset_fixed_camera
     @fixed_camera = false
+    SB.player.bomb.active = true
   end
 
   def finish
@@ -540,9 +541,9 @@ class Section
 
     update_camera if should_move_x || moved_y
 
-    unless @fixed_camera
-      bomb.update(self)
+    bomb.update(self)
 
+    unless @fixed_camera
       if SB.player.dead?
         @dead_timer += 1 if @dead_timer < 120
         @reload = true if SB.key_pressed?(:confirm) && (SB.player.lives > 0 || @dead_timer >= 120)
@@ -560,10 +561,10 @@ class Section
         SB.player.die
         return
       end
+    end
 
-      if SB.key_pressed?(:pause)
-        SB.state = :paused
-      end
+    if SB.key_pressed?(:pause)
+      SB.state = :paused
     end
   end
 

@@ -162,26 +162,17 @@ class StageMenu
     def set_bomb_screen_comps
       sec = @stage_menu.section(1)
       sec.clear
+      world = SB.player.last_world
+      world = 5 if world > 5
+      start_x = 400 - (40 + (world - 1) * 50)
+      sec.add(BombButton.new(start_x, :azul, @stage_menu))
+      sec.add(BombButton.new(start_x + 100, :vermelha, @stage_menu)) if world >= 2
+      sec.add(BombButton.new(start_x + 200, :amarela, @stage_menu)) if world >= 3
+      sec.add(BombButton.new(start_x + 300, :verde, @stage_menu)) if world >= 4
+      sec.add(BombButton.new(start_x + 400, :branca, @stage_menu)) if world >= 5
       sec.add(MenuButton.new(550, :back, true) {
-                @stage_menu.go_to_section 0
-              })
-      case SB.player.last_world
-      when 1 then sec.add(BombButton.new(360, :azul, @stage_menu))
-      when 2 then sec.add(BombButton.new(310, :azul, @stage_menu))
-                  sec.add(BombButton.new(410, :vermelha, @stage_menu))
-      when 3 then sec.add(BombButton.new(260, :azul, @stage_menu))
-                  sec.add(BombButton.new(360, :vermelha, @stage_menu))
-                  sec.add(BombButton.new(460, :amarela, @stage_menu))
-      when 4 then sec.add(BombButton.new(210, :azul, @stage_menu))
-                  sec.add(BombButton.new(310, :vermelha, @stage_menu))
-                  sec.add(BombButton.new(410, :amarela, @stage_menu))
-                  sec.add(BombButton.new(510, :verde, @stage_menu))
-      else        sec.add(BombButton.new(160, :azul, @stage_menu))
-                  sec.add(BombButton.new(260, :vermelha, @stage_menu))
-                  sec.add(BombButton.new(360, :amarela, @stage_menu))
-                  sec.add(BombButton.new(460, :verde, @stage_menu))
-                  sec.add(BombButton.new(560, :branca, @stage_menu))
-      end
+        @stage_menu.go_to_section 0
+      })
     end
 
     def update_main
@@ -261,18 +252,18 @@ class StageMenu
       @stage_end_timer = 0
       if next_world or next_bonus
         @stage_menu.section(3).clear
-        @stage_menu.section(3).add(MenuButton.new(350, :continue) {
-                                     SB.check_next_stage
-                                   })
+        @stage_menu.section(3).add(MenuButton.new(400, :continue) {
+          SB.check_next_stage
+        })
         @continue_only = true
       elsif @continue_only
         @stage_menu.section(3).clear
-        @stage_menu.section(3).add(MenuButton.new(350, :continue, false, 219) {
-                                     SB.check_next_stage
-                                   })
-        @stage_menu.section(3).add(MenuButton.new(350, :save_exit, false, 409) {
-                                     SB.check_next_stage false
-                                   })
+        @stage_menu.section(3).add(MenuButton.new(400, :continue, false, 219) {
+          SB.check_next_stage
+        })
+        @stage_menu.section(3).add(MenuButton.new(400, :save_exit, false, 409) {
+          SB.check_next_stage false
+        })
         @continue_only = false
       end
       @stage_menu.go_to_section 3
