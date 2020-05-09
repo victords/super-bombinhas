@@ -208,7 +208,7 @@ class StageMenu
     end
 
     def end_stage(next_world, next_bonus = false, bonus = false)
-      p = MenuPanel.new(-600, 150, 400, 300)
+      p = MenuPanel.new(-600, 150, 400, next_world ? 350 : 300)
       p.init_movement
       p.move_to 200, 150
       t1 = MenuText.new(:stage_complete, 1200, 160, 400, :center, true)
@@ -252,9 +252,13 @@ class StageMenu
       @stage_end_timer = 0
       if next_world or next_bonus
         @stage_menu.section(3).clear
-        @stage_menu.section(3).add(MenuButton.new(400, :continue) {
+        @stage_menu.section(3).add(MenuButton.new(next_world ? 440 : 400, :continue) {
           SB.check_next_stage
         })
+        if next_world
+          @stage_menu.section(3).add(MenuText.new(:can_play, 210, 400))
+          @stage_menu.section(3).add(MenuImage.new(558, 394, get_next_bomb_icon)) if SB.world.num == SB.player.last_world
+        end
         @continue_only = true
       elsif @continue_only
         @stage_menu.section(3).clear
@@ -267,6 +271,15 @@ class StageMenu
         @continue_only = false
       end
       @stage_menu.go_to_section 3
+    end
+
+    def get_next_bomb_icon
+      case SB.player.last_world
+      when 1 then :icon_BombaVermelha
+      when 2 then :icon_BombaAmarela
+      when 3 then :icon_BombaVerde
+      else        :icon_BombaBranca
+      end
     end
 
     def update_lang

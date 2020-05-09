@@ -41,6 +41,7 @@ all_stars_found	Obteve um item!
 dead			Você morreu!
 restart			Pressione 'Enter' para recomeçar
 game_over		Fim de jogo!
+can_play		Agora você pode jogar com:
 msg1			Olá! Como você já deve ter percebido, você pode usar as setas (ou 'A' e 'D') para se mover e a barra de espaço (ou 'J') para pular./Use 'Esc' para pausar o jogo e a seta para cima (ou 'W') para abrir portas e falar com bombies como eu. (seta para baixo ou 'S' para avançar...)/Essa é a ilha de Tars, um lugar outrora pacífico, até o dia em que Chamal invadiu com seus animais mecânicos...
 msg2			No topo desta torre há um artefato chamado de Spec./A lenda diz que há muitos desses espalhados pelo mundo, e aquele que for capaz de juntar todos eles terá a chave para um caminho para a floresta mágica Lae.../Mas é apenas uma lenda, não é mesmo? Chegar até o topo parece bem perigoso...
 msg3			Você pode usar itens como esse acima apertando 'A' (ou 'K') uma vez que o tenha pagado. Itens que você pegou aparecerão no canto superior direito da tela./Se você tiver pegado mais de um tipo de item, use 'Shift' (ou 'L') para alternar entre eles.
