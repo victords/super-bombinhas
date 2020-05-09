@@ -245,6 +245,7 @@ class Heart < FloatingItem
   def update(section)
     super(section) do
       SB.player.bomb.hp += 1
+      SB.play_sound(Res.sound(:getItem))
     end
   end
 end
