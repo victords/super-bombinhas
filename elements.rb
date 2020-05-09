@@ -538,10 +538,11 @@ class MovingWall < GameObject
   def update(section)
     if @active
       @timer += 1
-      if @timer % 15 == 0
+      if @timer % 20 == 0
         @y += @closed ? 16 : -16
         @h += @closed ? -16 : 16
         @active_bounds = Rectangle.new @x, @y, @w, @h
+        SB.play_sound(Res.sound(:wallOpen))
         if @closed and @h == 0
           section.unset_fixed_camera
           @dead = true

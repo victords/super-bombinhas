@@ -1,6 +1,5 @@
 #!/bin/sh
 set -e
 gem uninstall minigl
-gem uninstall dfhjhd
 gem install minigl -v 2.2.8
 exit 0

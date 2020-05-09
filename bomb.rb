@@ -179,6 +179,7 @@ class Bomb < GameObject
     @explosion.x = @x + @w / 2 - @explosion_radius
     @explosion.y = @y + @h / 2 - @explosion_radius
     set_animation 6
+    SB.play_sound(Res.sound(:explode))
   end
 
   def explode?(obj)

@@ -137,7 +137,7 @@ class Enemy < GameObject
 end
 
 class FloorEnemy < Enemy
-  def initialize(x, y, args, w, h, img_gap, sprite_cols, sprite_rows, indices, interval, score, hp = 1, speed = 3)
+  def initialize(x, y, args, w, h, img_gap, sprite_cols, sprite_rows, indices, interval, score, speed, hp = 1)
     super x, y, w, h, img_gap, sprite_cols, sprite_rows, indices, interval, score, hp
 
     @dont_fall = args.nil?
@@ -265,7 +265,7 @@ end
 
 class Wheeliam < FloorEnemy
   def initialize(x, y, args, section)
-    super x, y, args, 32, 32, Vector.new(-4, -2), 3, 1, [0, 1], 8, 100, 1, 1.6
+    super x, y, args, 32, 32, Vector.new(-4, -2), 3, 1, [0, 1], 8, 100, 1.6
     @max_speed.y = 10
   end
 end
@@ -315,7 +315,7 @@ end
 
 class Fureel < FloorEnemy
   def initialize(x, y, args, section)
-    super x - 4, y - 7, args, 40, 39, Vector.new(-10, 0), 3, 1, [0, 1], 8, 300, 2, 2.3
+    super x - 4, y - 7, args, 40, 39, Vector.new(-10, 0), 3, 1, [0, 1], 8, 300, 2.3, 2
   end
 
   def get_invulnerable
@@ -756,13 +756,13 @@ end
 
 class Robort < FloorEnemy
   def initialize(x, y, args, section)
-    super x - 12, y - 31, args, 56, 63, Vector.new(-14, -9), 3, 2, [0, 1, 2, 1], 6, 450, 3
+    super x - 12, y - 31, args, 56, 63, Vector.new(-14, -9), 3, 2, [0, 1, 2, 1], 6, 450, 2.2, 3
   end
 
   def update(section)
     super(section) do
       @timer += 1
-      if @timer == 150
+      if @timer == 90
         @indices = [0, 1, 2, 1]
         @interval = 7
         set_direction
@@ -788,7 +788,7 @@ end
 
 class Shep < FloorEnemy
   def initialize(x, y, args, section)
-    super x, y, args, 42, 32, Vector.new(-5, -2), 3, 2, [0, 1, 0, 2], 7, 200, 1, 2
+    super x, y, args, 42, 32, Vector.new(-5, -2), 3, 2, [0, 1, 0, 2], 7, 200, 2
   end
 
   def update(section)
@@ -971,7 +971,7 @@ end
 
 class Armep < FloorEnemy
   def initialize(x, y, args, section)
-    super(x, y + 12, args, 41, 20, Vector.new(-21, -3), 1, 4, [0, 1, 0, 2], 8, 290, 1, 1.3)
+    super(x, y + 12, args, 41, 20, Vector.new(-21, -3), 1, 4, [0, 1, 0, 2], 8, 290, 1.3)
   end
 
   def hit_by_bomb(section)
@@ -1106,7 +1106,7 @@ class Sahiss < FloorEnemy
   alias :super_update :update
 
   def initialize(x, y, args, section)
-    super x - 54, y - 148, args, 148, 180, Vector.new(-139, -3), 2, 3, [0, 1, 0, 2], 7, 2000
+    super x - 54, y - 148, args, 148, 180, Vector.new(-139, -3), 2, 3, [0, 1, 0, 2], 7, 2000, 3
     @time = 180 + rand(240)
     section.active_object = self
     init
@@ -1293,7 +1293,7 @@ end
 
 class Mantul < FloorEnemy
   def initialize(x, y, args, section)
-    super(x - 10, y - 24, args, 52, 56, Vector.new(-6, -8), 2, 2, [0, 1, 0, 2], 7, 570, 2, 1.5)
+    super(x - 10, y - 24, args, 52, 56, Vector.new(-6, -8), 2, 2, [0, 1, 0, 2], 7, 570, 1.5, 2)
     @timer = 0
   end
 
@@ -1312,7 +1312,7 @@ end
 
 class Lambul < FloorEnemy
   def initialize(x, y, args, section)
-    super(x - 4, y - 38, args, 30, 70, Vector.new(-42, -10), 4, 2, [0, 1, 0, 2], 7, 600, 1, 2)
+    super(x - 4, y - 38, args, 30, 70, Vector.new(-42, -10), 4, 2, [0, 1, 0, 2], 7, 600, 2)
   end
 
   def update(section)
@@ -1454,7 +1454,7 @@ end
 
 class Necrul < FloorEnemy
   def initialize(x, y, args, section)
-    super(x - 20, y - 36, nil, 72, 68, Vector.new(-34, -6), 2, 3, [1,0,1,2], 7, 400, 2)
+    super(x - 20, y - 36, nil, 72, 68, Vector.new(-34, -6), 2, 3, [1,0,1,2], 7, 400, 2, 2)
   end
 
   def update(section)
