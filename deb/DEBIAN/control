@@ -1,9 +1,9 @@
 Package: super-bombinhas
 Priority: optional
-Version: 0.2.0
+Version: 0.3.0
 Architecture: all
 Maintainer: Aleva Games <contact@alevagames.com>
-Installed-Size: 18288
+Installed-Size: 18304
 Depends: build-essential, libsdl2-dev, libgl1-mesa-dev, libopenal-dev, libsndfile-dev, libmpg123-dev, libgmp-dev, libfontconfig1-dev, ruby, ruby-dev
 Homepage: http://alevagames.com
 Section: games
