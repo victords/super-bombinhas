@@ -148,7 +148,7 @@ class Menu
         MenuButton.new(550, :back, true) {
           @form.go_to_section 0
         },
-        MenuText.new(:credits_text, 400, 200, 600, :center)
+        MenuText.new(:credits_text, 400, 200, 780, :center)
       ], [
         MenuButton.new(550, :back, true) {
           @form.go_to_section 0
