@@ -824,7 +824,7 @@ class Flep < Enemy
       super(section)
     else
       super(section) do
-        move_free @aim, 4
+        move_free @aim, 2.5
         if @speed.x == 0 and @speed.y == 0
           @aim = Vector.new(@x + (@facing_right ? -@movement : @movement), @y)
           @facing_right = !@facing_right

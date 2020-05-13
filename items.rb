@@ -329,11 +329,7 @@ class Spring < GameObject
         when 2 then @y += 4; @img_gap.y -= 4; b.y += 4
         end
         @state += 1
-        if @state == 4
-          b.stored_forces.y = -18
-        else
-          set_animation @state
-        end
+        set_animation @state
         @timer = 0
       end
     elsif b.collide?(self) and SB.key_pressed?(:up)
@@ -347,6 +343,7 @@ class Spring < GameObject
     if @state == 4
       animate @indices, 7
       @timer += 1
+      b.stored_forces.y = -18 if @timer <= 6
       if @timer == 70
         reset
       elsif @timer == 7
@@ -378,7 +375,7 @@ class Spring < GameObject
   def draw(map)
     super(map, 2, 2)
     if SB.player.bomb.collide?(self)
-      Res.img(:fx_Balloon1).draw(@x - map.cam.x, @y - map.cam.y - 40, 0, 2, 2)
+      Res.img(:fx_Balloon2).draw(@x - map.cam.x, @y - map.cam.y - 40, 0, 2, 2)
     end
   end
 end

@@ -103,20 +103,25 @@ class Bomb < GameObject
         else
           animate [0, 1], 10
         end
-        @jump_frames = 0
-        @prev_bottom = C::LEDGE_JUMP_TOLERANCE
+        if @bottom.is_a?(Spring)
+          @jump_frames = 31
+          @prev_bottom = 0
+        else
+          @jump_frames = 0
+          @prev_bottom = C::LEDGE_JUMP_TOLERANCE
+        end
       else
         if @prev_bottom > 0
           @prev_bottom -= 1
         else
-          @jump_frames += 1 if @jump_frames < 30
+          @jump_frames += 1 if @jump_frames < 31
         end
         @stored_jump -= 1 if @stored_jump > 0
         if SB.key_pressed?(:jump)
           @stored_jump = C::EARLY_JUMP_TOLERANCE
         end
       end
-      if @jump_frames == 0 && (SB.key_pressed?(:jump) || @stored_jump > 0) || @jump_frames > 0 && SB.key_down?(:jump)
+      if @jump_frames == 0 && (SB.key_pressed?(:jump) || @stored_jump > 0) || @jump_frames > 0 && @jump_frames < 31 && SB.key_down?(:jump)
         @prev_bottom = 0
         forces.y -= (1.5 + @jump_speed * @speed.x.abs) / (0.3 * @jump_frames + 0.33) - 0.1
         set_animation 5
@@ -150,7 +155,7 @@ class Bomb < GameObject
     friction_factor = 1 if friction_factor > 1
     friction_factor = -1 if friction_factor < -1
     forces.x -= (@slipping ? 0.15 : 0.5) * friction_factor * (@speed.x <=> 0)
-    move forces, section.get_obstacles(@x, @y), section.ramps if @active
+    move(forces, section.get_obstacles(@x, @y), section.ramps) if @active
     @slipping = false
   end
 

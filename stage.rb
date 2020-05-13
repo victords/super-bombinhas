@@ -209,12 +209,17 @@ class Stage
   end
 
   def get_startup_item
+    w = SB.player.last_world
     possible_items = [
       2,  # Attack1
       8,  # Board
       44, # Key
       65, # Shield
     ]
+    possible_items += [
+      3,  # Attack2
+      71, # Spring
+    ] if w >= 2
     possible_items[rand(possible_items.size)]
   end
 
