@@ -181,7 +181,7 @@ class StageMenu
         @effects.delete(e) if e.dead
       end
       if SB.player.dead?
-        @dead_text = (SB.player.lives == 0 ? :game_over : :dead) if @dead_text.nil?
+        @dead_text = SB.player.lives == 0 ? :game_over : :dead if @dead_text.nil?
         @alpha += 17 if @alpha < 255
       elsif @dead_text
         @dead_text = nil
@@ -211,7 +211,7 @@ class StageMenu
       p = MenuPanel.new(-600, 150, 400, next_world ? 350 : 300)
       p.init_movement
       p.move_to 200, 150
-      t1 = MenuText.new(:stage_complete, 1200, 160, 400, :center, true)
+      t1 = MenuText.new(SB.player.dead? || SB.stage.time == 0 ? :too_bad : :stage_complete, 1200, 160, 400, :center, true)
       t1.init_movement
       t1.move_to 400, 160
       t2 = MenuText.new(:score, 210, 820)
@@ -292,10 +292,14 @@ class StageMenu
 
     def draw
       if SB.state == :main
-        unless SB.stage.starting
+        st = SB.stage
+        unless st.starting
           draw_player_stats
-          @star_icon.draw(363, 10, 0, 2, 2)
-          SB.text_helper.write_line("#{SB.stage.star_count}/#{C::STARS_PER_STAGE}", 411, 8, :center, 0)
+          unless st.is_bonus
+            @star_icon.draw(363, 10, 0, 2, 2)
+            SB.text_helper.write_line("#{st.star_count}/#{C::STARS_PER_STAGE}", 411, 8, :center, 0xffffff, 255, :border)
+          end
+          SB.text_helper.write_line(st.time.to_s, 400, 570, :center, 0xffffff, 255, :border) if st.time
         end
         @effects.each do |e|
           e.draw(nil, 2, 2)
@@ -358,7 +362,9 @@ class StageMenu
                          0, C::SCREEN_HEIGHT, c,
                          C::SCREEN_WIDTH, C::SCREEN_HEIGHT, c, 0
       SB.big_text_helper.write_line SB.text(@dead_text), 400, 250, :center, 0xffffff, @alpha, :border, 0, 1, 255, 1
-      SB.text_helper.write_line SB.text(:restart), 400, 300, :center, 0xffffff, @alpha, :border, 0, 1, 255, 1
+      unless SB.stage.is_bonus
+        SB.text_helper.write_line SB.text(:restart), 400, 300, :center, 0xffffff, @alpha, :border, 0, 1, 255, 1
+      end
     end
 
     def draw_menu

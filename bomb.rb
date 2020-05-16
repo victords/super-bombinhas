@@ -255,7 +255,7 @@ class Bomb < GameObject
   end
 
   def reset(loaded = false)
-    @will_explode = @exploding = @aura = @celebrating = @dying = @shielded = false
+    @will_explode = @exploding = @aura = @dying = @shielded = false
     @speed.x = @speed.y = @stored_forces.x = @stored_forces.y = 0
     if loaded; @hp = @saved_hp
     else; @saved_hp = @hp = @def_hp; end
@@ -263,7 +263,6 @@ class Bomb < GameObject
   end
 
   def celebrate
-    @celebrating = true
     set_animation 8
   end
 

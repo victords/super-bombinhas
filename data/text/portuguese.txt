@@ -41,6 +41,7 @@ all_stars_found	Obteve um item!
 dead			Você morreu!
 restart			Pressione 'Enter' para recomeçar
 game_over		Fim de jogo!
+too_bad			Que pena!
 can_play		Agora você pode jogar com:
 msg1			Isto é apenas uma amostra do que o aguarda no próximo mundo... Fique atento para a próxima versão de Super Bombinhas!
 msg_monep		Ei! Alto lá! Se você quiser passar por aqui, tem que me trazer uma erva florestal. Isso mesmo, uma deliciosa erva florestal... Agora suma daqui e volte apenas quando tiver arranjado uma para mim!

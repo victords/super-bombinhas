@@ -496,7 +496,7 @@ class Section
     fire_rock_count = 0
     unless stopped == :all
       @elements.reverse_each do |e|
-        is_enemy = e.is_a?(Enemy)
+        is_enemy = e.is_a?(Enemy) || e.is_a?(Ekips) || e.is_a?(Faller)
         e.update(self) if e.is_visible(@map) && !(is_enemy && stopped == :enemies)
         if e.dead?
           @elements.delete(e)

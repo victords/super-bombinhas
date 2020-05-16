@@ -18,7 +18,7 @@
 require_relative 'section'
 
 class Stage
-  attr_reader :num, :id, :starting, :cur_entrance, :switches, :star_count, :is_bonus, :objective
+  attr_reader :num, :id, :starting, :cur_entrance, :switches, :star_count, :is_bonus, :time, :objective
 
   def initialize(world, num)
     @world = world
@@ -114,8 +114,10 @@ class Stage
         @cur_section = @sections[index + 1]
         entrance = @entrances[@cur_section.default_entrance]
         @cur_section.start @switches, entrance[:x], entrance[:y]
+      elsif SB.player.dead? && @is_bonus
+        return :finish
       else
-        return :finish if check_reload
+        check_reload
         check_entrance
         check_warp
       end
@@ -139,8 +141,6 @@ class Stage
     if @cur_section.reload
       if SB.player.lives == 0
         SB.game_over
-      elsif @is_bonus
-        return true
       else
         @sections.each do |s|
           s.loaded = false
@@ -150,7 +150,6 @@ class Stage
         reset
       end
     end
-    false
   end
 
   def check_entrance
@@ -248,8 +247,6 @@ class Stage
                          @panel_x + 600, 400, C::PANEL_COLOR, 0
       SB.text_helper.write_line @world_name, @panel_x + 300, 220, :center
       SB.big_text_helper.write_line @name, @panel_x + 300, 300, :center
-    elsif @time
-      SB.text_helper.write_line @time.to_s, 400, 570, :center, 0xffff00, 255, :border
     end
   end
 end

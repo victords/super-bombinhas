@@ -93,7 +93,6 @@ class SBGame < MiniGL::GameWindow
       SB.end_stage if status == :finish
       StageMenu.update_main
     elsif SB.state == :stage_end
-      SB.player.bomb.update(nil)
       StageMenu.update_end
     elsif SB.state == :paused
       if SB.key_pressed?(:pause)
