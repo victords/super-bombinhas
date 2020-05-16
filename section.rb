@@ -488,13 +488,22 @@ class Section
   def finish
     @finished = true
     SB.player.bomb.active = false
+    SB.player.bomb.celebrate
   end
 
   def update(stopped)
+    enemy_count = 0
+    fire_rock_count = 0
     unless stopped == :all
-      @elements.each do |e|
-        e.update(self) if e.is_visible(@map) && !(e.is_a?(Enemy) && stopped == :enemies)
-        @elements.delete e if e.dead?
+      @elements.reverse_each do |e|
+        is_enemy = e.is_a?(Enemy)
+        e.update(self) if e.is_visible(@map) && !(is_enemy && stopped == :enemies)
+        if e.dead?
+          @elements.delete(e)
+        else
+          enemy_count += 1 if is_enemy
+          fire_rock_count += 1 if e.is_a?(FireRock)
+        end
       end
     end
     @effects.each do |e|
@@ -550,6 +559,11 @@ class Section
         return
       end
 
+      if SB.stage.is_bonus
+        finish if SB.stage.objective == :kill_all && enemy_count == 0
+        finish if SB.stage.objective == :get_all_rocks && fire_rock_count == 0
+      end
+
       if @finished
         return :finish
       elsif @border_exit == 0 && bomb.y + bomb.h <= -C::EXIT_MARGIN ||
@@ -557,7 +571,7 @@ class Section
             @border_exit == 2 && bomb.y >= @size.x + C::EXIT_MARGIN ||
             @border_exit == 3 && bomb.x + bomb.w <= C::EXIT_MARGIN
         return :next_section
-      elsif @border_exit != 2 && bomb.y >= @size.y + C::EXIT_MARGIN # abismo
+      elsif @border_exit != 2 && bomb.y >= @size.y + C::EXIT_MARGIN # pit
         SB.player.die
         return
       end

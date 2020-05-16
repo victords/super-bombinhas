@@ -30,7 +30,7 @@ module C
   EXIT_MARGIN = 16
   DEATH_PENALTY = 1_000
   GAME_OVER_PENALTY = 10_000
-  BONUS_THRESHOLD = 100_000_000
+  BONUS_THRESHOLD = 5000
   BONUS_LEVELS = 5
   GAME_LIMIT = 10
   MOVIE_DELAY = 30
@@ -226,7 +226,6 @@ class SB
     end
 
     def end_stage
-      @player.bomb.celebrate
       if @bonus
         @bonus = nil
         StageMenu.end_stage(false, false, true)
@@ -248,9 +247,9 @@ class SB
     def check_next_stage(continue = true)
       if @bonus
         StageMenu.initialize
-        time = IO.read("#{Res.prefix}stage/bonus/times").split[@bonus-1].to_i
+        config = IO.read("#{Res.prefix}stage/bonus/config").split[@bonus-1].split(',').map(&:to_i)
         @stage = Stage.new('bonus', @bonus)
-        @stage.start(false, time)
+        @stage.start(false, config[0], config[1])
         @state = :main
       else
         @stage = @prev_stage if @prev_stage

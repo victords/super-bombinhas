@@ -18,24 +18,32 @@
 require_relative 'section'
 
 class Stage
-  attr_reader :num, :id, :starting, :cur_entrance, :switches, :star_count
+  attr_reader :num, :id, :starting, :cur_entrance, :switches, :star_count, :is_bonus, :objective
 
   def initialize(world, num)
     @world = world
     @num = num
     @id = "#{world}-#{num}"
+    @is_bonus = world == 'bonus'
+    @world_name = @is_bonus ? "#{SB.text(:bonus)} #{@num}" : SB.text("world_#{@world}")
+    @name = @is_bonus ? SB.text("bonus_#{@num}") : "#{@world}-#{@num}: #{SB.text("stage_#{@world}_#{@num}")}"
   end
 
-  def start(loaded = false, time = nil)
+  def start(loaded = false, time = nil, objective = nil)
     if time
       @time = time
       @counter = 0
+      @objective = case objective
+                   when 1 then :kill_all
+                   when 2 then :get_all_rocks
+                   else        :reach_goal
+                   end
     end
 
     @star_count = 0
     @switches = []
-    taken_switches = loaded ? eval("[#{SB.save_data[9]}]") : []
-    used_switches = loaded ? eval("[#{SB.save_data[10]}]") : []
+    taken_switches = loaded ? SB.save_data[9].split(',') : []
+    used_switches = loaded ? SB.save_data[10].split(',') : []
 
     @sections = []
     @entrances = []
@@ -107,7 +115,7 @@ class Stage
         entrance = @entrances[@cur_section.default_entrance]
         @cur_section.start @switches, entrance[:x], entrance[:y]
       else
-        check_reload
+        return :finish if check_reload
         check_entrance
         check_warp
       end
@@ -131,6 +139,8 @@ class Stage
     if @cur_section.reload
       if SB.player.lives == 0
         SB.game_over
+      elsif @is_bonus
+        return true
       else
         @sections.each do |s|
           s.loaded = false
@@ -140,6 +150,7 @@ class Stage
         reset
       end
     end
+    false
   end
 
   def check_entrance
@@ -235,10 +246,8 @@ class Stage
                          @panel_x + 600, 200, C::PANEL_COLOR,
                          @panel_x, 400, C::PANEL_COLOR,
                          @panel_x + 600, 400, C::PANEL_COLOR, 0
-      world_name = @world == 'bonus' ? "#{SB.text(:bonus)} #{@num}" : SB.text("world_#{@world}")
-      SB.text_helper.write_line world_name, @panel_x + 300, 220, :center
-      name = @world == 'bonus' ? SB.text("bonus_#{@num}") : "#{@world}-#{@num}: #{SB.text("stage_#{@world}_#{@num}")}"
-      SB.big_text_helper.write_line name, @panel_x + 300, 300, :center
+      SB.text_helper.write_line @world_name, @panel_x + 300, 220, :center
+      SB.big_text_helper.write_line @name, @panel_x + 300, 300, :center
     elsif @time
       SB.text_helper.write_line @time.to_s, 400, 570, :center, 0xffff00, 255, :border
     end
