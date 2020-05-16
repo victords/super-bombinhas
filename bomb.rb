@@ -121,11 +121,14 @@ class Bomb < GameObject
           @stored_jump = C::EARLY_JUMP_TOLERANCE
         end
       end
-      if @jump_frames == 0 && (SB.key_pressed?(:jump) || @stored_jump > 0) || @jump_frames > 0 && @jump_frames < 31 && SB.key_down?(:jump)
+      if @jump_frames == 0 && (SB.key_pressed?(:jump) || @stored_jump > 0) || @jump_frames > 0 && @jump_frames < 31 && @speed.y < 0 && SB.key_down?(:jump)
         @prev_bottom = 0
         forces.y -= (1.5 + @jump_speed * @speed.x.abs) / (0.3 * @jump_frames + 0.33) - 0.1
         set_animation 5
-        SB.play_sound(Res.sound(:jump)) if @jump_frames == 0
+        if @jump_frames == 0
+          @speed.y = 0
+          SB.play_sound(Res.sound(:jump))
+        end
       end
       @stored_jump = 0 if @bottom
 

@@ -665,15 +665,15 @@ class Section
 
   def draw_bgs
     @bgs.each_with_index do |bg, ind|
-      back_x = -@map.cam.x * 0.5 + ind * 0.1; back_y = -@map.cam.y * 0.5 + ind * 0.1
+      back_x = -@map.cam.x * (0.5 + ind * 0.1); back_y = -@map.cam.y * (0.5 + ind * 0.1)
       tiles_x = @size.x / bg.width / 2; tiles_y = @size.y / bg.height / 2
-      (1..tiles_x-1).each do |i|
+      (1...tiles_x).each do |i|
         if back_x + i * bg.width * 2 > 0
           back_x += (i - 1) * bg.width * 2
           break
         end
       end
-      (1..tiles_y-1).each do |i|
+      (1...tiles_y).each do |i|
         if back_y + i * bg.height * 2 > 0
           back_y += (i - 1) * bg.height * 2
           break
