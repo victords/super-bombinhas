@@ -42,8 +42,8 @@ class Stage
 
     @star_count = 0
     @switches = []
-    taken_switches = loaded ? SB.save_data[9].split(',') : []
-    used_switches = loaded ? SB.save_data[10].split(',') : []
+    taken_switches = loaded ? SB.save_data[9].split(',').map(&:to_i) : []
+    used_switches = loaded ? SB.save_data[10].split(',').map(&:to_i) : []
 
     @sections = []
     @entrances = []

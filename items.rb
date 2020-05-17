@@ -406,7 +406,7 @@ class Attack2 < FloatingItem
   end
 end
 
-class Herb < GameObject
+class Herb < SBGameObject
   include Item
 
   def initialize(x, y, args, section, switch)

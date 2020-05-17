@@ -142,7 +142,7 @@ class Section
     Zep
   ]
 
-  attr_reader :reload, :tiles, :obstacles, :ramps, :passengers, :size, :default_entrance, :tileset_num, :map
+  attr_reader :reload, :tiles, :obstacles, :ramps, :size, :default_entrance, :tileset_num, :map
   attr_accessor :entrance, :warp, :loaded, :active_object
 
   def initialize(file, entrances, switches, taken_switches, used_switches)
@@ -151,7 +151,6 @@ class Section
     set_bgs parts[1].split ','
     set_elements parts[2].split(';'), entrances, switches, taken_switches, used_switches
     set_ramps parts[3].split ';'
-    @passengers = [SB.player.bomb] #vetor de objetos que podem ser carregados por elevador
   end
 
   # initialization
@@ -393,6 +392,10 @@ class Section
     obstacles
   end
 
+  def passengers
+    [SB.player.bomb]
+  end
+
   def obstacle_at?(x, y)
     i = x / C::TILE_SIZE
     j = y / C::TILE_SIZE
@@ -529,7 +532,8 @@ class Section
     d_y_abs = d_y.abs
     if @camera_moving
       if d_y_abs > 0.5
-        @camera_ref_pos.y += C::CAMERA_VERTICAL_SPEED * d_y
+        @camera_ref_pos.y += C::CAMERA_VERTICAL_SPEED * d_y * [d_y_abs.to_f / C::CAMERA_VERTICAL_TOLERANCE, 1].max
+
         moved_y = true
       else
         @camera_moving = false

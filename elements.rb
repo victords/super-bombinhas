@@ -424,17 +424,18 @@ class Spikes < TwoStateObject
   def initialize(x, y, args, section)
     args ||= '0'
     a = args.split(',')
+    x2 = x; y2 = y
     @dir = a[0].to_i
     if @dir % 2 == 0
-      x += 2; w = 28; h = 34
-      y -= 2 if @dir == 2
+      x2 += 2; w = 28; h = 34
+      y2 -= 2 if @dir == 0
     else
-      y += 2; w = 34; h = 28
-      x -= 2 if @dir == 1
+      y2 += 2; w = 34; h = 28
+      x2 -= 2 if @dir == 3
     end
-    super x, y, w, h, "sprite_Spikes#{a[1]}", Vector.new(0, 0), 5, 1, 150, 0, 2, [0], [4], [1, 2, 3, 4, 0], [3, 2, 1, 0, 4]
+    super x2, y2, w, h, "sprite_Spikes#{a[1]}", Vector.new(0, 0), 5, 1, 150, 0, 2, [0], [4], [1, 2, 3, 4, 0], [3, 2, 1, 0, 4]
     @active_bounds = Rectangle.new x, y, 32, 32
-    @obst = Block.new(x + 2, y + 2, 28, 28)
+    @obst = Block.new(x, y, 32, 32)
   end
 
   def s1_to_s2(section)
@@ -483,13 +484,17 @@ class FixedSpikes < GameObject
     a = args ? args.split(',') : [0, 1]
     @dir = a[0].to_i
     type = a[1] || '1'
+    x2 = x; y2 = y
     if @dir % 2 == 0
-      super x + 2, @dir == 2 ? y - 2 : y, 28, 34, "sprite_fixedSpikes#{type}", Vector.new(0, 0), 1, 1
+      x2 += 2; w = 28; h = 34
+      y2 -= 2 if @dir == 0
     else
-      super @dir == 1 ? x - 2 : x, y + 2, 34, 28, "sprite_fixedSpikes#{type}", Vector.new(0, 0), 1, 1
+      y2 += 2; w = 34; h = 28
+      x2 -= 2 if @dir == 3
     end
-    @active_bounds = Rectangle.new x - 2, y - 2, 36, 36
-    section.obstacles << Block.new(x + 2, y + 2, 28, 28)
+    super x2, y2, w, h, "sprite_fixedSpikes#{type}", Vector.new(0, 0), 1, 1
+    @active_bounds = Rectangle.new(x, y, 32, 32)
+    section.obstacles << Block.new(x, y, 32, 32)
   end
 
   def update(section)
@@ -542,7 +547,7 @@ class MovingWall < GameObject
         @y += @closed ? 16 : -16
         @h += @closed ? -16 : 16
         @active_bounds = Rectangle.new @x, @y, @w, @h
-        SB.play_sound(Res.sound(:wallOpen))
+        SB.play_sound(Res.sound(:wallOpen)) if section.map.cam.intersect?(@active_bounds)
         if @closed and @h == 0
           section.unset_fixed_camera
           @dead = true
@@ -561,6 +566,10 @@ class MovingWall < GameObject
     @active = true
     @timer = 0
     section.set_fixed_camera(@x + @w / 2, @y + @h / 2)
+  end
+
+  def is_visible(map)
+    map.cam.intersect?(@active_bounds) || @active
   end
 
   def draw(map)
@@ -1214,15 +1223,20 @@ class TwinWalls < GameObject
   def update(section)
     if @active
       @timer += 1
-      if @timer == 30
+      if @timer % 20 == 0
         @y += @closed ? 16 : -16
         @h += @closed ? -16 : 16
         @active_bounds = Rectangle.new @x, @y, @w, @h
+        SB.play_sound(Res.sound(:wallOpen)) if section.map.cam.intersect?(@active_bounds)
         @timer = 0
         if @closed && @h == 0 || !@closed && @h == @max_size
           @closed = !@closed
           @active = false
+          section.unset_fixed_camera
         end
+      end
+      if @timer == 150
+        section.unset_fixed_camera
       end
     end
   end
@@ -1232,7 +1246,12 @@ class TwinWalls < GameObject
       @active = true
       @timer = 0
       @twin.activate(section) if @twin
+      section.set_fixed_camera(@x + @w / 2, @y + @h / 2)
     end
+  end
+
+  def is_visible(map)
+    map.cam.intersect?(@active_bounds) || @active
   end
 
   def draw(map)
@@ -1939,7 +1958,8 @@ class Graphic < Sprite
     when 2 then x += 16; y += 16; @w = 64; @h = 64; cols = 2; rows = 2; @indices = [0, 1, 2, 3]; @interval = 7; @rot = -5
     when 3..5 then x -= 16; @w = 64; @h = 32
     when 6 then x -= 134; y -= 208; @w = 300; @h = 240
-    when 7..9 then @w = 128; @h = 64
+    when 7..8 then @w = 128; @h = 64
+    when 9 then x -= 16; @w = 160; @h = 64
     when 10 then x -= 236; y -= 416; @w = 600; @h = 480
     when 12 then x += 2; @w = 126; @h = 128; cols = 2; rows = 2; @indices = [0, SB.lang == :portuguese ? 1 : SB.lang == :english ? 2 : 3]; @interval = 60
     when 13..18 then x -= 64; y -= 88; @w = 160; @h = 120; cols = 1; rows = 3; img_index = SB.lang == :portuguese ? 1 : SB.lang == :english ? 0 : 2

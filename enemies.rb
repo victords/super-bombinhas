@@ -788,7 +788,7 @@ end
 
 class Shep < FloorEnemy
   def initialize(x, y, args, section)
-    super x, y, args, 42, 32, Vector.new(-5, -2), 3, 2, [0, 1, 0, 2], 7, 200, 2
+    super x, y, args, 42, 32, Vector.new(-5, -2), 3, 2, [0, 1, 0, 2], 7, 160, 2
   end
 
   def update(section)
@@ -852,7 +852,7 @@ class Jellep < Enemy
     super(section) do
       if @state == 0
         @timer += 1
-        if @timer == 120
+        if @timer == 60
           @stored_forces.y = -14
           @state = 1
           @timer = 0
@@ -944,14 +944,14 @@ end
 
 class Vamep < Enemy
   def initialize(x, y, args, section)
-    super x, y, 29, 22, Vector.new(-24, -18), 2, 2, [0, 1, 2, 3, 2, 1], 6, 300
+    super x, y, 29, 22, Vector.new(-24, -18), 2, 2, [0, 1, 2, 3, 2, 1], 6, 250
     @angle = 0
     if args
       args = args.split ','
-      @radius = args[0].to_i
-      @speed = (args[1] || '3').to_i
+      @radius = args[0].to_i * C::TILE_SIZE
+      @speed = (args[1] || '3').to_f
     else
-      @radius = 32
+      @radius = C::TILE_SIZE
       @speed = 3
     end
     @start_x = x
