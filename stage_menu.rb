@@ -52,6 +52,8 @@ class BombButton < Button
   def initialize(x, bomb, form)
     super(x: x, y: 240, width: 80, height: 80) {
       SB.player.set_bomb(bomb)
+      SB.stage.update_bomb
+
       SB.state = :main
       form.reset
     }

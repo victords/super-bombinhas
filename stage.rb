@@ -214,6 +214,10 @@ class Stage
     @stop_time_duration = duration
   end
 
+  def update_bomb
+    @cur_section.update_passengers
+  end
+
   def get_star
     @star_count += 1
   end

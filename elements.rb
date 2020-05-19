@@ -200,6 +200,7 @@ class Door < GameObject
     type = args[2]
     case type
     when nil then x_g = -10; y_g = -63
+    when '3' then x_g = -10; y_g = -63
     else          x_g = -19; y_g = -89
     end
     super x + 10, y + 63, 12, 1, "sprite_Door#{type}", Vector.new(x_g, y_g), 5, 1
@@ -546,7 +547,6 @@ class MovingWall < GameObject
       if @timer % 20 == 0
         @y += @closed ? 16 : -16
         @h += @closed ? -16 : 16
-        @active_bounds = Rectangle.new @x, @y, @w, @h
         SB.play_sound(Res.sound(:wallOpen)) if section.map.cam.intersect?(@active_bounds)
         if @closed and @h == 0
           section.unset_fixed_camera
@@ -753,7 +753,7 @@ class Projectile < GameObject
     case type
     when 1 then w = 20; h = 12; x_g = -2; y_g = -1; cols = 1; rows = 1; indices = [0]; @speed_m = 4.5
     when 2 then w = 8; h = 8; x_g = -2; y_g = -2; cols = 2; rows = 2; indices = [0, 1, 2, 3]; @speed_m = 2.5
-    when 3 then w = 4; h = 40; x_g = 0; y_g = 0; cols = 1; rows = 1; indices = [0]; @speed_m = 6
+    when 3 then w = 4; h = 40; x_g = 0; y_g = 0; cols = 1; rows = 1; indices = [0]; @speed_m = 10
     when 4 then w = 16; h = 22; x_g = -2; y_g = 0; cols = 1; rows = 1; indices = [0]; @speed_m = 5
     when 5 then w = 20; h = 20; x_g = -16; y_g = -4; cols = 1; rows = 2; indices = [0, 1]; @speed_m = 5
     when 6 then w = 10; h = 10; x_g = -2; y_g = 0; cols = 2; rows = 2; indices = [0, 1, 2, 3]; @speed_m = 4
@@ -774,7 +774,7 @@ class Projectile < GameObject
 
     obst = section.get_obstacles(@x, @y)
     obst.each do |o|
-      if o.bounds.intersect?(self)
+      if !o.passable && o.bounds.intersect?(self)
         @dead = true
         break
       end
@@ -927,10 +927,10 @@ class Branch < GameObject
   def initialize(x, y, args, section)
     a = args ? args.split(',') : []
     @scale = a[0] ? a[0].to_i : 2
-    super x, y, @scale * C::TILE_SIZE, 1, :sprite_branch, Vector.new(0, 0)
+    @left = a[1].nil?
+    super x, y, @scale * C::TILE_SIZE, 1, :sprite_branch, Vector.new(@left ? 0 : 4, 0)
     @passable = true
     @active_bounds = Rectangle.new(@x, @y, @w, @img[0].height)
-    @left = a[1].nil?
     section.obstacles << self
   end
 

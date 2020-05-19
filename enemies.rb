@@ -988,6 +988,7 @@ end
 
 class Owlep < Enemy
   def initialize(x, y, args, section)
+    y -= 50 if args.nil?
     super x - 3, y - 32, 38, 55, Vector.new(-3, 0), 4, 1, [0, 0, 1, 0, 0, 0, 2], 60, 250, 2
   end
 
@@ -1003,7 +1004,7 @@ class Owlep < Enemy
         @timer = 0
       elsif @attacking
         @timer += 1
-        if @timer == 120
+        if @timer == 60
           @indices = [0, 0, 1, 0, 0, 0, 2]
           set_animation 0
           @attacking = false

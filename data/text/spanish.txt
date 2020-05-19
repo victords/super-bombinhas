@@ -58,6 +58,8 @@ stage_1_4		¡Por Fin! La Fortaleza de Chamal
 stage_1_5		Chamal: ¡la derrota!
 world_2			Bosque de los sabios
 stage_2_1		El bosque de frontera
+stage_2_2		Encima del árbol más alto
+stage_2_3		El enigma de los tres árboles
 bonus			Bónus
 bonus_1			adjf dfksh
 bonus_2			sdkfh sdjh dfjkdfk jk

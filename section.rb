@@ -142,7 +142,7 @@ class Section
     Zep
   ]
 
-  attr_reader :reload, :tiles, :obstacles, :ramps, :size, :default_entrance, :tileset_num, :map
+  attr_reader :reload, :tiles, :obstacles, :ramps, :passengers, :size, :default_entrance, :tileset_num, :map
   attr_accessor :entrance, :warp, :loaded, :active_object
 
   def initialize(file, entrances, switches, taken_switches, used_switches)
@@ -185,6 +185,7 @@ class Section
     x = 0; y = 0; s_index = switches.length
     @element_info = []
     @hide_tiles = []
+    @passengers = [SB.player.bomb]
     s.each do |e|
       if e[0] == '_'; x, y = set_spaces e[1..-1].to_i, x, y
       elsif e[3] == '*'; x, y = set_tiles e[4..-1].to_i, x, y, tile_type(e[0]), e[1, 2]
@@ -392,10 +393,6 @@ class Section
     obstacles
   end
 
-  def passengers
-    [SB.player.bomb]
-  end
-
   def obstacle_at?(x, y)
     i = x / C::TILE_SIZE
     j = y / C::TILE_SIZE
@@ -475,6 +472,11 @@ class Section
         break
       end
     end
+  end
+
+  def update_passengers
+    @passengers.delete_at(0)
+    @passengers.insert(0, SB.player.bomb)
   end
 
   def set_fixed_camera(x, y)
