@@ -341,6 +341,7 @@ class Section
     @camera_moving = false
     @camera_ref_pos = Vector.new(bomb.x + bomb.w / 2, bomb.y + bomb.h / 2)
     update_camera
+    update_passengers
     @warp = nil
   end
 
