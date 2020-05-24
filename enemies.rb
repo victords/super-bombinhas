@@ -870,7 +870,7 @@ class Jellep < Enemy
         @prev_water = @water
         @water = section.element_at(Water, @x, @y)
         if @water && !@prev_water || @prev_water && !@water
-          section.add_effect(Effect.new(@x - 16, (@water || @prev_water).y - 19, :fx_water, 1, 4, 8))
+          section.add_effect(Effect.new(@x - 16, (@water || @prev_water).y - 19, :fx_water, 1, 4, 8, nil, nil, :splash))
         end
       end
     end

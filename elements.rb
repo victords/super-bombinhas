@@ -425,16 +425,15 @@ class Spikes < TwoStateObject
   def initialize(x, y, args, section)
     args ||= '0'
     a = args.split(',')
-    x2 = x; y2 = y
     @dir = a[0].to_i
-    if @dir % 2 == 0
-      x2 += 2; w = 28; h = 34
-      y2 -= 2 if @dir == 0
-    else
-      y2 += 2; w = 34; h = 28
-      x2 -= 2 if @dir == 3
+    x_g = y_g = 0
+    case @dir
+    when 0 then y_g = 1
+    when 1 then x_g = -1
+    when 2 then y_g = -1
+    else        x_g = 1
     end
-    super x2, y2, w, h, "sprite_Spikes#{a[1]}", Vector.new(0, 0), 5, 1, 150, 0, 2, [0], [4], [1, 2, 3, 4, 0], [3, 2, 1, 0, 4]
+    super x - 2, y - 2, 36, 36, "sprite_Spikes#{a[1]}", Vector.new(x_g, y_g), 5, 1, 150, 0, 2, [0], [4], [1, 2, 3, 4, 0], [3, 2, 1, 0, 4]
     @active_bounds = Rectangle.new x, y, 32, 32
     @obst = Block.new(x, y, 32, 32)
   end
@@ -445,21 +444,23 @@ class Spikes < TwoStateObject
     else
       section.obstacles << @obst
     end
+    SB.play_sound(Res.sound(:spikes)) if section.map.cam.intersect?(@active_bounds)
   end
 
   def s2_to_s1(section)
     section.obstacles.delete @obst
+    SB.play_sound(Res.sound(:spikes)) if section.map.cam.intersect?(@active_bounds)
   end
 
   def update(section)
     super section
 
     b = SB.player.bomb
-    if @state2 and b.collide? self
-      if (@dir == 0 and b.y + b.h <= @y + 2) or
-         (@dir == 1 and b.x >= @x + @w - 2) or
-         (@dir == 2 and b.y >= @y + @h - 2) or
-         (@dir == 3 and b.x + b.w <= @x + 2)
+    if @state2
+      if (@dir == 0 && b.x + b.w > @x + 2 && @x + @w - 2 > b.x && b.y + b.h > @y && b.y + b.h <= @y + 2) ||
+         (@dir == 1 && b.x >= @x + @w - 2 && b.x < @x + @w && b.y + b.h > @y + 2 && @y + @h - 2 > b.y) ||
+         (@dir == 2 && b.x + b.w > @x + 2 && @x + @w - 2 > b.x && b.y >= @y + @h - 2 && b.y < @y + @h) ||
+         (@dir == 3 && b.x + b.w > @x && b.x + b.w <= @x + 2 && b.y + b.h > @y + 2 && @y + @h - 2 > b.y)
         SB.player.bomb.hit
       end
     end
@@ -476,7 +477,7 @@ class Spikes < TwoStateObject
             when 2 then 180
             else        270
             end
-    @img[@img_index].draw_rot @x + @w/2 - map.cam.x, @y + @h/2 - map.cam.y, 0, angle, 0.5, 0.5, 2, 2
+    @img[@img_index].draw_rot @x + @w/2 + @img_gap.x - map.cam.x, @y + @h/2 + @img_gap.y - map.cam.y, 0, angle, 0.5, 0.5, 2, 2
   end
 end
 
@@ -484,29 +485,26 @@ class FixedSpikes < GameObject
   def initialize(x, y, args, section)
     a = args ? args.split(',') : [0, 1]
     @dir = a[0].to_i
-    type = a[1] || '1'
-    x2 = x; y2 = y
-    if @dir % 2 == 0
-      x2 += 2; w = 28; h = 34
-      y2 -= 2 if @dir == 0
-    else
-      y2 += 2; w = 34; h = 28
-      x2 -= 2 if @dir == 3
+    type = a[1] || 1
+    x_g = y_g = 0
+    case @dir
+    when 0 then y_g = 1
+    when 1 then x_g = -1
+    when 2 then y_g = -1
+    else        x_g = 1
     end
-    super x2, y2, w, h, "sprite_fixedSpikes#{type}", Vector.new(0, 0), 1, 1
+    super x - 2, y - 2, 36, 36, "sprite_fixedSpikes#{type}", Vector.new(x_g, y_g), 1, 1
     @active_bounds = Rectangle.new(x, y, 32, 32)
     section.obstacles << Block.new(x, y, 32, 32)
   end
 
   def update(section)
     b = SB.player.bomb
-    if b.collide? self
-      if (@dir == 0 and b.y + b.h <= @y + 2) or
-         (@dir == 1 and b.x >= @x + @w - 2) or
-         (@dir == 2 and b.y >= @y + @h - 2) or
-         (@dir == 3 and b.x + b.w <= @x + 2)
-        SB.player.bomb.hit
-      end
+    if (@dir == 0 && b.x + b.w > @x + 2 && @x + @w - 2 > b.x && b.y + b.h > @y && b.y + b.h <= @y + 2) ||
+       (@dir == 1 && b.x >= @x + @w - 2 && b.x < @x + @w && b.y + b.h > @y + 2 && @y + @h - 2 > b.y) ||
+       (@dir == 2 && b.x + b.w > @x + 2 && @x + @w - 2 > b.x && b.y >= @y + @h - 2 && b.y < @y + @h) ||
+       (@dir == 3 && b.x + b.w > @x && b.x + b.w <= @x + 2 && b.y + b.h > @y + 2 && @y + @h - 2 > b.y)
+      SB.player.bomb.hit
     end
   end
 
@@ -517,7 +515,7 @@ class FixedSpikes < GameObject
             when 2 then 180
             else        270
             end
-    @img[0].draw_rot @x + @w/2 - map.cam.x, @y + @h/2 - map.cam.y, 0, angle, 0.5, 0.5, 2, 2
+    @img[0].draw_rot @x + @w/2 + @img_gap.x - map.cam.x, @y + @h/2 + @img_gap.y - map.cam.y, 0, angle, 0.5, 0.5, 2, 2
   end
 end
 

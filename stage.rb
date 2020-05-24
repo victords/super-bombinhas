@@ -220,6 +220,7 @@ class Stage
 
   def get_star
     @star_count += 1
+    SB.player.stage_score += 500
   end
 
   def get_startup_item
