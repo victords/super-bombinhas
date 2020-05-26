@@ -1476,8 +1476,10 @@ end
 
 class FragileFloor < SBGameObject
   def initialize(x, y, args, section)
+    args ||= 1
     super x, y, 32, 32, "sprite_fragileFloor#{args}", Vector.new(0, 0), 4, 1
-    @life = 60
+    @life = 10
+
     section.obstacles << self
   end
 

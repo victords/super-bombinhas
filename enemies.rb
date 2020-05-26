@@ -1071,7 +1071,7 @@ class Butterflep < Enemy
     @points = []
     ps.each do |p|
       pp = p.split(',')
-      @points << Vector.new(pp[0].to_i * C::TILE_SIZE, pp[1].to_i * C::TILE_SIZE)
+      @points << Vector.new(pp[0].to_i * C::TILE_SIZE - 12, pp[1].to_i * C::TILE_SIZE - 12)
     end
     @points << Vector.new(@x, @y)
     @timer = 0
@@ -1087,13 +1087,13 @@ class Butterflep < Enemy
         end
       else
         @timer += 1
-        @moving = true if @timer == 120
+        @moving = true if @timer == 60
       end
     end
   end
 
   def hit_by_bomb(section)
-    let b = SB.player.bomb
+    b = SB.player.bomb
     if b.power > 1
       hit(section)
     else
