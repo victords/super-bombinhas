@@ -164,7 +164,7 @@ class Section
     @border_exit = s[2].to_i # 0: top, 1: right, 2: down, 3: left, 4: none
     @tileset_num = s[3].to_i
     @tileset = Res.tileset s[3], 16, 16
-    @bgm = Res.song s[4]
+    @bgm = Res.song(s[4])
     @map = Map.new C::TILE_SIZE, C::TILE_SIZE, t_x_count, t_y_count
     @size = @map.get_absolute_size
     @dark = s.length > 5
@@ -370,28 +370,48 @@ class Section
 
     i = (x / C::TILE_SIZE).round
     j = (y / C::TILE_SIZE).round
-    ((i-offset_x)..(i+offset_x)).each do |k|
-      next if k < 0
-      ((j-offset_y)..(j+offset_y)).each do |l|
-        next if l < 0
+    ((j-offset_y)..(j+offset_y)).each do |l|
+      next if l < 0
+      bw = 0
+      pass = false
+      ((i-offset_x)..(i+offset_x)).each do |k|
+        next if k < 0
         if @tiles[k] and @tiles[k][l]
           if @tiles[k][l].pass >= 0
-            obstacles << Block.new(k * C::TILE_SIZE, l * C::TILE_SIZE, C::TILE_SIZE, C::TILE_SIZE, true)
+            if bw > 0 && !pass
+              add_block(obstacles, k - bw, l, bw, false)
+              bw = 0
+            end
+            bw += 1
+            pass = true
           elsif not @tiles[k][l].broken and @tiles[k][l].wall >= 0
-            obstacles << Block.new(k * C::TILE_SIZE, l * C::TILE_SIZE, C::TILE_SIZE, C::TILE_SIZE, false)
+            if bw > 0 && pass
+              add_block(obstacles, k - bw, l, bw, true)
+              bw = 0
+            end
+            bw += 1
+            pass = false
+          elsif bw > 0
+            add_block(obstacles, k - bw, l, bw, pass)
+            bw = 0
           end
         end
+      end
+      if bw > 0
+        k = i + offset_x >= @map.size.x ? @map.size.x : i + offset_x + 1
+        add_block(obstacles, k - bw, l, bw, pass)
       end
     end
 
     @obstacles.each do |o|
-#      if o.x > x - 2 * C::TileSize and o.x < x + 2 * C::TileSize and
-#         o.y > y - 2 * C::TileSize and o.y < y + 2 * C::TileSize
-        obstacles << o
-#      end
+      obstacles << o
     end
 
     obstacles
+  end
+
+  def add_block(list, i, j, w_t, pass)
+    list << Block.new(i * C::TILE_SIZE, j * C::TILE_SIZE, w_t * C::TILE_SIZE, C::TILE_SIZE, pass)
   end
 
   def obstacle_at?(x, y)
