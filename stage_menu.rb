@@ -295,7 +295,7 @@ class StageMenu
     def draw
       if SB.state == :main
         st = SB.stage
-        unless st.starting
+        unless st.starting > 0
           draw_player_stats
           unless st.is_bonus
             @star_icon.draw(363, 10, 0, 2, 2)

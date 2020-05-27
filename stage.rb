@@ -66,21 +66,21 @@ class Stage
       }
     end
 
-    reset
+    reset(true)
   end
 
-  def reset
+  def reset(first_time)
     @panel_x = -600
     @timer = 0
     @alpha = 255
-    @starting = true
+    @starting = first_time ? 1 : 2
     @star_count = 0
     reset_switches
     @cur_section.start @switches, @cur_entrance[:x], @cur_entrance[:y]
   end
 
   def update
-    if @starting
+    if @starting == 1
       @timer = 240 if @timer < 240 && SB.key_pressed?(:confirm)
       if @timer < 240
         @alpha -= 5 if @alpha > 125
@@ -99,9 +99,18 @@ class Stage
       end
       @timer += 1
       if @timer == 300
-        @starting = false
+        @starting = 0
       end
     else
+      if @starting == 2
+        @timer += 1
+        if @timer >= 150
+          @alpha -= 5
+          if @alpha <= 0
+            @starting = 0
+          end
+        end
+      end
       return :finish if @time == 0
       status = @cur_section.update(@stopped)
       if status == :finish
@@ -147,7 +156,7 @@ class Stage
         end
         SB.player.reset
         @cur_section = @cur_entrance[:section]
-        reset
+        reset(false)
       end
     end
   end
@@ -240,7 +249,7 @@ class Stage
 
   def draw
     @cur_section.draw
-    if @starting
+    if @starting == 1
       c = (@alpha << 24)
       G.window.draw_quad 0, 0, c,
                          800, 0, c,
@@ -252,6 +261,14 @@ class Stage
                          @panel_x + 600, 400, C::PANEL_COLOR, 0
       SB.text_helper.write_line @world_name, @panel_x + 300, 220, :center
       SB.big_text_helper.write_line @name, @panel_x + 300, 300, :center
+    elsif @starting == 2
+      panel_color = ((@alpha / 2) << 24) | (C::PANEL_COLOR & 0xffffff)
+      G.window.draw_quad 200, 10, panel_color,
+                         600, 10, panel_color,
+                         200, 70, panel_color,
+                         600, 70, panel_color, 0
+      SB.small_text_helper.write_line @world_name, 400, 12, :center, 0, @alpha
+      SB.text_helper.write_line @name, 400, 35, :center, 0, @alpha
     end
   end
 end
