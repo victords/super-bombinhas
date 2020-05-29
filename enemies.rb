@@ -72,7 +72,6 @@ class Enemy < GameObject
     unless @invulnerable or SB.player.dead?
       b = SB.player.bomb
       if b.over?(self, tolerance)
-        b.bounce
         hit_by_bomb(section)
       elsif b.explode?(self) or section.explode?(self)
         hit_by_explosion(section)
@@ -97,6 +96,7 @@ class Enemy < GameObject
   end
 
   def hit_by_bomb(section)
+    SB.player.bomb.bounce
     hit(section, SB.player.bomb.power)
   end
 
@@ -641,7 +641,9 @@ class Chamal < Enemy
     end
   end
 
-  def hit_by_bomb(section); end
+  def hit_by_bomb(section)
+    SB.player.bomb.bounce(false)
+  end
 
   def hit_by_explosion(section)
     hit(section)
@@ -879,6 +881,7 @@ class Jellep < Enemy
   def hit_by_bomb(section)
     b = SB.player.bomb
     if b.power > 1
+      b.bounce
       hit(section)
     else
       b.hit
@@ -977,6 +980,7 @@ class Armep < FloorEnemy
   def hit_by_bomb(section)
     b = SB.player.bomb
     if b.power > 1
+      b.bounce
       hit(section)
     else
       b.hit
@@ -1021,14 +1025,16 @@ class Zep < Enemy
 
     @aim1 = Vector.new(@x, @y)
     while !section.obstacle_at?(@aim1.x - 3, @y) &&
-      !section.obstacle_at?(@aim1.x - 3, @y + C::TILE_SIZE) &&
+      !section.obstacle_at?(@aim1.x - 3, @y + 18) &&
+      !section.obstacle_at?(@aim1.x - 3, @y + 17 + C::TILE_SIZE) &&
       section.obstacle_at?(@aim1.x - 3, @y + @h)
       @aim1.x -= C::TILE_SIZE
     end
 
     @aim2 = Vector.new(@x, @y)
     while !section.obstacle_at?(@aim2.x + 65, @y) &&
-      !section.obstacle_at?(@aim2.x + 65, @y + C::TILE_SIZE) &&
+      !section.obstacle_at?(@aim2.x + 65, @y + 18) &&
+      !section.obstacle_at?(@aim2.x + 65, @y + 17 + C::TILE_SIZE) &&
       section.obstacle_at?(@aim2.x + 65, @y + @h)
       @aim2.x += C::TILE_SIZE
     end
@@ -1097,6 +1103,7 @@ class Butterflep < Enemy
   def hit_by_bomb(section)
     b = SB.player.bomb
     if b.power > 1
+      b.bounce
       hit(section)
     else
       b.hit

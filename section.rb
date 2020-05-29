@@ -417,7 +417,11 @@ class Section
   def obstacle_at?(x, y)
     i = x / C::TILE_SIZE
     j = y / C::TILE_SIZE
-    @tiles[i] and @tiles[i][j] and (@tiles[i][j].pass >= 0 or @tiles[i][j].wall >= 0) and not @tiles[i][j].broken
+    return true if @tiles[i] && @tiles[i][j] && (@tiles[i][j].pass >= 0 || @tiles[i][j].wall >= 0) && !@tiles[i][j].broken
+    @obstacles.each do |o|
+      return true if x >= o.x && x < o.x + o.w && y >= o.y && y < o.y + o.h
+    end
+    false
   end
 
   def add_interacting_element(el)

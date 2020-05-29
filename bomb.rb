@@ -214,9 +214,9 @@ class Bomb < GameObject
       @y + @h > obj.y and @y + @h <= obj.y + tolerance
   end
 
-  def bounce
+  def bounce(play_sound = true)
     @speed.y = -(C::BOUNCE_SPEED_BASE + (@speed.y / @max_speed.y) * C::BOUNCE_SPEED_INCREMENT)
-    SB.play_sound(Res.sound(:stomp))
+    SB.play_sound(Res.sound(:stomp)) if play_sound
   end
 
   def hit(damage = 1)

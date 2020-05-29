@@ -495,12 +495,12 @@ class FixedSpikes < GameObject
     end
     super x - 2, y - 2, 36, 36, "sprite_fixedSpikes#{type}", Vector.new(x_g, y_g), 1, 1
     @active_bounds = Rectangle.new(x, y, 32, 32)
-    section.obstacles << (@block = Block.new(x, y, 32, 32))
+    section.obstacles << Block.new(x, y, 32, 32)
   end
 
   def update(section)
     b = SB.player.bomb
-    if (@dir == 0 && b.bottom == @block) ||
+    if (@dir == 0 && b.x + b.w > @x + 2 && @x + @w - 2 > b.x && b.y + b.h > @y && b.y + b.h <= @y + 2) ||
        (@dir == 1 && b.x >= @x + @w - 2 && b.x < @x + @w && b.y + b.h > @y + 2 && @y + @h - 2 > b.y) ||
        (@dir == 2 && b.x + b.w > @x + 2 && @x + @w - 2 > b.x && b.y >= @y + @h - 2 && b.y < @y + @h) ||
        (@dir == 3 && b.x + b.w > @x && b.x + b.w <= @x + 2 && b.y + b.h > @y + 2 && @y + @h - 2 > b.y)
@@ -975,6 +975,8 @@ class Water
 end
 
 class ForceField < GameObject
+  LIFE_TIME = 1200
+
   def initialize(x, y, args, section, switch)
     return if switch[:state] == :taken
     super x, y, 32, 32, :sprite_ForceField, Vector.new(-14, -14), 3, 1
@@ -988,18 +990,22 @@ class ForceField < GameObject
     if @taken
       @x = b.x + b.w / 2 - 16; @y = b.y + b.h / 2 - 16
       @timer += 1
-      @dead = true if @timer == 1200
-      if @timer >= 1080
+      @dead = true if @timer == LIFE_TIME
+      if @timer >= LIFE_TIME - 120
         if @timer % 5 == 0
           @alpha = @alpha == 0 ? 255 : 0
         end
       end
     elsif b.collide? self
-      b.set_invulnerable 1200
+      b.set_invulnerable LIFE_TIME
       SB.stage.set_switch self
       @taken = true
       @timer = 0
     end
+  end
+
+  def is_visible(map)
+    @taken || @active_bounds && map.cam.intersect?(@active_bounds)
   end
 
   def draw(map)
