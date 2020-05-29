@@ -358,6 +358,10 @@ class Section
       obstacles << Block.new(-1, 0, 1, @size.y, false)
     end
 
+    @obstacles.each do |o|
+      obstacles << o
+    end
+
     offset_x = offset_y = 2
     if w > 0
       x += w / 2
@@ -401,10 +405,6 @@ class Section
         k = i + offset_x >= @map.size.x ? @map.size.x : i + offset_x + 1
         add_block(obstacles, k - bw, l, bw, pass)
       end
-    end
-
-    @obstacles.each do |o|
-      obstacles << o
     end
 
     obstacles

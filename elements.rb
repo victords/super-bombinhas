@@ -495,12 +495,12 @@ class FixedSpikes < GameObject
     end
     super x - 2, y - 2, 36, 36, "sprite_fixedSpikes#{type}", Vector.new(x_g, y_g), 1, 1
     @active_bounds = Rectangle.new(x, y, 32, 32)
-    section.obstacles << Block.new(x, y, 32, 32)
+    section.obstacles << (@block = Block.new(x, y, 32, 32))
   end
 
   def update(section)
     b = SB.player.bomb
-    if (@dir == 0 && b.x + b.w > @x + 2 && @x + @w - 2 > b.x && b.y + b.h > @y && b.y + b.h <= @y + 2) ||
+    if (@dir == 0 && b.bottom == @block) ||
        (@dir == 1 && b.x >= @x + @w - 2 && b.x < @x + @w && b.y + b.h > @y + 2 && @y + @h - 2 > b.y) ||
        (@dir == 2 && b.x + b.w > @x + 2 && @x + @w - 2 > b.x && b.y >= @y + @h - 2 && b.y < @y + @h) ||
        (@dir == 3 && b.x + b.w > @x && b.x + b.w <= @x + 2 && b.y + b.h > @y + 2 && @y + @h - 2 > b.y)

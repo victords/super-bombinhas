@@ -1020,14 +1020,16 @@ class Zep < Enemy
     @passable = true
 
     @aim1 = Vector.new(@x, @y)
-    while not section.obstacle_at? @aim1.x - 3, @aim1.y and
-        not section.obstacle_at? @aim1.x - 3, @aim1.y + 20
+    while !section.obstacle_at?(@aim1.x - 3, @y) &&
+      !section.obstacle_at?(@aim1.x - 3, @y + C::TILE_SIZE) &&
+      section.obstacle_at?(@aim1.x - 3, @y + @h)
       @aim1.x -= C::TILE_SIZE
     end
 
     @aim2 = Vector.new(@x, @y)
-    while not section.obstacle_at? @aim2.x + 65, @aim2.y and
-        not section.obstacle_at? @aim2.x + 65, @aim2.y + 20
+    while !section.obstacle_at?(@aim2.x + 65, @y) &&
+      !section.obstacle_at?(@aim2.x + 65, @y + C::TILE_SIZE) &&
+      section.obstacle_at?(@aim2.x + 65, @y + @h)
       @aim2.x += C::TILE_SIZE
     end
     @aim2.x += 4
