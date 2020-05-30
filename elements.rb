@@ -1175,22 +1175,38 @@ end
 
 class StalactiteGenerator < SBGameObject
   def initialize(x, y, args, section)
-    super x, y, 96, 32, :sprite_graphic11, Vector.new(0, -16)
+    super x, y + 10, 96, 22, :sprite_graphic11, Vector.new(0, -26)
     @active = true
-    @limit = args.to_i * C::TILE_SIZE
+    @limit = (args.to_i - 1) * C::TILE_SIZE
+    @timer = 0
+    @s_y = @y - 10 + C::TILE_SIZE
   end
 
   def update(section)
     if @active and SB.player.bomb.collide?(self)
-      section.add(Stalactite.new(@x + 96 + rand(@limit), @y + C::TILE_SIZE, '!', section))
-      @active = false
-      @timer = 0
-    elsif not @active
+      if @timer == 0
+        @s_x = @x + 96 + rand(@limit)
+        section.set_fixed_camera(@s_x, @s_y)
+      end
       @timer += 1
       if @timer == 60
+        section.add(Stalactite.new(@s_x, @s_y, '!', section))
+        section.add_effect(Effect.new(@s_x - 16, @s_y - 32, :fx_spawn, 2, 2, 6))
+      elsif @timer == 120
+        section.unset_fixed_camera
+        @active = false
+      end
+    elsif not @active
+      @timer += 1
+      if @timer == 180
         @active = true
+        @timer = 0
       end
     end
+  end
+
+  def is_visible(map)
+    true
   end
 end
 
@@ -1959,7 +1975,13 @@ class Graphic < Sprite
     type = args.to_i
     cols = 1; rows = 1
     img_index = nil
+    @flip = nil
     case type
+    when 0
+      case args
+      when 'BombaVermelha' then x += 44; y += 88; @w = 40; @h = 40; cols = 6; rows = 2; @flip = :horiz
+      when 'BombaAmarela' then x += 40; y += 76; @w = 48; @h = 52; cols = 6; rows = 2; @flip = :horiz
+      end
     when 1 then @w = 32; @h = 64
     when 2 then x += 16; y += 16; @w = 64; @h = 64; cols = 2; rows = 2; @indices = [0, 1, 2, 3]; @interval = 7; @rot = -5
     when 3..5 then x -= 16; @w = 64; @h = 32
@@ -1967,10 +1989,11 @@ class Graphic < Sprite
     when 7..8 then @w = 128; @h = 64
     when 9 then x -= 16; @w = 160; @h = 64
     when 10 then x -= 236; y -= 416; @w = 600; @h = 480
-    when 12 then x += 2; @w = 126; @h = 128; cols = 2; rows = 2; @indices = [0, SB.lang == :portuguese ? 1 : SB.lang == :english ? 2 : 3]; @interval = 60
+    when 12 then x -= 30; @w = 126; @h = 128; cols = 2; rows = 2; @indices = [0, SB.lang == :portuguese ? 1 : SB.lang == :english ? 2 : 3]; @interval = 60
     when 13..18 then x -= 64; y -= 88; @w = 160; @h = 120; cols = 1; rows = 3; img_index = SB.lang == :portuguese ? 1 : SB.lang == :english ? 0 : 2
     end
-    super x, y, "sprite_graphic#{type}", cols, rows
+    sprite_name = type == 0 ? args : "graphic#{type}"
+    super x, y, "sprite_#{sprite_name}", cols, rows
     @img_index = img_index if img_index
     @active_bounds = Rectangle.new(x, y, @w, @h)
     @angle = 0 if @rot
@@ -1984,7 +2007,7 @@ class Graphic < Sprite
   def draw(map)
     @rot ?
       (@img[@img_index].draw_rot @x + @w / 2 - map.cam.x, @y + @h/2 - map.cam.y, -1, @angle, 0.5, 0.5, 2, 2) :
-      super(map, 2, 2, 255, 0xffffff, nil, nil, -1)
+      super(map, 2, 2, 255, 0xffffff, nil, @flip, -1)
   end
 
   def is_visible(map)

@@ -576,7 +576,7 @@ class Chamal < Enemy
   WALK_AMOUNT = 96
 
   def initialize(x, y, args, section)
-    super x - 25, y - 74, 82, 106, Vector.new(-16, -8), 3, 1, [0, 1, 0, 2], 7, 5000, 3
+    super x - 25, y - 74, 82, 106, Vector.new(-16, -8), 3, 1, [0, 1, 0, 2], 7, 1000, 3
     @left_limit = @x - X_OFFSET
     @right_limit = @x + X_OFFSET
     @spawn_points = [
@@ -1116,7 +1116,7 @@ class Sahiss < FloorEnemy
   alias :super_update :update
 
   def initialize(x, y, args, section)
-    super x - 54, y - 148, args, 148, 180, Vector.new(-139, -3), 2, 3, [0, 1, 0, 2], 7, 2000, 3
+    super x - 54, y - 148, args, 148, 180, Vector.new(-139, -3), 2, 3, [0, 1, 0, 2], 7, 2000, 3, 4
     @time = 180 + rand(240)
     section.active_object = self
     init
@@ -1128,7 +1128,7 @@ class Sahiss < FloorEnemy
         move_free @aim, 6
         b = SB.player.bomb
         if b.over? self
-          b.bounce
+          b.bounce(false)
         elsif b.collide? self
           b.hit
         elsif @img_index == 5
@@ -1163,7 +1163,7 @@ class Sahiss < FloorEnemy
     end
     if @state == :acting and not @attacking and not @dying
       prev = @facing_right
-      super_update(section)
+      super_update(section) unless @timer >= @time
       if @dead
         section.finish
       elsif @aim
@@ -1172,11 +1172,13 @@ class Sahiss < FloorEnemy
           if @facing_right
             @timer = @time - 1
           else
-            set_bounds 1
-            @attacking = true
-            @img_index = 4
-            @timer = 0
+            set_animation(1)
           end
+        elsif @timer == @time + 60
+          set_bounds 1
+          @attacking = true
+          @img_index = 4
+          @timer = 0
         end
       elsif @facing_right and not prev
         @aim = Vector.new(@x, @y)
@@ -1200,6 +1202,7 @@ class Sahiss < FloorEnemy
   def hit(section)
     unless @invulnerable
       super
+      SB.play_sound(Res.sound(:stomp))
       if @img_index == 5
         set_bounds 3; set_bounds 4
       elsif @img_index == 4
