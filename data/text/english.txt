@@ -49,6 +49,8 @@ msg_mnt_bomb	Hi, I was taking a walk in the mountains and I lost my precious Jil
 msg_mnt_bomb2	Thanks a lot, mate! Well... I don't have much to offer in return, but you can use this float machine if you want. It will help you reach the highest parts of the mountain./It's a wonderful view from there!
 chamal_speech	So... you've come. Well, I'm afraid this is the end of your pointless journey, little bomb. GET HIM, WHEELIAMS!
 chamal_death	Noooooo...!! How come I lost to such a weakling...?! No, that's not... poss...
+sahiss_speech	Sssssss Ssssssssssss Sssss?! SSSSSS!! (Who are you who invades my sacred forest fortress?! PREPARE TO DIE!!)
+sahiss_death	Sssssssssssssssssssss...!! (Nooooooooooooooooooo...!!)
 count_down		Countdown to explosion!
 world_1			Tars Island
 stage_1_1		Exploring the Tars Beach
@@ -60,6 +62,8 @@ world_2			Wisemen's forest
 stage_2_1		The border woods
 stage_2_2		Atop the tallest tree
 stage_2_3		The three trees engima
+stage_2_4		Entering the forest fortress
+stage_2_5		Deep in the forest fortress
 bonus			Bonus
 bonus_1			adjf dfksh
 bonus_2			sdkfh sdjh dfjkdfk jk

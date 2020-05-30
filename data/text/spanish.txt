@@ -49,6 +49,8 @@ msg_mnt_bomb	Hi, I was taking a walk in the mountains and I lost my precious Jil
 msg_mnt_bomb2	Thanks a lot, mate! Well... I don't have much to offer in return, but you can use this float machine if you want. It will help you reach the highest parts of the mountain./It's a wonderful view from there!
 chamal_speech	Entonces... veniste. Bien, temo que esto es el final de su viaje inútil. ¡WHEELIAMS, ATRAPARLO!
 chamal_death	¡Noooooo...! ¡¿Como pude perder a alguién tan débil...?! No... No es posib...
+sahiss_speech	Sssssss Ssssssssssss Sssss?! SSSSSS!! (Quien es tu que invades mi sagrada fortaleza forestal?! PREPARATE PARA MORIR!!)
+sahiss_death	Sssssssssssssssssssss...!! (Noooooooooooooooo...!!)
 count_down		¡Cuenta regresiva para explodir!
 world_1			Isla de Tars
 stage_1_1		Explorando la Playa de Tars
@@ -60,6 +62,8 @@ world_2			Bosque de los sabios
 stage_2_1		El bosque de frontera
 stage_2_2		Encima del árbol más alto
 stage_2_3		El enigma de los tres árboles
+stage_2_4		Entrando en la fortaleza forestal
+stage_2_5		En las profundezas de la fortaleza forestal
 bonus			Bónus
 bonus_1			adjf dfksh
 bonus_2			sdkfh sdjh dfjkdfk jk
