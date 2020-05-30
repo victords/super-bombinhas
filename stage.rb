@@ -18,7 +18,7 @@
 require_relative 'section'
 
 class Stage
-  attr_reader :num, :id, :starting, :cur_entrance, :switches, :star_count, :is_bonus, :time, :objective
+  attr_reader :num, :id, :starting, :cur_entrance, :switches, :star_count, :is_bonus, :time, :objective, :reward
 
   def initialize(world, num)
     @world = world
@@ -29,7 +29,7 @@ class Stage
     @name = @is_bonus ? SB.text("bonus_#{@num}") : "#{@world}-#{@num}: #{SB.text("stage_#{@world}_#{@num}")}"
   end
 
-  def start(loaded = false, time = nil, objective = nil)
+  def start(loaded = false, time = nil, objective = nil, reward = nil)
     if time
       @time = time
       @counter = 0
@@ -38,6 +38,7 @@ class Stage
                    when 2 then :get_all_rocks
                    else        :reach_goal
                    end
+      @reward = reward
     end
 
     @star_count = 0
@@ -117,6 +118,7 @@ class Stage
         SB.play_sound(Res.sound(:victory), SB.music_volume * 0.1)
         Gosu::Song.current_song.stop
         SB.player.temp_startup_item = get_startup_item if @star_count >= C::STARS_PER_STAGE
+        SB.player.lives += @reward if @reward
         return :finish
       elsif status == :next_section
         index = @sections.index @cur_section

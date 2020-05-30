@@ -67,11 +67,9 @@ stage_2_5		En las profundezas de la fortaleza forestal
 world_3			Montañas Lluviosas
 stage_3_1		???
 bonus			Bónus
-bonus_1			adjf dfksh
-bonus_2			sdkfh sdjh dfjkdfk jk
-bonus_3			sdf fdfh gh
-bonus_4			rtrtrt rtr trt r
-bonus_5			w erte terter rtr
+bonus_1			Alcanza el final
+bonus_2			Mata todos los enemigos
+bonus_3			Recoge todas las Rocas de Fuego
 movie_0_1		En una tierra lejana, hay una bella aldea, habitada por... bombas.
 movie_0_2		Esta aldea solía ser un lugar tranquilo, donde el pueblo amaba su rey y tenía una vida próspera.
 movie_0_3		Pero la envidia de Gaxlon, uno de los consejeros del rey, acaba de trastornar esta tranquilidad...

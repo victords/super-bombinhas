@@ -67,11 +67,9 @@ stage_2_5		Deep in the forest fortress
 world_3			Rainy Mountains
 stage_3_1		???
 bonus			Bonus
-bonus_1			adjf dfksh
-bonus_2			sdkfh sdjh dfjkdfk jk
-bonus_3			sdf fdfh gh
-bonus_4			rtrtrt rtr trt r
-bonus_5			w erte terter rtr
+bonus_1			Reach the goal
+bonus_2			Kill all enemies
+bonus_3			Collect all Fire Rocks
 movie_0_1		In a distant land, there is a beautiful village inhabited by living... bombs.
 movie_0_2		This village was once a peaceful place, where the people loved their king and had prosperous lives.
 movie_0_3		But the envy of Gaxlon, one of the king's counselors, has just unsettled this tranquility...

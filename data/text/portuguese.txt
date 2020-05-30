@@ -67,11 +67,9 @@ stage_2_5		Nas profundezas da fortaleza florestal
 world_3			Serra da Chuva
 stage_3_1		???
 bonus			Bônus
-bonus_1			adjf dfksh
-bonus_2			sdkfh sdjh dfjkdfk jk
-bonus_3			sdf fdfh gh
-bonus_4			rtrtrt rtr trt r
-bonus_5			w erte terter rtr
+bonus_1			Chegue ao final
+bonus_2			Mate todos os inimigos
+bonus_3			Pegue todas as Pedras de Fogo
 movie_0_1		Numa terra distante, há um belo vilarejo, habitado por... bombas.
 movie_0_2		Este vilarejo foi um dia um lugar pacífico, onde o povo amava seu rei e vivia na prosperidade.
 movie_0_3		Mas a inveja de Gaxlon, um dos conselheiros do rei, acaba de abalar esta tranquilidade...

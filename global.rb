@@ -249,7 +249,7 @@ class SB
         StageMenu.initialize
         config = IO.read("#{Res.prefix}stage/bonus/config").split[@bonus-1].split(',').map(&:to_i)
         @stage = Stage.new('bonus', @bonus)
-        @stage.start(false, config[0], config[1])
+        @stage.start(false, config[0], config[1], config[2])
         @state = :main
       else
         @stage = @prev_stage if @prev_stage
