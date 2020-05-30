@@ -111,8 +111,8 @@ class FireRock < FloatingItem
              else          10
              end
     @color = case args
-             when '1' then 0xff9933
-             when '2' then 0x99ff99
+             when '1' then 0xff6600
+             when '2' then 0x33ff33
              when '3' then 0x3399ff
              else          0xff9933
              end

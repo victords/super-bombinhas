@@ -64,6 +64,8 @@ stage_2_2		Encima del árbol más alto
 stage_2_3		El enigma de los tres árboles
 stage_2_4		Entrando en la fortaleza forestal
 stage_2_5		En las profundezas de la fortaleza forestal
+world_3			Montañas Lluviosas
+stage_3_1		???
 bonus			Bónus
 bonus_1			adjf dfksh
 bonus_2			sdkfh sdjh dfjkdfk jk

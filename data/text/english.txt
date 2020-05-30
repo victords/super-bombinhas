@@ -58,12 +58,14 @@ stage_1_2		Sand and Green Hills
 stage_1_3		A 'mechanimal' chaos
 stage_1_4		Finally! Chamal's Fortress
 stage_1_5		Chamal: the knock down!
-world_2			Wisemen's forest
+world_2			Wisemen's Forest
 stage_2_1		The border woods
 stage_2_2		Atop the tallest tree
 stage_2_3		The three trees engima
 stage_2_4		Entering the forest fortress
 stage_2_5		Deep in the forest fortress
+world_3			Rainy Mountains
+stage_3_1		???
 bonus			Bonus
 bonus_1			adjf dfksh
 bonus_2			sdkfh sdjh dfjkdfk jk

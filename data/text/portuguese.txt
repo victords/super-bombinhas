@@ -64,6 +64,8 @@ stage_2_2		No topo da árvore mais alta
 stage_2_3		O enigma das três árvores
 stage_2_4		Entrando na fortaleza florestal
 stage_2_5		Nas profundezas da fortaleza florestal
+world_3			Serra da Chuva
+stage_3_1		???
 bonus			Bônus
 bonus_1			adjf dfksh
 bonus_2			sdkfh sdjh dfjkdfk jk
