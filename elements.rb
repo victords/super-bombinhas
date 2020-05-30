@@ -1131,9 +1131,9 @@ class Monep < GameObject
     if @blocking
       b = SB.player.bomb
       if b.collide? self
+        section.active_object = self
         if @state == :normal
           section.set_fixed_camera(@x + @w / 2, @y + 50)
-          section.active_object = self
           set_animation 3
           @state = :speaking
           @timer = 0
@@ -1147,11 +1147,9 @@ class Monep < GameObject
         elsif b.x > @x + @w / 2 - b.w / 2
           b.x = @x + @w / 2 - b.w / 2
         end
-      else
-        if section.active_object == self
-          section.active_object = nil
-          @state = :waiting
-        end
+      elsif section.active_object == self
+        section.active_object = nil
+        @state = :waiting
       end
     end
     if @state == :speaking; animate [3, 4, 5, 4, 5, 3, 5], 10
