@@ -43,7 +43,8 @@ restart			Press 'Enter' to restart
 game_over		Game over!
 too_bad			Too bad!
 can_play		You can now play as:
-msg1			This is just a sneak-peek of what awaits you in the next world... Stay tuned for the next version of Super Bombinhas!
+msg1			Not all keys fit all doors...
+msg2			This is just a sneak-peek of what awaits you in the next world... Stay tuned for the next version of Super Bombinhas!
 msg_monep		Hey! Hold on! If you want to go any further, you must bring me a Forest Herb. Yes, a delicious Forest Herb... Now get lost and only come back here when you have it!
 msg_mnt_bomb	Hi, I was taking a walk in the mountains and I lost my precious Jillis Stone. It's a big, shiny, green gem... Do you think you could find it for me?
 msg_mnt_bomb2	Thanks a lot, mate! Well... I don't have much to offer in return, but you can use this float machine if you want. It will help you reach the highest parts of the mountain./It's a wonderful view from there!

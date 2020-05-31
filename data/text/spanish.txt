@@ -43,7 +43,8 @@ restart			Pulsa 'Enter' para reanudar
 game_over		¡Fin del juego!
 too_bad			¡Qué pena!
 can_play		Ahora puedes jugar con:
-msg1			Esto es solo un adelanto de lo que te espera en el próximo mundo... ¡Esté atento para la próxima versión de Super Bombinhas!
+msg1			Ni todas las llaves se ajustan a todas las puertas...
+msg2			Esto es solo un adelanto de lo que te espera en el próximo mundo... ¡Esté atento para la próxima versión de Super Bombinhas!
 msg_monep		¡Hey! ¡Espera un minuto! Si quieres ir adelante debe traerme una Hierba del Bosque. Sí, una deliciosa Hierba del Bosque... ¡Ahora va y solo vuelve aquí cuando la tuvieres!
 msg_mnt_bomb	Hi, I was taking a walk in the mountains and I lost my precious Jillis Stone. It's a big, shiny, green gem... Do you think you could find it for me?
 msg_mnt_bomb2	Thanks a lot, mate! Well... I don't have much to offer in return, but you can use this float machine if you want. It will help you reach the highest parts of the mountain./It's a wonderful view from there!
