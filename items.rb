@@ -533,7 +533,7 @@ class Spec < FloatingItem
   def initialize(x, y, args, section, switch)
     return if SB.player.specs.index(SB.stage.id)
     if check(switch)
-      SB.set_spec_taken
+      SB.stage.set_spec_taken
       return
     end
     super x - 1, y - 1, 34, 34, :sprite_Spec, Vector.new(-12, -12), 2, 2, [0,1,2,3], 5
@@ -552,6 +552,6 @@ class Spec < FloatingItem
 
   def use(section, switch)
     SB.player.stage_score += 1000
-    SB.set_spec_taken
+    SB.stage.set_spec_taken
   end
 end

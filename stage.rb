@@ -18,7 +18,7 @@
 require_relative 'section'
 
 class Stage
-  attr_reader :num, :id, :starting, :cur_entrance, :switches, :star_count, :is_bonus, :time, :objective, :reward
+  attr_reader :num, :id, :starting, :cur_entrance, :switches, :star_count, :spec_taken, :is_bonus, :time, :objective, :reward
 
   def initialize(world, num)
     @world = world
@@ -76,6 +76,7 @@ class Stage
     @alpha = 255
     @starting = first_time ? 1 : 2
     @star_count = 0
+    @spec_taken = false
     reset_switches
     @cur_section.start @switches, @cur_entrance[:x], @cur_entrance[:y]
   end
@@ -232,6 +233,10 @@ class Stage
   def get_star
     @star_count += 1
     SB.player.stage_score += 500
+  end
+
+  def set_spec_taken
+    @spec_taken = true
   end
 
   def get_startup_item

@@ -209,7 +209,16 @@ class SB
       data = IO.readlines(file_name).map { |l| l.chomp }
       world_stage = data[1].split('-')
       last_world_stage = data[2].split('-')
-      @player = Player.new(data[0], last_world_stage[0].to_i, last_world_stage[1].to_i, data[3].to_sym, data[8], data[4].to_i, data[5].to_i, data[6], data[12] && !data[12].empty? ? data[12].to_i : nil)
+      @player = Player.new(data[0],
+                           last_world_stage[0].to_i,
+                           last_world_stage[1].to_i,
+                           data[3].to_sym,
+                           data[8],
+                           data[4].to_i,
+                           data[5].to_i,
+                           data[6],
+                           data[12] && !data[12].empty? ? data[12].to_i : nil,
+                           data[13] || '')
       @world = World.new(world_stage[0].to_i, world_stage[1].to_i, true)
       @save_file_name = file_name
       @save_data = data
@@ -221,18 +230,16 @@ class SB
       sound.play @sound_volume * 0.1 * volume if @sound_volume > 0
     end
 
-    def set_spec_taken
-      @spec_taken = true
-    end
-
     def end_stage
       if @bonus
         @bonus = nil
         StageMenu.end_stage(false, false, true)
       else
-        if @spec_taken
+        if @stage.spec_taken
           @player.specs << @stage.id
-          @spec_taken = false
+        end
+        if @stage.star_count == C::STARS_PER_STAGE
+          @player.all_stars << @stage.id
         end
         prev_factor = @player.score / C::BONUS_THRESHOLD
         @player.score += @player.stage_score
@@ -345,6 +352,7 @@ class SB
       @save_data[10] = stage_num ? '' : @stage.switches_by_state(:used).sort.join(',')
       @save_data[11] = special_world.to_s || ''
       @save_data[12] = @player.startup_item.to_s
+      @save_data[13] = @player.all_stars.join(',')
       File.open(@save_file_name, 'w') do |f|
         @save_data.each { |s| f.print(s + "\n") }
       end

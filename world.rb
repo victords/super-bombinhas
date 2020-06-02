@@ -37,6 +37,9 @@ class MapStage
 
     @world = world
     @num = num
+
+    @has_all_stars = SB.player.all_stars.index("#{world}-#{num}")
+    @has_spec = SB.player.specs.index("#{world}-#{num}")
   end
 
   def name
@@ -77,6 +80,8 @@ class MapStage
   def draw(alpha)
     a = ((alpha / 255.0) * (@alpha / 255.0) * 255).round
     @img.draw @x, @y, 0, 2, 2, (a << 24) | 0xffffff
+    Res.img(:icon_star).draw(@x - 9, @y - 9, 0, 2, 2) if @has_all_stars
+    Res.img(:icon_spec).draw(@x + 23, @y - 9, 0, 1.5, 1.5) if @has_spec
   end
 end
 
