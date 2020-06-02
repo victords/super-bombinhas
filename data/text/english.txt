@@ -24,7 +24,7 @@ controls		Controls
 controls_0		Arrows, Space, Shift, A, S
 controls_1		WASD, JKLI
 full_screen		Press F4 to alternate between window and full screen
-credits_text	- Design, Programming and Graphics -\nVictor David Santos\n\n- Music -\nZergananda (soundcloud.com/zergananda)\nFrancesco Corrado (soundcloud.com/francesco-corrado-846828)\n\n- Special Thanks -\n...\n...\n...
+credits_text	- Design, Programming and Graphics -\nVictor David Santos\n\n- Music -\nZergananda (soundcloud.com/zergananda)\nFrancesco Corrado (soundcloud.com/franzcorradomusic)\n\n- Special Thanks -\n...\n...\n...
 ch_st_instruct	Press 'Enter' to start.\nPress 'Esc' or 'Backspace' to go back.
 stage			Stage
 loading			Loading
