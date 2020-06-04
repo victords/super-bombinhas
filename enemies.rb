@@ -1230,7 +1230,7 @@ end
 
 class Forsby < Enemy
   def initialize(x, y, args, section)
-    super x + 3, y - 22, 58, 54, Vector.new(-6, -6), 2, 3, [0, 1, 0, 2], 15, 400, 2
+    super x + 7, y - 22, 50, 54, Vector.new(-10, -6), 2, 3, [0, 1, 0, 2], 15, 400, 2
     @facing_right = !args.nil?
     @state = @timer = 0
   end
@@ -1238,16 +1238,16 @@ class Forsby < Enemy
   def update(section)
     super(section) do
       @timer += 1
-      if @state == 0 && @timer > 180
+      if @state == 0 && @timer > 120
         @indices = [3]
         set_animation 3
         @state = 1
-      elsif @state == 1 && @timer > 240
+      elsif @state == 1 && @timer > 180
         @indices = [4]
         set_animation 4
         section.add(Projectile.new(@facing_right ? @x + @w - 16 : @x - 5, @y + 14, 5, @facing_right ? 0 : 180, self))
         @state = 2
-      elsif @state == 2 && @timer > 270
+      elsif @state == 2 && @timer > 210
         @indices = [0, 1, 0, 2]
         set_animation 0
         @state = @timer = 0
@@ -1290,7 +1290,7 @@ class Stilty < FloorEnemy
     end
   end
 
-  def hit(section)
+  def hit(section, amount = 1)
     super
     @indices = (@hp == 0 ? [9] : [3])
     set_animation(@hp == 0 ? 9 : 3)
