@@ -33,10 +33,10 @@ class Bomb < GameObject
     super -1000, -1000, 16, 27, "sprite_Bomba#{type.to_s.capitalize}", Vector.new(x_g, y_g), 6, 2
     @hp = hp == 0 ? @def_hp : hp
     @saved_hp = @hp
-    @max_speed_x = type == :amarela ? 6 : 4
+    @max_speed_x = type == :amarela ? 5.5 : 4
     @max_speed_x_sq = @max_speed_x ** 2
     @max_speed.y = 15
-    @jump_speed = 0.05
+    @jump_speed = type == :amarela ? 0.06 : 0.05
     @jump_frames = 0
     @stored_jump = 0
     @prev_bottom = 0

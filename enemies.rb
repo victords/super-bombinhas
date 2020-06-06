@@ -1230,7 +1230,7 @@ end
 
 class Forsby < Enemy
   def initialize(x, y, args, section)
-    super x + 7, y - 22, 50, 54, Vector.new(-10, -6), 2, 3, [0, 1, 0, 2], 15, 400, 2
+    super x + 7, y - 22, 50, 54, Vector.new(-10, -6), 2, 3, [0, 1, 0, 2], 15, 300, 2
     @facing_right = !args.nil?
     @state = @timer = 0
   end
@@ -1401,7 +1401,6 @@ class Ignel < Enemy
     @radius = (args || 4).to_i
     @timer = 0
     @center = Vector.new(@x + @w/2, @y + @h)
-    @effs = []
   end
 
   def update(section)
@@ -1409,11 +1408,10 @@ class Ignel < Enemy
       @timer += 1
       if @timer == 120
         (1..@radius).each do |i|
-          @effs << section.add_effect(Fire.new(@center.x + i * C::TILE_SIZE, @center.y))
-          @effs << section.add_effect(Fire.new(@center.x - i * C::TILE_SIZE, @center.y))
+          section.add_effect(Fire.new(@center.x + i * C::TILE_SIZE, @center.y))
+          section.add_effect(Fire.new(@center.x - i * C::TILE_SIZE, @center.y))
         end
-      elsif @timer == 300
-        @effs.clear
+      elsif @timer == 240
         @timer = 0
       end
     end

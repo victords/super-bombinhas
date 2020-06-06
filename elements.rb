@@ -1943,7 +1943,7 @@ end
 class Fire < SBEffect
   def initialize(x, y)
     @w = 28; @h = 32
-    super x - @w/2, y - @h, :fx_fire, 3, 1, 5, nil, 180
+    super x - @w/2, y - @h, :fx_fire, 3, 1, 5, nil, 120
   end
 
   def update
