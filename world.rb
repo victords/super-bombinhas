@@ -249,7 +249,7 @@ class World
     end
 
     SB.big_text_helper.write_line SB.text("world_#{@num}"), 525, 10, :center, 0, @trans_alpha
-    SB.text_helper.write_breaking "#{@num}-#{@cur+1}: #{@stages[@cur].name}", 525, 55, 550, :center, 0, @trans_alpha
+    SB.text_helper.write_breaking "#{@num}-#{@cur+1}: #{@stages[@cur].name}", 525, 55, 390, :center, 0, @trans_alpha
     SB.text_helper.write_breaking(SB.text(:ch_st_instruct).gsub('\n', "\n"), 780, 545, 600, :right, 0, @trans_alpha)
 
     if @num > 1
