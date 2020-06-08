@@ -69,16 +69,21 @@ class Enemy < GameObject
       return
     end
 
-    unless @invulnerable or SB.player.dead?
+    unless SB.player.dead?
       b = SB.player.bomb
       if b.over?(self, tolerance)
         hit_by_bomb(section)
-      elsif b.explode?(self) or section.explode?(self)
-        hit_by_explosion(section)
-      elsif section.projectile_hit? self
-        hit_by_projectile(section)
-      elsif b.collide? self
-        b.hit
+      else
+        if b.collide?(self)
+          b.hit
+        end
+        unless @invulnerable
+          if b.explode?(self) or section.explode?(self)
+            hit_by_explosion(section)
+          elsif section.projectile_hit? self
+            hit_by_projectile(section)
+          end
+        end
       end
     end
 
@@ -96,8 +101,8 @@ class Enemy < GameObject
   end
 
   def hit_by_bomb(section)
-    SB.player.bomb.bounce
-    hit(section, SB.player.bomb.power)
+    SB.player.bomb.bounce(!@invulnerable)
+    hit(section, SB.player.bomb.power) unless @invulnerable
   end
 
   def hit_by_explosion(section)
@@ -1196,7 +1201,10 @@ class Sahiss < FloorEnemy
     @img_gap.y = case step; when 1 then -19; when 2 then -64; when 3 then -19; else -3; end
   end
 
-  def hit_by_bomb(section); end
+  def hit_by_bomb(section)
+    SB.player.bomb.bounce(false)
+  end
+
   def hit_by_projectile(section); end
 
   def hit(section)
@@ -1230,7 +1238,7 @@ end
 
 class Forsby < Enemy
   def initialize(x, y, args, section)
-    super x + 7, y - 22, 50, 54, Vector.new(-10, -6), 2, 3, [0, 1, 0, 2], 15, 300, 2
+    super x - 8, y - 22, 48, 54, Vector.new(-11, -6), 2, 3, [0, 1, 0, 2], 15, 300, 2
     @facing_right = !args.nil?
     @state = @timer = 0
   end
@@ -1454,7 +1462,9 @@ class Warclops < Enemy
   end
 
   def hit_by_bomb(section)
-    hit(section) if SB.player.bomb.power > 1
+    b = SB.player.bomb
+    b.bounce(b.power > 1)
+    hit(section) if b.power > 1
   end
 
   def hit_by_explosion(section)

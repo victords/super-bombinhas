@@ -1291,6 +1291,7 @@ class WallButton < SBGameObject
       case args[1]
       when '1' then TwinWalls
       when '2' then Elevator
+      when '3' then Box
       else          nil
       end
     @state = 0
@@ -1528,26 +1529,42 @@ class FragileFloor < SBGameObject
 end
 
 class Box < SBGameObject
-  MOVE_SPEED = 2
+  MOVE_SPEED = 3
+
+  attr_reader :id
 
   def initialize(x, y, args, section)
     super(x, y, 32, 32, :sprite_box, Vector.new(0, 0))
     section.obstacles << self
-    @max_speed.x = 2
+    @max_speed.x = MOVE_SPEED
+    @id = args.to_i
+    @start_x = @x
+    @start_y = @y
   end
 
   def update(section)
     b = SB.player.bomb
     obst = section.get_obstacles(@x, @y)
     if b.left == self && SB.key_down?(:left)
-      move(Vector.new(-MOVE_SPEED, 0), obst, section.ramps)
+      move_carrying(Vector.new(-MOVE_SPEED, 0), nil, obst, obst, section.ramps)
       b.move(Vector.new(-MOVE_SPEED, 0), section.get_obstacles(b.x, b.y), section.ramps)
     elsif b.right == self && SB.key_down?(:right)
-      move(Vector.new(MOVE_SPEED, 0), obst, section.ramps)
+      move_carrying(Vector.new(MOVE_SPEED, 0), nil, obst, obst, section.ramps)
       b.move(Vector.new(MOVE_SPEED, 0), section.get_obstacles(b.x, b.y), section.ramps)
     else
       move(Vector.new(@bottom ? -@speed.x : 0, 0), obst, section.ramps)
     end
+  end
+
+  def activate(section)
+    section.add_effect(Effect.new(@x - 16, @y - 16, :fx_spawn, 2, 2, 6))
+    section.add_effect(Effect.new(@start_x - 16, @start_y - 16, :fx_spawn, 2, 2, 6))
+    @x = @start_x
+    @y = @start_y
+  end
+
+  def is_visible(map)
+    true
   end
 end
 

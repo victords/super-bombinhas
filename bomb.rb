@@ -260,6 +260,7 @@ class Bomb < GameObject
   def reset(loaded = false)
     @will_explode = @exploding = @aura = @dying = @shielded = false
     @speed.x = @speed.y = @stored_forces.x = @stored_forces.y = 0
+    @power = 1
     if loaded; @hp = @saved_hp
     else; @saved_hp = @hp = @def_hp; end
     @active = @facing_right = true
