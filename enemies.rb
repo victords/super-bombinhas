@@ -277,7 +277,7 @@ end
 
 class Sprinny < Enemy
   def initialize(x, y, args, section)
-    super x + 3, y, 26, 32, Vector.new(-2, -5), 3, 1, [0, 1], 7, 350
+    super x + 3, y, 26, 32, Vector.new(-2, -5), 3, 1, [0, 1], 7, 250
 
     @leaps = 1000
     @max_leaps = args.to_i
@@ -399,7 +399,7 @@ class Ekips < GameObject
     @act_timer = 0
     @active_bounds = Rectangle.new x - 32, y - 18, 96, 50
     @attack_bounds = Rectangle.new x - 26, y + 10, 84, 12
-    @score = 240
+    @score = 200
   end
 
   def update(section)
@@ -677,7 +677,7 @@ end
 
 class Electong < Enemy
   def initialize(x, y, args, section)
-    super x - 12, y - 11, 56, 43, Vector.new(-4, -91), 4, 2, [0, 1, 2, 1], 7, 500, 1
+    super x - 12, y - 11, 56, 43, Vector.new(-4, -91), 4, 2, [0, 1, 2, 1], 7, 300, 1
     @timer = 0
     @tongue_y = @y
   end
@@ -820,7 +820,7 @@ end
 
 class Flep < Enemy
   def initialize(x, y, args, section)
-    super x, y, 64, 20, Vector.new(0, 0), 1, 3, [0, 1, 2], 6, 300, 2
+    super x, y, 64, 20, Vector.new(0, 0), 1, 3, [0, 1, 2], 6, 250, 2
     @movement = C::TILE_SIZE * args.to_i
     @aim = Vector.new(@x - @movement, @y)
     @facing_right = false
@@ -900,7 +900,7 @@ end
 
 class Snep < Enemy
   def initialize(x, y, args, section)
-    super x, y - 24, 32, 56, Vector.new(0, 4), 5, 2, [0, 1, 0, 2], 12, 200
+    super x, y - 24, 32, 56, Vector.new(0, 4), 5, 2, [0, 1, 0, 2], 12, 250
     @facing_right = args.nil?
   end
 
@@ -979,7 +979,7 @@ end
 
 class Armep < FloorEnemy
   def initialize(x, y, args, section)
-    super(x, y + 12, args, 41, 20, Vector.new(-21, -3), 1, 4, [0, 1, 0, 2], 8, 290, 1.3)
+    super(x, y + 12, args, 41, 20, Vector.new(-21, -3), 1, 4, [0, 1, 0, 2], 8, 350, 1.3)
   end
 
   def hit_by_bomb(section)
@@ -1078,7 +1078,7 @@ end
 
 class Butterflep < Enemy
   def initialize(x, y, args, section)
-    super(x - 12, y - 12, 56, 54, Vector.new(-4, -4), 2, 2, [0, 1, 2, 1], 10, 270)
+    super(x - 12, y - 12, 56, 54, Vector.new(-4, -4), 2, 2, [0, 1, 2, 1], 10, 300)
     @speed_m = 5
     ps = args.split(':')
     @points = []
@@ -1238,7 +1238,7 @@ end
 
 class Forsby < Enemy
   def initialize(x, y, args, section)
-    super x - 8, y - 22, 48, 54, Vector.new(-11, -6), 2, 3, [0, 1, 0, 2], 15, 300, 2
+    super x - 8, y - 22, 48, 54, Vector.new(-11, -6), 2, 3, [0, 1, 0, 2], 15, 250, 2
     @facing_right = !args.nil?
     @state = @timer = 0
   end
@@ -1274,7 +1274,7 @@ end
 
 class Stilty < FloorEnemy
   def initialize(x, y, args, section)
-    super(x + 6, y - 26, args, 20, 58, Vector.new(-6, -42), 5, 2, [0, 1, 0, 2], 7, 450, 2, 2)
+    super(x + 6, y - 26, args, 20, 58, Vector.new(-6, -42), 5, 2, [0, 1, 0, 2], 7, 350, 2, 2)
   end
 
   def update(section)
@@ -1314,12 +1314,13 @@ end
 
 class Mantul < FloorEnemy
   def initialize(x, y, args, section)
-    super(x - 10, y - 24, args, 52, 56, Vector.new(-6, -8), 2, 2, [0, 1, 0, 2], 7, 570, 1.5, 2)
+    super(x - 10, y - 24, args, 52, 56, Vector.new(-6, -8), 2, 2, [0, 1, 0, 2], 7, 350, 1.5, 2)
     @timer = 0
   end
 
   def update(section)
     super(section)
+    return if @dying or @invulnerable
     @timer += 1
     if @timer == 180
       section.add(Projectile.new(@x + 48, @y + 30, 2, 0, self))
@@ -1333,23 +1334,25 @@ end
 
 class Lambul < FloorEnemy
   def initialize(x, y, args, section)
-    super(x - 4, y - 38, args, 30, 70, Vector.new(-42, -10), 4, 2, [0, 1, 0, 2], 7, 600, 2)
+    super(x - 4, y - 38, args, 30, 70, Vector.new(-50, -10), 4, 2, [0, 1, 0, 2], 7, 500, 2)
   end
 
   def update(section)
     b = SB.player.bomb
     if @attacking
-      animate [3, 4, 5, 6], 5 if @timer == 0
-      if @img_index == 6
-        r = Rectangle.new(@facing_right ? @x : @x - 40, @y + 35, 80, 10)
+      @timer += 1
+      if @timer == 80
+        @attacking = false
+        set_animation 0
+      elsif @timer >= 60
+        animate [6, 5, 4, 3], 5
+      elsif @timer >= 20
+        r = Rectangle.new(@facing_right ? @x : @x - 48, @y + 35, 88, 10)
         b.hit if b.bounds.intersect?(r)
-        @timer += 1
-        if @timer == 120 or b.bounds.intersect?(r)
-          @attacking = false
-          set_animation 0
-        end
+      else
+        animate [3, 4, 5, 6], 5
       end
-    elsif b.y + b.h == @y + @h && (b.x + b.w/2 - @x - @w/2).abs <= 55 && (b.x < @x && !@facing_right || b.x > @x && @facing_right)
+    elsif !SB.player.dead? && b.y + b.h == @y + @h && (b.x + b.w/2 - @x - @w/2).abs <= 65 && (b.x < @x && !@facing_right || b.x > @x && @facing_right)
       @attacking = true
       @timer = 0
       set_animation 3
