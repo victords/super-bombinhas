@@ -1604,27 +1604,33 @@ class MountainBombie < SBGameObject
 end
 
 class WindMachine < SBGameObject
-  FORCE = 30
-  RANGE = 80 * C::TILE_SIZE
+  FORCE_BASE = 0.6
+  FORCE_FACTOR = 0.15
 
   def initialize(x, y, args, section, switch)
     super(x + 2, y + 12, 60, 20, :sprite_windMachine, Vector.new(-2, -4), 2, 3)
+    @range = (args || 50).to_i * C::TILE_SIZE
     @active = switch[:state] == :taken
     @rnd = Random.new
   end
 
   def update(section)
     if @active
-      @timer += 1
-      if @timer >= 30
-        animate([2, 3, 4, 5], 5)
-
-        section.add_effect(Effect.new(@x - 20 + @rnd.rand(@w + 40), @y - 120 - @rnd.rand(200), :fx_wind, 8, 1, 7)) if @timer % 10 == 0
+      if @timer < 60
+        @timer += 1
+        return
       end
 
+      animate([2, 3, 4, 5], 5)
       b = SB.player.bomb
-      if b.x + b.w > @x - 20 && @x + @w + 20 > b.x && b.y + b.h > @y - RANGE && b.y + b.h <= @y
-        b.stored_forces.y -= FORCE * (1 - (@y - b.y - b.h) / RANGE)
+      if b.x + b.w > @x - 20 && @x + @w + 20 > b.x && b.y + b.h > @y - @range && b.y + b.h <= @y
+        b.stored_forces.y -= FORCE_BASE + FORCE_FACTOR * (1 - (@y - b.y - b.h) / @range)
+      end
+
+      @timer += 1
+      if @timer == 65
+        section.add_effect(Effect.new(@x - 10 + @rnd.rand(@w + 20), @y - 120 - @rnd.rand(200), :fx_wind, 8, 1, 7))
+        @timer = 60
       end
     end
   end
@@ -1634,6 +1640,10 @@ class WindMachine < SBGameObject
     @active = true
     @img_index = 1
     @timer = 0
+  end
+
+  def is_visible(map)
+    @active || map.cam.intersect?(@active_bounds)
   end
 end
 
