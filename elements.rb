@@ -1604,12 +1604,13 @@ class MountainBombie < SBGameObject
 end
 
 class WindMachine < SBGameObject
-  FORCE_BASE = 0.6
-  FORCE_FACTOR = 0.15
+  FORCE_BASE = 0.65
+  FORCE_FACTOR = 0.1
+  RANGE = 70 * C::TILE_SIZE
+  MAX_RANGE = 87 * C::TILE_SIZE
 
   def initialize(x, y, args, section, switch)
-    super(x + 2, y + 12, 60, 20, :sprite_windMachine, Vector.new(-2, -4), 2, 3)
-    @range = (args || 50).to_i * C::TILE_SIZE
+    super(x - 304, y - 32, 640, 64, :sprite_windMachine, Vector.new(0, -16), 1, 10)
     @active = switch[:state] == :taken
     @rnd = Random.new
   end
@@ -1617,28 +1618,29 @@ class WindMachine < SBGameObject
   def update(section)
     if @active
       if @timer < 60
+        animate([1, 0], 8)
         @timer += 1
         return
       end
 
-      animate([2, 3, 4, 5], 5)
+      animate([2, 3, 4, 5, 6, 7, 8, 9], 5)
+      section.add_effect(Effect.new(@x - 10 + @rnd.rand(@w + 20), @y - 120 - @rnd.rand(RANGE), :fx_wind, 8, 1, 7))
       b = SB.player.bomb
-      if b.x + b.w > @x - 20 && @x + @w + 20 > b.x && b.y + b.h > @y - @range && b.y + b.h <= @y
-        b.stored_forces.y -= FORCE_BASE + FORCE_FACTOR * (1 - (@y - b.y - b.h) / @range)
-      end
-
-      @timer += 1
-      if @timer == 65
-        section.add_effect(Effect.new(@x - 10 + @rnd.rand(@w + 20), @y - 120 - @rnd.rand(200), :fx_wind, 8, 1, 7))
-        @timer = 60
+      if b.x + b.w > @x - 20 && @x + @w + 20 > b.x && b.y + b.h > @y - MAX_RANGE && b.y + b.h <= @y
+        d_y = @y - b.y - b.h
+        if d_y <= RANGE
+          b.stored_forces.y -= FORCE_BASE + FORCE_FACTOR * (1 - d_y / RANGE)
+        else
+          b.stored_forces.y -= FORCE_BASE * (1 - ((d_y - RANGE) / (MAX_RANGE - RANGE)))
+        end
       end
     end
   end
 
   def activate
     SB.stage.set_switch(self)
+    set_animation(1)
     @active = true
-    @img_index = 1
     @timer = 0
   end
 
