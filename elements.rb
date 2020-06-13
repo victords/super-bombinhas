@@ -136,7 +136,11 @@ module Speech
     end
 
     animate @indices, @interval if @speaking
-    section.active_object = self if @active
+    if @active
+      section.active_object = self
+    else
+      section.active_object = nil
+    end
   end
 
   def draw_speech
@@ -1604,10 +1608,8 @@ class MountainBombie < SBGameObject
 end
 
 class WindMachine < SBGameObject
-  FORCE_BASE = 0.65
-  FORCE_FACTOR = 0.1
-  RANGE = 70 * C::TILE_SIZE
-  MAX_RANGE = 87 * C::TILE_SIZE
+  FORCE = 0.05
+  RANGE = 78 * C::TILE_SIZE
 
   def initialize(x, y, args, section, switch)
     super(x - 304, y - 32, 640, 64, :sprite_windMachine, Vector.new(0, -16), 1, 10)
@@ -1626,13 +1628,9 @@ class WindMachine < SBGameObject
       animate([2, 3, 4, 5, 6, 7, 8, 9], 5)
       section.add_effect(Effect.new(@x - 10 + @rnd.rand(@w + 20), @y - 120 - @rnd.rand(RANGE), :fx_wind, 8, 1, 7))
       b = SB.player.bomb
-      if b.x + b.w > @x - 20 && @x + @w + 20 > b.x && b.y + b.h > @y - MAX_RANGE && b.y + b.h <= @y
+      if b.x + b.w > @x - 20 && @x + @w + 20 > b.x && b.y + b.h > @y - RANGE && b.y + b.h <= @y
         d_y = @y - b.y - b.h
-        if d_y <= RANGE
-          b.stored_forces.y -= FORCE_BASE + FORCE_FACTOR * (1 - d_y / RANGE)
-        else
-          b.stored_forces.y -= FORCE_BASE * (1 - ((d_y - RANGE) / (MAX_RANGE - RANGE)))
-        end
+        b.speed.y -= G.gravity.y + [FORCE * (1 - d_y/RANGE), 0.0101].max
       end
     end
   end
