@@ -1533,7 +1533,7 @@ class FragileFloor < SBGameObject
 end
 
 class Box < SBGameObject
-  MOVE_SPEED = 3
+  MOVE_SPEED = 2.5
 
   attr_reader :id
 
@@ -1551,9 +1551,11 @@ class Box < SBGameObject
     obst = section.get_obstacles(@x, @y)
     if b.left == self && SB.key_down?(:left)
       move_carrying(Vector.new(-MOVE_SPEED, 0), nil, obst, obst, section.ramps)
+      b.instance_exec { @left = nil }
       b.move(Vector.new(-MOVE_SPEED, 0), section.get_obstacles(b.x, b.y), section.ramps)
     elsif b.right == self && SB.key_down?(:right)
       move_carrying(Vector.new(MOVE_SPEED, 0), nil, obst, obst, section.ramps)
+      b.instance_exec { @right = nil }
       b.move(Vector.new(MOVE_SPEED, 0), section.get_obstacles(b.x, b.y), section.ramps)
     else
       move(Vector.new(@bottom ? -@speed.x : 0, 0), obst, section.ramps)

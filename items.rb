@@ -461,7 +461,7 @@ class JillisStone < FloatingItem
   def initialize(x, y, args, section, switch)
     set_icon :jillisStone
     return if check(switch)
-    super(x, y, 20, 20, :sprite_jillisStone, nil, 3, 2, [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5], 7)
+    super(x + 6, y + 6, 20, 20, :sprite_jillisStone, Vector.new(0, -2), 3, 2, [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5], 7)
   end
 
   def update(section)

@@ -152,15 +152,15 @@ class FloorEnemy < Enemy
     @turning = false
   end
 
-  def update(section, &block)
+  def update(section, tolerance = nil, &block)
     if @invulnerable
       super section
     elsif @turning
       if block_given?
-        super(section, &block)
+        super(section, tolerance, &block)
       else
         set_direction
-        super(section)
+        super(section, tolerance)
       end
     else
       super section do
@@ -1294,7 +1294,7 @@ class Stilty < FloorEnemy
         @rising = false
       end
     else
-      super(section)
+      super(section, 20)
     end
   end
 
