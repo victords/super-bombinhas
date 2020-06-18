@@ -216,7 +216,7 @@ class Bomb < GameObject
 
   def bounce(play_sound = true)
     @speed.y = -(C::BOUNCE_SPEED_BASE + (@speed.y / @max_speed.y) * C::BOUNCE_SPEED_INCREMENT)
-    @speed.x = rand(-1..1) * @max_speed_x
+    @speed.x = rand(-1..1) * @max_speed_x if @speed.x.abs < 0.5
 
     SB.play_sound(Res.sound(:stomp)) if play_sound
   end
