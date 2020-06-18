@@ -37,8 +37,8 @@ class Enemy < GameObject
 
   def set_active_bounds(section)
     t = (@y + @img_gap.y).floor
-    r = (@x + @img_gap.x + @img[0].width).ceil
-    b = (@y + @img_gap.y + @img[0].height).ceil
+    r = (@x + @img_gap.x + @img[0].width * 2).ceil
+    b = (@y + @img_gap.y + @img[0].height * 2).ceil
     l = (@x + @img_gap.x).floor
 
     if t > section.size.y
@@ -1369,7 +1369,7 @@ end
 class Icel < Enemy
   def initialize(x, y, args, section)
     super x - 4, y + 2, 40, 28, Vector.new(-4, -4), 2, 3, [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5], 7, 450
-    @radius = (args || 64).to_i
+    @radius = (args || 2).to_i * C::TILE_SIZE
     @timer = @angle = 0
     @state = 3
     @center = Vector.new(@x + @w/2, @y + @h/2)
@@ -1381,7 +1381,7 @@ class Icel < Enemy
       if @timer == 120
         @eff1 = section.add_effect(Ice.new(@center.x + @radius, @center.y))
         @eff2 = section.add_effect(Ice.new(@center.x - @radius, @center.y))
-      elsif @timer == 300
+      elsif @timer == 240
         @eff1 = @eff2 = nil
         @timer = @angle = 0
       elsif @timer > 120

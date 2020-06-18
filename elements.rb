@@ -1019,9 +1019,10 @@ end
 
 class Stalactite < SBGameObject
   def initialize(x, y, args, section)
-    super x + 11, y - 16, 10, 48, :sprite_stalactite, Vector.new(-9, 0), 3, 2
+    args = (args || '').split(',')
+    super x + 11, y - 16, 10, 48, "sprite_stalactite#{args[0]}", Vector.new(-9, 0), 3, 2
     @active_bounds = Rectangle.new(x + 2, y, 28, 48)
-    @normal = args.nil?
+    @normal = args[1].nil?
   end
 
   def update(section)
@@ -1277,10 +1278,10 @@ class TwinWalls < GameObject
   end
 
   def draw(map)
-    @img[0].draw @x - map.cam.x, @y - map.cam.y, 0 if @h > 0
+    @img[0].draw @x - map.cam.x, @y - map.cam.y, 0, 2, 2 if @h > 0
     y = 16
     while y < @h
-      @img[1].draw @x - map.cam.x, @y + y - map.cam.y, 0
+      @img[1].draw @x - map.cam.x, @y + y - map.cam.y, 0, 2, 2
       y += 16
     end
   end
