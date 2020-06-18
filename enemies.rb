@@ -1385,7 +1385,7 @@ class Icel < Enemy
         @eff1 = @eff2 = nil
         @timer = @angle = 0
       elsif @timer > 120
-        @angle += 0.03
+        @angle += Math::PI / 60
         x_off = @radius * Math.cos(@angle)
         y_off = @radius * Math.sin(@angle)
         @eff1.move(@center.x + x_off, @center.y - y_off)

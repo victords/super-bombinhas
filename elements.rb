@@ -1251,7 +1251,6 @@ class TwinWalls < GameObject
         @h += @closed ? -16 : 16
         @active_bounds = Rectangle.new @x, @y, @w, @h
         SB.play_sound(Res.sound(:wallOpen)) if section.map.cam.intersect?(@active_bounds)
-        @timer = 0
         if @closed && @h == 0 || !@closed && @h == @max_size
           @closed = !@closed
           @active = false
@@ -1953,7 +1952,7 @@ end
 class Ice < SBEffect
   def initialize(x, y)
     @w = @h = 30
-    super x - @w/2, y - @h/2, :fx_ice, 2, 2, 5, nil, 180
+    super x - @w/2, y - @h/2, :fx_ice, 2, 2, 5, nil, 120
   end
 
   def update
