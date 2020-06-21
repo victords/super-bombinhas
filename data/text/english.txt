@@ -13,7 +13,7 @@ delete			Delete
 delete_confirm	Are you sure you want to delete this game?
 yes				Yes
 no				No
-help_text		This is a platform game. Use the left and right arrow keys for moving, spacebar for jumping, X for items, Z or V to switch between items and C for abilities, up arrow to open doors, Esc to pause.\nThe game also supports joysticks (connect before opening the game), though the button mapping can vary. For an XBOX 360 controller, use the analog stick or D-pad as the arrow buttons, A for jump and confirm, B for items and cancel, X for abilities, LB and RB to switch items, Start to pause.\nUse F4 to toggle full screen.
+help_text		This is a platform game. Use the left and right arrow keys for moving, spacebar for jumping, X for items, Z or V to switch between items, C for abilities, Shift to switch characters, up arrow to open doors, Esc to pause.\nThe game also supports joysticks (connect before opening the game), though the button mapping can vary. For an XBOX 360 controller, use the analog stick or D-pad as the arrow buttons, A for jump and confirm, B for items and cancel, X for abilities, Y to switch characters, LB and RB to switch items, Start to pause.\nUse F4 to toggle full screen.
 save			Save
 cancel			Cancel
 language		Language

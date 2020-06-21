@@ -134,7 +134,8 @@ class Bomb < GameObject
 
       SB.player.change_item(-1) if SB.key_pressed?(:prev)
       SB.player.change_item if SB.key_pressed?(:next)
-      SB.player.use_item section if SB.key_pressed? :item
+      SB.player.use_item(section) if SB.key_pressed?(:item)
+      SB.player.shift_bomb(section) if SB.key_pressed?(:bomb)
 
       if @can_use_ability
         if SB.key_pressed? :ability

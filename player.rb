@@ -18,6 +18,8 @@
 require_relative 'bomb'
 
 class Player
+  BOMB_TYPES = [:azul, :vermelha, :amarela, :verde, :branca]
+
   attr_reader :score, :items, :cur_item_type, :specs, :all_stars
   attr_accessor :name, :last_world, :last_stage, :lives, :stage_score, :startup_item, :temp_startup_item
 
@@ -116,6 +118,13 @@ class Player
     bomb.x = @bomb.x
     bomb.y = @bomb.y
     @bomb = bomb
+  end
+
+  def shift_bomb(section)
+    ind = (BOMB_TYPES.index(@bomb.type) + 1) % BOMB_TYPES.size
+    ind = 0 if ind >= @last_world
+    set_bomb(BOMB_TYPES[ind])
+    section.add_effect(Effect.new(@bomb.x + @bomb.w / 2 - 32, @bomb.y + @bomb.h / 2 - 32, :fx_spawn, 2, 2, 6))
   end
 
   def save_bomb_hps

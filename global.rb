@@ -110,6 +110,7 @@ class SB
         jump:    [Gosu::KB_SPACE, Gosu::GP_0_BUTTON_0],
         item:    [Gosu::KB_X, Gosu::GP_0_BUTTON_1],
         ability: [Gosu::KB_C, Gosu::GP_0_BUTTON_2],
+        bomb:    [Gosu::KB_LEFT_SHIFT, Gosu::GP_0_BUTTON_3],
         prev:    [Gosu::KB_Z, Gosu::GP_0_BUTTON_9],
         next:    [Gosu::KB_V, Gosu::GP_0_BUTTON_10],
         confirm: [Gosu::KB_RETURN, Gosu::GP_0_BUTTON_0],
