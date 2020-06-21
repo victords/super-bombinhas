@@ -1402,8 +1402,6 @@ class Icel < Enemy
   end
 
   def hit_by_bomb(section); end
-
-  def hit_by_projectile(section); end
 end
 
 class Ignel < Enemy

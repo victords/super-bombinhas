@@ -1712,14 +1712,24 @@ class SideSpring < SBGameObject
   end
 end
 
-class IcyFloor < SBGameObject
+class IcyFloor
+  attr_reader :bounds
+
   def initialize(x, y, args, section)
-    super(x, y + C::TILE_SIZE - 1, 32, 1, :fx_ice)
+    @bounds = Rectangle.new(x, y + C::TILE_SIZE - 1, C::TILE_SIZE, 1)
   end
 
   def update(section)
     b = SB.player.bomb
     b.slipping = true if b.collide?(self)
+  end
+
+  def is_visible(map)
+    map.cam.intersect?(@bounds)
+  end
+
+  def dead?
+    false
   end
 
   def draw(map); end
