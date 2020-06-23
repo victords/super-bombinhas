@@ -131,6 +131,7 @@ class Section
     Stilty,
     Turner,
     TwinWalls,
+    Ulor,
     Vamep,
     Vortex,
     WallButton,

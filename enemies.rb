@@ -1505,3 +1505,54 @@ class Necrul < FloorEnemy
     super
   end
 end
+
+class Ulor < FloorEnemy
+  include Boss
+
+  alias :super_update :update
+
+  def initialize(x, y, args, section)
+    super(x - 34, y - 88, args, 100, 120, Vector.new(-20, -8), 2, 2, [0, 1, 0, 2], 7, 2400, 3, 5)
+    @timer = 0
+    @state = :walking
+    init
+  end
+
+  def update(section)
+    update_boss(section, false) do
+      @attack_time = 180 + rand(120) if @attack_time.nil?
+      @timer += 1
+      if @state == :preparing
+        if @timer == 90
+          set_animation(3)
+          @timer = 0
+          @state = :attacking
+        end
+        if @timer % 10 == 0
+          @x += 5
+        elsif @timer % 5 == 0
+          @x -= 5
+        end
+      elsif @state == :attacking
+        if @timer == 150
+          set_animation(0)
+          @timer = 0
+          @state = :walking
+        end
+      else
+        super_update(section)
+        if @timer == @attack_time
+          set_animation(0)
+          @timer = 0
+          @attack_time = nil
+          @state = :preparing
+        end
+      end
+    end
+  end
+
+  def draw(map)
+    super(map)
+    draw_boss
+  end
+end
