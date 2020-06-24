@@ -137,6 +137,7 @@ class Enemy < GameObject
   end
 
   def draw(map = nil, scale_x = 2, scale_y = 2, alpha = 0xff, color = 0xffffff, angle = nil, flip = nil, z_index = 0, round = false)
+    return if @invulnerable && (@control_timer / 3) % 2 == 0
     super(map, scale_x, scale_y, alpha, color, angle, flip, z_index, round)
   end
 end
@@ -204,8 +205,8 @@ class FloorEnemy < Enemy
     end
   end
 
-  def draw(map)
-    super(map, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
+  def draw(map, color = 0xffffff)
+    super(map, 2, 2, 255, color, nil, @facing_right ? :horiz : nil)
   end
 end
 
@@ -1515,6 +1516,7 @@ class Ulor < FloorEnemy
     super(x - 34, y - 88, args, 100, 120, Vector.new(-20, -8), 2, 2, [0, 1, 0, 2], 7, 2400, 3, 5)
     @timer = 0
     @state = :walking
+    @spawn_point = Vector.new(x - 12 * C::TILE_SIZE, y - 9 * C::TILE_SIZE)
     init
   end
 
@@ -1525,6 +1527,10 @@ class Ulor < FloorEnemy
       if @state == :preparing
         if @timer == 90
           set_animation(3)
+          (1..25).each do |i|
+            section.activate_object(Stalactite, i)
+          end
+          @spawned = false
           @timer = 0
           @state = :attacking
         end
@@ -1534,13 +1540,19 @@ class Ulor < FloorEnemy
           @x -= 5
         end
       elsif @state == :attacking
-        if @timer == 150
+        if @timer == (@hp < 3 ? 60 : 120)
           set_animation(0)
           @timer = 0
           @state = :walking
         end
       else
         super_update(section)
+        unless @spawned
+          (0..24).each do |i|
+            section.add(Stalactite.new(@spawn_point.x + i * C::TILE_SIZE, @spawn_point.y, "2,!,#{i + 1}", section))
+          end
+          @spawned = true
+        end
         if @timer == @attack_time
           set_animation(0)
           @timer = 0
@@ -1548,11 +1560,34 @@ class Ulor < FloorEnemy
           @state = :preparing
         end
       end
+
+      if @state != :walking
+        unless SB.player.dead?
+          b = SB.player.bomb
+          if b.over?(self, nil)
+            hit_by_bomb(section)
+          elsif b.collide?(self)
+            b.hit
+          end
+        end
+      end
     end
   end
 
+  def hit_by_bomb(section)
+    can_hit = @state == :attacking && !@invulnerable
+    SB.player.bomb.bounce(can_hit)
+    if can_hit
+      hit(section, 1)
+      @speed_m = 4 if @hp < 3
+      @state = :walking
+    end
+  end
+
+  def hit_by_projectile(section); end
+
   def draw(map)
-    super(map)
+    super(map, @hp < 3 ? 0xff9999 : 0xffffff)
     draw_boss
   end
 end

@@ -320,6 +320,7 @@ class Elevator < SBGameObject
     when 1 then w = 96; cols = rows = nil; x_g = y_g = 0
     when 2 then w = 64; cols = 4; rows = 1; x_g = y_g = 0
     when 3 then w = 64; cols = rows = nil; x_g = 0; y_g = -3
+    when 4 then w = 96; cols = rows = nil; x_g = 0; y_g = -3
     end
     super x, y, w, 1, "sprite_Elevator#{type}", Vector.new(x_g, y_g), cols, rows
     @passable = true
@@ -1018,11 +1019,16 @@ class ForceField < GameObject
 end
 
 class Stalactite < SBGameObject
+  RANGE = 288
+
+  attr_reader :id
+
   def initialize(x, y, args, section)
     args = (args || '').split(',')
     super x + 11, y - 16, 10, 48, "sprite_stalactite#{args[0]}", Vector.new(-9, 0), 3, 2
     @active_bounds = Rectangle.new(x + 2, y, 28, 48)
     @normal = args[1].nil?
+    @id = args[2].to_i
   end
 
   def update(section)
@@ -1051,12 +1057,21 @@ class Stalactite < SBGameObject
       @moving = true if @timer == 30
     else
       b = SB.player.bomb
-      if (@normal && b.x + b.w > @x - 80 && b.x < @x + 90 && b.y > @y && b.y < @y + 256) ||
+      if (@normal && b.x + b.w > @x - 80 && b.x < @x + 90 && b.y > @y && b.y < @y + RANGE) ||
          (!@normal && b.x + b.w > @x && b.x < @x + @w && b.y + b.h > @y - C::TILE_SIZE && b.y + b.h < @y)
         @will_move = true
         @timer = 0
       end
     end
+  end
+
+  def activate(section)
+    @will_move = true
+    @timer = 0
+  end
+
+  def is_visible(map)
+    @will_move || @moving || map.cam.intersect?(@active_bounds)
   end
 end
 

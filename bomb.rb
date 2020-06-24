@@ -223,7 +223,7 @@ class Bomb < GameObject
   end
 
   def hit(damage = 1)
-    unless @invulnerable
+    if @active && !@invulnerable
       @hp -= damage
       @hp = 0 if @hp < 0
       if @hp == 0
