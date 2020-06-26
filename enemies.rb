@@ -1485,10 +1485,12 @@ class Necrul < FloorEnemy
       @timer += 1
       if @timer % 28 == 0
         section.add(Projectile.new(@facing_right ? @x + @w + 34 : @x - 34, @y + 30, 6, @facing_right ? 0 : 180, self))
-        if @timer == 84
+        if @timer == 112
           @indices = [1, 0, 1, 2]
           set_animation(@indices[0])
           set_direction
+        elsif @timer == 56
+          @facing_right = !@facing_right
         end
       end
     end
@@ -1496,14 +1498,9 @@ class Necrul < FloorEnemy
 
   def prepare_turn(dir)
     @timer = 0
-    @indices = [1, 3, 4, 3, 1, 3, 4, 3, 1, 3, 4, 3]
+    @indices = [1, 3, 4, 3]
     set_animation @indices[0]
     super(dir)
-  end
-
-  def set_direction
-    @img_gap.x = @facing_right ? -34 : -14
-    super
   end
 end
 
