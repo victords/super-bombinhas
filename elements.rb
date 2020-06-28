@@ -1565,11 +1565,11 @@ class Box < SBGameObject
     b = SB.player.bomb
     obst = section.get_obstacles(@x, @y)
     if b.left == self && SB.key_down?(:left)
-      move_carrying(Vector.new(-MOVE_SPEED, 0), nil, obst, obst, section.ramps)
+      move_carrying(Vector.new(-MOVE_SPEED, 0), nil, section.obstacles, obst, section.ramps)
       b.instance_exec { @left = nil }
       b.move(Vector.new(-MOVE_SPEED, 0), section.get_obstacles(b.x, b.y), section.ramps)
     elsif b.right == self && SB.key_down?(:right)
-      move_carrying(Vector.new(MOVE_SPEED, 0), nil, obst, obst, section.ramps)
+      move_carrying(Vector.new(MOVE_SPEED, 0), nil, section.obstacles, obst, section.ramps)
       b.instance_exec { @right = nil }
       b.move(Vector.new(MOVE_SPEED, 0), section.get_obstacles(b.x, b.y), section.ramps)
     else
@@ -2033,6 +2033,7 @@ class Graphic < Sprite
       case args
       when 'BombaVermelha' then x += 44; y += 88; @w = 40; @h = 40; cols = 6; rows = 2; @flip = :horiz
       when 'BombaAmarela' then x += 40; y += 76; @w = 48; @h = 52; cols = 6; rows = 2; @flip = :horiz
+      when 'BombaVerde' then x += 40; y += 76; @w = 48; @h = 52; cols = 6; rows = 2; @flip = :horiz
       end
     when 1 then @w = 32; @h = 64
     when 2 then x += 16; y += 16; @w = 64; @h = 64; cols = 2; rows = 2; @indices = [0, 1, 2, 3]; @interval = 7; @rot = -5

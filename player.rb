@@ -114,10 +114,12 @@ class Player
   end
 
   def set_bomb(type)
+    @bomb.stop
     bomb = @bombs[type]
     bomb.x = @bomb.x
     bomb.y = @bomb.y
     @bomb = bomb
+    SB.stage.update_bomb
   end
 
   def shift_bomb(section)

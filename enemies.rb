@@ -1477,14 +1477,14 @@ end
 
 class Necrul < FloorEnemy
   def initialize(x, y, args, section)
-    super(x - 20, y - 36, nil, 72, 68, Vector.new(-34, -6), 2, 3, [1,0,1,2], 7, 400, 2, 2)
+    super(x - 20, y - 32, nil, 72, 64, Vector.new(-34, -10), 2, 3, [1,0,1,2], 7, 400, 2, 2)
   end
 
   def update(section)
     super(section) do
       @timer += 1
       if @timer % 28 == 0
-        section.add(Projectile.new(@facing_right ? @x + @w + 34 : @x - 34, @y + 30, 6, @facing_right ? 0 : 180, self))
+        section.add(Projectile.new(@facing_right ? @x + @w + 30 : @x - 30, @y + 30, 6, @facing_right ? 0 : 180, self))
         if @timer == 112
           @indices = [1, 0, 1, 2]
           set_animation(@indices[0])
