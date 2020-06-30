@@ -2033,7 +2033,7 @@ class Graphic < Sprite
       case args
       when 'BombaVermelha' then x += 44; y += 88; @w = 40; @h = 40; cols = 6; rows = 2; @flip = :horiz
       when 'BombaAmarela' then x += 40; y += 76; @w = 48; @h = 52; cols = 6; rows = 2; @flip = :horiz
-      when 'BombaVerde' then x += 40; y += 76; @w = 48; @h = 52; cols = 6; rows = 2; @flip = :horiz
+      when 'BombaVerde' then x += 44; y += 86; @w = 48; @h = 52; cols = 6; rows = 2; @flip = :horiz
       end
     when 1 then @w = 32; @h = 64
     when 2 then x += 16; y += 16; @w = 64; @h = 64; cols = 2; rows = 2; @indices = [0, 1, 2, 3]; @interval = 7; @rot = -5
