@@ -112,6 +112,7 @@ class Section
     PoisonGas,
     Puzzle,
     PuzzlePiece,
+    Quartin,
     Robort,
     Rock,
     Sahiss,

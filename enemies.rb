@@ -1591,9 +1591,10 @@ end
 
 class Umbrex < FloorEnemy
   RANGE = 10
+
   def initialize(x, y, args, section)
-    super(x - 64, y - 128, '!', 160, 160, Vector.new(0, 0), 4, 2, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1], 7, 300, 3)
-    @hop_timer = -1
+    super(x, y - 108, args, 32, 140, Vector.new(-64, -20), 4, 2, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1], 7, 300, 3)
+    @hop_timer = 0
   end
 
   def update(section)
@@ -1609,18 +1610,20 @@ class Umbrex < FloorEnemy
         animate([6, 5, 4, 3], 5)
       end
       if @timer >= 10 && @timer < 60
-        area = Rectangle.new(@x + 64, @y + 20, 32, 140)
-        b.hit if b.bounds.intersect?(area)
-      end
-    elsif b.collide?(self) && b.y > @y
-      @x += 0.2 * (b.x - @x - 64)
-      if (b.x - @x - 64).abs <= RANGE
-        set_animation(3)
-        @attacking = true
-        @timer = 0
+        b.hit if b.collide?(self)
       end
     else
-      super(section)
+      area = Rectangle.new(@x - 64, @y - 20, 160, 160)
+      if b.bounds.intersect?(area) && b.y > area.y
+        @x += 0.2 * (b.x - @x)
+        if (b.x - @x).abs <= RANGE
+          set_animation(3)
+          @attacking = true
+          @timer = 0
+        end
+      else
+        super(section)
+      end
     end
 
     if @attacking
@@ -1636,5 +1639,83 @@ class Umbrex < FloorEnemy
     @y -= d_y
     super(map)
     @y += d_y
+  end
+end
+
+class Quartin < Enemy
+  class QuartinShield < GameObject
+    RADIUS = 36
+
+    attr_reader :dead
+    attr_accessor :x_c, :y_c
+
+    def initialize(x, y, x_c, y_c, angle)
+      super(x, y, 24, 24, :sprite_QuartinShield, Vector.new(-4, -4), 2, 2)
+      @x_c = x_c
+      @y_c = y_c
+      @angle = angle
+    end
+
+    def update
+      if @dying
+        animate([1, 2, 3], 5)
+        @timer += 1
+        @dead = true if @timer == 15
+      else
+        b = SB.player.bomb
+        if b.over?(self)
+          b.bounce
+          set_animation(1)
+          @dying = true
+          @timer = 0
+        elsif b.collide?(self)
+          b.hit
+        else
+          @angle += 2
+          @angle = 0 if @angle == 360
+          rad = @angle * Math::PI / 180
+          @x = @x_c + Math.cos(rad) * RADIUS - @w / 2
+          @y = @y_c + Math.sin(rad) * RADIUS - @h / 2
+        end
+      end
+    end
+
+    def draw(map)
+      super(map, 2, 2)
+    end
+  end
+
+  def initialize(x, y, args, section)
+    super(x + 2, y + 2, 28, 28, Vector.new(-4, -4), 2, 2, [0, 1, 2, 1], 10, 300)
+    x_c = @x + @w / 2
+    y_c = @y + @h / 2
+    @shields = [
+      QuartinShield.new(@x + 38, @y + 2, x_c, y_c, 0),
+      QuartinShield.new(@x + 2, @y - 34, x_c, y_c, 90),
+      QuartinShield.new(@x - 34, @y + 2, x_c, y_c, 180),
+      QuartinShield.new(@x + 2, @y + 38, x_c, y_c, 270)
+    ]
+  end
+
+  def update(section)
+    @shields.reverse_each do |s|
+      s.update
+      @shields.delete(s) if s.dead
+    end
+    hit(section) if @shields.empty? && @hp > 0
+    super(section)
+  end
+
+  def hit_by_bomb(section)
+    SB.player.bomb.hit
+  end
+
+  def hit_by_projectile(section); end
+
+  def draw(map)
+    super(map)
+    @shields.each do |s|
+      s.draw(map)
+    end
   end
 end
