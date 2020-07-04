@@ -2044,7 +2044,7 @@ class Graphic < Sprite
     when 10 then x -= 236; y -= 416; @w = 600; @h = 480
     when 12 then x -= 30; @w = 126; @h = 128; cols = 2; rows = 2; @indices = [0, SB.lang == :portuguese ? 1 : SB.lang == :english ? 2 : 3]; @interval = 60
     when 13..18 then x -= 64; y -= 88; @w = 160; @h = 120; cols = 1; rows = 3; img_index = SB.lang == :portuguese ? 1 : SB.lang == :english ? 0 : 2
-    when 19 then x -= 64; y -= 88; @w = 160; @h = 120
+    when 19..20 then x -= 64; y -= 88; @w = 160; @h = 120
     end
     sprite_name = type == 0 ? args : "graphic#{type}"
     super x, y, "sprite_#{sprite_name}", cols, rows

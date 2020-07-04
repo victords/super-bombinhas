@@ -1588,3 +1588,53 @@ class Ulor < FloorEnemy
     draw_boss
   end
 end
+
+class Umbrex < FloorEnemy
+  RANGE = 10
+  def initialize(x, y, args, section)
+    super(x - 64, y - 128, '!', 160, 160, Vector.new(0, 0), 4, 2, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1], 7, 300, 3)
+    @hop_timer = -1
+  end
+
+  def update(section)
+    b = SB.player.bomb
+    if @attacking
+      @timer += 1
+      if @timer == 80
+        set_animation(0)
+        @attacking = false
+      elsif @timer < 20
+        animate([3, 4, 5, 6], 5)
+      elsif @timer >= 60
+        animate([6, 5, 4, 3], 5)
+      end
+      if @timer >= 10 && @timer < 60
+        area = Rectangle.new(@x + 64, @y + 20, 32, 140)
+        b.hit if b.bounds.intersect?(area)
+      end
+    elsif b.collide?(self) && b.y > @y
+      @x += 0.2 * (b.x - @x - 64)
+      if (b.x - @x - 64).abs <= RANGE
+        set_animation(3)
+        @attacking = true
+        @timer = 0
+      end
+    else
+      super(section)
+    end
+
+    if @attacking
+      @hop_timer = 0
+    else
+      @hop_timer += 1
+      @hop_timer = 0 if @hop_timer == 16
+    end
+  end
+
+  def draw(map)
+    d_y = 16 - 0.25 * (@hop_timer - 8)**2
+    @y -= d_y
+    super(map)
+    @y += d_y
+  end
+end

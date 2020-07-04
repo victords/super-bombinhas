@@ -132,6 +132,7 @@ class Section
     Turner,
     TwinWalls,
     Ulor,
+    Umbrex,
     Vamep,
     Vortex,
     WallButton,

@@ -356,11 +356,15 @@ class StageMenu
                nil
              end
       if icon
-        G.window.draw_quad 745, 60, C::PANEL_COLOR,
-                           795, 60, C::PANEL_COLOR,
-                           795, 110, C::PANEL_COLOR,
-                           745, 110, C::PANEL_COLOR, 0
-        Res.img("icon_#{icon}").draw(745, 69, 0, 2, 2, b.can_use_ability ? 0xffffffff : C::DISABLED_COLOR)
+        color = b.can_use_ability ? 0xffffffff : C::DISABLED_COLOR
+        G.window.draw_quad 750, 66, color,
+                           790, 66, color,
+                           790, 106, color,
+                           750, 106, color, 0
+        @selected_item.draw(746, 62, 0, 2, 2)
+        Res.img("icon_#{icon}").draw(754, 70, 0, 2, 2, color)
+
+        SB.text_helper.write_line((b.cooldown.to_f / 60).ceil.to_s, 790, 84, :right, 0) unless b.can_use_ability
       end
       ##########################
     end
