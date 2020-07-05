@@ -52,6 +52,8 @@ chamal_speech	Então... você veio. Porém, temo que este seja o fim de sua vã 
 chamal_death	Nããããããoooo...!! Como eu fui perder para um fracote como esse...?! Não... Não é poss...
 sahiss_speech	Sssssss Ssssssssssss Sssss?! SSSSSS!! (Quem é você que invade minha sagrada fortaleza florestal?! PREPARE-SE PARA MORRER!!)
 sahiss_death	Sssssssssssssssssssss...!! (Nããããããoooooooooo...!!)
+ulor_speech		O que pensam que fazem aqui, pequenas bombas?! É o fim para vocês!
+ulor_death		Gaaaaaah! Não acredito... Derrotado por essas criaturas insignificantes...!
 count_down		Contagem regressiva para explodir!
 world_1			Ilha de Tars
 stage_1_1		Explorando a Praia de Tars
@@ -67,6 +69,13 @@ stage_2_4		Entrando na fortaleza florestal
 stage_2_5		Nas profundezas da fortaleza florestal
 world_3			Serra da Chuva
 stage_3_1		???
+stage_3_1		Na base das montanhas
+stage_3_2		Colinas enigmáticas
+stage_3_3		Conheça a tribo da montanha
+stage_3_4		As cavernas de gelo
+stage_3_5		O esconderijo de Ulor
+world_4			Vila Inkut
+stage_4_1		???
 bonus			Bônus
 bonus_1			Chegue ao final
 bonus_2			Mate todos os inimigos

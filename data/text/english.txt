@@ -52,6 +52,8 @@ chamal_speech	So... you've come. Well, I'm afraid this is the end of your pointl
 chamal_death	Noooooo...!! How come I lost to such a weakling...?! No, that's not... poss...
 sahiss_speech	Sssssss Ssssssssssss Sssss?! SSSSSS!! (Who are you who invades my sacred forest fortress?! PREPARE TO DIE!!)
 sahiss_death	Sssssssssssssssssssss...!! (Nooooooooooooooooooo...!!)
+ulor_speech		What do you think you're doing here, little bombs?! This is the end for you!
+ulor_death		Gaaaaaah! I can't believe... Defeated by these insignificant creatures...!
 count_down		Countdown to explosion!
 world_1			Tars Island
 stage_1_1		Exploring the Tars Beach
@@ -66,7 +68,13 @@ stage_2_3		The three trees engima
 stage_2_4		Entering the forest fortress
 stage_2_5		Deep in the forest fortress
 world_3			Rainy Mountains
-stage_3_1		???
+stage_3_1		By the base of the mountains
+stage_3_2		Puzzling hills
+stage_3_3		Meet the mountain tribe
+stage_3_4		The ice caverns
+stage_3_5		Ulor's hideout
+world_4			Inkut Village
+stage_4_1		???
 bonus			Bonus
 bonus_1			Reach the goal
 bonus_2			Kill all enemies

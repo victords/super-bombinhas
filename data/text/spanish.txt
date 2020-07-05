@@ -52,6 +52,8 @@ chamal_speech	Entonces... veniste. Bien, temo que esto es el final de su viaje i
 chamal_death	¡Noooooo...! ¡¿Como pude perder a alguién tan débil...?! No... No es posib...
 sahiss_speech	Sssssss Ssssssssssss Sssss?! SSSSSS!! (Quien es tu que invades mi sagrada fortaleza forestal?! PREPARATE PARA MORIR!!)
 sahiss_death	Sssssssssssssssssssss...!! (Noooooooooooooooo...!!)
+ulor_speech		¿Qué creen que están haciendo aquí, pequeñas bombas? ¡Este es el final para ustedes!
+ulor_death		Gaaaaaah! No puedo creer... ¡Derrotado por estas insignificantes criaturas...!
 count_down		¡Cuenta regresiva para explodir!
 world_1			Isla de Tars
 stage_1_1		Explorando la Playa de Tars
@@ -66,7 +68,13 @@ stage_2_3		El enigma de los tres árboles
 stage_2_4		Entrando en la fortaleza forestal
 stage_2_5		En las profundezas de la fortaleza forestal
 world_3			Montañas Lluviosas
-stage_3_1		???
+stage_3_1		En la base de las montañas
+stage_3_2		Colinas desconcertantes
+stage_3_3		Conoce a la tribu de la montaña
+stage_3_4		Las cavernas de hielo
+stage_3_5		El escondite de Ulor
+world_4			Pueblo de Inkut
+stage_4_1		???
 bonus			Bónus
 bonus_1			Alcanza el final
 bonus_2			Mata todos los enemigos
