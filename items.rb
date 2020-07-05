@@ -216,7 +216,7 @@ class Shield < FloatingItem
 
   def update(section)
     super(section) do
-      take_anim(section, true)
+      take_anim(section, SB.player.bomb.shielded)
     end
   end
 

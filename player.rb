@@ -65,14 +65,18 @@ class Player
   end
 
   def add_item(item)
-    item_type = item[:extra] || item[:type]
+    item_type = "#{item[:type]}#{item[:extra]}"
     @items[item_type] = [] if @items[item_type].nil?
     @items[item_type] << item
     @cur_item_type = item_type
     @item_index = @items.keys.index(item_type)
   end
 
-  def use_item(section)
+  def use_item(section, type = nil)
+    if type
+      @cur_item_type = type
+      @item_index = @items.keys.index(type)
+    end
     return if @cur_item_type.nil?
     item_type = @cur_item_type
     item_set = @items[item_type]
@@ -92,6 +96,10 @@ class Player
     @item_index = 0 if @item_index >= @items.length
     @item_index = @items.length - 1 if @item_index < 0
     @cur_item_type = @items.keys[@item_index]
+  end
+
+  def has_item?(type)
+    @items.has_key?(type)
   end
 
   def score=(value)

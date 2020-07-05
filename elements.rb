@@ -223,8 +223,12 @@ class Door < GameObject
     elsif section.active_object == self
       section.active_object = nil
     end
-    if not @locked and not @opening and collide
-      if SB.key_pressed? :up
+    if collide && !@opening && SB.key_pressed?(:up)
+      if @locked
+        if SB.player.has_item?("Key#{@type}")
+          SB.player.use_item(section, "Key#{@type}")
+        end
+      else
         set_animation 1
         @opening = true
       end
@@ -244,6 +248,8 @@ class Door < GameObject
     section.active_object = nil
     SB.stage.set_switch self
     SB.play_sound(Res.sound(:unlock))
+    set_animation(1)
+    @opening = true
   end
 
   def draw(map)

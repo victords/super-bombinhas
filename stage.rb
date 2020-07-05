@@ -251,6 +251,9 @@ class Stage
       3,  # Attack2
       71, # Spring
     ] if w >= 2
+    possible_items += [
+      4   # Attack3
+    ] if w >= 3
     possible_items[rand(possible_items.size)]
   end
 
