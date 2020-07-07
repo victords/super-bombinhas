@@ -64,8 +64,8 @@ class BombButton < Button
                        @x + @w, @y, C::PANEL_COLOR,
                        @x, @y + @h, C::PANEL_COLOR,
                        @x + @w, @y + @h, C::PANEL_COLOR, 0
-    @bomb_img.draw @x + 40 - @bomb_img.width, @y + 30 - @bomb_img.height, 0, 2, 2
-    SB.small_text_helper.write_breaking @bomb.name, @x + 40, @y + 52, 64, :center
+    @bomb_img.draw @x + 40 - @bomb_img.width, @y + 25 - @bomb_img.height, 0, 2, 2
+    SB.text_helper.write_breaking(@bomb.name, @x + 40, @y + 48, 64, :center, 0, 255, 0, 1.5, 1.5, -3)
   end
 end
 
@@ -204,6 +204,11 @@ class StageMenu
     end
 
     def update_paused
+      if SB.key_pressed?(:pause)
+        SB.state = :main
+        @stage_menu.reset
+        return
+      end
       @stage_menu.update
     end
 
@@ -329,11 +334,11 @@ class StageMenu
                          204, 60, C::PANEL_COLOR,
                          4, 60, C::PANEL_COLOR, 0
       @lives_icon.draw 12, 9, 0, 2, 2
-      SB.font.draw_text p.lives, 40, 8, 0, 1, 1, 0xff000000
+      SB.font.draw_text p.lives, 40, 8, 0, 2, 2, 0xff000000
       @hp_icon.draw 105, 9, 0, 2, 2
-      SB.font.draw_text p.bomb.hp, 135, 8, 0, 1, 1, 0xff000000
+      SB.font.draw_text p.bomb.hp, 135, 8, 0, 2, 2, 0xff000000
       @score_icon.draw 10, 32, 0, 2, 2
-      SB.font.draw_text p.stage_score, 40, 30, 0, 1, 1, 0xff000000
+      SB.font.draw_text p.stage_score, 40, 30, 0, 2, 2, 0xff000000
 
       ########## ITEM ##########
       if p.items.size > 0
@@ -341,7 +346,7 @@ class StageMenu
           x = 754 - 40 * (p.items.size - i - 1)
           @selected_item.draw(x - 8, 6, 0, 2, 2) if k == p.cur_item_type
           v[0][:obj].icon.draw(x, 14, 0, 2, 2, k == p.cur_item_type ? 0xffffffff : C::DISABLED_COLOR)
-          SB.text_helper.write_line(v.length.to_s, x + 36, 28, :right, 0, k == p.cur_item_type ? 255 : 127)
+          SB.text_helper.write_line(v.length.to_s, x + 36, 28, :right, 0xffffff, k == p.cur_item_type ? 255 : 127, :border)
         end
       end
       ##########################
@@ -375,7 +380,7 @@ class StageMenu
                          C::SCREEN_WIDTH, 0, c,
                          0, C::SCREEN_HEIGHT, c,
                          C::SCREEN_WIDTH, C::SCREEN_HEIGHT, c, 0
-      SB.big_text_helper.write_line SB.text(@dead_text), 400, 250, :center, 0xffffff, @alpha, :border, 0, 1, 255, 1
+      SB.text_helper.write_line(SB.text(@dead_text), 400, 250, :center, 0xffffff, @alpha, :border, 0, 1, 255, 1, 3, 3)
       unless SB.stage.is_bonus
         SB.text_helper.write_line SB.text(:restart), 400, 300, :center, 0xffffff, @alpha, :border, 0, 1, 255, 1
       end

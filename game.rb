@@ -95,10 +95,6 @@ class SBGame < MiniGL::GameWindow
     elsif SB.state == :stage_end
       StageMenu.update_end
     elsif SB.state == :paused
-      if SB.key_pressed?(:pause)
-        SB.state = :main
-        return
-      end
       StageMenu.update_paused
     elsif SB.state == :movie
       SB.movie.update
@@ -138,8 +134,8 @@ class SBGame < MiniGL::GameWindow
       SB.movie.draw
     elsif SB.state == :game_end || SB.state == :game_end_2
       clear 0
-      SB.big_text_helper.write_line SB.text(SB.state), 400, 280, :center, 0xffffff
-      SB.small_text_helper.write_line SB.text("#{SB.state}_sub"), 400, 320, :center, 0xffffff, 51
+      SB.text_helper.write_line(text: SB.text(SB.state), x: 400, y: 280, mode: :center, color: 0xffffff, scale_x: 3, scale_y: 3)
+      SB.text_helper.write_line(text: SB.text("#{SB.state}_sub"), x: 400, y: 320, mode: :center, color: 0xffffff, alpha: 51, scale_x: 1.5, scale_y: 1.5)
     end
   end
 end

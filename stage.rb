@@ -270,14 +270,14 @@ class Stage
                          @panel_x, 400, C::PANEL_COLOR,
                          @panel_x + 600, 400, C::PANEL_COLOR, 0
       SB.text_helper.write_line @world_name, @panel_x + 300, 220, :center
-      SB.big_text_helper.write_line @name, @panel_x + 300, 300, :center
+      SB.text_helper.write_line(text: @name, x: @panel_x + 300, y: 300, mode: :center, scale_x: 3, scale_y: 3)
     elsif @starting == 2
       panel_color = ((@alpha / 2) << 24) | (C::PANEL_COLOR & 0xffffff)
       G.window.draw_quad 200, 10, panel_color,
                          600, 10, panel_color,
                          200, 70, panel_color,
                          600, 70, panel_color, 0
-      SB.small_text_helper.write_line @world_name, 400, 12, :center, 0, @alpha
+      SB.text_helper.write_line(text: @world_name, x: 400, y: 12, mode: :center, alpha: @alpha, scale_x: 1.5, scale_y: 1.5)
       SB.text_helper.write_line @name, 400, 35, :center, 0, @alpha
     end
   end

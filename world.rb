@@ -248,8 +248,8 @@ class World
       Res.img(ITEM_ICONS[SB.player.startup_item]).draw(273, 554, 0, 2, 2, tint_color)
     end
 
-    SB.big_text_helper.write_line SB.text("world_#{@num}"), 525, 10, :center, 0, @trans_alpha
-    SB.text_helper.write_breaking "#{@num}-#{@cur+1}: #{@stages[@cur].name}", 525, 55, 390, :center, 0, @trans_alpha
+    SB.text_helper.write_line(text: SB.text("world_#{@num}"), x: 525, y: 10, mode: :center, alpha: @trans_alpha, scale_x: 3, scale_y: 3)
+    SB.text_helper.write_breaking("#{@num}-#{@cur+1}: #{@stages[@cur].name}", 525, 55, 390, :center, 0, @trans_alpha)
     SB.text_helper.write_breaking(SB.text(:ch_st_instruct).gsub('\n', "\n"), 780, 545, 600, :right, 0, @trans_alpha)
 
     if @num > 1

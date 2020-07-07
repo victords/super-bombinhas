@@ -55,7 +55,7 @@ end
 
 class SB
   class << self
-    attr_reader :font, :big_font, :small_font, :text_helper, :big_text_helper, :small_text_helper, :save_dir, :save_data, :lang, :full_screen
+    attr_reader :font, :text_helper, :save_dir, :save_data, :lang, :full_screen
     attr_accessor :state, :player, :world, :stage, :movie, :music_volume, :sound_volume
 
     def load_options(save_dir)
@@ -83,12 +83,12 @@ class SB
       @state = :presentation
 
       Res.retro_images = true
-      @font = Res.font :minecraftia, 24
-      @big_font = Res.font :minecraftia, 32
-      @small_font = Res.font :minecraftia, 12
-      @text_helper = TextHelper.new(@font, 5)
-      @big_text_helper = TextHelper.new(@big_font, 8)
-      @small_text_helper = TextHelper.new(@small_font, -4)
+      @font = ImageFont.new(:font_font, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÁÉÍÓÚÀÃÕÂÊÔÑÇáéíóúàãõâêôñç0123456789.,:;!?¡¿/\\()[]+-%'\"←→",
+                            [6, 6, 6, 6, 6, 6, 6, 6, 2, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+                             6, 6, 6, 6, 6, 4, 6, 6, 2, 4, 5, 3, 8, 6, 6, 6, 6, 5, 6, 4, 6, 6, 8, 6, 6, 6,
+                             6, 6, 2, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 2, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+                             6, 4, 6, 6, 6, 6, 6, 6, 6, 6, 2, 3, 2, 3, 2, 6, 2, 6, 5, 5, 3, 3, 3, 3, 6, 4, 6, 2, 4, 8, 8], 11, 3)
+      @text_helper = TextHelper.new(@font, 5, 2, 2)
       @langs = []
       @texts = {}
       files = Dir["#{Res.prefix}text/*.txt"]

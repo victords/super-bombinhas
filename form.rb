@@ -77,8 +77,8 @@ class MenuText < MenuElement
   end
 
   def draw
-    helper = @big ? SB.big_text_helper : SB.text_helper
-    helper.write_breaking(@text, @x, @y, @width, @mode)
+    sc = @big ? 3 : 2
+    SB.text_helper.write_breaking(@text, @x, @y, @width, @mode, 0, 255, 0, sc, sc)
   end
 end
 
@@ -104,7 +104,7 @@ class MenuButton < Button
   attr_reader :back, :text_id
 
   def initialize(y, text_id, back = false, x = 314, &action)
-    super(x, y, SB.small_font, SB.text(text_id), :ui_button1, 0, 0x808080, 0, 0, true, true, 0, 7, 0, 0, 0, nil, 2, 2, &action)
+    super(x, y, SB.font, SB.text(text_id), :ui_button1, 0, 0x808080, 0, 0, true, true, 0, 7, 0, 0, 0, nil, 2, 2, &action)
     @text_id = text_id
     @back = back
     @sound = Res.sound(back ? :btn2 : :btn1)
@@ -134,7 +134,7 @@ class MenuTextField < TextField
   include FormElement
 
   def initialize(y, x = 314)
-    super x: x, y: y, font: SB.small_font, img: :ui_textField, margin_x: 5, margin_y: 3, locale: (SB.lang == :portuguese ? 'pt-br' : 'en-us'), scale_x: 2, scale_y: 2
+    super x: x, y: y, font: SB.font, img: :ui_textField, margin_x: 5, margin_y: 3, locale: (SB.lang == :portuguese ? 'pt-br' : 'en-us'), scale_x: 2, scale_y: 2
   end
 end
 
