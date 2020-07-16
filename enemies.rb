@@ -1647,7 +1647,6 @@ class Quartin < Enemy
     RADIUS = 36
 
     attr_reader :dead
-    attr_accessor :x_c, :y_c
 
     def initialize(x, y, x_c, y_c, angle)
       super(x, y, 24, 24, :sprite_QuartinShield, Vector.new(-4, -4), 2, 2)
@@ -1656,7 +1655,9 @@ class Quartin < Enemy
       @angle = angle
     end
 
-    def update
+    def update(x_c, y_c)
+      @x_c = x_c
+      @y_c = y_c
       if @dying
         animate([1, 2, 3], 5)
         @timer += 1
@@ -1668,9 +1669,8 @@ class Quartin < Enemy
           set_animation(1)
           @dying = true
           @timer = 0
-        elsif b.collide?(self)
-          b.hit
         else
+          b.hit if b.collide?(self)
           @angle += 2
           @angle = 0 if @angle == 360
           rad = @angle * Math::PI / 180
@@ -1695,15 +1695,24 @@ class Quartin < Enemy
       QuartinShield.new(@x - 34, @y + 2, x_c, y_c, 180),
       QuartinShield.new(@x + 2, @y + 38, x_c, y_c, 270)
     ]
+    @movement = C::TILE_SIZE * args.to_i
+    @aim = Vector.new(@x - @movement, @y)
+    @facing_right = false
   end
 
   def update(section)
-    @shields.reverse_each do |s|
-      s.update
-      @shields.delete(s) if s.dead
+    super(section) do
+      move_free @aim, 2
+      if @speed.x == 0 && @speed.y == 0
+        @aim = Vector.new(@x + (@facing_right ? -@movement : @movement), @y)
+        @facing_right = !@facing_right
+      end
+      @shields.reverse_each do |s|
+        s.update(@x + @w / 2, @y + @h / 2)
+        @shields.delete(s) if s.dead
+      end
+      hit(section) if @shields.empty? && @hp > 0
     end
-    hit(section) if @shields.empty? && @hp > 0
-    super(section)
   end
 
   def hit_by_bomb(section)

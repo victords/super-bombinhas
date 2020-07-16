@@ -369,7 +369,7 @@ class StageMenu
         @selected_item.draw(746, 62, 0, 2, 2)
         Res.img("icon_#{icon}").draw(754, 70, 0, 2, 2, color)
 
-        SB.text_helper.write_line((b.cooldown.to_f / 60).ceil.to_s, 790, 84, :right, 0) unless b.can_use_ability
+        SB.text_helper.write_line((b.cooldown.to_f / 60).ceil.to_s, 790, 84, :right, 0xffffff, 255, :border) unless b.can_use_ability
       end
       ##########################
     end
