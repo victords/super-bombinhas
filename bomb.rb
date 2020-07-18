@@ -264,6 +264,8 @@ class Bomb < GameObject
     @will_explode = @exploding = @aura = @dying = @shielded = false
     @speed.x = @speed.y = @stored_forces.x = @stored_forces.y = 0
     @power = 1
+    @cooldown = 0
+    @can_use_ability = true
     if loaded; @hp = @saved_hp
     else; @saved_hp = @hp = @def_hp; end
     @active = @facing_right = true

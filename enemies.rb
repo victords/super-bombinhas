@@ -1615,7 +1615,7 @@ class Umbrex < FloorEnemy
     else
       area = Rectangle.new(@x - 64, @y - 20, 160, 160)
       if b.bounds.intersect?(area) && b.y > area.y
-        @x += 0.2 * (b.x - @x)
+        @x += 0.1 * (b.x - @x)
         if (b.x - @x).abs <= RANGE
           set_animation(3)
           @attacking = true
