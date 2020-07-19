@@ -18,6 +18,9 @@
 require 'minigl'
 
 class Bomb < GameObject
+  STOP_TIME_COOLDOWN = 1800
+  EXPLODE_COOLDOWN = 900
+
   attr_reader :type, :name, :hp, :saved_hp, :facing_right, :can_use_ability, :cooldown, :will_explode, :shielded
   attr_accessor :active, :power, :slipping
 
@@ -45,7 +48,6 @@ class Bomb < GameObject
     @type = type
     @power = 1
 
-    @explosion = Sprite.new(0, 0, :fx_Explosion, 2, 2)
     @explosion_timer = 0
     @explosion_counter = 10
 
@@ -140,9 +142,9 @@ class Bomb < GameObject
       if @can_use_ability
         if SB.key_pressed? :ability
           if @type == :verde
-            explode(false); @can_use_ability = false; @cooldown = C::EXPLODE_COOLDOWN
+            explode(false); @can_use_ability = false; @cooldown = EXPLODE_COOLDOWN
           elsif @type == :branca
-            SB.stage.stop_time; @can_use_ability = false; @cooldown = C::STOP_TIME_COOLDOWN
+            SB.stage.stop_time; @can_use_ability = false; @cooldown = STOP_TIME_COOLDOWN
           end
         end
       else
@@ -185,15 +187,14 @@ class Bomb < GameObject
                         else
                           90
                         end
-    @explosion.x = @x + @w / 2 - @explosion_radius
-    @explosion.y = @y + @h / 2 - @explosion_radius
+    @explosion = GameObject.new(@x + @w / 2 - @explosion_radius, @y + @h / 2 - @explosion_radius, @explosion_radius * 2, @explosion_radius * 2, :fx_Explosion, Vector.new(0, 0), 2, 2)
     set_animation 6
     SB.play_sound(Res.sound(:explode))
   end
 
   def explode?(obj)
     return false unless @exploding
-    c_x = @x + @w / 2; c_y = @y + @h / 2
+    c_x = @explosion.x + @explosion.w / 2; c_y = @explosion.y + @explosion.h / 2
     o_c_x = obj.x + obj.w / 2; o_c_y = obj.y + obj.h / 2
     sq_dist = (o_c_x - c_x)**2 + (o_c_y - c_y)**2
     sq_dist <= (obj.is_a?(Chamal) ? @explosion_radius * 1.25 : @explosion_radius)**2

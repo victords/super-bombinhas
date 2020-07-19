@@ -1593,7 +1593,7 @@ class Umbrex < FloorEnemy
   RANGE = 10
 
   def initialize(x, y, args, section)
-    super(x, y - 108, args, 32, 140, Vector.new(-64, -20), 4, 2, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1], 7, 300, 3)
+    super(x, y - 118, args, 32, 150, Vector.new(-64, -10), 4, 2, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1], 7, 300, 3)
     @hop_timer = 0
   end
 
@@ -1612,21 +1612,25 @@ class Umbrex < FloorEnemy
       if @timer >= 10 && @timer < 60
         b.hit if b.collide?(self)
       end
+    elsif @dying
+      super(section)
     else
-      area = Rectangle.new(@x - 64, @y - 20, 160, 160)
-      if b.bounds.intersect?(area) && b.y > area.y
-        @x += 0.1 * (b.x - @x)
-        if (b.x - @x).abs <= RANGE
-          set_animation(3)
-          @attacking = true
-          @timer = 0
+      area = Rectangle.new(@x + @img_gap.x, @y + @img_gap.y, 160, 160)
+      if b.bounds.intersect?(area)
+        if b.y > area.y && b.x >= @active_bounds.x - @img_gap.x && b.x + b.w <= @active_bounds.x + @active_bounds.w + @img_gap.x
+          @x += 0.1 * (b.x - @x)
+          if (b.x - @x).abs <= RANGE
+            set_animation(3)
+            @attacking = true
+            @timer = 0
+          end
         end
       else
         super(section)
       end
     end
 
-    if @attacking
+    if @attacking || @dying
       @hop_timer = 0
     else
       @hop_timer += 1
