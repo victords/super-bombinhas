@@ -1,91 +1,91 @@
-presents		Presenta...
-play			Jugar
-help			Ayuda
-options			Opciones
-credits			Créditos
-exit			Salir
-choose_game		Elige un juego para cargar o 'Nuevo Juego'
-new_game		Nuevo Juego
-what_name		¿Cómo te llamas?
-back			Volver
-continue		Continuar
-delete			Borrar
-delete_confirm	¿Estás seguro que deseas borrar este juego?
-yes				Sí
-no				No
-help_text		Este es un juego de plataformas. Utilice las teclas de flecha derecha e izquierda para moverse, barra espaciadora para saltar, X para ítenes, Z o V para cambiar el ítem, C para habilidades, Shift para cambiar personajes, flecha hacia arriba para abrir puertas, Esc para pausar.\nEl juego también ofrece soporte para joystick (conecta antes de iniciar el juego), pero el mapeo de botones puede variar. Para un gamepad XBOX 360, utilice el mando analógico o los direccionales como las flechas, A para saltar o confirmar, B para ítenes o cancelar, X para habilidades, Y para cambiar personajes, LB y RB para cambiar ítenes, Start para pausar.\nUtilice F4 para alternar entre pantalla completa y ventana.
-save			Guardar
-cancel			Cancelar
-language		Lenguaje
-lang_name		Español
-sound_volume	Volumen de los sonidos
-music_volume	Volumen de la música
-controls		Controles
-controls_0		Flechas, Espacio, Shift, A, S
-controls_1		WASD, JKLI
-full_screen		Pulsa F4 para alternar entre ventana y pantalla completa
-credits_text	- Design, Programación y Gráficos -\nVictor David Santos\n\n- Música -\nZergananda (soundcloud.com/zergananda)\nFrancesco Corrado (soundcloud.com/franzcorradomusic)\n\n- Agradecimientos Especiales -\n...\n...
-ch_st_instruct	Pulsa 'Enter' para empezar.\nPulsa 'Esc' o 'Backspace' para volver.
-stage			Etapa
-loading			Cargando
-lives			Vidas
-score			Puntos
-resume			Reanudar
-change_bomb		Cambiar Bomba
-save_exit		Guardar y Salir
-stage_complete	¡Etapa Completa!
-total			Total
-spec_taken		¿Se encontró el Spec?
-stars			Estrellas
-all_stars_found	¡Has obtenido un ítem!
-dead			¡Moriste!
-restart			Pulsa 'Enter' para reanudar
-game_over		¡Fin del juego!
-too_bad			¡Qué pena!
-can_play		Ahora puedes jugar con:
-msg1			Ni todas las llaves se ajustan a todas las puertas...
-msg2			Esto es solo un adelanto de lo que te espera en el próximo mundo... ¡Esté atento para la próxima versión de Super Bombinhas!
-msg_monep		¡Hey! ¡Espera un minuto! Si quieres ir adelante debe traerme una Hierba del Bosque. Sí, una deliciosa Hierba del Bosque... ¡Ahora va y solo vuelve aquí cuando la tuvieres!
-msg_mnt_bomb	Hi, I was taking a walk in the mountains and I lost my precious Jillis Stone. It's a big, shiny, green gem... Do you think you could find it for me?
-msg_mnt_bomb2	Thanks a lot, mate! Well... I don't have much to offer in return, but you can use this float machine if you want. It will help you reach the highest parts of the mountain./It's a wonderful view from there!
-chamal_speech	Entonces... veniste. Bien, temo que esto es el final de su viaje inútil. ¡WHEELIAMS, ATRAPARLO!
-chamal_death	¡Noooooo...! ¡¿Como pude perder a alguién tan débil...?! No... No es posib...
-sahiss_speech	Sssssss Ssssssssssss Sssss?! SSSSSS!! (Quien es tu que invades mi sagrada fortaleza forestal?! PREPARATE PARA MORIR!!)
-sahiss_death	Sssssssssssssssssssss...!! (Noooooooooooooooo...!!)
-ulor_speech		¿Qué creen que están haciendo aquí, pequeñas bombas? ¡Este es el final para ustedes!
-ulor_death		Gaaaaaah! No puedo creer... ¡Derrotado por estas insignificantes criaturas...!
-count_down		¡Cuenta regresiva para explodir!
-world_1			Isla de Tars
-stage_1_1		Explorando la Playa de Tars
-stage_1_2		Arena y Colinas Verdes
-stage_1_3		Un caos de 'mecanimales'
-stage_1_4		¡Por Fin! La Fortaleza de Chamal
-stage_1_5		Chamal: ¡la derrota!
-world_2			Bosque de los sabios
-stage_2_1		El bosque de frontera
-stage_2_2		Encima del árbol más alto
-stage_2_3		El enigma de los tres árboles
-stage_2_4		Entrando en la fortaleza forestal
-stage_2_5		En las profundezas de la fortaleza forestal
-world_3			Montañas Lluviosas
-stage_3_1		En la base de las montañas
-stage_3_2		Colinas desconcertantes
-stage_3_3		Conoce a la tribu de la montaña
-stage_3_4		Las cavernas de hielo
-stage_3_5		El escondite de Ulor
-world_4			Pueblo de Inkut
-stage_4_1		???
-bonus			Bónus
-bonus_1			Alcanza el final
-bonus_2			Mata todos los enemigos
-bonus_3			Recoge todas las Rocas de Fuego
-movie_0_1		En una tierra lejana, hay una bella aldea, habitada por... bombas.
-movie_0_2		Esta aldea solía ser un lugar tranquilo, donde el pueblo amaba su rey y tenía una vida próspera.
-movie_0_3		Pero la envidia de Gaxlon, uno de los consejeros del rey, acaba de trastornar esta tranquilidad...
-movie_0_4		Gaxlon quería gobernar el reino solo, pero como no estaba preparado para esta tarea, aprisionó Aldan, para que pudiera extraer, a la fuerza, consejo acerca de como gobernar.
-movie_0_5		Gaxlon:\n"Ahora, Aldan, sé un buen ex-rey y enseñame a hacer tu trabajo, para que el pueblo quiera a mí en vez de tú, ¡jajajaja!"
-movie_0_6		Aldan:\n"¡Hah! ¡Como si lo que realmente quiere es ser amado por el pueblo! Eso es tan triste... Yo confié en usted, Gaxlon, y ahora, ¿en que hay se transformado por poder?"
-game_end		¡Fin!
-game_end_sub	Pero... ¿has recogido todos los Specs?
-game_end_2		¡Fin!
-game_end_2_sub	Ahora sí, es verdad.
+presents				Presenta...
+play					Jugar
+help					Ayuda
+options					Opciones
+credits					Créditos
+exit					Salir
+choose_game				Elige una partida para cargar o 'Nuevo Juego'
+new_game				Nuevo Juego
+what_name				¿Cómo te llamas?
+back					Volver
+continue				Continuar
+delete					Borrar
+delete_confirm			¿Estás seguro que deseas borrar esta partida?
+yes					    Sí
+no					    No
+help_text				Este es un juego de plataformas. Utilice las teclas de flecha derecha e izquierda para moverse, la barra espaciadora para saltar, X para accionar ítem, Z o V para cambiar de ítem, C para habilidades, Shift para cambiar de personaje, flecha hacia arriba para abrir puertas, Esc para pausar.\nEl juego también ofrece soporte para joystick (conéctalo antes de iniciar el juego), pero el mapeo de botones puede variar. Para un control de XBOX 360, utilice el mando analógico o el pad direccional como las teclas de flechas, A para saltar o confirmar, B para accionar ítem o cancelar, X para habilidades, Y para cambiar de personaje, LB y RB para cambiar de ítem, Start para pausar.\nUtilice F4 para alternar entre pantalla completa y ventana.
+save					Guardar
+cancel					Cancelar
+language				Idioma
+lang_name				Español
+sound_volume			Volumen de los sonidos
+music_volume			Volumen de la música
+controls				Controles
+controls_0				Flechas, Espacio, Shift, A, S
+controls_1				WASD, JKLI
+full_screen				Pulsa F4 para alternar entre ventana y pantalla completa
+credits_text			- Diseño, Programación y Gráficos -\nVictor David Santos\n\n- Música -\nZergananda (soundcloud.com/zergananda)\nFrancesco Corrado (soundcloud.com/franzcorradomusic)\n\n- Agradecimientos Especiales -\n...\n...
+ch_st_instruct			Pulsa 'Enter' para empezar.\nPulsa 'Esc' o 'Backspace' para volver.
+stage					Etapa
+loading					Cargando
+lives					Vidas
+score					Puntos
+resume					Reanudar
+change_bomb				Cambiar Bomba
+save_exit				Guardar y Salir
+stage_complete			¡Etapa Completa!
+total					Total
+spec_taken				¿El Spec ha sido encontrado?
+stars					Estrellas
+all_stars_found         ¡Has obtenido un ítem!
+dead					¡Has Muerto!
+restart					Pulsa 'Enter' para reanudar
+game_over				¡Fin del juego!
+too_bad					¡Qué pena!
+can_play				Ahora puedes jugar con:
+msg1					No todas las llaves caben en todas las puertas...
+msg2					Esto es solo un adelanto de lo que te espera en el próximo mundo... ¡Está atento a la próxima versión de Super Bombinhas!
+msg_monep				¡Oye! ¡Espera un minuto! Si quieres seguir adelante, debes traerme una Hierba del Bosque. Sí, una deliciosa Hierba del Bosque... ¡Ahora ve!¡Y solo vuelve aquí cuando la tengas!
+msg_mnt_bomb			Hola, anduve de caminata por las montañas, y he perdido mi piedra preciosa Jillis. Es una grande y brillante gema verde... ¿Crees que la podrías encontrar por mí?
+msg_mnt_bomb2			¡Muchas gracias, compañero! Bueno... No tengo mucho para ofrecerte a cambio, pero puedes usar esta máquina flotante si quieres. Te va a ayudar a llegar a las partes más altas de la montaña./¡La vista es maravillosa desde allí!
+chamal_speech			Entonces... has venido. Bien, temo que este es el final de tu inútil viaje, pequeña bombita. ¡WHEELIAMS, ATRÁPALO!
+chamal_death			¡Noooooo...! ¡¿Cómo he podido perder contra alguien tan débil...?! No... No es posib...
+sahiss_speech			Sssssss Ssssssssssss Sssss?! ¡¡SSSSSS!! (¿Quién eres tú que invades mi sagrada fortaleza forestal? ¡¡PREPARATE PARA MORIR!!)
+sahiss_death			¡¡Sssssssssssssssssssss...!! (¡¡Noooooooooooooooo...!!)
+ulor_speech				¿Qué creen que están haciendo aquí, pequeñas bombitas? ¡Este es el final para ustedes!
+ulor_death				¡Gaaaaaah! No lo puedo creer... ¡Derrotado por estas insignificantes criaturas...!
+count_down				¡Cuenta regresiva para la explosión!
+world_1					Isla de Tars
+stage_1_1				Explorando la Playa de Tars
+stage_1_2				Arena y Colinas Verdes
+stage_1_3				Un caos de 'mecanimales'
+stage_1_4				¡Por Fin! La Fortaleza de Chamal
+stage_1_5				Chamal: ¡la derrota!
+world_2					Bosque de los Sabios
+stage_2_1				El Bosque Fronterizo
+stage_2_2				Encima del árbol más alto
+stage_2_3				El enigma de los tres árboles
+stage_2_4				Entrando en la fortaleza forestal
+stage_2_5				En las profundidades de la fortaleza forestal
+world_3					Montañas Lluviosas
+stage_3_1				En la base de las montañas
+stage_3_2				Colinas desconcertantes
+stage_3_3				Conoce a la tribu de la montaña
+stage_3_4				Las cavernas de hielo
+stage_3_5				El escondite de Ulor
+world_4					Pueblo de Inkut
+stage_4_1				???
+bonus					Bonus
+bonus_1					Alcanza la meta
+bonus_2					Mata todos los enemigos
+bonus_3					Recoge todas las Rocas de Fuego
+movie_0_1				En una tierra lejana, hay una bella aldea, habitada por... bombas vivientes.
+movie_0_2				Esta aldea solía ser un lugar tranquilo, donde el pueblo amaba a su rey, y tenía una vida próspera.
+movie_0_3				Pero la envidia de Gaxlon, uno de los consejeros del rey, acaba de trastornar esta tranquilidad...
+movie_0_4				Gaxlon quería regir el reino por sí solo, pero como no estaba preparado para esta tarea, aprisionó a Aldan, el rey, para así poder extraerle por la fuerza consejos sobre cómo gobernar.
+movie_0_5				Gaxlon:\n"Ahora, Aldan, sé un buen ex-rey y enséñame a hacer tu trabajo, así el pueblo me ama a mí en vez que a ti, ¡jajajaja!"
+movie_0_6				Aldan:\n"¡Já! ¡Cómo si lo que realmente deseas es ser amado por el pueblo! Esto es tan triste... Yo confié en ti, Gaxlon, y ahora, ¿en qué te has transformado solo por poder?"
+game_end				¡Fin!
+game_end_sub			Pero... ¿has recogido todos los Specs?
+game_end_2				¡Fin!
+game_end_2_sub			Ahora sí, de verdad.
