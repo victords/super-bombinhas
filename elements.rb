@@ -1886,8 +1886,9 @@ class FallingWall < GameObject
   RADIUS = C::TILE_SIZE * Math.sqrt(2) / 2
 
   def initialize(x, y, args, section)
-    super(x, y + C::TILE_SIZE, 0, 0, :sprite_fallingWall, Vector.new(0, 0), 4, 2)
-    size = args.to_i
+    a = (args || '').split(',')
+    super(x, y + C::TILE_SIZE, 0, 0, "sprite_fallingWall#{a[0] || 1}", Vector.new(0, 0), 4, 2)
+    size = (a[1] || 4).to_i
     @active_bounds = Rectangle.new(x, y - (size - 1) * C::TILE_SIZE, C::TILE_SIZE, size * C::TILE_SIZE)
     @blocks = []
     (0...size).each do |i|
