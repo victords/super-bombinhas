@@ -1349,11 +1349,17 @@ end
 
 class Lift < SBGameObject
   def initialize(x, y, args, section)
-    super x, section.size.y, 64, 1, :sprite_Elevator2, Vector.new(0, 0), 4, 1
-    @start = Vector.new(x, @y)
     args = args.split(',')
-    @max_force = -(args[0].to_f)
+    case args[0]
+    when '5' then w = 64; cols = 1; rows = 1
+    end
+    super x, section.size.y, w, 1, "sprite_Elevator#{args[0]}", Vector.new(0, 0), cols, rows
+    @start = Vector.new(x, @y)
     @x_force = args[1].to_f
+    @y_force = -(args[2].to_f)
+    @gravity_scale = (args[3] || 0.5).to_f
+    @wait_time = (args[4] || 60).to_i
+    @timer = @wait_time - 1
     @passable = true
     @active_bounds = Rectangle.new(x, @y - 5 * C::TILE_SIZE, 64, 5 * C::TILE_SIZE)
     section.obstacles << self
@@ -1364,25 +1370,34 @@ class Lift < SBGameObject
     prev_max_speed = b.max_speed.x
     b.max_speed.x = @max_speed.x
     if @launched
+      prev_g = G.gravity.y
+      G.gravity.y *= @gravity_scale
       move_carrying(Vector.new(0, @force), nil, section.passengers, section.get_obstacles(b.x, b.y), section.ramps)
+      G.gravity.y = prev_g
       @force += 1 if @force < 0
       @force = 0 if @force > 0
       if @y > section.size.y + C::TILE_SIZE
         @x = @start.x; @y = @start.y
-        @speed.x = @speed.y = 0
+        @speed.x = @speed.y = @timer = 0
         @launched = false
       end
     else
-      move_carrying(Vector.new(@x_force, @max_force), nil, section.passengers, section.get_obstacles(b.x, b.y), section.ramps)
-      @launched = true
-      @force = @max_force * 0.25
+      @timer += 1
+      if @timer == @wait_time
+        prev_g = G.gravity.y
+        G.gravity.y *= @gravity_scale
+        move_carrying(Vector.new(@x_force, @y_force), nil, section.passengers, section.get_obstacles(b.x, b.y), section.ramps)
+        G.gravity.y = prev_g
+        @force = @y_force * 0.25
+        @launched = true
+      end
     end
     b.max_speed.x = prev_max_speed
 
-    # atualizando active_bounds
+    # updating active_bounds
     t = (@y + @img_gap.y).floor
-    r = (@x + @img_gap.x + @img[0].width).ceil
-    b = (@y + @img_gap.y + @img[0].height).ceil
+    r = (@x + @img_gap.x + @img[0].width * 2).ceil
+    b = (@y + @img_gap.y + @img[0].height * 2).ceil
     l = (@x + @img_gap.x).floor
     if t < @active_bounds.y
       @active_bounds.h += @active_bounds.y - t
@@ -1892,7 +1907,7 @@ class FallingWall < GameObject
     @active_bounds = Rectangle.new(x, y - (size - 1) * C::TILE_SIZE, C::TILE_SIZE, size * C::TILE_SIZE)
     @blocks = []
     (0...size).each do |i|
-      b = MBlock.new(x, y - i * C::TILE_SIZE, C::TILE_SIZE, C::TILE_SIZE)
+      b = MBlock.new(x, y - i * C::TILE_SIZE, C::TILE_SIZE, C::TILE_SIZE, true)
       section.obstacles << b; @blocks << b
     end
     @angle = Math::PI / 2
@@ -1920,11 +1935,13 @@ class FallingWall < GameObject
       @blocks.each_with_index do |b, i|
         b.x = @x + c_a * i * C::TILE_SIZE + c_c * RADIUS - C::TILE_SIZE / 2
         b.y = @y - s_a * i * C::TILE_SIZE - s_c * RADIUS - C::TILE_SIZE / 2
-        p.hit if p.collide?(b)
+        p.hit if p.collide?(b) && p.y > b.y
       end
-      @crashing = true if @angle == Math::PI
+      if @angle == Math::PI
+        @blocks.each { |b| section.obstacles.delete(b) }
+        @crashing = true
+      end
     elsif p.y > @y - @blocks.length * C::TILE_SIZE && p.y + p.h <= @y && p.x > @x - @blocks.length * C::TILE_SIZE && p.x < @x
-      @blocks.each { |b| section.obstacles.delete(b) }
       @falling = true
     end
   end
@@ -1935,6 +1952,10 @@ class FallingWall < GameObject
     y_off = C::TILE_SIZE / 2 - map.cam.y
     @blocks.each_with_index do |b, i|
       @img[i == @blocks.size - 1 ? @img_index : @img_index + 4].draw_rot(b.x + x_off, b.y + y_off, 0, img_angle, 0.5, 0.5, 2, 2)
+      # G.window.draw_quad(b.x - map.cam.x, b.y - map.cam.y, 0xff000000,
+      #                    b.x + b.w - map.cam.x, b.y - map.cam.y, 0xff000000,
+      #                    b.x - map.cam.x, b.y + b.h - map.cam.y, 0xff000000,
+      #                    b.x + b.w - map.cam.x, b.y + b.h - map.cam.y, 0xff000000, 0)
     end
   end
 end
