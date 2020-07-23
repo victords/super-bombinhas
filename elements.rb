@@ -1357,7 +1357,7 @@ class Lift < SBGameObject
     @start = Vector.new(x, @y)
     @x_force = args[1].to_f
     @y_force = -(args[2].to_f)
-    @gravity_scale = (args[3] || 0.5).to_f
+    @gravity_scale = (args[3] || 0.3).to_f
     @wait_time = (args[4] || 60).to_i
     @timer = @wait_time - 1
     @passable = true

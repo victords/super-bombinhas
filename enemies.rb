@@ -1699,17 +1699,18 @@ class Quartin < Enemy
       QuartinShield.new(@x - 34, @y + 2, x_c, y_c, 180),
       QuartinShield.new(@x + 2, @y + 38, x_c, y_c, 270)
     ]
-    @movement = C::TILE_SIZE * args.to_i
-    @aim = Vector.new(@x - @movement, @y)
-    @facing_right = false
+    args = args.split(',')
+    @movement = C::TILE_SIZE * args[0].to_i
+    @facing_right = args[1].nil?
+    @aim = Vector.new(@facing_right ? @x + @movement : @x - @movement, @y)
   end
 
   def update(section)
     super(section) do
       move_free @aim, 2
       if @speed.x == 0 && @speed.y == 0
-        @aim = Vector.new(@x + (@facing_right ? -@movement : @movement), @y)
         @facing_right = !@facing_right
+        @aim = Vector.new(@facing_right ? @x + @movement : @x - @movement, @y)
       end
       @shields.reverse_each do |s|
         s.update(@x + @w / 2, @y + @h / 2)
