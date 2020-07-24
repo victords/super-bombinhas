@@ -141,6 +141,7 @@ class Section
     Water,
     Wheeliam,
     WindMachine,
+    Xylophob,
     Yaw,
     Zep
   ]

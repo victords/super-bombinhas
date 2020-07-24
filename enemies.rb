@@ -1576,7 +1576,10 @@ class Ulor < FloorEnemy
     SB.player.bomb.bounce(can_hit)
     if can_hit
       hit(section, 1)
-      @speed_m = 4 if @hp < 3
+      if @hp < 3
+        @speed_m = 4
+        @speed.x = (@speed.x <=> 0) * 4
+      end
       @state = :walking
     end
   end
@@ -1593,7 +1596,7 @@ class Umbrex < FloorEnemy
   RANGE = 10
 
   def initialize(x, y, args, section)
-    super(x, y - 118, args, 32, 150, Vector.new(-64, -10), 4, 2, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1], 7, 300, 3)
+    super(x, y - 118, args, 32, 150, Vector.new(-64, -10), 4, 2, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1], 7, 350, 3)
     @hop_timer = 0
   end
 
@@ -1690,7 +1693,7 @@ class Quartin < Enemy
   end
 
   def initialize(x, y, args, section)
-    super(x + 2, y + 2, 28, 28, Vector.new(-4, -4), 2, 2, [0, 1, 2, 1], 10, 300)
+    super(x + 2, y + 2, 28, 28, Vector.new(-4, -4), 2, 2, [0, 1, 2, 1], 10, 400)
     x_c = @x + @w / 2
     y_c = @y + @h / 2
     @shields = [
@@ -1731,5 +1734,26 @@ class Quartin < Enemy
     @shields.each do |s|
       s.draw(map)
     end
+  end
+end
+
+class Xylophob < FloorEnemy
+  def initialize(x, y, args, section)
+    super x - 8, y - 22, args, 48, 54, Vector.new(-8, -10), 2, 2, [0, 1, 2, 1], 7, 350, 2, 3
+  end
+
+  def get_invulnerable
+    super
+    @indices = [3]
+    set_animation 3
+  end
+
+  def return_vulnerable
+    super
+    @timer = 0
+    @indices = [0, 1, 2, 1]
+    set_animation 0
+    @speed_m += 1
+    @speed.x += @speed.x <=> 0
   end
 end
