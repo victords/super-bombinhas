@@ -327,6 +327,7 @@ class Elevator < SBGameObject
     when 2 then w = 64; cols = 4; rows = 1; x_g = y_g = 0
     when 3 then w = 64; cols = rows = nil; x_g = 0; y_g = -3
     when 4 then w = 96; cols = rows = nil; x_g = 0; y_g = -3
+    when 5 then w = 64; cols = rows = nil; x_g = y_g = 0
     end
     super x, y, w, 1, "sprite_Elevator#{type}", Vector.new(x_g, y_g), cols, rows
     @passable = true
@@ -1347,11 +1348,12 @@ class WallButton < SBGameObject
   end
 end
 
+
 class Lift < SBGameObject
   def initialize(x, y, args, section)
     args = args.split(',')
     case args[0]
-    when '5' then w = 64; cols = 1; rows = 1
+    when '5' then w = 64; cols = rows = nil
     end
     super x, section.size.y, w, 1, "sprite_Elevator#{args[0]}", Vector.new(0, 0), cols, rows
     @start = Vector.new(x, @y)
@@ -1895,7 +1897,7 @@ class FallingWall < GameObject
     @active_bounds = Rectangle.new(x, y - (size - 1) * C::TILE_SIZE, C::TILE_SIZE, size * C::TILE_SIZE)
     @blocks = []
     (0...size).each do |i|
-      b = MBlock.new(x, y - i * C::TILE_SIZE, C::TILE_SIZE, C::TILE_SIZE, true)
+      b = MBlock.new(x, y - i * C::TILE_SIZE, C::TILE_SIZE, C::TILE_SIZE)
       section.obstacles << b; @blocks << b
     end
     @angle = Math::PI / 2
