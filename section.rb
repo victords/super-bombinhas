@@ -59,6 +59,7 @@ class Section
     Attack3,
     Ball,
     BallReceptor,
+    Bardin,
     Bell,
     BoardItem,
     Bombie,

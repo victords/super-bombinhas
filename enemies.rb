@@ -1757,3 +1757,9 @@ class Xylophob < FloorEnemy
     @speed.x += @speed.x <=> 0
   end
 end
+
+class Bardin < FloorEnemy
+  def initialize(x, y, args, section)
+    super x + 2, y - 28, args, 28, 60, Vector.new(-12, -4), 4, 2, [0, 1, 2, 1], 7, 350, 2, 2
+  end
+end
