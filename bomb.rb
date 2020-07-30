@@ -50,6 +50,7 @@ class Bomb < GameObject
 
     @explosion_timer = 0
     @explosion_counter = 10
+    @paralyze_timer = 0
 
     @shield_fx = Sprite.new(0, 0, :fx_shield, 2, 1)
     @aura_fx = Sprite.new(0, 0, :fx_aura, 2, 1)
@@ -67,6 +68,8 @@ class Bomb < GameObject
       @explosion_timer += 1
       @exploding = false if @explosion_timer == 90
       forces.x -= 0.3 * @speed.x if @bottom and @speed.x != 0
+    elsif @paralyze_timer > 0
+      @paralyze_timer -= 1
     elsif @active
       if @invulnerable
         @invulnerable_timer += 1
@@ -154,7 +157,12 @@ class Bomb < GameObject
         end
       end
 
-      hit if section.projectile_hit?(self)
+      proj_type = section.projectile_hit?(self)
+      if proj_type == 8
+        @paralyze_timer = 120
+      elsif proj_type
+        hit
+      end
     end
 
     friction_factor = @slipping ? @speed.x**2 / @max_speed_x_sq : @speed.x.abs / @max_speed_x
@@ -291,7 +299,7 @@ class Bomb < GameObject
   end
 
   def draw(map)
-    super(map, 2, 2, 255, 0xffffff, nil, @facing_right ? nil : :horiz) unless @invulnerable && @invulnerable_timer % 6 < 3
+    super(map, 2, 2, 255, @paralyze_timer > 0 ? 0xff6666 : 0xffffff, nil, @facing_right ? nil : :horiz) unless @invulnerable && @invulnerable_timer % 6 < 3
     if @shielded
       @shield_fx.x = @x + @img_gap.x + @img[0].width * 2 - 6
       @shield_fx.y = @y + @img_gap.y - 8

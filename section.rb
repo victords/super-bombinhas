@@ -457,7 +457,7 @@ class Section
       if e.is_a? Projectile
         if e.owner != obj && e.bounds.intersect?(obj.bounds)
           @elements.delete e
-          return true
+          return e.type
         end
       end
     end

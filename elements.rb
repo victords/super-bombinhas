@@ -757,7 +757,7 @@ class HideTile
 end
 
 class Projectile < GameObject
-  attr_reader :owner
+  attr_reader :owner, :type
 
   def initialize(x, y, type, angle, owner)
     case type
@@ -768,10 +768,12 @@ class Projectile < GameObject
     when 5 then w = 20; h = 20; x_g = -16; y_g = -4; cols = 1; rows = 2; indices = [0, 1]; @speed_m = 5
     when 6 then w = 10; h = 10; x_g = -2; y_g = 0; cols = 2; rows = 2; indices = [0, 1, 2, 3]; @speed_m = 4
     when 7 then w = 16; h = 16; x_g = -2; y_g = -2; cols = 1; rows = 1; indices = [0]; @speed_m = 5
+    when 8 then w = 48; h = 40; x_g = -6; y_g = -4; cols = 1; rows = 3; indices = [0, 1, 2, 1]; @speed_m = 3.5
     end
 
     super x, y, w, h, "sprite_Projectile#{type}", Vector.new(x_g, y_g), cols, rows
     @active_bounds = Rectangle.new @x - 30, @y - 30, @w + 60, @h + 60
+    @type = type
     @angle = angle
     @owner = owner
     @indices = indices

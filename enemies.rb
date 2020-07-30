@@ -1762,4 +1762,25 @@ class Bardin < FloorEnemy
   def initialize(x, y, args, section)
     super x + 2, y - 28, args, 28, 60, Vector.new(-12, -4), 4, 2, [0, 1, 2, 1], 7, 350, 2, 2
   end
+
+  def update(section)
+    super(section) do
+      @timer += 1
+      if @timer == 35
+        section.add(Projectile.new(@facing_right ? @x + @w - 4 : @x - 4, @y + 10, 8, @facing_right ? 0 : 180, self))
+        @indices = [0, 1, 2, 1]
+        @interval = 7
+        set_animation(@indices[0])
+        set_direction
+      end
+    end
+  end
+
+  def prepare_turn(dir)
+    @timer = 0
+    @indices = [3, 4, 5, 6, 5, 4, 3]
+    @interval = 5
+    set_animation @indices[0]
+    super(dir)
+  end
 end
