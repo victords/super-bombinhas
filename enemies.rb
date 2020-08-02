@@ -1760,7 +1760,7 @@ end
 
 class Bardin < FloorEnemy
   def initialize(x, y, args, section)
-    super x + 2, y - 28, args, 28, 60, Vector.new(-12, -4), 4, 2, [0, 1, 2, 1], 7, 350, 2, 2
+    super x + 2, y - 28, args, 28, 60, Vector.new(-12, -4), 4, 2, [0, 1, 2, 1], 7, 250, 2, 2
   end
 
   def update(section)
@@ -1782,5 +1782,30 @@ class Bardin < FloorEnemy
     @interval = 5
     set_animation @indices[0]
     super(dir)
+  end
+end
+
+class Dynamike < FloorEnemy
+  def initialize(x, y, args, section)
+    super x + 2, y - 28, args, 28, 60, Vector.new(-6, -4), 2, 2, [0, 1, 2, 1], 7, 250, 2.5
+  end
+
+  def explode(section)
+    section.add_effect(Explosion.new(@x + @w / 2, @y + @h / 2, 90, self))
+  end
+
+  def hit_by_bomb(section)
+    explode(section)
+    super(section)
+  end
+
+  def hit_by_projectile(section)
+    explode(section)
+    super(section)
+  end
+
+  def hit_by_explosion(section)
+    explode(section)
+    super(section)
   end
 end

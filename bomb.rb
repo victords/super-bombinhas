@@ -156,14 +156,16 @@ class Bomb < GameObject
           @can_use_ability = true
         end
       end
-
-      proj_type = section.projectile_hit?(self)
-      if proj_type == 8
-        @paralyze_timer = 120
-      elsif proj_type
-        hit
-      end
     end
+
+    proj_type = section.projectile_hit?(self)
+    if proj_type == 8
+      @paralyze_timer = 120
+    elsif proj_type
+      hit
+    end
+
+    hit if section.explode?(self)
 
     friction_factor = @slipping ? @speed.x**2 / @max_speed_x_sq : @speed.x.abs / @max_speed_x
     friction_factor = 1 if friction_factor > 1

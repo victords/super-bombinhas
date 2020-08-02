@@ -73,6 +73,7 @@ class Section
     Crack,
     Crusher,
     Door,
+    Dynamike,
     Ekips,
     Electong,
     Elevator,
@@ -467,7 +468,7 @@ class Section
   def explode?(obj)
     o_c_x = obj.x + obj.w / 2; o_c_y = obj.y + obj.h / 2
     @effects.each do |e|
-      if e.is_a? Explosion
+      if e.is_a?(Explosion) && e.owner != obj
         sq_dist = (o_c_x - e.c_x)**2 + (o_c_y - e.c_y)**2
         return true if sq_dist <= e.radius**2
       end

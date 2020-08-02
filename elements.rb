@@ -1510,7 +1510,7 @@ class HeatBomb < SBGameObject
       if @timer == 120
         @state = 2
         @timer = 0
-        section.add_effect(Explosion.new(@x + @w / 2, @y + @h / 2, 48))
+        section.add_effect(Explosion.new(@x + @w / 2, @y + @h / 2, 48, self))
         set_animation 4
       end
     else
@@ -1978,18 +1978,20 @@ class Bell < SBGameObject
 end
 
 class Explosion < Effect
-  attr_reader :c_x, :c_y, :radius
+  attr_reader :c_x, :c_y, :radius, :owner
 
-  def initialize(x, y, radius)
+  def initialize(x, y, radius, owner)
     super x - radius - 10, y - radius - 10, :fx_Explosion, 2, 2, 5, [0, 1, 2, 3], 60
     size = 2 * radius + 20
     @active_bounds = Rectangle.new(@x, @y, size, size)
-    @scale = size / 180.0
+    @scale = size / 90.0
+    @c_x = x
+    @c_y = y
     @radius = radius
-    @c_x = x; @c_y = y
+    @owner = owner
   end
 
-  def draw(map)
+  def draw(map, scale_x, scale_y)
     super map, @scale, @scale
   end
 end
