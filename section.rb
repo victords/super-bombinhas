@@ -148,8 +148,8 @@ class Section
     Zep
   ]
 
-  attr_reader :reload, :tiles, :obstacles, :ramps, :passengers, :size, :default_entrance, :tileset_num, :map
-  attr_accessor :entrance, :warp, :loaded, :active_object
+  attr_reader :reload, :tiles, :obstacles, :ramps, :passengers, :size, :default_entrance, :warp, :tileset_num, :map
+  attr_accessor :entrance, :loaded, :active_object
 
   def initialize(file, entrances, switches, taken_switches, used_switches)
     parts = File.read(file).chomp.split('#', -1)
@@ -343,12 +343,18 @@ class Section
   def do_warp(x, y)
     bomb = SB.player.bomb
     bomb.do_warp x, y
+    bomb.active = true
     @camera_timer = 0
     @camera_moving = false
     @camera_ref_pos = Vector.new(bomb.x + bomb.w / 2, bomb.y + bomb.h / 2)
     update_camera
     update_passengers
     @warp = nil
+  end
+
+  def start_warp(entrance)
+    @warp = entrance
+    SB.player.bomb.active = false
   end
 
   def update_camera

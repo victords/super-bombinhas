@@ -41,6 +41,7 @@ class Stage
       @reward = reward
     end
 
+    @warp_timer = 0
     @star_count = 0
     @switches = []
     taken_switches = loaded ? SB.save_data[9].split(',').map(&:to_i) : []
@@ -75,6 +76,7 @@ class Stage
     @timer = 0
     @alpha = 255
     @starting = first_time ? 1 : 2
+    @warp_timer = 0
     @star_count = 0
     @spec_taken = false
     reset_switches
@@ -114,6 +116,7 @@ class Stage
         end
       end
       return :finish if @time == 0
+      @warp_timer -= 1 if @warp_timer > 0 && !@cur_section.warp
       status = @cur_section.update(@stopped)
       if status == :finish
         SB.play_sound(Res.sound(:victory), SB.music_volume * 0.1)
@@ -173,12 +176,15 @@ class Stage
 
   def check_warp
     if @cur_section.warp
-      entrance = @entrances[@cur_section.warp]
-      @cur_section = entrance[:section]
-      if @cur_section.loaded
-        @cur_section.do_warp entrance[:x], entrance[:y]
-      else
-        @cur_section.start @switches, entrance[:x], entrance[:y]
+      @warp_timer += 1
+      if @warp_timer == 30
+        entrance = @entrances[@cur_section.warp]
+        @cur_section = entrance[:section]
+        if @cur_section.loaded
+          @cur_section.do_warp entrance[:x], entrance[:y]
+        else
+          @cur_section.start @switches, entrance[:x], entrance[:y]
+        end
       end
     end
   end
@@ -279,6 +285,13 @@ class Stage
                          600, 70, panel_color, 0
       SB.text_helper.write_line(text: @world_name, x: 400, y: 12, mode: :center, alpha: @alpha, scale_x: 1.5, scale_y: 1.5)
       SB.text_helper.write_line @name, 400, 35, :center, 0, @alpha
+    elsif @warp_timer > 0
+      alpha = (@warp_timer / 30.0 * 255).floor
+      color = alpha << 24
+      G.window.draw_quad(0, 0, color,
+                         C::SCREEN_WIDTH, 0, color,
+                         0, C::SCREEN_HEIGHT, color,
+                         C::SCREEN_WIDTH, C::SCREEN_HEIGHT, color, 5)
     end
   end
 end

@@ -203,11 +203,11 @@ class Door < GameObject
     args = args.split(',')
     type = args[2]
     case type
-    when nil then x_g = -10; y_g = -63
-    when '3' then x_g = -10; y_g = -63
-    else          x_g = -19; y_g = -89
+    when nil then x_g = -1; y_g = -63
+    when '3' then x_g = -1; y_g = -63
+    else          x_g = -10; y_g = -89
     end
-    super x + 10, y + 63, 12, 1, "sprite_Door#{type}", Vector.new(x_g, y_g), 5, 1
+    super x + 1, y + 63, 30, 1, "sprite_Door#{type}", Vector.new(x_g, y_g), 5, 1
     @entrance = args[0].to_i
     @locked = (switch[:state] != :taken and args[1] == '.')
     @type = type.to_i if type
@@ -230,14 +230,14 @@ class Door < GameObject
         end
       else
         set_animation 1
+        section.start_warp(@entrance)
         @opening = true
       end
     end
     if @opening
-      animate [1, 2, 3, 4, 0], 5
-      if @img_index == 0
-        section.warp = @entrance
+      animate_once([1, 2, 3, 4, 4, 4], 5) do
         @opening = false
+        set_animation(0)
       end
     end
   end
@@ -249,6 +249,7 @@ class Door < GameObject
     SB.stage.set_switch self
     SB.play_sound(Res.sound(:unlock))
     set_animation(1)
+    section.start_warp(@entrance)
     @opening = true
   end
 
@@ -854,22 +855,21 @@ class Vortex < GameObject
 
     b = SB.player.bomb
     if @transporting
-      b.move_free @aim, 1.5
+      b.move_free @aim, 1.5 if @timer < 30
       @timer += 1
-      if @timer == 32
+      if @timer == 30
         section.add_effect(Effect.new(@x - 3, @y - 3, :fx_transport, 2, 2, 7, [0, 1, 2, 3], 28))
+        section.start_warp(@entrance)
       elsif @timer == 60
-        section.warp = @entrance
+
         @transporting = false
-        b.active = true
       end
-    else
-      if b.collide? self
-        b.active = false
-        @aim = Vector.new(@x + (@w - b.w) / 2, @y + (@h - b.h) / 2 + 3)
-        @transporting = true
-        @timer = 0
-      end
+    elsif b.collide? self
+      b.stop
+      b.active = false
+      @aim = Vector.new(@x + (@w - b.w) / 2, @y + (@h - b.h) / 2 + 3)
+      @transporting = true
+      @timer = 0
     end
   end
 
@@ -2067,6 +2067,8 @@ class Graphic < Sprite
     when 12 then x -= 30; @w = 126; @h = 128; cols = 2; rows = 2; @indices = [0, SB.lang == :portuguese ? 1 : SB.lang == :english ? 2 : 3]; @interval = 60
     when 13..18 then x -= 64; y -= 88; @w = 160; @h = 120; cols = 1; rows = 3; img_index = SB.lang == :portuguese ? 1 : SB.lang == :english ? 0 : 2
     when 19..20 then x -= 64; y -= 88; @w = 160; @h = 120
+    when 21..23 then x -= 14; @w = 60; @h = 32
+    when 24 then x -= 16; y -= 64; @w = 64; @h = 96
     end
     sprite_name = type == 0 ? args : "graphic#{type}"
     super x, y, "sprite_#{sprite_name}", cols, rows
