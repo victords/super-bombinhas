@@ -202,12 +202,15 @@ class Door < GameObject
   def initialize(x, y, args, section, switch)
     args = args.split(',')
     type = args[2]
+    cols = 5
+    rows = 1
     case type
     when nil then x_g = -1; y_g = -63
     when '3' then x_g = -1; y_g = -63
+    when '5' then x_g = -17; y_g = -95; cols = rows = nil
     else          x_g = -10; y_g = -89
     end
-    super x + 1, y + 63, 30, 1, "sprite_Door#{type}", Vector.new(x_g, y_g), 5, 1
+    super x + 1, y + 63, 30, 1, "sprite_Door#{type}", Vector.new(x_g, y_g), cols, rows
     @entrance = args[0].to_i
     @locked = (switch[:state] != :taken and args[1] == '.')
     @type = type.to_i if type
@@ -235,7 +238,8 @@ class Door < GameObject
       end
     end
     if @opening
-      animate_once([1, 2, 3, 4, 4, 4], 5) do
+      indices = @img.size > 1 ? [1, 2, 3, 4, 4, 4] : [0, 0, 0, 0, 0, 0]
+      animate_once(indices, 5) do
         @opening = false
         set_animation(0)
       end
