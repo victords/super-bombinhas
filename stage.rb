@@ -125,10 +125,8 @@ class Stage
         SB.player.lives += @reward if @reward
         return :finish
       elsif status == :next_section
-        index = @sections.index @cur_section
-        @cur_section = @sections[index + 1]
-        entrance = @entrances[@cur_section.default_entrance]
-        @cur_section.start @switches, entrance[:x], entrance[:y]
+        index = @sections.index(@cur_section)
+        @cur_section.start_warp(@sections[index + 1].default_entrance)
       elsif SB.player.dead? && @is_bonus
         return :finish
       else
