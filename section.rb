@@ -612,7 +612,7 @@ class Section
       elsif @warp.nil? &&
             (@border_exit == 0 && bomb.y + bomb.h <= -C::EXIT_MARGIN ||
              @border_exit == 1 && bomb.x >= @size.x - C::EXIT_MARGIN ||
-             @border_exit == 2 && bomb.y >= @size.x + C::EXIT_MARGIN ||
+             @border_exit == 2 && bomb.y >= @size.y + C::EXIT_MARGIN ||
              @border_exit == 3 && bomb.x + bomb.w <= C::EXIT_MARGIN)
         return :next_section
       elsif @border_exit != 2 && bomb.y >= @size.y + C::EXIT_MARGIN # pit

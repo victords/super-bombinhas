@@ -71,10 +71,6 @@ class Bomb < GameObject
     elsif @paralyze_timer > 0
       @paralyze_timer -= 1
     elsif @active
-      if @invulnerable
-        @invulnerable_timer += 1
-        @invulnerable = false if @invulnerable_timer == @invulnerable_time
-      end
       if @shielded
         @shield_fx.animate([0, 0, 0, 0, 0, 0, 1], 5)
       end
@@ -158,9 +154,13 @@ class Bomb < GameObject
       end
     end
 
+    if @invulnerable
+      @invulnerable_timer += 1
+      @invulnerable = false if @invulnerable_timer == @invulnerable_time
+    end
     proj_type = section.projectile_hit?(self)
     if proj_type == 8
-      @paralyze_timer = 120
+      @paralyze_timer = 120 unless @invulnerable
     elsif proj_type
       hit
     end
@@ -275,7 +275,7 @@ class Bomb < GameObject
     @will_explode = @exploding = @aura = @dying = @shielded = false
     @speed.x = @speed.y = @stored_forces.x = @stored_forces.y = 0
     @power = 1
-    @cooldown = 0
+    @cooldown = @paralyze_timer = 0
     @can_use_ability = true
     if loaded; @hp = @saved_hp
     else; @saved_hp = @hp = @def_hp; end

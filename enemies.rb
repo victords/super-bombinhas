@@ -1619,14 +1619,12 @@ class Umbrex < FloorEnemy
       super(section)
     else
       area = Rectangle.new(@x + @img_gap.x, @y + @img_gap.y, 160, 160)
-      if b.bounds.intersect?(area)
-        if b.y > area.y && b.x >= @active_bounds.x - @img_gap.x && b.x + b.w <= @active_bounds.x + @active_bounds.w + @img_gap.x
-          @x += 0.1 * (b.x - @x)
-          if (b.x - @x).abs <= RANGE
-            set_animation(3)
-            @attacking = true
-            @timer = 0
-          end
+      if b.bounds.intersect?(area) && b.y > area.y && b.x >= @active_bounds.x - @img_gap.x && b.x + b.w <= @active_bounds.x + @active_bounds.w + @img_gap.x
+        @x += 0.1 * (b.x - @x)
+        if (b.x - @x).abs <= RANGE
+          set_animation(3)
+          @attacking = true
+          @timer = 0
         end
       else
         super(section)
