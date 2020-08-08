@@ -80,8 +80,9 @@ class Enemy < GameObject
         unless @invulnerable
           if b.explode?(self) or section.explode?(self)
             hit_by_explosion(section)
-          elsif section.projectile_hit? self
-            hit_by_projectile(section)
+          else
+            proj = section.projectile_hit?(self)
+            hit_by_projectile(section) if proj && proj != 8
           end
         end
       end
@@ -1619,12 +1620,16 @@ class Umbrex < FloorEnemy
       super(section)
     else
       area = Rectangle.new(@x + @img_gap.x, @y + @img_gap.y, 160, 160)
-      if b.bounds.intersect?(area) && b.y > area.y && b.x >= @active_bounds.x - @img_gap.x && b.x + b.w <= @active_bounds.x + @active_bounds.w + @img_gap.x
-        @x += 0.1 * (b.x - @x)
-        if (b.x - @x).abs <= RANGE
-          set_animation(3)
-          @attacking = true
-          @timer = 0
+      if b.bounds.intersect?(area)
+        if b.y > area.y && b.x >= @active_bounds.x - @img_gap.x && b.x + b.w <= @active_bounds.x + @active_bounds.w + @img_gap.x
+          @x += 0.1 * (b.x - @x)
+          if (b.x - @x).abs <= RANGE
+            set_animation(3)
+            @attacking = true
+            @timer = 0
+          end
+        elsif b.over?(self)
+          hit_by_bomb(section)
         end
       else
         super(section)
@@ -1759,6 +1764,7 @@ end
 class Bardin < FloorEnemy
   def initialize(x, y, args, section)
     super x + 2, y - 28, args, 28, 60, Vector.new(-12, -4), 4, 2, [0, 1, 2, 1], 7, 250, 2, 2
+    @timer = 0
   end
 
   def update(section)

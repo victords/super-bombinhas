@@ -175,6 +175,30 @@ class Bomb < GameObject
     @slipping = false
   end
 
+  def update_timers
+    if @invulnerable
+      @invulnerable_timer += 1
+      @invulnerable = false if @invulnerable_timer == @invulnerable_time
+    end
+    unless @can_use_ability
+      @cooldown -= 1
+      if @cooldown == 0
+        @can_use_ability = true
+      end
+    end
+    if @paralyze_timer > 0
+      @paralyze_timer -= 1
+    end
+    if @will_explode
+      @explosion_timer += 1
+      if @explosion_timer == 60
+        @explosion_counter -= 1
+        @will_explode = false if @explosion_counter == 0
+        @explosion_timer = 0
+      end
+    end
+  end
+
   def do_warp(x, y)
     @speed.x = @speed.y = 0
     @x = x + C::TILE_SIZE / 2 - @w / 2; @y = y + C::TILE_SIZE - @h

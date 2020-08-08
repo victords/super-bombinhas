@@ -502,10 +502,10 @@ class Section
     SB.player.save_bomb_hps
   end
 
-  def activate_object(type, id)
+  def activate_object(type, id, arg = nil)
     @elements.each do |e|
       if e.class == type && e.id == id
-        e.activate(self)
+        e.activate(self, arg)
         break
       end
     end
@@ -594,6 +594,7 @@ class Section
     update_camera if should_move_x || moved_y
 
     bomb.update(self)
+    SB.player.update_timers
 
     unless @fixed_camera
       if SB.player.dead?

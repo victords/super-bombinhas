@@ -259,7 +259,7 @@ class Door < GameObject
 
   def draw(map)
     super map, 2, 2
-    @lock.draw(@x + 9 - map.cam.x, @y - 38 - map.cam.y, 0, 2, 2) if @lock
+    @lock.draw(@x + 18  - map.cam.x, @y - 38 - map.cam.y, 0, 2, 2) if @lock
   end
 end
 
@@ -313,9 +313,11 @@ class Crack < SBGameObject
   def update(section)
     if @broken or SB.player.bomb.explode?(self) or section.explode?(self)
       @tile.broken = true
-      section.add_effect(Effect.new(@x, @y, "fx_WallCrack#{@type}", 2, 2))
-      SB.stage.set_switch self
       @dead = true
+      unless @broken
+        section.add_effect(Effect.new(@x, @y, "fx_WallCrack#{@type}", 2, 2))
+        SB.stage.set_switch self
+      end
     end
   end
 end
@@ -385,7 +387,7 @@ class Elevator < SBGameObject
     animate @indices, 8
   end
 
-  def activate(section)
+  def activate(section, arg = nil)
     @active = !@active
   end
 
@@ -578,10 +580,17 @@ class MovingWall < GameObject
     end
   end
 
-  def activate(section)
-    @active = true
-    @timer = 0
-    section.set_fixed_camera(@x + @w / 2, @y + @h / 2)
+  def activate(section, animate = true)
+    if animate
+      @active = true
+      @timer = 0
+      section.set_fixed_camera(@x + @w / 2, @y + @h / 2)
+    elsif @closed
+      @dead = true
+    else
+      @y -= @max_size - @h
+      @h = @max_size
+    end
   end
 
   def is_visible(map)
@@ -665,7 +674,7 @@ class BallReceptor < SBGameObject
 
   def update(section)
     if @will_set
-      section.activate_object MovingWall, @id
+      section.activate_object(MovingWall, @id, false)
       @is_set = true
       @img_index = 1
       @will_set = false
@@ -1079,7 +1088,7 @@ class Stalactite < SBGameObject
     end
   end
 
-  def activate(section)
+  def activate(section, arg = nil)
     @will_move = true
     @timer = 0
   end
@@ -1191,7 +1200,7 @@ class Monep < GameObject
     @speaking = @state == :speaking
   end
 
-  def activate(section)
+  def activate(section, arg = nil)
     @blocking = false
     @state = :normal
     section.active_object = nil
@@ -1292,7 +1301,7 @@ class TwinWalls < GameObject
     end
   end
 
-  def activate(section)
+  def activate(section, arg = nil)
     unless @active
       @active = true
       @timer = 0
@@ -1595,7 +1604,7 @@ class Box < SBGameObject
     end
   end
 
-  def activate(section)
+  def activate(section, arg = nil)
     section.add_effect(Effect.new(@x - 16, @y - 16, :fx_spawn, 2, 2, 6))
     section.add_effect(Effect.new(@start_x - 16, @start_y - 16, :fx_spawn, 2, 2, 6))
     @x = @start_x

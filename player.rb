@@ -154,6 +154,10 @@ class Player
     s
   end
 
+  def update_timers
+    @bombs.each { |k, v| v.update_timers if v != @bomb }
+  end
+
   def reset(loaded = false)
     @items.clear
     @cur_item_type = nil
