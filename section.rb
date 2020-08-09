@@ -93,6 +93,7 @@ class Section
     Heart,
     HeatBomb,
     Herb,
+    Hooman,
     Icel,
     IcyFloor,
     Ignel,

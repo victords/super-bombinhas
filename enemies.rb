@@ -1813,3 +1813,39 @@ class Dynamike < FloorEnemy
     super(section)
   end
 end
+
+class Hooman < Enemy
+  def initialize(x, y, args, section)
+    super(x + 2, y - 28, 28, 60, Vector.new(-6, -4), 2, 2, [0, 1, 2, 1], 7, 250, 2)
+    @facing_right = !args.nil?
+    @max_speed.x = 4
+  end
+
+  def update(section)
+    super(section) do
+      forces = Vector.new(0, 0)
+      unless @invulnerable
+        d = SB.player.bomb.x - @x
+        d = 150 if d > 150
+        d = -150 if d < -150
+        if @bottom && (d < 0 && @left || d > 0 && @right)
+          forces.x = d * 0.01666667
+          forces.y = -12.5
+          @speed.x = 0
+        else
+          forces.x = d * 0.001
+        end
+        if d > 0 and not @facing_right
+          @facing_right = true
+        elsif d < 0 and @facing_right
+          @facing_right = false
+        end
+      end
+      move forces, section.get_obstacles(@x, @y), section.ramps
+    end
+  end
+
+  def draw(map)
+    super(map, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
+  end
+end
