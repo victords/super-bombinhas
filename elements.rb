@@ -568,6 +568,7 @@ class MovingWall < GameObject
         SB.play_sound(Res.sound(:wallOpen)) if section.map.cam.intersect?(@active_bounds)
         if @closed and @h == 0
           section.unset_fixed_camera
+          section.obstacles.delete(self)
           @dead = true
         elsif not @closed and @h == @max_size
           section.unset_fixed_camera
@@ -581,12 +582,13 @@ class MovingWall < GameObject
   end
 
   def activate(section, animate = true)
-    if animate
+    if animate || animate.nil?
       @active = true
       @timer = 0
       section.set_fixed_camera(@x + @w / 2, @y + @h / 2)
     elsif @closed
       @dead = true
+      section.obstacles.delete(self)
     else
       @y -= @max_size - @h
       @h = @max_size
@@ -1787,7 +1789,7 @@ class Puzzle < SBGameObject
 
   def update(section)
     if @will_set
-      seciton.activate_object(MovingWall, @id)
+      seciton.activate_object(MovingWall, @id, false)
       @will_set = false
     end
 

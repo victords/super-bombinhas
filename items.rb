@@ -435,8 +435,8 @@ end
 class PuzzlePiece < FloatingItem
   def initialize(x, y, args, section, switch)
     set_icon :puzzlePiece
-    return if check(switch)
     @number = args.to_i
+    return if check(switch)
     x_off = @number == 2 ? -8 : 0
     y_off = @number == 4 ? -8 : 0
     super(x + x_off, y + y_off, 32, 32, "sprite_puzzlePiece#{@number}")
