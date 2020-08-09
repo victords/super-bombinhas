@@ -18,7 +18,7 @@
 require_relative 'section'
 
 class Stage
-  attr_reader :num, :id, :starting, :cur_entrance, :switches, :star_count, :spec_taken, :is_bonus, :time, :objective, :reward
+  attr_reader :num, :id, :starting, :cur_entrance, :switches, :star_count, :spec_taken, :is_bonus, :time, :objective, :reward, :won_reward
 
   def initialize(world, num)
     @world = world
@@ -79,6 +79,7 @@ class Stage
     @warp_timer = 0
     @star_count = 0
     @spec_taken = false
+    @won_reward = false
     reset_switches
     @cur_section.start @switches, @cur_entrance[:x], @cur_entrance[:y]
   end
@@ -123,6 +124,7 @@ class Stage
         Gosu::Song.current_song.stop
         SB.player.temp_startup_item = get_startup_item if @star_count >= C::STARS_PER_STAGE
         SB.player.lives += @reward if @reward
+        @won_reward = true
         return :finish
       elsif status == :next_section
         index = @sections.index(@cur_section)
@@ -246,17 +248,17 @@ class Stage
   def get_startup_item
     w = SB.player.last_world
     possible_items = [
-      2,  # Attack1
-      8,  # Board
-      44, # Key
-      65, # Shield
+      Section::ELEMENT_TYPES.index(Attack1),
+      Section::ELEMENT_TYPES.index(BoardItem),
+      Section::ELEMENT_TYPES.index(Key),
+      Section::ELEMENT_TYPES.index(Shield),
     ]
     possible_items += [
-      3,  # Attack2
-      71, # Spring
+      Section::ELEMENT_TYPES.index(Attack2),
+      Section::ELEMENT_TYPES.index(Spring),
     ] if w >= 2
     possible_items += [
-      4   # Attack3
+      Section::ELEMENT_TYPES.index(Attack3),
     ] if w >= 3
     possible_items[rand(possible_items.size)]
   end

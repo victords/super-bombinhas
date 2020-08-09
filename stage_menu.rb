@@ -234,13 +234,15 @@ class StageMenu
       @stage_end_comps = [p, t1, t2, t3, t4, t5]
 
       if bonus
-        t6 = MenuImage.new(372, 905, :icon_lives)
-        t6.move_to 372, 305
-        t6.init_movement
-        t7 = MenuText.new("x #{SB.stage.reward}", 413, 905, 400, :center)
-        t7.init_movement
-        t7.move_to 413, 305
-        @stage_end_comps << t6 << t7
+        if SB.stage.won_reward
+          t6 = MenuImage.new(372, 905, :icon_lives)
+          t6.move_to 372, 305
+          t6.init_movement
+          t7 = MenuText.new("x #{SB.stage.reward}", 413, 905, 400, :center)
+          t7.init_movement
+          t7.move_to 413, 305
+          @stage_end_comps << t6 << t7
+        end
       else
         t6 = MenuText.new(:spec_taken, 210, 900)
         t6.init_movement

@@ -89,10 +89,13 @@ class World
   attr_reader :num, :stage_count, :song
 
   ITEM_ICONS = {
-    2 => :icon_Attack1,
-    8 => :icon_board,
-    44 => :icon_Key,
-    65 => :icon_shield
+    Section::ELEMENT_TYPES.index(Attack1)   => :icon_Attack1,
+    Section::ELEMENT_TYPES.index(BoardItem) => :icon_board,
+    Section::ELEMENT_TYPES.index(Key)       => :icon_Key,
+    Section::ELEMENT_TYPES.index(Shield)    => :icon_shield,
+    Section::ELEMENT_TYPES.index(Attack2)   => :icon_attack2,
+    Section::ELEMENT_TYPES.index(Spring)    => :icon_spring,
+    Section::ELEMENT_TYPES.index(Attack3)   => :icon_Attack3,
   }
 
   def initialize(num = 1, stage_num = 1, loaded = false)
