@@ -86,6 +86,7 @@ class Section
     Forsby,
     FragileFloor,
     Fureel,
+    Gargoil,
     Goal,
     Graphic,
     GunPowder,

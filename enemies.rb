@@ -1850,3 +1850,55 @@ class Hooman < Enemy
     super(map, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
   end
 end
+
+class Gargoil < Enemy
+  RANGE = 320
+
+  def initialize(x, y, args, section)
+    super(x - 18, y, 68, 34, Vector.new(-6, -20), 1, 5, [0, 1, 2, 1], 6, 450, 2)
+    args = args.split(',')
+    @movement = C::TILE_SIZE * args[0].to_i
+    @facing_right = args[1].nil?
+    @aim = Vector.new(@facing_right ? @x + @movement : @x - @movement, @y)
+  end
+
+  def update(section)
+    super(section) do
+      b = SB.player.bomb
+      if @attacking
+        move_free(@aim, 7)
+        if @speed.x == 0 && @speed.y == 0
+          @indices = [0, 1, 2, 1]
+          @interval = 3
+          set_animation(0)
+          @attacking = false
+        end
+      elsif @aim2
+        move_free(@aim2, 2.5)
+        if @speed.x == 0 && @speed.y == 0
+          @aim2 = nil
+          @aim = @prev_aim
+          @interval = 6
+        end
+      elsif b.x > @x && b.x + b.w < @x + @w && b.y > @y && b.y < @y + RANGE
+        @prev_aim = @aim
+        @aim = Vector.new(b.x + b.w / 2 - @w / 2, b.y + b.h - @h)
+        @aim2 = Vector.new(@aim.x, @y)
+        @speed.x = @speed.y = 0
+        @indices = [3]
+        set_animation(3)
+        @attacking = true
+      else
+        move_free(@aim, 3)
+        if @speed.x == 0 && @speed.y == 0
+          @facing_right = !@facing_right
+          @aim = Vector.new(@facing_right ? @x + @movement : @x - @movement, @y)
+        end
+      end
+    end
+  end
+
+  def draw(map)
+    super(map, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
+  end
+end
