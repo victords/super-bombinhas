@@ -20,8 +20,8 @@ require_relative 'bomb'
 class Player
   BOMB_TYPES = [:azul, :vermelha, :amarela, :verde, :branca]
 
-  attr_reader :score, :items, :cur_item_type, :specs, :all_stars
-  attr_accessor :name, :last_world, :last_stage, :lives, :stage_score, :startup_item, :temp_startup_item
+  attr_reader :score, :stage_score, :items, :cur_item_type, :specs, :all_stars
+  attr_accessor :name, :last_world, :last_stage, :lives, :startup_item, :temp_startup_item
 
   def initialize(name, last_world = 1, last_stage = 1, bomb = :azul, hps = nil, lives = 5, score = 0, specs = '', startup_item = nil, all_stars = '')
     @name = name
@@ -57,7 +57,7 @@ class Player
     unless @dead
       unless SB.stage.is_bonus
         @lives -= 1
-        self.score -= C::DEATH_PENALTY
+        self.stage_score -= C::DEATH_PENALTY
       end
       @dead = true
       @bomb.die
@@ -105,6 +105,11 @@ class Player
   def score=(value)
     @score = value
     @score = 0 if @score < 0
+  end
+
+  def stage_score=(value)
+    @stage_score = value
+    @stage_score = 0 if @stage_score < 0
   end
 
   def bomb(type = nil)
@@ -162,7 +167,6 @@ class Player
     @items.clear
     @cur_item_type = nil
     @item_index = 0
-    @stage_score = 0
     @dead = false
     @bombs.each { |k, v| v.reset(loaded) }
   end

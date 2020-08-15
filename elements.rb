@@ -1233,7 +1233,7 @@ class StalactiteGenerator < SBGameObject
       end
       @timer += 1
       if @timer == 60
-        section.add(Stalactite.new(@s_x, @s_y, '!', section))
+        section.add(Stalactite.new(@s_x, @s_y, ',$', section))
         section.add_effect(Effect.new(@s_x - 16, @s_y - 32, :fx_spawn, 2, 2, 6))
       elsif @timer == 120
         section.unset_fixed_camera

@@ -1354,7 +1354,8 @@ class Lambul < FloorEnemy
       else
         animate [3, 4, 5, 6], 5
       end
-    elsif !SB.player.dead? && b.y + b.h == @y + @h && (b.x + b.w/2 - @x - @w/2).abs <= 65 && (b.x < @x && !@facing_right || b.x > @x && @facing_right)
+    elsif !SB.player.dead? && b.y + b.h >= @y + @h - 10 && b.y + b.h < @y + @h + 10 && (b.x + b.w/2 - @x - @w/2).abs <= 80 && (b.x < @x && !@facing_right || b.x > @x && @facing_right)
+      @x += @facing_right ? 10 : -10
       @attacking = true
       @timer = 0
       set_animation 3

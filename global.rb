@@ -30,7 +30,7 @@ module C
   EXIT_MARGIN = 16
   DEATH_PENALTY = 1_000
   GAME_OVER_PENALTY = 10_000
-  BONUS_THRESHOLD = 5000
+  BONUS_THRESHOLD = 10_000
   BONUS_LEVELS = 2
   GAME_LIMIT = 10
   MOVIE_DELAY = 30
@@ -232,6 +232,7 @@ class SB
     def end_stage
       if @bonus
         @bonus = nil
+        @player.stage_score = 0
         StageMenu.end_stage(false, false, true)
       else
         if @stage.spec_taken
@@ -242,6 +243,7 @@ class SB
         end
         prev_factor = @player.score / C::BONUS_THRESHOLD
         @player.score += @player.stage_score
+        @player.stage_score = 0
         factor = @player.score / C::BONUS_THRESHOLD
         @bonus = (factor - 1) % C::BONUS_LEVELS + 1 if factor > prev_factor
         @prev_stage = @stage
