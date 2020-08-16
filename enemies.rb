@@ -231,7 +231,7 @@ module Boss
       if @timer >= 300 or SB.key_pressed?(:confirm)
         section.unset_fixed_camera
         @state = :acting
-        @timer = 119
+        @timer = 0
         SB.play_song(Res.song(:boss))
       end
     else
@@ -1901,5 +1901,110 @@ class Gargoil < Enemy
 
   def draw(map)
     super(map, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
+  end
+end
+
+class Zirkn < FloorEnemy
+  include Boss
+
+  alias :super_update :update
+
+  def initialize(x, y, args, section)
+    super(x - 28, y - 84, args, 88, 116, Vector.new(-6, -12), 1, 7, [0, 1, 0, 2], 7, 3000, 4, 6)
+    @timer = 0
+    @spawn_point = Vector.new(x + C::TILE_SIZE / 2, y + C::TILE_SIZE)
+    init
+  end
+
+  def update(section)
+    b = SB.player.bomb
+    update_boss(section, false) do
+      if @invulnerable
+        super_update(section)
+      elsif @state == :attacking
+        b.bounce(false) if b.over?(self)
+        @timer += 1
+        if @hp <= 1
+          end_time = 648
+          if @timer <= 180 && @timer % 15 == 0
+            i = (@timer / 15 - 1) % 12 + 1
+            add_fires(section, i, 80)
+          elsif @timer > 216 && @timer <= 360 && @timer % 12 == 0
+            i = ((@timer - 216) / 12 - 1) % 12 + 1
+            add_fires(section, i, 60)
+          elsif @timer > 432 && @timer % 9 == 0
+            i = ((@timer - 432) / 9 - 1) % 12 + 1
+            add_fires(section, i, 45)
+          end
+        elsif @hp <= 3
+          end_time = 360
+          if @timer % 15 == 0
+            i = (@timer / 15 - 1) % 12 + 1
+            add_fires(section, i, 80)
+          end
+        else
+          end_time = 240
+          if @timer % 20 == 0
+            i = @timer / 20
+            add_fires(section, i, 100)
+          end
+        end
+        if @timer == end_time
+          set_animation(4)
+          @tail_area = Rectangle.new(@facing_right ? @x + @w - 146 : @x + 66, @y + 76, 80, 40)
+          @timer = 0
+          @state = :resting
+        end
+      elsif @state == :resting
+        b.bounce(false) if b.over?(self)
+        if b.explode?(@tail_area)
+          @timer = 0
+          @indices = [6]
+          set_animation(6)
+          hit(section)
+        else
+          animate([4, 5], 7)
+          @timer += 1
+          if @timer == (@hp <= 1 ? 180 : 150)
+            set_animation(0)
+            @timer = 0
+            @state = :walking
+          end
+        end
+      else
+        super_update(section)
+        @timer += 1
+        if @timer == 180
+          set_animation(3)
+          @timer = 0
+          @state = :attacking
+        end
+      end
+    end
+  end
+
+  def add_fires(section, i, lifetime)
+    section.add_effect(Fire.new(@spawn_point.x - i * C::TILE_SIZE, @spawn_point.y, lifetime))
+    section.add_effect(Fire.new(@spawn_point.x + i * C::TILE_SIZE, @spawn_point.y, lifetime))
+  end
+
+  def hit_by_bomb(section)
+    SB.player.bomb.bounce(false)
+  end
+
+  def hit_by_projectile(section); end
+
+  def hit_by_explosion(section); end
+
+  def return_vulnerable
+    super
+    @indices = [0, 1, 0, 2]
+    set_animation(0)
+    @state = :walking
+  end
+
+  def draw(map)
+    super(map)
+    draw_boss
   end
 end

@@ -2033,9 +2033,9 @@ class Ice < SBEffect
 end
 
 class Fire < SBEffect
-  def initialize(x, y)
+  def initialize(x, y, lifetime = 120)
     @w = 28; @h = 32
-    super x - @w/2, y - @h, :fx_fire, 3, 1, 5, nil, 120
+    super x - @w/2, y - @h, :fx_fire, 3, 1, 5, nil, lifetime
   end
 
   def update
