@@ -18,7 +18,8 @@
 require_relative 'section'
 
 class Stage
-  attr_reader :num, :id, :starting, :cur_entrance, :switches, :star_count, :spec_taken, :is_bonus, :time, :objective, :reward, :won_reward
+  attr_reader :num, :id, :starting, :cur_entrance, :switches, :star_count, :spec_taken,
+              :is_bonus, :time, :objective, :reward, :won_reward, :stopped, :stopped_timer, :stop_time_duration
 
   def initialize(world, num)
     @world = world

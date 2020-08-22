@@ -139,6 +139,10 @@ class Enemy < GameObject
 
   def draw(map = nil, scale_x = 2, scale_y = 2, alpha = 0xff, color = 0xffffff, angle = nil, flip = nil, z_index = 0, round = false)
     return if @invulnerable && (@control_timer / 3) % 2 == 0
+    if SB.stage.stopped
+      remaining = SB.stage.stop_time_duration - SB.stage.stopped_timer
+      color = 0xff6666 if remaining >= 120 || (remaining / 5) % 2 == 0
+    end
     super(map, scale_x, scale_y, alpha, color, angle, flip, z_index, round)
   end
 end
@@ -1951,6 +1955,7 @@ class Zirkn < FloorEnemy
         end
         if @timer == end_time
           set_animation(4)
+          section.add_effect(Effect.new(@facing_right ? @x + @w - 136 : @x + 76, @y + 12, :fx_arrow, 3, 1, 8, [0, 1, 2, 1], 150))
           @tail_area = Rectangle.new(@facing_right ? @x + @w - 146 : @x + 66, @y + 76, 80, 40)
           @timer = 0
           @state = :resting

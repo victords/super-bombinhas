@@ -1987,6 +1987,7 @@ class Bell < SBGameObject
       end
     elsif SB.player.bomb.collide?(self)
       SB.stage.stop_time(360, false)
+      SB.play_sound(Res.sound(:bell))
       @active = true
       set_animation 1
       @timer = 0
