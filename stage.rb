@@ -263,6 +263,11 @@ class Stage
     possible_items[rand(possible_items.size)]
   end
 
+  def unlock_bomb?
+    @world <= 3 && @num == SB.world.stage_count && @world == SB.player.last_world ||
+      @world == 6 && @num == 1 && SB.player.last_stage == 1
+  end
+
   def draw
     @cur_section.draw
     if @starting == 1

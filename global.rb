@@ -247,7 +247,7 @@ class SB
         factor = @player.score / C::BONUS_THRESHOLD
         @bonus = (factor - 1) % C::BONUS_LEVELS + 1 if factor > prev_factor
         @prev_stage = @stage
-        StageMenu.end_stage(@stage.num == @world.stage_count, @bonus)
+        StageMenu.end_stage(@stage.unlock_bomb?, @bonus)
       end
       @state = :stage_end
     end

@@ -212,8 +212,8 @@ class StageMenu
       @stage_menu.update
     end
 
-    def end_stage(next_world, next_bonus = false, bonus = false)
-      p = MenuPanel.new(-600, 150, 400, next_world ? 350 : 300)
+    def end_stage(unlock_bomb, next_bonus = false, bonus = false)
+      p = MenuPanel.new(-600, 150, 400, unlock_bomb ? 350 : 300)
       p.init_movement
       p.move_to 200, 150
       t1 = MenuText.new(SB.player.dead? || SB.stage.time == 0 ? :too_bad : :stage_complete, 1200, 160, 400, :center, true)
@@ -267,14 +267,14 @@ class StageMenu
       end
 
       @stage_end_timer = 0
-      if next_world or next_bonus
+      if unlock_bomb or next_bonus
         @stage_menu.section(3).clear
-        @stage_menu.section(3).add(MenuButton.new(next_world ? 440 : 400, :continue) {
+        @stage_menu.section(3).add(MenuButton.new(unlock_bomb ? 440 : 400, :continue) {
           SB.check_next_stage
         })
-        if next_world
+        if unlock_bomb
           @stage_menu.section(3).add(MenuText.new(:can_play, 210, 400))
-          @stage_menu.section(3).add(MenuImage.new(558, 394, get_next_bomb_icon)) if SB.world.num == SB.player.last_world
+          @stage_menu.section(3).add(MenuImage.new(558, 394, get_next_bomb_icon))
         end
         @continue_only = true
       elsif @continue_only
