@@ -75,7 +75,13 @@ stage_3_3		Conheça a tribo da montanha
 stage_3_4		As cavernas de gelo
 stage_3_5		O esconderijo de Ulor
 world_4			Vila Inkut
-stage_4_1		???
+stage_4_1		Um vilarejo em ruínas
+stage_4_2		Cuidado com as paredes cadentes!
+stage_4_3		O antigo templo
+stage_4_4		As peças de quebra-cabeça ocultas
+stage_4_5		O antigo castelo
+world_5			Pântano Mual
+stage_5_1		???
 bonus			Bônus
 bonus_1			Chegue ao final
 bonus_2			Mate todos os inimigos
