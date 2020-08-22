@@ -154,10 +154,10 @@ end
 class Key < FloatingItem
   def initialize(x, y, args, section, switch)
     set_icon "Key#{args}"
-    return if check switch
-    super x + 3, y + 3, 26, 26, "sprite_Key#{args}", Vector.new(-3, -3)
     @type = args.to_i if args
     switch[:extra] = @type if @type
+    return if check switch
+    super x + 3, y + 3, 26, 26, "sprite_Key#{args}", Vector.new(-3, -3)
   end
 
   def update(section)

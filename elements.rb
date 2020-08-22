@@ -208,7 +208,8 @@ class Door < GameObject
     when nil then x_g = -1; y_g = -63
     when '3' then x_g = -1; y_g = -63
     when '5' then x_g = -17; y_g = -95; cols = rows = nil
-    else          x_g = -10; y_g = -89
+    when '6' then x_g = -1; y_g = -63
+    else          x_g = -10; y_g = -89 # all boss doors
     end
     super x + 1, y + 63, 30, 1, "sprite_Door#{type}", Vector.new(x_g, y_g), cols, rows
     @entrance = args[0].to_i
@@ -453,7 +454,7 @@ class Spikes < TwoStateObject
     when 2 then y_g = -1
     else        x_g = 1
     end
-    super x - 2, y - 2, 36, 36, "sprite_Spikes#{a[1]}", Vector.new(x_g, y_g), 5, 1, 150, 0, 2, [0], [4], [1, 2, 3, 4, 0], [3, 2, 1, 0, 4]
+    super(x - 2, y - 2, 36, 36, :sprite_Spikes, Vector.new(x_g, y_g), 5, 1, 150, 0, 2, [0], [4], [1, 2, 3, 4, 0], [3, 2, 1, 0, 4], !a[1].nil?)
     @active_bounds = Rectangle.new x, y, 32, 32
     @obst = Block.new(x, y, 32, 32)
   end
