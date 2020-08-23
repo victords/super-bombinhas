@@ -2013,3 +2013,55 @@ class Zirkn < FloorEnemy
     draw_boss
   end
 end
+
+class Frock < Enemy
+  def initialize(x, y, args, section)
+    super x - 10, y - 4, 52, 36, Vector.new(-8, -24), 1, 5, [0, 1], 8, 350
+
+    a = args.split(',')
+    @leaps = 0
+    @max_leaps = a[0].to_i
+    @facing_right = !a[1].nil?
+  end
+
+  def update(section)
+    super(section) do
+      forces = Vector.new 0, 0
+      if @bottom
+        @speed.x = 0
+        @indices = [0, 1]
+        if rand < 0.0333
+          @leaps += 1
+          if @leaps > @max_leaps
+            @leaps = 1
+            @facing_right = !@facing_right
+          end
+          if @facing_right; forces.x = 4.5
+          else; forces.x = -4.5; end
+          forces.y = -8.5
+          set_animation(2)
+        end
+      else
+        animate_once([2, 3], 5)
+      end
+      prev_g = G.gravity.y
+      G.gravity.y *= 0.75
+      move(forces, section.get_obstacles(@x, @y), section.ramps)
+      G.gravity.y = prev_g
+    end
+  end
+
+  def hit_by_bomb(section)
+    SB.player.bomb.hit
+  end
+
+  def draw(map)
+    super(map, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
+  end
+end
+
+class Pantan < Enemy
+  def initialize(x, y, args, section)
+    super(x, y - 72, 32, 104, Vector.new(-44, -16), 3, 2, [0, 1, 2], 10, 200)
+  end
+end
