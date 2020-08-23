@@ -54,6 +54,8 @@ sahiss_speech	Sssssss Ssssssssssss Sssss?! SSSSSS!! (Who are you who invades my 
 sahiss_death	Sssssssssssssssssssss...!! (Nooooooooooooooooooo...!!)
 ulor_speech		What do you think you're doing here, little bombs?! This is the end for you!
 ulor_death		Gaaaaaah! I can't believe... Defeated by these insignificant creatures...!
+zirkn_speech	It was so foolish of you to come here... Now, YOU SHALL PAY!
+zirkn_death		Curse youuuuu!!
 count_down		Countdown to explosion!
 world_1			Tars Island
 stage_1_1		Exploring the Tars Beach

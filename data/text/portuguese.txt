@@ -54,6 +54,8 @@ sahiss_speech	Sssssss Ssssssssssss Sssss?! SSSSSS!! (Quem é você que invade mi
 sahiss_death	Sssssssssssssssssssss...!! (Nããããããoooooooooo...!!)
 ulor_speech		O que pensam que fazem aqui, pequenas bombas?! É o fim para vocês!
 ulor_death		Gaaaaaah! Não acredito... Derrotado por essas criaturas insignificantes...!
+zirkn_speech	Foi tolice da parte de vocês vir até aqui... Agora, VOCÊS VÃO PAGAR!
+zirkn_death		Malditas sejam!!
 count_down		Contagem regressiva para explodir!
 world_1			Ilha de Tars
 stage_1_1		Explorando a Praia de Tars
