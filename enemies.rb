@@ -2062,6 +2062,58 @@ end
 
 class Pantan < Enemy
   def initialize(x, y, args, section)
-    super(x, y - 72, 32, 104, Vector.new(-44, -16), 3, 2, [0, 1, 2], 10, 200)
+    super(x, y - 72, 32, 104, Vector.new(-44, -16), 3, 2, [0, 1, 2], 10, 300)
+    @leaf1 = Rectangle.new(x - 37, y - 36, 32, 10)
+    @leaf2 = Rectangle.new(x + 28, y - 40, 42, 10)
+    @roots = Rectangle.new(x - 35, y + 20, 104, 12)
+    @bandage1 = Sprite.new(x - 30, y - 36, :fx_bandage)
+    @bandage2 = Sprite.new(x + 40, y - 40, :fx_bandage)
+  end
+
+  def update(section)
+    super(section) do
+      b = SB.player.bomb
+      if @attacking
+        @timer += 1
+        if @timer == 30
+          @indices = [0, 1, 2]
+          @interval = 10
+          set_animation(0)
+          @attacking = false
+        end
+      end
+      if b.over?(@leaf1)
+        b.bounce(!@leaf1_hit)
+        @leaf1_hit = true
+      elsif b.over?(@leaf2)
+        b.bounce(!@leaf2_hit)
+        @leaf2_hit = true
+      elsif b.bounds.intersect?(@roots)
+        b.hit
+      end
+    end
+  end
+
+  def hit_by_bomb(section)
+    return if @attacking
+    if @leaf1_hit && @leaf2_hit
+      SB.player.bomb.bounce
+      hit(section)
+    else
+      SB.player.bomb.hit
+      @indices = [3, 4, 4, 4, 4, 3]
+      @interval = 5
+      set_animation(3)
+      @timer = 0
+      @attacking = true
+    end
+  end
+
+  def hit_by_projectile(section); end
+
+  def draw(map)
+    super(map)
+    @bandage1.draw(map, 2, 2) if @leaf1_hit
+    @bandage2.draw(map, 2, 2) if @leaf2_hit
   end
 end
