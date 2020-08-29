@@ -2018,7 +2018,7 @@ class Frock < Enemy
   def initialize(x, y, args, section)
     super x - 10, y - 4, 52, 36, Vector.new(-8, -24), 1, 5, [0, 1], 8, 350
 
-    a = args.split(',')
+    a = (args || '1').split(',')
     @leaps = 0
     @max_leaps = a[0].to_i
     @facing_right = !a[1].nil?
