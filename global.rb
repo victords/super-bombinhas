@@ -157,12 +157,37 @@ class SB
 
     def play_song(song)
       cur_song = Gosu::Song.current_song
+      if song.is_a?(String)
+        if File.exist?("#{Res.prefix}#{Res.song_dir}#{song}-intro.ogg")
+          @intro_song = Res.song("#{song}-intro")
+          @song = Res.song(song)
+          if cur_song
+            return if cur_song == @song || cur_song == @intro_song
+            cur_song.stop unless cur_song == @intro_song
+          end
+          @intro_song.volume = @music_volume * 0.1
+          @intro_song.play
+          return
+        else
+          song = Res.song(song)
+        end
+      end
+
       if cur_song
         return if cur_song == song
         Gosu::Song.current_song.stop
       end
       song.volume = @music_volume * 0.1
       song.play true
+    end
+
+    def check_song
+      return unless @song
+      unless @intro_song.playing?
+        @song.volume = @music_volume * 0.1
+        @song.play(true)
+        @intro_song = @song = nil
+      end
     end
 
     def change_lang(d = 1)

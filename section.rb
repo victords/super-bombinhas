@@ -175,7 +175,7 @@ class Section
     @border_exit = s[2].to_i # 0: top, 1: right, 2: down, 3: left, 4: none
     @tileset_num = s[3].to_i
     @tileset = Res.tileset s[3], 16, 16
-    @bgm = Res.song(s[4])
+    @bgm = s[4]
     @map = Map.new C::TILE_SIZE, C::TILE_SIZE, t_x_count, t_y_count
     @size = @map.get_absolute_size
     @dark = s.length > 5
@@ -630,6 +630,8 @@ class Section
     if SB.key_pressed?(:pause)
       SB.state = :paused
     end
+
+    SB.check_song
   end
 
   def draw
