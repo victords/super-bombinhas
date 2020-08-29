@@ -21,7 +21,7 @@ require_relative 'elements'
 require_relative 'enemies'
 require_relative 'items'
 
-Tile = Struct.new :back, :fore, :pass, :wall, :hide, :broken
+Tile = Struct.new :back, :fore, :pass, :wall, :hide, :broken, :ramp_end
 
 class ScoreEffect
   attr_reader :dead
@@ -169,7 +169,7 @@ class Section
     t_x_count = s[0].to_i; t_y_count = s[1].to_i
     @tiles = Array.new(t_x_count) {
       Array.new(t_y_count) {
-        Tile.new -1, -1, -1, -1, -1, false
+        Tile.new -1, -1, -1, -1, -1, false, false
       }
     }
     @border_exit = s[2].to_i # 0: top, 1: right, 2: down, 3: left, 4: none
@@ -293,13 +293,17 @@ class Section
     s.each do |r|
       left = r[0] == 'l'
       a = r[1] == "'" ? 2 : 1
-      w = r[a].to_i * C::TILE_SIZE
+      rw = r[a].to_i
+      w = rw * C::TILE_SIZE
       h = r[a + 1].to_i * C::TILE_SIZE
       h -= 1 if r[1] == "'"
       coords = r.split(':')[1].split(',')
-      x = coords[0].to_i * C::TILE_SIZE
-      y = coords[1].to_i * C::TILE_SIZE
+      i = coords[0].to_i
+      j = coords[1].to_i
+      x = i * C::TILE_SIZE
+      y = j * C::TILE_SIZE
       @ramps << Ramp.new(x, y, w, h, left)
+      @tiles[i + (left ? rw : -1)][j].ramp_end = true
     end
   end
   #end initialization
@@ -406,7 +410,12 @@ class Section
             bw += 1
             pass = true
           elsif not @tiles[k][l].broken and @tiles[k][l].wall >= 0
-            if bw > 0 && pass
+            if @tiles[k][l].ramp_end
+              add_block(obstacles, k - bw, l, bw, pass) if bw > 0
+              add_block(obstacles, k, l, 1, true)
+              add_block(obstacles, k, l, 1, false, C::TILE_SIZE / 2)
+              bw = -1
+            elsif bw > 0 && pass
               add_block(obstacles, k - bw, l, bw, true)
               bw = 0
             end
@@ -427,8 +436,8 @@ class Section
     obstacles
   end
 
-  def add_block(list, i, j, w_t, pass)
-    list << Block.new(i * C::TILE_SIZE, j * C::TILE_SIZE, w_t * C::TILE_SIZE, C::TILE_SIZE, pass)
+  def add_block(list, i, j, w_t, pass, y_off = 0)
+    list << Block.new(i * C::TILE_SIZE, j * C::TILE_SIZE + y_off, w_t * C::TILE_SIZE, C::TILE_SIZE - y_off, pass)
   end
 
   def obstacle_at?(x, y)
