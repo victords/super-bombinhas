@@ -2065,7 +2065,7 @@ class Pantan < Enemy
     super(x, y - 72, 32, 104, Vector.new(-44, -16), 3, 2, [0, 1, 2], 10, 300)
     @leaf1 = Rectangle.new(x - 37, y - 36, 32, 10)
     @leaf2 = Rectangle.new(x + 28, y - 40, 42, 10)
-    @roots = Rectangle.new(x - 35, y + 20, 104, 12)
+    @roots = Rectangle.new(x - 29, y + 20, 92, 12)
     @bandage1 = Sprite.new(x - 30, y - 36, :fx_bandage)
     @bandage2 = Sprite.new(x + 40, y - 40, :fx_bandage)
   end
@@ -2096,11 +2096,12 @@ class Pantan < Enemy
 
   def hit_by_bomb(section)
     return if @attacking
-    if @leaf1_hit && @leaf2_hit
-      SB.player.bomb.bounce
+    b = SB.player.bomb
+    if b.power > 1 || @leaf1_hit && @leaf2_hit
+      b.bounce
       hit(section)
     else
-      SB.player.bomb.hit
+      b.hit
       @indices = [3, 4, 4, 4, 4, 3]
       @interval = 5
       set_animation(3)

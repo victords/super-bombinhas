@@ -899,13 +899,20 @@ class AirMattress < GameObject
   def initialize(x, y, args, section)
     super x + 2, y + 16, 60, 1, :sprite_airMattress, Vector.new(-2, -2), 1, 3
     @active_bounds = Rectangle.new(x, y + 15, 64, 32)
-    @color = (args || 'ffffff').to_i(16)
+    a = args.split(',')
+    @color = a[0].to_i(16)
     @timer = 0
     @points = [
       Vector.new(@x, @y),
       Vector.new(@x, @y + 16)
     ]
     @speed_m = 0.16
+    @speed_d =
+      case a[1]
+      when '2' then 2
+      when '3' then 4
+      else          1
+      end
     @passable = true
     @state = :normal
     section.obstacles << self
@@ -930,14 +937,14 @@ class AirMattress < GameObject
     elsif @state == :down
       animate [0, 1, 2], 8 if @img_index != 2
       if b.bottom == self
-        move_carrying Vector.new(@x, @y + 1), 0.3, [b], section.get_obstacles(b.x, b.y), section.ramps
+        move_carrying Vector.new(@x, @y + @speed_d), @speed_d, [b], section.get_obstacles(b.x, b.y), section.ramps
       else
         @state = :up
         set_animation 2
       end
     elsif @state == :up
       animate [2, 1, 0], 8 if @img_index != 0
-      move_carrying Vector.new(@x, @y - 1), 0.3, [b], section.get_obstacles(b.x, b.y), section.ramps
+      move_carrying Vector.new(@x, @y - 1), 0.5, [b], section.get_obstacles(b.x, b.y), section.ramps
       if SB.player.bomb.bottom == self
         @state = :down
       elsif @y.round == @points[0].y
