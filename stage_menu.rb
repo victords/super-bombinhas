@@ -162,14 +162,13 @@ class StageMenu
     def set_bomb_screen_comps
       sec = @stage_menu.section(1)
       sec.clear
-      world = SB.player.last_world
-      world = 5 if world > 5
-      start_x = 400 - (40 + (world - 1) * 50)
+      p = SB.player
+      start_x = 400 - (40 + (p.bomb_count - 1) * 50)
       sec.add(BombButton.new(start_x, :azul, @stage_menu))
-      sec.add(BombButton.new(start_x + 100, :vermelha, @stage_menu)) if world >= 2
-      sec.add(BombButton.new(start_x + 200, :amarela, @stage_menu)) if world >= 3
-      sec.add(BombButton.new(start_x + 300, :verde, @stage_menu)) if world >= 4
-      sec.add(BombButton.new(start_x + 400, :branca, @stage_menu)) if world >= 5
+      sec.add(BombButton.new(start_x + 100, :vermelha, @stage_menu)) if p.bomb_unlocked?(:vermelha)
+      sec.add(BombButton.new(start_x + 200, :amarela, @stage_menu))  if p.bomb_unlocked?(:amarela)
+      sec.add(BombButton.new(start_x + 300, :verde, @stage_menu))    if p.bomb_unlocked?(:verde)
+      sec.add(BombButton.new(start_x + 400, :branca, @stage_menu))   if p.bomb_unlocked?(:branca)
       sec.add(MenuButton.new(550, :back, true) {
         @stage_menu.go_to_section 0
       })

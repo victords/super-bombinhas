@@ -34,11 +34,9 @@ class Player
       else
         [0, 0, 0, 0, 0]
       end
-    @bombs[:azul]     = Bomb.new(:azul,     hps[0])
-    @bombs[:vermelha] = Bomb.new(:vermelha, hps[1]) if last_world > 1
-    @bombs[:amarela]  = Bomb.new(:amarela,  hps[2]) if last_world > 2
-    @bombs[:verde]    = Bomb.new(:verde,    hps[3]) if last_world > 3
-    @bombs[:branca]   = Bomb.new(:branca,   hps[4]) if last_world > 4
+    BOMB_TYPES.each_with_index do |b, i|
+      @bombs[b] = Bomb.new(b, hps[i]) if bomb_unlocked?(b)
+    end
     @bomb = @bombs[bomb]
     @lives = lives
     @score = score
@@ -47,6 +45,16 @@ class Player
     @all_stars = all_stars.split(',')
     @items = {}
     @startup_item = startup_item
+  end
+
+  def bomb_unlocked?(type)
+    case type
+    when :vermelha then @last_world > 1
+    when :amarela  then @last_world > 2
+    when :verde    then @last_world > 3
+    when :branca   then @last_world > 5 && @last_stage > 1
+    else                true
+    end
   end
 
   def dead?
@@ -136,8 +144,7 @@ class Player
   end
 
   def shift_bomb(section)
-    ind = (BOMB_TYPES.index(@bomb.type) + 1) % BOMB_TYPES.size
-    ind = 0 if ind >= @last_world
+    ind = (@bombs.keys.index(@bomb.type) + 1) % @bombs.size
     set_bomb(BOMB_TYPES[ind])
     section.add_effect(Effect.new(@bomb.x + @bomb.w / 2 - 32, @bomb.y + @bomb.h / 2 - 32, :fx_spawn, 2, 2, 6))
   end
@@ -157,6 +164,10 @@ class Player
     s += "#{@bombs[:verde].saved_hp},"    if @bombs[:verde]
     s += "#{@bombs[:branca].saved_hp},"   if @bombs[:branca]
     s
+  end
+
+  def bomb_count
+    @bombs.size
   end
 
   def update_timers
