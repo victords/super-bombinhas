@@ -778,6 +778,7 @@ class Projectile < GameObject
   attr_reader :owner, :type
 
   def initialize(x, y, type, angle, owner)
+    sprite = "sprite_Projectile#{type}"
     case type
     when 1 then w = 20; h = 12; x_g = -2; y_g = -1; cols = 1; rows = 1; indices = [0]; @speed_m = 4.5
     when 2 then w = 8; h = 8; x_g = -2; y_g = -2; cols = 2; rows = 2; indices = [0, 1, 2, 3]; @speed_m = 2.5
@@ -787,9 +788,10 @@ class Projectile < GameObject
     when 6 then w = 10; h = 10; x_g = -2; y_g = 0; cols = 2; rows = 2; indices = [0, 1, 2, 3]; @speed_m = 4
     when 7 then w = 16; h = 16; x_g = -2; y_g = -2; cols = 1; rows = 1; indices = [0]; @speed_m = 5
     when 8 then w = 48; h = 40; x_g = -6; y_g = -4; cols = 1; rows = 3; indices = [0, 1, 2, 1]; @speed_m = 3.5
+    when 9 then w = h = 8; x_g = y_g = -2; cols = rows = 2; indices = [0, 1, 2, 3]; @speed_m = angle == 0 ? 5 : -5; angle = nil; sprite = :sprite_Projectile2
     end
 
-    super x, y, w, h, "sprite_Projectile#{type}", Vector.new(x_g, y_g), cols, rows
+    super x, y, w, h, sprite, Vector.new(x_g, y_g), cols, rows
     @active_bounds = Rectangle.new @x - 30, @y - 30, @w + 60, @h + 60
     @type = type
     @angle = angle
@@ -797,10 +799,19 @@ class Projectile < GameObject
     @indices = indices
     @visible = true
     @timer = 0
+    @impulse = Vector.new(@speed_m, -6) if @type == 9
   end
 
   def update(section)
-    move_free(@angle, @speed_m)
+    if @type == 9
+      prev_g = G.gravity.y
+      G.gravity.y *= 0.5
+      move(@impulse || Vector.new(0, 0), [], [])
+      G.gravity.y = prev_g
+      @impulse = nil
+    else
+      move_free(@angle, @speed_m)
+    end
 
     obst = section.get_obstacles(@x, @y)
     obst.each do |o|
@@ -834,7 +845,11 @@ class Projectile < GameObject
   end
 
   def draw(map)
-    @img[@img_index].draw_rot @x + @w / 2 - map.cam.x, @y + @h / 2 - map.cam.y, 0, @angle, 0.5, 0.5, 2, 2
+    if @type == 9
+      super(map, 2, 2)
+    else
+      @img[@img_index].draw_rot @x + @w / 2 - map.cam.x, @y + @h / 2 - map.cam.y, 0, @angle, 0.5, 0.5, 2, 2
+    end
   end
 
   def is_visible(map)

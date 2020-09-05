@@ -197,7 +197,7 @@ class Attack1 < FloatingItem
     return false if b.type != @bomb_type
     if b.facing_right; angle = 0
     else; angle = 180; end
-    section.add Projectile.new(b.x, b.y, 1, angle, b)
+    section.add Projectile.new(b.x + b.w / 2 - 10, b.y + b.h / 2 - 6, 1, angle, b)
     set_switch(switch)
     true
   end
@@ -500,6 +500,34 @@ class Attack3 < FloatingItem
     b = SB.player.bomb
     return false if b.type != @bomb_type
     b.set_aura(2, 900)
+    set_switch(switch)
+    true
+  end
+end
+
+class Attack4 < FloatingItem
+  def initialize(x, y, args, section, switch)
+    set_icon :attack4
+    if check switch
+      @bomb_type = :azul
+      return
+    end
+    super x + 2, y + 2, 28, 28, :sprite_attack4, nil, 4, 2,
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7], 6, :azul
+  end
+
+  def update(section)
+    super(section) do
+      take_anim(section, true)
+    end
+  end
+
+  def use(section, switch)
+    b = SB.player.bomb
+    return false if b.type != @bomb_type
+    if b.facing_right; angle = 0
+    else; angle = 180; end
+    section.add Projectile.new(b.x + b.w / 2 - 4, b.y + b.h / 2 - 4, 9, angle, b)
     set_switch(switch)
     true
   end
