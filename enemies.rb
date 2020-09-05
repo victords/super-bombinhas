@@ -2062,7 +2062,7 @@ end
 
 class Pantan < Enemy
   def initialize(x, y, args, section)
-    super(x, y - 72, 32, 104, Vector.new(-44, -16), 3, 2, [0, 1, 2], 10, 300)
+    super(x, y - 72, 32, 104, Vector.new(-44, -16), 3, 2, [0, 1, 2], 15, 300)
     @leaf1 = Rectangle.new(x - 37, y - 36, 32, 10)
     @leaf2 = Rectangle.new(x + 28, y - 40, 42, 10)
     @roots = Rectangle.new(x - 29, y + 20, 92, 12)
@@ -2116,5 +2116,62 @@ class Pantan < Enemy
     super(map)
     @bandage1.draw(map, 2, 2) if @leaf1_hit
     @bandage2.draw(map, 2, 2) if @leaf2_hit
+  end
+end
+
+class Kraklet < SBGameObject
+  SCORE = 400
+
+  def initialize(x, y, args, section)
+    super(x - 2, y - 24, 36, 40, :sprite_Kraklet, Vector.new(-12, -56), 3, 2)
+    @attack_area = Rectangle.new(@x, @y - 50, @w, @h + 50)
+    @score = 400
+  end
+
+  def update(section)
+    if @dying
+      @timer += 1
+      @dead = true if @timer == 150
+      return
+    end
+
+    b = SB.player.bomb
+    if @attacking
+      b.hit if b.bounds.intersect?(@attack_area) && @timer > 15
+      @timer += 1
+      if @timer <= 20
+        animate_once([2, 3, 4], 7)
+      elsif @timer == 21
+        set_animation(4)
+      elsif @timer > 60
+        animate_once([4, 3, 2, 0], 7) do
+          @attacking = false
+        end
+      end
+    else
+      animate([0, 1], 15)
+      if b.x + b.w > @x - 20 && @x + @w + 20 > b.x && b.y + b.h > @y - 50 && b.y + b.h <= @y
+        set_animation(2)
+        @attacking = true
+        @timer = 0
+      end
+    end
+
+    if b.explode?(self) || section.explode?(self) || section.projectile_hit?(self)
+      SB.player.stage_score += SCORE
+      section.add_score_effect(@x + @w / 2, @y, SCORE)
+      set_animation(5)
+      @dying = true
+      @timer = 0
+    end
+  end
+
+  def draw(map)
+    color = 0xffffff
+    if SB.stage.stopped
+      remaining = SB.stage.stop_time_duration - SB.stage.stopped_timer
+      color = 0xff6666 if remaining >= 120 || (remaining / 5) % 2 == 0
+    end
+    super(map, 2, 2, 255, color)
   end
 end

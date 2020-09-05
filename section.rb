@@ -102,6 +102,7 @@ class Section
     Jellep,
     JillisStone,
     Key,
+    Kraklet,
     Lambul,
     Life,
     Lift,
