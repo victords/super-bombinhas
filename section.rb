@@ -138,6 +138,7 @@ class Section
     StalactiteGenerator,
     Star,
     Stilty,
+    ThornyPlant,
     Turner,
     TwinWalls,
     Ulor,
@@ -550,6 +551,8 @@ class Section
   end
 
   def update(stopped)
+    SB.check_song
+
     enemy_count = 0
     fire_rock_count = 0
     unless stopped == :all

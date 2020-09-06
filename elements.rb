@@ -68,13 +68,11 @@ class TwoStateObject < SBGameObject
       if @state2
         animate @s1_s2_indices, @change_anim_interval
         if @img_index == @s1_s2_indices[-1]
-          set_animation @s1_s2_indices[-2]
           @changing = false
         end
       else
         animate @s2_s1_indices, @change_anim_interval
         if @img_index == @s2_s1_indices[-1]
-          set_animation @s2_s1_indices[-2]
           @changing = false
         end
       end
@@ -423,7 +421,7 @@ end
 class Pin < TwoStateObject
   def initialize(x, y, args, section)
     super x, y, 32, 32, :sprite_Pin, Vector.new(0, 0), 5, 1,
-      60, 0, 3, [0], [4], [1, 2, 3, 4, 0], [3, 2, 1, 0, 4], (not args.nil?)
+      60, 0, 3, [0], [4], [1, 2, 3, 4], [3, 2, 1, 0], (not args.nil?)
 
     @obst = Block.new(x, y, 32, 32, true)
     section.obstacles << @obst if args
@@ -454,7 +452,7 @@ class Spikes < TwoStateObject
     when 2 then y_g = -1
     else        x_g = 1
     end
-    super(x - 2, y - 2, 36, 36, :sprite_Spikes, Vector.new(x_g, y_g), 5, 1, 150, 0, 2, [0], [4], [1, 2, 3, 4, 0], [3, 2, 1, 0, 4], !a[1].nil?)
+    super(x - 2, y - 2, 36, 36, :sprite_Spikes, Vector.new(x_g, y_g), 5, 1, 150, 0, 2, [0], [4], [1, 2, 3, 4], [3, 2, 1, 0], !a[1].nil?)
     @active_bounds = Rectangle.new x, y, 32, 32
     @obst = Block.new(x, y, 32, 32)
   end
@@ -2014,6 +2012,24 @@ class Bell < SBGameObject
       set_animation 1
       @timer = 0
     end
+  end
+end
+
+class ThornyPlant < TwoStateObject
+  def initialize(x, y, args, section)
+    super(x, y, 32, 32, :sprite_thornyPlant, Vector.new(0, 0), 3, 1, 90, 0, 5, [0], [2], [1, 2], [1, 0], !args.nil?)
+  end
+
+  def update(section)
+    super(section)
+    SB.player.bomb.hit if @state2 && @timer >= 10 && SB.player.bomb.collide?(self)
+  end
+
+  def s1_to_s2(section); end
+  def s2_to_s1(section); end
+
+  def is_visible(map)
+    true
   end
 end
 
