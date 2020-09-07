@@ -553,11 +553,14 @@ class Section
   def update(stopped)
     SB.check_song
 
+    bomb = SB.player.bomb
+    bomb.poisoned = false
+
     enemy_count = 0
     fire_rock_count = 0
     unless stopped == :all
       @elements.reverse_each do |e|
-        is_enemy = e.is_a?(Enemy) || e.is_a?(Ekips) || e.is_a?(Faller)
+        is_enemy = e.is_a?(Enemy) || e.is_a?(Ekips) || e.is_a?(Faller) || e.is_a?(Kraklet)
         e.update(self) if e.is_visible(@map) && !(is_enemy && stopped == :enemies)
         if e.dead?
           @elements.delete(e)
@@ -574,8 +577,6 @@ class Section
     @hide_tiles.each do |t|
       t.update self if t.is_visible @map
     end
-
-    bomb = SB.player.bomb
 
     @camera_target_pos = Vector.new(bomb.x + bomb.w / 2, bomb.y + bomb.h / 2) unless @fixed_camera
     d_x = @camera_target_pos.x - @camera_ref_pos.x

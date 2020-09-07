@@ -1842,38 +1842,13 @@ class Puzzle < SBGameObject
 end
 
 class PoisonGas < SBGameObject
-  @@instance_counter = 0
-
   def initialize(x, y, args, section)
-    @@player = false
-    @@timer = 0
-    super(x - 12, y - 12, 56, 56, :sprite_poisonGas, Vector.new(-2, -2), 3, 1)
-    @index = (@@instance_counter += 1)
+    super(x - 18, y - 18, 68, 68, :sprite_poisonGas, Vector.new(-2, -2), 3, 1)
   end
 
   def update(section)
     animate([0, 1, 2], 7)
-
-    @@player = true if SB.player.bomb.collide?(self)
-    if @index == @@instance_counter
-      if @@player
-        @@timer += 1
-        if @@timer == 180
-          SB.player.bomb.hit
-          @@timer = 0
-        end
-      else
-        @@timer = 0
-      end
-    end
-  end
-
-  def draw(map)
-    super(map)
-    if @index == @@instance_counter
-      SB.text_helper.write_line(((180 - @@timer).to_f / 60).ceil.to_s, 400, 250, :center, 0xffffff, 255, :border, 0, 1, 255, 1) if @@player && !SB.player.dead?
-      @@player = false
-    end
+    SB.player.bomb.poisoned = true if SB.player.bomb.collide?(self)
   end
 end
 
@@ -2026,7 +2001,7 @@ class ThornyPlant < TwoStateObject
 
   def update(section)
     super(section)
-    SB.player.bomb.hit if @state2 && @timer >= 10 && SB.player.bomb.collide?(self)
+    SB.player.bomb.hit if @state2 && @timer >= 10 && @timer < 80 && SB.player.bomb.collide?(self)
   end
 
   def s1_to_s2(section); end

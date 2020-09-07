@@ -21,8 +21,8 @@ class Bomb < GameObject
   STOP_TIME_COOLDOWN = 1800
   EXPLODE_COOLDOWN = 900
 
-  attr_reader :type, :name, :hp, :saved_hp, :facing_right, :can_use_ability, :cooldown, :will_explode, :shielded
-  attr_accessor :active, :power, :slipping
+  attr_reader :type, :name, :hp, :saved_hp, :facing_right, :can_use_ability, :cooldown, :will_explode, :shielded, :poison_timer
+  attr_accessor :active, :power, :slipping, :poisoned
 
   def initialize(type, hp)
     case type
@@ -50,7 +50,7 @@ class Bomb < GameObject
 
     @explosion_timer = 0
     @explosion_counter = 10
-    @paralyze_timer = 0
+    @paralyze_timer = @poison_timer = 0
 
     @shield_fx = Sprite.new(0, 0, :fx_shield, 2, 1)
     @aura_fx = Sprite.new(0, 0, :fx_aura, 2, 1)
@@ -158,6 +158,15 @@ class Bomb < GameObject
       @invulnerable_timer += 1
       @invulnerable = false if @invulnerable_timer == @invulnerable_time
     end
+    if @poisoned
+      @poison_timer += 1
+      if @poison_timer == 180
+        hit
+        @poison_timer = 0
+      end
+    else
+      @poison_timer = 0
+    end
     proj_type = section.projectile_hit?(self)
     if proj_type == 8
       @paralyze_timer = 120 unless @invulnerable
@@ -188,6 +197,9 @@ class Bomb < GameObject
     end
     if @paralyze_timer > 0
       @paralyze_timer -= 1
+    end
+    if @poisoned
+      @poison_timer += 1 if @poison_timer < 180
     end
     if @will_explode
       @explosion_timer += 1
@@ -326,18 +338,23 @@ class Bomb < GameObject
 
   def draw(map)
     super(map, 2, 2, 255, @paralyze_timer > 0 ? 0xff6666 : 0xffffff, nil, @facing_right ? nil : :horiz) unless @invulnerable && @invulnerable_timer % 6 < 3
-    if @shielded
-      @shield_fx.x = @x + @img_gap.x + @img[0].width * 2 - 6
-      @shield_fx.y = @y + @img_gap.y - 8
-      @shield_fx.draw(map, 2, 2)
-    end
-    if @aura
-      @aura_fx.x = @x - 10; @aura_fx.y = @y - 30
-      @aura_fx.draw(map, 2, 2)
-    end
-    if @will_explode && !SB.player.dead?
-      SB.text_helper.write_line SB.text(:count_down), 400, 200, :center, 0xffffff, 255, :border, 0, 1, 255, 1 if @explosion_counter > 6
-      SB.text_helper.write_line @explosion_counter.to_s, 400, 220, :center, 0xffffff, 255, :border, 0, 1, 255, 1
+    unless SB.player.dead?
+      if @shielded
+        @shield_fx.x = @x + @img_gap.x + @img[0].width * 2 - 6
+        @shield_fx.y = @y + @img_gap.y - 8
+        @shield_fx.draw(map, 2, 2)
+      end
+      if @aura
+        @aura_fx.x = @x - 10; @aura_fx.y = @y - 30
+        @aura_fx.draw(map, 2, 2)
+      end
+      if @poisoned
+        SB.text_helper.write_line(((180 - @poison_timer).to_f / 60).ceil.to_s, 400, 250, :center, 0xffffff, 255, :border, 0, 1, 255, 1)
+      end
+      if @will_explode
+        SB.text_helper.write_line SB.text(:count_down), 400, 200, :center, 0xffffff, 255, :border, 0, 1, 255, 1 if @explosion_counter > 6
+        SB.text_helper.write_line @explosion_counter.to_s, 400, 220, :center, 0xffffff, 255, :border, 0, 1, 255, 1
+      end
     end
     @explosion.draw map, 2 * @explosion_radius.to_f / 90, 2 * @explosion_radius.to_f / 90 if @exploding
   end
