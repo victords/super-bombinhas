@@ -2017,7 +2017,11 @@ end
 
 class ThornyPlant < TwoStateObject
   def initialize(x, y, args, section)
-    super(x, y, 32, 32, :sprite_thornyPlant, Vector.new(0, 0), 3, 1, 90, 0, 5, [0], [2], [1, 2], [1, 0], !args.nil?)
+    a = (args || '').split(',')
+    @tiles_x = (a[0] || 1).to_i
+    @tiles_y = (a[1] || 1).to_i
+    super(x, y, @tiles_x * C::TILE_SIZE, @tiles_y * C::TILE_SIZE, :sprite_thornyPlant, Vector.new(0, 0),
+          3, 1, 90, 0, 5, [0], [2], [1, 2], [1, 0], !a[2].nil?)
   end
 
   def update(section)
@@ -2030,6 +2034,14 @@ class ThornyPlant < TwoStateObject
 
   def is_visible(map)
     true
+  end
+
+  def draw(map)
+    (0...@tiles_x).each do |i|
+      (0...@tiles_y.to_i).each do |j|
+        @img[@img_index].draw(@x + i * C::TILE_SIZE - map.cam.x, @y + j * C::TILE_SIZE - map.cam.y, 0, 2, 2)
+      end
+    end
   end
 end
 
