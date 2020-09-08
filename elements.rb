@@ -32,13 +32,14 @@ class SBGameObject < GameObject
 end
 
 class TwoStateObject < SBGameObject
-  def initialize(x, y, w, h, img, img_gap, sprite_cols, sprite_rows,
-    change_interval, anim_interval, change_anim_interval, s1_indices, s2_indices, s1_s2_indices, s2_s1_indices, s2_first = false)
+  def initialize(x, y, w, h, img, img_gap, sprite_cols, sprite_rows, change_interval, anim_interval, change_anim_interval,
+                 s1_indices, s2_indices, s1_s2_indices, s2_s1_indices, s2_first = false, change_interval_2 = nil, delay = 0)
     super x, y, w, h, img, img_gap, sprite_cols, sprite_rows
 
-    @timer = 0
+    @timer = -delay
     @changing = false
     @change_interval = change_interval
+    @change_interval_2 = change_interval_2 || change_interval
     @anim_interval = anim_interval
     @change_anim_interval = change_anim_interval
     @s1_indices = s1_indices
@@ -51,7 +52,7 @@ class TwoStateObject < SBGameObject
 
   def update(section)
     @timer += 1
-    if @timer == @change_interval
+    if @state2 && @timer == @change_interval_2 || !@state2 && @timer == @change_interval
       @state2 = (not @state2)
       if @state2
         s1_to_s2 section
@@ -1995,13 +1996,13 @@ class ThornyPlant < TwoStateObject
     a = (args || '').split(',')
     @tiles_x = (a[0] || 1).to_i
     @tiles_y = (a[1] || 1).to_i
-    super(x, y, @tiles_x * C::TILE_SIZE, @tiles_y * C::TILE_SIZE, :sprite_thornyPlant, Vector.new(0, 0),
-          3, 1, 90, 0, 5, [0], [2], [1, 2], [1, 0], !a[2].nil?)
+    super(x, y, @tiles_x * C::TILE_SIZE, @tiles_y * C::TILE_SIZE, :sprite_thornyPlant, Vector.new(0, 0), 3, 1,
+          105, 0, 5, [0], [2], [1, 2], [1, 0], !a[2].nil?, 45, a[2] ? 30 : 0)
   end
 
   def update(section)
     super(section)
-    SB.player.bomb.hit if @state2 && @timer >= 10 && @timer < 80 && SB.player.bomb.collide?(self)
+    SB.player.bomb.hit if @state2 && SB.player.bomb.collide?(self)
   end
 
   def s1_to_s2(section); end
