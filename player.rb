@@ -139,6 +139,7 @@ class Player
     bomb = @bombs[type]
     bomb.x = @bomb.x
     bomb.y = @bomb.y
+    bomb.set_invulnerable(@bomb.invulnerable_time, @bomb.invulnerable_timer) if @bomb.invulnerable
     @bomb = bomb
     SB.stage.update_bomb
   end

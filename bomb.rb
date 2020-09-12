@@ -21,7 +21,8 @@ class Bomb < GameObject
   STOP_TIME_COOLDOWN = 1800
   EXPLODE_COOLDOWN = 900
 
-  attr_reader :type, :name, :hp, :saved_hp, :facing_right, :can_use_ability, :cooldown, :will_explode, :shielded, :poison_timer
+  attr_reader :type, :name, :hp, :saved_hp, :facing_right, :can_use_ability, :cooldown, :will_explode, :shielded, :poison_timer,
+              :invulnerable, :invulnerable_time, :invulnerable_timer
   attr_accessor :active, :power, :slipping, :poisoned
 
   def initialize(type, hp)
@@ -294,9 +295,9 @@ class Bomb < GameObject
     @saved_hp = @hp
   end
 
-  def set_invulnerable(time = nil)
+  def set_invulnerable(time = nil, timer = nil)
     @invulnerable = true
-    @invulnerable_timer = 0
+    @invulnerable_timer = timer || 0
     @invulnerable_time = time || C::INVULNERABLE_TIME
   end
 
@@ -308,14 +309,16 @@ class Bomb < GameObject
   end
 
   def reset(loaded = false)
-    @will_explode = @exploding = @aura = @dying = @shielded = false
+    @will_explode = @exploding = @aura = @dying = @shielded = @poisoned = @invulnerable = false
+    @active = @facing_right = @can_use_ability = true
+    @cooldown = @paralyze_timer = @poison_timer = @invulnerable_timer = 0
     @speed.x = @speed.y = @stored_forces.x = @stored_forces.y = 0
     @power = 1
-    @cooldown = @paralyze_timer = 0
-    @can_use_ability = true
-    if loaded; @hp = @saved_hp
-    else; @saved_hp = @hp = @def_hp; end
-    @active = @facing_right = true
+    if loaded
+      @hp = @saved_hp
+    else
+      @saved_hp = @hp = @def_hp
+    end
   end
 
   def celebrate

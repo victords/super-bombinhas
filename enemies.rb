@@ -2052,7 +2052,13 @@ class Frock < Enemy
   end
 
   def hit_by_bomb(section)
-    SB.player.bomb.hit
+    b = SB.player.bomb
+    if b.power > 1
+      b.bounce
+      hit(section)
+    else
+      b.hit
+    end
   end
 
   def draw(map)
@@ -2178,7 +2184,7 @@ end
 
 class Pikey < Enemy
   def initialize(x, y, args, section)
-    super(x - 3, y - 4, 30, 30, Vector.new(-4, -4), 3, 2, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 2, 4], 10, 200)
+    super(x + 2, y + 1, 28, 28, Vector.new(-5, -5), 3, 2, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 2, 4], 10, 200)
     @state = @timer = 0
   end
 

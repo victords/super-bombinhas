@@ -911,9 +911,9 @@ end
 
 class AirMattress < GameObject
   def initialize(x, y, args, section)
-    super x + 2, y + 16, 60, 1, :sprite_airMattress, Vector.new(-2, -2), 1, 3
-    @active_bounds = Rectangle.new(x, y + 15, 64, 32)
     a = args.split(',')
+    super x, y + 16, (a[2] || '2').to_i * C::TILE_SIZE, 1, :sprite_airMattress, Vector.new(0, -2), 1, 3
+    @active_bounds = Rectangle.new(@x, @y - 2, @w, 16)
     @color = a[0].to_i(16)
     @timer = 0
     @points = [
@@ -966,10 +966,11 @@ class AirMattress < GameObject
         @state = :normal
       end
     end
+    @active_bounds = Rectangle.new(@x, @y - 2, @w, 16)
   end
 
   def draw(map)
-    super map, 2, 2, 255, @color
+    super map, @w / C::TILE_SIZE, 2, 255, @color
   end
 end
 
