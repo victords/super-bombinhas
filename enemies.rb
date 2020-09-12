@@ -2175,3 +2175,31 @@ class Kraklet < SBGameObject
     super(map, 2, 2, 255, color)
   end
 end
+
+class Pikey < Enemy
+  def initialize(x, y, args, section)
+    super(x - 3, y - 4, 30, 30, Vector.new(-4, -4), 3, 2, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 2, 4], 10, 200)
+    @state = @timer = 0
+  end
+
+  def update(section)
+    super(section)
+    @timer += 1
+    if @timer == 15
+      if @state == 0 || @state == 1
+        @y += 1
+      else
+        @y -= 1
+      end
+      @state += 1
+      @state = 0 if @state == 4
+      @timer = 0
+    end
+  end
+
+  def hit_by_bomb(section)
+    SB.player.bomb.hit
+  end
+
+  def hit_by_projectile(section); end
+end

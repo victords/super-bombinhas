@@ -115,6 +115,7 @@ class Section
     Necrul,
     Owlep,
     Pantan,
+    Pikey,
     Pin,
     Poison,
     PoisonGas,
