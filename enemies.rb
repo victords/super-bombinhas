@@ -2209,3 +2209,47 @@ class Pikey < Enemy
 
   def hit_by_projectile(section); end
 end
+
+class Gars < FloorEnemy
+  def initialize(x, y, args, section)
+    super(x, y - 64, args, 32, 96, Vector.new(-54, -4), 7, 1, [0, 1, 2, 1], 7, 280, 3, 2)
+  end
+
+  def update(section)
+    b = SB.player.bomb
+    if @turning && b.over?(@hit_area)
+      if @invulnerable
+        b.bounce(false)
+      else
+        b.bounce
+        hit(section)
+      end
+    end
+    super(section) do
+      @timer += 1
+      if @timer == 60
+        @indices = [0, 1, 2, 1]
+        @interval = 7
+        set_animation(0)
+        set_direction
+      end
+    end
+  end
+
+  def prepare_turn(dir)
+    @hit_area = Rectangle.new(@facing_right ? @x - 6 : @x - 54, @y + 56, 92, 1)
+    @timer = 0
+    @indices = [3, 4, 5, 5, 5, 5, 5, 5, 5, 5, 4, 3]
+    @interval = 5
+    set_animation(3)
+    super(dir)
+  end
+
+  def hit_by_bomb(section)
+    SB.player.bomb.bounce(false) unless @turning
+  end
+
+  def bounds
+    @turning ? Rectangle.new(-1000, -1000, 0, 0) : super
+  end
+end

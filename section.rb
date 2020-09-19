@@ -89,6 +89,7 @@ class Section
     Frock,
     Fureel,
     Gargoil,
+    Gars,
     Goal,
     Graphic,
     GunPowder,
