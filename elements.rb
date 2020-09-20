@@ -993,26 +993,37 @@ class Branch < GameObject
 end
 
 class Water
+  LIMIT = 5.0
+
   attr_reader :x, :y, :w, :h, :bounds
 
   def initialize(x, y, args, section)
-    a = args.split ':'
+    a = args.split ','
     @x = x
-    @y = y + 5
+    @y = y + 8
     @w = C::TILE_SIZE * a[0].to_i
-    @h = C::TILE_SIZE * a[1].to_i - 5
+    @h = C::TILE_SIZE * a[1].to_i - 8
     @bounds = Rectangle.new(@x, @y, @w, @h)
     section.add_interacting_element(self)
   end
 
   def update(section)
     b = SB.player.bomb
-    if b.collide? self
-      b.stored_forces.y -= 1
-      unless SB.player.dead?
-        SB.player.die
+    if b.collide?(self)
+      delta = b.y + b.h - @y
+      @reached_bottom = true if delta >= LIMIT
+      b.stored_forces.y -= b.speed.y + 2 * G.gravity.y if @reached_bottom
+      unless @prev_colliding
         section.add_effect(Effect.new(b.x + b.w / 2 - 32, @y - 19, :fx_water, 1, 4, 8))
+        if SB.player.dead?
+          b.stop
+        else
+          SB.player.die
+        end
+        @prev_colliding = true
       end
+    else
+      @reached_bottom = false
     end
   end
 

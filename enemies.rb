@@ -2217,12 +2217,16 @@ class Gars < FloorEnemy
 
   def update(section)
     b = SB.player.bomb
-    if @turning && b.over?(@hit_area)
-      if @invulnerable
-        b.bounce(false)
-      else
-        b.bounce
-        hit(section)
+    if @turning
+      if b.over?(@hit_area)
+        if @invulnerable
+          b.bounce(false)
+        else
+          b.bounce
+          hit(section)
+        end
+      elsif b.bounds.intersect?(@hit_area)
+        b.hit
       end
     end
     super(section) do
