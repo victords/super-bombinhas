@@ -993,8 +993,6 @@ class Branch < GameObject
 end
 
 class Water
-  LIMIT = 5.0
-
   attr_reader :x, :y, :w, :h, :bounds
 
   def initialize(x, y, args, section)
@@ -1010,20 +1008,13 @@ class Water
   def update(section)
     b = SB.player.bomb
     if b.collide?(self)
-      delta = b.y + b.h - @y
-      @reached_bottom = true if delta >= LIMIT
-      b.stored_forces.y -= b.speed.y + 2 * G.gravity.y if @reached_bottom
-      unless @prev_colliding
+      b.stored_forces.y -= 1
+      unless @touched
+        b.stop
+        SB.player.die
         section.add_effect(Effect.new(b.x + b.w / 2 - 32, @y - 19, :fx_water, 1, 4, 8))
-        if SB.player.dead?
-          b.stop
-        else
-          SB.player.die
-        end
-        @prev_colliding = true
+        @touched = true
       end
-    else
-      @reached_bottom = false
     end
   end
 
