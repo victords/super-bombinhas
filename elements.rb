@@ -925,7 +925,7 @@ class AirMattress < GameObject
       case a[1]
       when '2' then 2
       when '3' then 4
-      else          1
+      else          0.5
       end
     @passable = true
     @state = :normal

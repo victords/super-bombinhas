@@ -2213,11 +2213,14 @@ end
 class Gars < FloorEnemy
   def initialize(x, y, args, section)
     super(x, y - 64, args, 32, 96, Vector.new(-54, -4), 7, 1, [0, 1, 2, 1], 7, 280, 3, 2)
+    @dont_fall = true
+    @facing_right = !args.nil?
+    @forces = Vector.new @speed_m, 0 if @facing_right
   end
 
   def update(section)
     b = SB.player.bomb
-    if @turning
+    if @turning && !@dying
       if b.over?(@hit_area)
         if @invulnerable
           b.bounce(false)
