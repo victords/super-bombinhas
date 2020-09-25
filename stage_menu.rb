@@ -224,25 +224,25 @@ class StageMenu
       t3 = MenuNumber.new(SB.player.stage_score, 590, 820, :right)
       t3.init_movement
       t3.move_to 590, 220
-      t4 = MenuText.new(:total, 210, 860)
-      t4.init_movement
-      t4.move_to 210, 260
-      t5 = MenuNumber.new(SB.player.score, 590, 860, :right, next_bonus ? 0xff0000 : 0)
-      t5.init_movement
-      t5.move_to 590, 260
-      @stage_end_comps = [p, t1, t2, t3, t4, t5]
+      @stage_end_comps = [p, t1, t2, t3]
 
       if bonus
         if SB.stage.won_reward
-          t6 = MenuImage.new(372, 905, :icon_lives)
-          t6.move_to 372, 305
-          t6.init_movement
-          t7 = MenuText.new("x #{SB.stage.reward}", 413, 905, 400, :center)
-          t7.init_movement
-          t7.move_to 413, 305
-          @stage_end_comps << t6 << t7
+          t4 = MenuImage.new(372, 905, :icon_lives)
+          t4.move_to 372, 305
+          t4.init_movement
+          t5 = MenuText.new("x #{SB.stage.reward}", 413, 905, 400, :center)
+          t5.init_movement
+          t5.move_to 413, 305
+          @stage_end_comps << t4 << t5
         end
       else
+        t4 = MenuText.new(:total, 210, 860)
+        t4.init_movement
+        t4.move_to 210, 260
+        t5 = MenuNumber.new(SB.player.score, 590, 860, :right, next_bonus ? 0xff0000 : 0)
+        t5.init_movement
+        t5.move_to 590, 260
         t6 = MenuText.new(:spec_taken, 210, 900)
         t6.init_movement
         t6.move_to 210, 300
@@ -255,7 +255,7 @@ class StageMenu
         t9 = MenuText.new("#{SB.stage.star_count}/#{C::STARS_PER_STAGE}", 590, 940, 300, :right)
         t9.init_movement
         t9.move_to(590, 340)
-        @stage_end_comps << t6 << t7 << t8 << t9
+        @stage_end_comps << t4 << t5 << t6 << t7 << t8 << t9
 
         if SB.stage.star_count >= C::STARS_PER_STAGE
           t10 = MenuText.new(:all_stars_found, 590, 968, 300, :right)

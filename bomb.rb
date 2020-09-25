@@ -259,7 +259,7 @@ class Bomb < GameObject
 
   def over?(obj, tolerance = nil)
     tolerance ||= @speed.y > C::PLAYER_OVER_TOLERANCE ? @speed.y : C::PLAYER_OVER_TOLERANCE
-    @speed.y > 0 && @x + @w > obj.x && obj.x + obj.w > @x && @y + @h > obj.y && @y + @h <= obj.y + tolerance
+    @x + @w > obj.x && obj.x + obj.w > @x && @y + @h > obj.y && @y + @h <= obj.y + tolerance
   end
 
   def bounce(play_sound = true)

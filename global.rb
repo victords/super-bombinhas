@@ -30,7 +30,7 @@ module C
   EXIT_MARGIN = 16
   DEATH_PENALTY = 1_000
   GAME_OVER_PENALTY = 10_000
-  BONUS_THRESHOLD = 10_000
+  BONUS_THRESHOLD = 15_000
   BONUS_LEVELS = 2
   GAME_LIMIT = 10
   MOVIE_DELAY = 30
@@ -257,7 +257,6 @@ class SB
     def end_stage
       if @bonus
         @bonus = nil
-        @player.stage_score = 0
         StageMenu.end_stage(false, false, true)
       else
         if @stage.spec_taken
@@ -268,7 +267,6 @@ class SB
         end
         prev_factor = @player.score / C::BONUS_THRESHOLD
         @player.score += @player.stage_score
-        @player.stage_score = 0
         factor = @player.score / C::BONUS_THRESHOLD
         @bonus = (factor - 1) % C::BONUS_LEVELS + 1 if factor > prev_factor
         @prev_stage = @stage
@@ -280,6 +278,7 @@ class SB
     def check_next_stage(continue = true)
       if @bonus
         StageMenu.initialize
+        @player.stage_score = 0
         config = IO.read("#{Res.prefix}stage/bonus/config").split[@bonus-1].split(',').map(&:to_i)
         @stage = Stage.new('bonus', @bonus)
         @stage.start(false, config[0], config[1], config[2])
@@ -294,6 +293,7 @@ class SB
       # Res.clear
       @player.startup_item = @player.temp_startup_item
       @player.temp_startup_item = nil
+      @player.stage_score = 0
       @prev_stage = @bonus = nil
       if @world.num < @player.last_world ||
          @stage.num != @player.last_stage ||
