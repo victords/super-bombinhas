@@ -301,6 +301,7 @@ class Spring < GameObject
 
   def initialize(x, y, args, section, switch)
     @switch = switch
+    @w = 32
     set_icon :spring
     return if check(switch)
     super x, y, 32, 32, :sprite_Spring, Vector.new(-2, -16), 3, 2
