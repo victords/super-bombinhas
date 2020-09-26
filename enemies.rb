@@ -2266,3 +2266,25 @@ class Gars < FloorEnemy
     @turning ? Rectangle.new(-1000, -1000, 0, 0) : super
   end
 end
+
+class Zingz < Enemy
+  SPEED = 3
+  AIM_WEIGHT = 0.2
+
+  def initialize(x, y, args, section)
+    super(x - 9, y + 1, 50, 30, Vector.new(-4, -22), 7, 1, [0, 1, 2, 1, 3, 4, 5, 4], 5, 150)
+  end
+
+  def update(section)
+    super(section) do
+      b = SB.player.bomb
+      new_aim = Vector.new(b.x + b.w / 2 - @w / 2, b.y + b.h / 2 - @h / 2)
+      if @aim
+        @aim = new_aim * AIM_WEIGHT + @aim * (1 - AIM_WEIGHT)
+      else
+        @aim = new_aim
+      end
+      move_free(@aim, SPEED)
+    end
+  end
+end

@@ -155,6 +155,7 @@ class Section
     Xylophob,
     Yaw,
     Zep,
+    Zingz,
     Zirkn
   ]
 
