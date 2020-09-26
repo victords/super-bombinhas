@@ -188,7 +188,12 @@ class Section
 
   def set_bgs(s)
     @bgs = []
+    @repeat_bg_y = true
     s.each do |bg|
+      if bg.end_with?('!')
+        @repeat_bg_y = false
+        bg = bg[0..-2]
+      end
       if File.exist?("#{Res.prefix}img/bg/#{bg}.png")
         @bgs << Res.img("bg_#{bg}", false, true)
       else
@@ -734,8 +739,11 @@ class Section
 
   def draw_bgs
     @bgs.each_with_index do |bg, ind|
-      back_x = -@map.cam.x * (0.5 + ind * 0.1); back_y = -@map.cam.y * (0.5 + ind * 0.1)
-      tiles_x = @size.x / bg.width / 2; tiles_y = @size.y / bg.height / 2
+      back_x = -@map.cam.x * (0.5 + ind * 0.1)
+      back_y = @repeat_bg_y ? -@map.cam.y * (0.5 + ind * 0.1) :
+                              -(@map.cam.y.to_f / (@map.get_absolute_size.y - C::SCREEN_HEIGHT) * (bg.height * 2 - C::SCREEN_HEIGHT))
+      tiles_x = @size.x / bg.width / 2
+      tiles_y = @repeat_bg_y ? @size.y / bg.height / 2 : 1
       (1...tiles_x).each do |i|
         if back_x + i * bg.width * 2 > 0
           back_x += (i - 1) * bg.width * 2

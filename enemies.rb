@@ -137,6 +137,10 @@ class Enemy < GameObject
     @control_timer = 0
   end
 
+  def is_visible(map)
+    @dying || super(map)
+  end
+
   def draw(map = nil, scale_x = 2, scale_y = 2, alpha = 0xff, color = 0xffffff, angle = nil, flip = nil, z_index = 0, round = false)
     return if @invulnerable && (@control_timer / 3) % 2 == 0
     if SB.stage.stopped
@@ -1345,7 +1349,9 @@ class Lambul < FloorEnemy
 
   def update(section)
     b = SB.player.bomb
-    if @attacking
+    if @dying
+      super
+    elsif @attacking
       @timer += 1
       if @timer == 80
         @attacking = false
