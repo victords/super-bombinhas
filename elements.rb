@@ -2024,6 +2024,38 @@ class ThornyPlant < TwoStateObject
   end
 end
 
+class Nest < SBGameObject
+  MIN_INTERVAL = 120
+  MAX_INTERVAL = 240
+
+  def initialize(x, y, args, section)
+    super(x - 18, y, 68, 32, :sprite_Nest, Vector.new(-14, -14))
+    section.obstacles << self
+    @timer = 0
+    @next_spawn = rand(MIN_INTERVAL..MAX_INTERVAL)
+  end
+
+  def update(section)
+    if SB.player.bomb.explode?(self) || section.explode?(self)
+      unless @dead
+        section.obstacles.delete(self)
+        section.add_effect(Effect.new(@x + 18, @y, :fx_WallCrack3, 2, 2, 10))
+        section.add_effect(Effect.new(@x, @y + 12, :fx_WallCrack3, 2, 2, 10))
+        section.add_effect(Effect.new(@x + 36, @y + 12, :fx_WallCrack3, 2, 2, 10))
+        @dead = true
+      end
+    else
+      @timer += 1
+      if @timer >= @next_spawn
+        section.add(Zingz.new(@x + @w / 2 - 25, @y - 15, nil, section))
+        section.add_effect(Effect.new(@x + @w / 2 - 32, @y - 32, :fx_spawn, 2, 2, 6))
+        @timer = 0
+        @next_spawn = rand(MIN_INTERVAL..MAX_INTERVAL)
+      end
+    end
+  end
+end
+
 class Explosion < Effect
   attr_reader :c_x, :c_y, :radius, :owner
 

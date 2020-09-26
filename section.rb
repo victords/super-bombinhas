@@ -114,6 +114,7 @@ class Section
     MountainBombie,
     MovingWall,
     Necrul,
+    Nest,
     Owlep,
     Pantan,
     Pikey,
