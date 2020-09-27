@@ -160,6 +160,7 @@ class FloorEnemy < Enemy
     @forces = Vector.new -@speed_m, 0
     @facing_right = false
     @turning = false
+    @floor_tolerance = 0
   end
 
   def update(section, tolerance = nil, &block)
@@ -182,8 +183,8 @@ class FloorEnemy < Enemy
           prepare_turn :left
         elsif @dont_fall
           if @facing_right
-            prepare_turn :left unless section.obstacle_at?(@x + @w, @y + @h)
-          elsif not section.obstacle_at?(@x - 1, @y + @h)
+            prepare_turn :left unless floor?(section, false)
+          elsif not floor?(section, true)
             prepare_turn :right
           end
         elsif @facing_right
@@ -195,6 +196,13 @@ class FloorEnemy < Enemy
         end
       end
     end
+  end
+
+  def floor?(section, left)
+    (0..@floor_tolerance).each do |i|
+      return true if section.obstacle_at?(left ? @x - 1 - i : @x + @w + i, @y + @h)
+    end
+    false
   end
 
   def prepare_turn(dir)
@@ -2285,5 +2293,109 @@ class Zingz < Enemy
       end
       move_free(@aim, SPEED)
     end
+  end
+end
+
+class Globb < FloorEnemy
+  include Boss
+
+  alias :super_update :update
+
+  def initialize(x, y, args, section)
+    super(x - 26, y - 82, args, 84, 114, Vector.new(-28, -8), 2, 3, [0, 1, 2, 1], 10, 3700, 2.5, 5)
+    @start_pos = Vector.new(x, y)
+    @floor_tolerance = 16
+    @turn_counter = 0
+    @timer = 0
+    @boxes = []
+    replace_spawns(Box, [[-11, 0], [-9, -3]], section)
+    @spikes = []
+    replace_spawns(FixedSpikes, [[-15, 1], [-14, 1], [-13, 1]], section)
+    init
+  end
+
+  def replace_spawns(type, positions, section)
+    list = type == Box ? @boxes : @spikes
+    list.each { |obj| obj.instance_exec { remove_obstacle(section); @dead = true } }
+    list.clear
+    positions.each do |p|
+      list << type.new(@start_pos.x + p[0] * C::TILE_SIZE, @start_pos.y + p[1] * C::TILE_SIZE, type == Box ? list.size : '0,2', section)
+    end
+    list.each { |obj| section.add(obj) }
+  end
+
+  def update(section)
+    update_boss(section, false) do
+      if @invulnerable
+        move(Vector.new(0, 0), section.get_obstacles(@x, @y, @w, @h), [])
+        @control_timer += 1
+        if @control_timer > 0 && @bottom
+          @speed.x = 0
+        end
+        if @control_timer == 120
+          set_animation(0)
+          @invulnerable = false
+          @speed.x = @facing_right ? @speed_m : -@speed_m
+
+          if @hp == 3
+            replace_spawns(Box, [[9, -6], [10, -3]], section)
+            replace_spawns(FixedSpikes, [[13, 1], [14, 1], [15, 1]], section)
+          elsif @hp == 1
+            replace_spawns(Box, [[-9, -3], [9, -6], [11, -6], [10, -3]], section)
+            replace_spawns(FixedSpikes, [[-15, 1], [-14, 1], [-13, 1]], section)
+          end
+          @boxes.each { |b| b.activate(section) }
+        end
+      elsif @bottom.is_a?(SpecialBlock) && @bottom.info == :fixedSpikes
+        hit(section)
+        set_animation(5)
+        @stored_forces = Vector.new(@x < @start_pos.x ? 10 : -10, -35)
+        @control_timer = 0
+      else
+        super_update(section) do
+          if @turn_counter % 3 == 0
+            if @timer % 15 == 0
+              section.add(PoisonGas.new(@start_pos.x + @w / 2 + (@timer / 5 + @turn_counter / 3 - 7) * 64 + 16, @y + 64, @hp < 2 ? 900 : @hp < 4 ? 840 : 600, section))
+              if @hp < 4
+                section.add(PoisonGas.new(@start_pos.x + @w / 2 + (@timer / 5 + @turn_counter / 3 - 7) * 64 + 16, @y - 12, @hp < 2 ? 900 : 840, section))
+              end
+            end
+            @timer += 1
+            if @timer == 60
+              @indices = [0, 1, 2, 1]
+              @interval = 10
+              set_animation(0)
+              set_direction
+              @timer = 0
+              @turn_counter = 0 if @turn_counter == 9
+            end
+          else
+            set_direction
+          end
+        end
+      end
+    end
+  end
+
+  def prepare_turn(dir)
+    super(dir)
+    @turn_counter += 1
+    if @turn_counter % 3 == 0
+      @indices = [3, 4]
+      @interval = 7
+      set_animation(3)
+    end
+  end
+
+  def hit_by_bomb(section)
+    SB.player.bomb.bounce(false)
+  end
+
+  def hit_by_projectile(section); end
+  def hit_by_explosion(section); end
+
+  def draw(map)
+    super(map)
+    draw_boss
   end
 end

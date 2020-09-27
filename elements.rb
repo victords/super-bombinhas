@@ -159,6 +159,15 @@ end
 
 ################################################################################
 
+class SpecialBlock < Block
+  attr_reader :info
+
+  def initialize(x, y, w, h, passable = false, info = nil)
+    super(x, y, w, h, passable)
+    @info = info
+  end
+end
+
 class Goal < SBGameObject
   def initialize(x, y, args, section)
     super x - 4, y - 118, 40, 150, :sprite_goal1, nil, 4, 1
@@ -515,7 +524,7 @@ class FixedSpikes < GameObject
     end
     super x - 2, y - 2, 36, 36, "sprite_fixedSpikes#{type}", Vector.new(x_g, y_g), 1, 1
     @active_bounds = Rectangle.new(x, y, 32, 32)
-    section.obstacles << Block.new(x, y, 32, 32)
+    section.obstacles << (@block = SpecialBlock.new(x, y, 32, 32, false, :fixedSpikes))
   end
 
   def update(section)
@@ -526,6 +535,10 @@ class FixedSpikes < GameObject
        (@dir == 3 && b.x + b.w > @x && b.x + b.w <= @x + 2 && b.y + b.h > @y + 2 && @y + @h - 2 > b.y)
       SB.player.bomb.hit
     end
+  end
+
+  def remove_obstacle(section)
+    section.obstacles.delete(@block)
   end
 
   def draw(map)
@@ -1607,7 +1620,7 @@ class Box < SBGameObject
   attr_reader :id
 
   def initialize(x, y, args, section)
-    super(x, y, 32, 32, :sprite_box, Vector.new(0, 0))
+    super(x + 2, y, 28, 32, :sprite_box, Vector.new(-2, 0))
     section.obstacles << self
     @max_speed.x = MOVE_SPEED
     @id = args.to_i
@@ -1636,6 +1649,10 @@ class Box < SBGameObject
     section.add_effect(Effect.new(@start_x - 16, @start_y - 16, :fx_spawn, 2, 2, 6))
     @x = @start_x
     @y = @start_y
+  end
+
+  def remove_obstacle(section)
+    section.obstacles.delete(self)
   end
 
   def is_visible(map)
@@ -1848,11 +1865,20 @@ end
 class PoisonGas < SBGameObject
   def initialize(x, y, args, section)
     super(x - 18, y - 18, 68, 68, :sprite_poisonGas, Vector.new(-2, -2), 3, 1)
+    @lifetime = args
   end
 
   def update(section)
     animate([0, 1, 2], 7)
     SB.player.bomb.poisoned = true if SB.player.bomb.collide?(self)
+    if @lifetime
+      @lifetime -= 1
+      @dead = true if @lifetime == 0
+    end
+  end
+
+  def is_visible(map)
+    @lifetime || map.cam.intersect?(@active_bounds)
   end
 end
 

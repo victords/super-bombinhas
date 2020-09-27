@@ -90,6 +90,7 @@ class Section
     Fureel,
     Gargoil,
     Gars,
+    Globb,
     Goal,
     Graphic,
     GunPowder,
