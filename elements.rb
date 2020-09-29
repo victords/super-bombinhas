@@ -2073,8 +2073,10 @@ class Nest < SBGameObject
     else
       @timer += 1
       if @timer >= @next_spawn
-        section.add(Zingz.new(@x + @w / 2 - 25, @y - 15, nil, section))
-        section.add_effect(Effect.new(@x + @w / 2 - 32, @y - 32, :fx_spawn, 2, 2, 6))
+        unless section.element_at(Zingz, @x + @w / 2, @y)
+          section.add(Zingz.new(@x + @w / 2 - 25, @y - 15, nil, section))
+          section.add_effect(Effect.new(@x + @w / 2 - 32, @y - 32, :fx_spawn, 2, 2, 6))
+        end
         @timer = 0
         @next_spawn = rand(MIN_INTERVAL..MAX_INTERVAL)
       end

@@ -465,6 +465,12 @@ class Section
 
   def add_interacting_element(el)
     @inter_elements << el
+    puts @inter_elements.size
+  end
+
+  def remove_interacting_element(el)
+    @inter_elements.delete(el)
+    puts @inter_elements.size
   end
 
   def element_at(type, x, y)

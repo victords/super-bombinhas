@@ -2275,23 +2275,32 @@ class Gars < FloorEnemy
 end
 
 class Zingz < Enemy
-  SPEED = 3
+  MAX_DISTANCE = 10 * C::TILE_SIZE
+  SPEED = 2.5
   AIM_WEIGHT = 0.2
 
   def initialize(x, y, args, section)
-    super(x - 9, y + 1, 50, 30, Vector.new(-4, -22), 7, 1, [0, 1, 2, 1, 3, 4, 5, 4], 5, 120)
+    super(x - 9, y + 1, 50, 30, Vector.new(-4, -22), 7, 1, [0, 1, 2, 1, 3, 4, 5, 4], 5, 80)
+    section.add_interacting_element(self)
   end
 
   def update(section)
     super(section) do
       b = SB.player.bomb
       new_aim = Vector.new(b.x + b.w / 2 - @w / 2, b.y + b.h / 2 - @h / 2)
+      distance = new_aim.distance(Vector.new(@x, @y))
+      next unless distance <= MAX_DISTANCE
       if @aim
         @aim = new_aim * AIM_WEIGHT + @aim * (1 - AIM_WEIGHT)
       else
         @aim = new_aim
       end
       move_free(@aim, SPEED)
+    end
+
+    if @dying && !@removed
+      section.remove_interacting_element(self)
+      @removed = true
     end
   end
 end
