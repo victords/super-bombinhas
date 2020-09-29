@@ -172,6 +172,7 @@ class Stage
     if @cur_section.entrance
       @cur_entrance = @entrances[@cur_section.entrance]
       @cur_section.entrance = nil
+      SB.save
     end
   end
 

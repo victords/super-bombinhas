@@ -117,7 +117,7 @@ class Enemy < GameObject
 
   def hit(section, amount = 1)
     @hp -= amount
-    if @hp == 0
+    if @hp <= 0
       SB.player.stage_score += @score
       section.add_score_effect(@x + @w / 2, @y, @score)
       @dying = true

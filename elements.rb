@@ -2051,8 +2051,8 @@ class ThornyPlant < TwoStateObject
 end
 
 class Nest < SBGameObject
-  MIN_INTERVAL = 120
-  MAX_INTERVAL = 240
+  MIN_INTERVAL = 180
+  MAX_INTERVAL = 300
 
   def initialize(x, y, args, section)
     super(x - 18, y, 68, 32, :sprite_Nest, Vector.new(-14, -14))

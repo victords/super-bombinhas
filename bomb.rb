@@ -350,10 +350,10 @@ class Bomb < GameObject
         @aura_fx.x = @x - 10; @aura_fx.y = @y - 30
         @aura_fx.draw(map, 2, 2)
       end
-      if @poisoned
+      if @poisoned && @active
         SB.text_helper.write_line(((180 - @poison_timer).to_f / 60).ceil.to_s, 400, 250, :center, 0xffffff, 255, :border, 0, 1, 255, 1)
       end
-      if @will_explode
+      if @will_explode && @active
         SB.text_helper.write_line SB.text(:count_down), 400, 200, :center, 0xffffff, 255, :border, 0, 1, 255, 1 if @explosion_counter > 6
         SB.text_helper.write_line @explosion_counter.to_s, 400, 220, :center, 0xffffff, 255, :border, 0, 1, 255, 1
       end
