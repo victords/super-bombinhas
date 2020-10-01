@@ -345,6 +345,7 @@ class Elevator < SBGameObject
     when 4 then w = 96; cols = rows = nil; x_g = 0; y_g = -3
     when 5 then w = 64; cols = rows = nil; x_g = y_g = 0
     when 6 then w = 224; cols = rows = nil; x_g = y_g = 0
+    when 7 then w = 64; cols = rows = nil; x_g = y_g = 0
     end
     super x, y, w, 1, "sprite_Elevator#{type}", Vector.new(x_g, y_g), cols, rows
     @passable = true
