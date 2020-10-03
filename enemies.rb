@@ -2408,3 +2408,15 @@ class Globb < FloorEnemy
     draw_boss
   end
 end
+
+class Bombark < FloorEnemy
+  def initialize(x, y, args, section)
+    super(x + 6, y + 6, args, 20, 26, Vector.new(-8, -6), 3, 1, [1, 2, 1, 0], 7, 0, 3.5)
+  end
+end
+
+class Vamdark < Enemy
+  def initialize(x, y, args, section)
+    super(x + 4, y - 4, 24, 66, Vector.new(-12, 0), 2, 1, [0, 1], 15, 0)
+  end
+end
