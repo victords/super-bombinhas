@@ -56,6 +56,8 @@ ulor_speech		O que pensam que fazem aqui, pequenas bombas?! É o fim para vocês
 ulor_death		Gaaaaaah! Não acredito... Derrotado por essas criaturas insignificantes...!
 zirkn_speech	Foi tolice da parte de vocês vir até aqui... Agora, VOCÊS VÃO PAGAR!
 zirkn_death		Malditas sejam!!
+globb_speech	Grrrraaaaarrrblaaarrrgh!!! (Saia do meu pântano!!!)
+globb_death		Ggaaaaarrrr! Bleearr...gh! (Aaaaah! Deixe-me em p...az!)
 count_down		Contagem regressiva para explodir!
 world_1			Ilha de Tars
 stage_1_1		Explorando a Praia de Tars
@@ -83,7 +85,13 @@ stage_4_3		O antigo templo
 stage_4_4		As peças de quebra-cabeça ocultas
 stage_4_5		O antigo castelo
 world_5			Pântano Mual
-stage_5_1		???
+stage_5_1		Bem-vindo ao pântano
+stage_5_2		Espinhos, veneno e águas perigosas
+stage_5_3		A descida maluca!
+stage_5_4		Cai a noite em Mual
+stage_5_5		Um ninho de criaturas perversas
+world_6			Cavernas Ooria
+stage_6_1		???
 bonus			Bônus
 bonus_1			Chegue ao final
 bonus_2			Mate todos os inimigos

@@ -56,6 +56,8 @@ ulor_speech		What do you think you're doing here, little bombs?! This is the end
 ulor_death		Gaaaaaah! I can't believe... Defeated by these insignificant creatures...!
 zirkn_speech	It was so foolish of you to come here... Now, YOU SHALL PAY!
 zirkn_death		Curse youuuuu!!
+globb_speech	Grrrraaaaarrrblaaarrrgh!!! (Get out of my swamp!!!)
+globb_death		Ggaaaaarrrr! Bleearr...gh! (Aaaaah! Leave me al...one!)
 count_down		Countdown to explosion!
 world_1			Tars Island
 stage_1_1		Exploring the Tars Beach
@@ -82,7 +84,13 @@ stage_4_3		The ancient temple
 stage_4_4		The hidden puzzle pieces
 stage_4_5		The ancient castle
 world_5			Mual Swamp
-stage_5_1		???
+stage_5_1		Welcome to the swamp
+stage_5_2		Thorns, poison and dangerous waters
+stage_5_3		The crazy descent!
+stage_5_4		Night falls at Mual
+stage_5_5		A nest of vicious creatures
+world_6			Ooria Caves
+stage_6_1		???
 bonus			Bonus
 bonus_1			Reach the goal
 bonus_2			Kill all enemies

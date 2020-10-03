@@ -56,6 +56,8 @@ ulor_speech		¿Qué creen que están haciendo aquí, pequeñas bombitas? ¡Este 
 ulor_death		¡Gaaaaaah! No lo puedo creer... ¡Derrotado por estas insignificantes criaturas...!
 zirkn_speech	Fue tan tonto de su parte venir aquí ... ¡Ahora, USTEDES PAGARÁN!
 zirkn_death		¡Malditas sean!
+globb_speech	Grrrraaaaarrrblaaarrrgh!!! (¡¡¡Sal de mi pantano!!!)
+globb_death		Ggaaaaarrrr! Bleearr...gh! (¡Aaaaah! ¡Déjame en p...az!)
 count_down		¡Cuenta regresiva para la explosión!
 world_1			Isla de Tars
 stage_1_1		Explorando la Playa de Tars
@@ -82,7 +84,13 @@ stage_4_3		El antiguo templo
 stage_4_4		Las piezas ocultas del rompecabezas
 stage_4_5		El antiguo castillo
 world_5			Pantano Mual
-stage_5_1		???
+stage_5_1		Bienvenido al pantano
+stage_5_2		Espinas, veneno y aguas peligrosas
+stage_5_3		¡El descenso loco!
+stage_5_4		Cae la noche en Mual
+stage_5_5		Un nido de criaturas viciosas
+world_6			Cuevas Ooria
+stage_6_1		???
 bonus			Bonus
 bonus_1			Alcanza la meta
 bonus_2			Mata todos los enemigos
