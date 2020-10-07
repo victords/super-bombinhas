@@ -2410,8 +2410,69 @@ class Globb < FloorEnemy
 end
 
 class Bombark < FloorEnemy
+  EXPLOSION_RADIUS = 90
+
   def initialize(x, y, args, section)
-    super(x + 6, y + 6, args, 20, 26, Vector.new(-8, -6), 3, 1, [1, 2, 1, 0], 7, 0, 3.5)
+    super(x + 6, y + 6, args, 20, 26, Vector.new(-8, -6), 3, 2, [1, 2, 1, 0], 7, 360, 3, 2)
+  end
+
+  def update(section)
+    if @invulnerable || @dying
+      super(section)
+      return
+    end
+
+    if @exploding
+      animate([4, 5], 7)
+      @timer += 1
+      if @timer == 80
+        set_animation 1
+        @exploding = false
+        @timer = 0
+      end
+    elsif @alert
+      check_hit(section)
+
+      @timer += 1
+      if @timer == 30
+        section.add_effect(Explosion.new(@x + @w / 2, @y + @h / 2, EXPLOSION_RADIUS, self))
+        set_animation 4
+        @exploding = true
+        @alert = false
+        @timer = 0
+      end
+    else
+      super(section)
+
+      b = SB.player.bomb
+      d_x = @x + @w / 2 - b.x - b.w / 2
+      d_y = @y + @h / 2 - b.y - b.h / 2
+      if d_x * d_x + d_y * d_y <= EXPLOSION_RADIUS * EXPLOSION_RADIUS
+        section.add_effect(Effect.new(@x + @w / 2 - 4, @y - 30, :fx_alert, nil, nil, 0, nil, 30))
+        set_animation 3
+        @alert = true
+        @timer = 0
+      end
+    end
+  end
+
+  def check_hit(section)
+    unless SB.player.dead?
+      b = SB.player.bomb
+      if b.over?(self)
+        hit_by_bomb(section)
+      else
+        if b.collide?(self)
+          b.hit
+        end
+        if b.explode?(self) or section.explode?(self)
+          hit_by_explosion(section)
+        else
+          proj = section.projectile_hit?(self)
+          hit_by_projectile(section) if proj && proj != 8
+        end
+      end
+    end
   end
 end
 
