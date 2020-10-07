@@ -2477,7 +2477,69 @@ class Bombark < FloorEnemy
 end
 
 class Vamdark < Enemy
+  RANGE_H = 80
+  RANGE_H_EXT = 120
+  RANGE_V = 270
+
   def initialize(x, y, args, section)
-    super(x + 4, y - 4, 24, 66, Vector.new(-12, 0), 2, 1, [0, 1], 15, 0)
+    super(x + 4, y - 4, 24, 66, Vector.new(-48, 0), 2, 4, [0], 7, 250, 2)
+    @start_pos = Vector.new(@x, @y)
+    @state = :waiting
+    @angle = 0
+  end
+
+  def update(section)
+    super(section) do
+      b = SB.player.bomb
+      if @state == :going_down
+        move_free(@aim, 5)
+        @angle += 6 if @timer < 30
+        @timer += 1
+        if @speed.x == 0 && @speed.y == 0
+          @indices = [4, 5, 6, 5]
+          set_animation(4)
+          @attack_area = Rectangle.new(@x - 46, @y + 20, 116, 36)
+          @state = :attacking
+          @timer = 0
+        end
+      elsif @state == :attacking
+        b.hit if b.bounds.intersect?(@attack_area)
+        @timer += 1
+        if @timer == 90
+          @indices = [3, 3, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+          set_animation(3)
+          @state = :returning
+          @timer = 0
+        end
+      elsif @state == :returning
+        move_free(@start_pos, 5)
+        @angle += 6 if @timer < 30
+        @timer += 1
+        if @speed.x == 0 && @speed.y == 0
+          @indices = [0]
+          set_animation(0)
+          @angle = 0
+          @state = :waiting
+        end
+      elsif b.y > @y && b.y < @y + RANGE_V
+        if b.x + b.w >= @x - RANGE_H && b.x < @x + @w + RANGE_H
+          @aim = Vector.new(b.x + b.w / 2 + 30 * b.speed.x - @w / 2, b.y + b.h / 2 - @h + 20)
+          @indices = [2, 3, 4, 5, 6, 5, 4, 5, 6, 5, 4, 5, 6, 5, 4, 5, 6]
+          set_animation(2)
+          @state = :going_down
+          @timer = 0
+        elsif b.x + b.w >= @x - RANGE_H_EXT && b.x < @x + @w + RANGE_H_EXT
+          @indices = [1]
+          set_animation(1)
+        else
+          @indices = [0]
+          set_animation(0)
+        end
+      end
+    end
+  end
+
+  def draw(map)
+    super(map, 2, 2, 0xff, 0xffffff, @angle)
   end
 end
