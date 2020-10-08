@@ -1472,7 +1472,7 @@ class Crusher < SBGameObject
   def update(section)
     @timer += 1
     if @state % 2 == 0
-      if @timer == 180
+      if @timer == 60
         grow 14
         set_animation @state == 0 ? 1 : 2
         @timer = 0
@@ -1488,18 +1488,27 @@ class Crusher < SBGameObject
         @state = @state == 1 ? 2 : 0
       end
     end
-    b = SB.player.bomb
-    if b.bottom == @bottom and @state == 2
-      b.hit
-    end
   end
 
   def grow(amount)
     amount = -amount if @state > 1
     @h += amount
     @bottom.instance_eval { @y -= amount; @h += amount }
-    if SB.player.bomb.bottom == @bottom
-      SB.player.bomb.y -= amount
+    b = SB.player.bomb
+    if b.bounds.intersect?(@active_bounds)
+      if @y + @h > b.y
+        if @y + @h + b.h > @bottom.y
+          b.hit(999)
+        else
+          b.y = @y + @h
+        end
+      elsif @bottom.y < b.y + b.h
+        if @bottom.y - b.h < @y + @h
+          b.hit(999)
+        else
+          b.y = @bottom.y - b.h
+        end
+      end
     end
   end
 end
