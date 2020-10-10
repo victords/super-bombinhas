@@ -1461,11 +1461,15 @@ end
 
 class Crusher < SBGameObject
   def initialize(x, y, args, section)
-    super x, y, 32, 16, :sprite_Crusher, Vector.new(0, 0), 4, 1
-    @bottom = Block.new(x, y + 144, 32, 16, false)
+    case args
+    when '2' then w = 96; y_g = -4
+    else          w = 32; y_g = 0
+    end
+    super x, y, w, 16, "sprite_Crusher#{args}", Vector.new(0, y_g), 4, 1
+    @bottom = Block.new(x, y + 144, w, 16, false)
     @state = 0
     @timer = 0
-    @active_bounds = Rectangle.new(x, y, 32, 160)
+    @active_bounds = Rectangle.new(x, y, w, 160)
     section.obstacles << self << @bottom
   end
 
