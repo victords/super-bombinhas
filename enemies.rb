@@ -1815,7 +1815,6 @@ class Dynamike < FloorEnemy
 
   def explode(section)
     section.add_effect(Explosion.new(@x + @w / 2, @y + @h / 2, 90, self))
-    SB.play_sound(Res.sound(:explode))
   end
 
   def hit_by_bomb(section)

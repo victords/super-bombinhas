@@ -2130,7 +2130,7 @@ class Explosion < Effect
   attr_reader :c_x, :c_y, :radius, :owner
 
   def initialize(x, y, radius, owner)
-    super x - radius - 10, y - radius - 10, :fx_Explosion, 2, 2, 5, [0, 1, 2, 3], 60
+    super x - radius - 10, y - radius - 10, :fx_Explosion, 2, 2, 5, [0, 1, 2, 3], 60, :explode, '.wav', SB.sound_volume * 0.1
     size = 2 * radius + 20
     @active_bounds = Rectangle.new(@x, @y, size, size)
     @scale = size / 90.0
