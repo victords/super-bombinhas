@@ -338,14 +338,17 @@ class Elevator < SBGameObject
     a = args.split(':')
     type = a[0].to_i
     open = a[0][-1] == '!'
+    indices = nil
+    interval = 0
     case type
     when 1 then w = 96; cols = rows = nil; x_g = y_g = 0
-    when 2 then w = 64; cols = 4; rows = 1; x_g = y_g = 0
+    when 2 then w = 64; cols = 4; rows = 1; x_g = y_g = 0; interval = 8
     when 3 then w = 64; cols = rows = nil; x_g = 0; y_g = -3
     when 4 then w = 96; cols = rows = nil; x_g = 0; y_g = -3
     when 5 then w = 64; cols = rows = nil; x_g = y_g = 0
     when 6 then w = 224; cols = rows = nil; x_g = y_g = 0
     when 7 then w = 64; cols = rows = nil; x_g = y_g = 0
+    when 8 then w = 64; cols = 2; rows = 3; x_g = y_g = 0; indices = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5]; interval = 5
     end
     super x, y, w, 1, "sprite_Elevator#{type}", Vector.new(x_g, y_g), cols, rows
     @passable = true
@@ -381,7 +384,9 @@ class Elevator < SBGameObject
       end
     end
     @points << Vector.new(x, y)
-    @indices = *(0...@img.size)
+    indices = *(0...@img.size) if indices.nil?
+    @indices = indices
+    @interval = interval
     @active_bounds = Rectangle.new min_x, min_y, (max_x - min_x + w), (max_y - min_y + @img[0].height)
     @active = a[1][-1] != ")"
     @id = a[1].split('(')[1].to_i unless @active
@@ -394,7 +399,7 @@ class Elevator < SBGameObject
       b = SB.player.bomb
       cycle @points, @speed_m, section.passengers, section.get_obstacles(b.x, b.y), section.ramps, @stop_time
     end
-    animate @indices, 8
+    animate @indices, @interval
   end
 
   def activate(section, arg = nil)
