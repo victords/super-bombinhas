@@ -23,7 +23,7 @@ class Bomb < GameObject
 
   attr_reader :type, :name, :hp, :saved_hp, :facing_right, :can_use_ability, :cooldown, :will_explode, :shielded, :poison_timer,
               :invulnerable, :invulnerable_time, :invulnerable_timer
-  attr_accessor :active, :power, :slipping, :poisoned
+  attr_accessor :active, :power, :slipping, :sticking, :poisoned
 
   def initialize(type, hp)
     case type
@@ -180,9 +180,9 @@ class Bomb < GameObject
     friction_factor = @slipping ? @speed.x**2 / @max_speed_x_sq : @speed.x.abs / @max_speed_x
     friction_factor = 1 if friction_factor > 1
     friction_factor = 0.015 if friction_factor < 0.015
-    forces.x -= (@slipping ? 0.2 : 0.5) * friction_factor * (@speed.x <=> 0)
+    forces.x -= (@slipping ? 0.2 : @sticking ? 1 : 0.5) * friction_factor * (@speed.x <=> 0)
     move(forces, section.get_obstacles(@x, @y), section.ramps) if @active
-    @slipping = false
+    @slipping = @sticking = false
   end
 
   def update_timers

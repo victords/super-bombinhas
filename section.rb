@@ -142,6 +142,7 @@ class Section
     Stalactite,
     StalactiteGenerator,
     Star,
+    StickyFloor,
     Stilty,
     ThornyPlant,
     Turner,

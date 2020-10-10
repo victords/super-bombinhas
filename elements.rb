@@ -2094,6 +2094,29 @@ class Nest < SBGameObject
   end
 end
 
+class StickyFloor
+  attr_reader :bounds
+
+  def initialize(x, y, args, section)
+    @bounds = Rectangle.new(x, y + C::TILE_SIZE - 1, C::TILE_SIZE, 1)
+  end
+
+  def update(section)
+    b = SB.player.bomb
+    b.sticking = true if b.collide?(self)
+  end
+
+  def is_visible(map)
+    map.cam.intersect?(@bounds)
+  end
+
+  def dead?
+    false
+  end
+
+  def draw(map); end
+end
+
 class Explosion < Effect
   attr_reader :c_x, :c_y, :radius, :owner
 
