@@ -294,6 +294,7 @@ class SB
       @player.startup_item = @player.temp_startup_item
       @player.temp_startup_item = nil
       @player.stage_score = 0
+      @player.add_bomb if @stage.unlock_bomb?
       @prev_stage = @bonus = nil
       if @world.num < @player.last_world ||
          @stage.num != @player.last_stage ||
@@ -318,7 +319,6 @@ class SB
         if @world.num < C::LAST_WORLD - 1
           @player.last_world = @world.num + 1
           @player.last_stage = 1
-          @player.add_bomb
           save
         else
           save(nil, @world.num)
