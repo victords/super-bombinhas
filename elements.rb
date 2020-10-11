@@ -95,6 +95,7 @@ module Speech
   def init_speech(msg_id)
     @speaking = false
     @msg = SB.text(msg_id.to_sym).split('/')
+    @page = 0
   end
 
   def update_speech(section)
@@ -1213,7 +1214,6 @@ class Monep < GameObject
     @state = :normal
     @balloon = Res.img :fx_Balloon3
     init_speech(:msg_monep)
-    @page = 0
   end
 
   def update(section)
@@ -2124,6 +2124,47 @@ class StickyFloor
   end
 
   def draw(map); end
+end
+
+class Aldan < SBGameObject
+  include Speech
+
+  def initialize(x, y, args, section)
+    if SB.player.bomb_unlocked?(:branca)
+      @dead = true
+    else
+      t_s = C::TILE_SIZE
+      super(x - 5 * t_s, y - 9 * t_s, 6 * t_s, 10 * t_s, :sprite_BombaBranca, Vector.new(0, 9 * t_s - 24), 6, 2)
+      @blocking = true
+      @timer = 0
+      init_speech(:msg_aldan)
+    end
+  end
+
+  def update(section)
+    return if @dead
+
+    if @speaking
+      @timer += 1
+      if @timer == 600 or SB.key_pressed?(:confirm)
+        section.unset_fixed_camera
+        @speaking = @blocking = false
+      end
+    else
+      animate([0, 1], 8)
+      if @blocking && SB.player.bomb.collide?(self)
+        section.set_fixed_camera(@x + 5 * C::TILE_SIZE, @y + 9 * C::TILE_SIZE)
+        @speaking = true
+      end
+    end
+  end
+
+  def draw(map)
+    return if @dead
+
+    super(map, 2, 2, 255, 0xffffff, nil, :horiz)
+    draw_speech
+  end
 end
 
 class Explosion < Effect

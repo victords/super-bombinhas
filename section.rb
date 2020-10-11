@@ -53,6 +53,7 @@ end
 class Section
   ELEMENT_TYPES = [
     AirMattress,
+    Aldan,
     Armep,
     Attack1,
     Attack2,

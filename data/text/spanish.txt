@@ -48,6 +48,7 @@ msg2			Esto es solo un adelanto de lo que te espera en el próximo mundo... ¡Es
 msg_monep		¡Oye! ¡Espera un minuto! Si quieres seguir adelante, debes traerme una Hierba del Bosque. Sí, una deliciosa Hierba del Bosque... ¡Ahora ve!¡Y solo vuelve aquí cuando la tengas!
 msg_mnt_bomb	Hola, anduve de caminata por las montañas, y he perdido mi piedra preciosa Jillis. Es una grande y brillante gema verde... ¿Crees que la podrías encontrar por mí?
 msg_mnt_bomb2	¡Muchas gracias, compañero! Bueno... No tengo mucho para ofrecerte a cambio, pero puedes usar esta máquina flotante si quieres. Te va a ayudar a llegar a las partes más altas de la montaña./¡La vista es maravillosa desde allí!
+msg_aldan		Hey! It's so good to see a fellow bomb here... Thanks for freeing me! Now, we must hurry and defeat Gaxlon and his minions... our citizens are suffering!
 chamal_speech	Entonces... has venido. Bien, temo que este es el final de tu inútil viaje, pequeña bombita. ¡WHEELIAMS, ATRÁPALO!
 chamal_death	¡Noooooo...! ¡¿Cómo he podido perder contra alguien tan débil...?! No... No es posib...
 sahiss_speech	Sssssss Ssssssssssss Sssss?! ¡¡SSSSSS!! (¿Quién eres tú que invades mi sagrada fortaleza forestal? ¡¡PREPARATE PARA MORIR!!)

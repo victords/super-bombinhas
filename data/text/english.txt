@@ -48,6 +48,7 @@ msg2			This is just a sneak-peek of what awaits you in the next world... Stay tu
 msg_monep		Hey! Hold on! If you want to go any further, you must bring me a Forest Herb. Yes, a delicious Forest Herb... Now get lost and only come back here when you have it!
 msg_mnt_bomb	Hi, I was taking a walk in the mountains and I lost my precious Jillis Stone. It's a big, shiny, green gem... Do you think you could find it for me?
 msg_mnt_bomb2	Thanks a lot, mate! Well... I don't have much to offer in return, but you can use this float machine if you want. It will help you reach the highest parts of the mountain./It's a wonderful view from there!
+msg_aldan		¡Oye! Es tan bueno ver a un compañero bomba aquí ... ¡Gracias por liberarme! Ahora, debemos apurarnos y derrotar a Gaxlon y sus secuaces ... ¡nuestros ciudadanos están sufriendo!
 chamal_speech	So... you've come. Well, I'm afraid this is the end of your pointless journey, little bomb. GET HIM, WHEELIAMS!
 chamal_death	Noooooo...!! How come I lost to such a weakling...?! No, that's not... poss...
 sahiss_speech	Sssssss Ssssssssssss Sssss?! SSSSSS!! (Who are you who invades my sacred forest fortress?! PREPARE TO DIE!!)

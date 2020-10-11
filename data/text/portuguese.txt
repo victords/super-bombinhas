@@ -48,6 +48,7 @@ msg2			Isto é apenas uma amostra do que o aguarda no próximo mundo... Fique at
 msg_monep		Ei! Alto lá! Se você quiser passar por aqui, tem que me trazer uma erva florestal. Isso mesmo, uma deliciosa erva florestal... Agora suma daqui e volte apenas quando tiver arranjado uma para mim!
 msg_mnt_bomb	Hi, I was taking a walk in the mountains and I lost my precious Jillis Stone. It's a big, shiny, green gem... Do you think you could find it for me?
 msg_mnt_bomb2	Thanks a lot, mate! Well... I don't have much to offer in return, but you can use this float machine if you want. It will help you reach the highest parts of the mountain./It's a wonderful view from there!
+msg_aldan		Olá! É tão bom ver uma bomba amiga por aqui... obrigado por me libertar! Agora, temos que nos apressar e derrotar Gaxlon e seus capangas... nossos cidadãos estão sofrendo!
 chamal_speech	Então... você veio. Porém, temo que este seja o fim de sua vã jornada, pequena bomba. WHEELIAMS, PEGUEM-NO!
 chamal_death	Nããããããoooo...!! Como eu fui perder para um fracote como esse...?! Não... Não é poss...
 sahiss_speech	Sssssss Ssssssssssss Sssss?! SSSSSS!! (Quem é você que invade minha sagrada fortaleza florestal?! PREPARE-SE PARA MORRER!!)
