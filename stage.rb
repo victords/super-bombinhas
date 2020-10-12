@@ -81,6 +81,8 @@ class Stage
     @star_count = 0
     @spec_taken = false
     @won_reward = false
+    @stopped = nil
+    @stopped_timer = 0
     reset_switches
     @cur_section.start @switches, @cur_entrance[:x], @cur_entrance[:y]
   end
@@ -228,7 +230,7 @@ class Stage
     @switches.select{ |s| s[:state] == state }.map{ |s| s[:index] }
   end
 
-  def stop_time(duration = 1200, all = true)
+  def stop_time(duration, all = true)
     @stopped = all ? :all : :enemies
     @stopped_timer = 0
     @stop_time_duration = duration
@@ -272,12 +274,23 @@ class Stage
 
   def draw
     @cur_section.draw
+
+    if @stopped == :all && @stopped_timer < 40
+      alpha = @stopped_timer < 20 ? (@stopped_timer.to_f / 20 * 255).floor :
+                                    (255 - (@stopped_timer - 20).to_f / 20 * 255).floor
+      c = (alpha << 24) | 0xffffff
+      G.window.draw_quad 0, 0, c,
+                         C::SCREEN_WIDTH, 0, c,
+                         0, C::SCREEN_HEIGHT, c,
+                         C::SCREEN_WIDTH, C::SCREEN_HEIGHT, c, 0
+    end
+
     if @starting == 1
       c = (@alpha << 24)
       G.window.draw_quad 0, 0, c,
-                         800, 0, c,
-                         0, 600, c,
-                         800, 600, c, 0
+                         C::SCREEN_WIDTH, 0, c,
+                         0, C::SCREEN_HEIGHT, c,
+                         C::SCREEN_WIDTH, C::SCREEN_HEIGHT, c, 0
       G.window.draw_quad @panel_x, 200, C::PANEL_COLOR,
                          @panel_x + 600, 200, C::PANEL_COLOR,
                          @panel_x, 400, C::PANEL_COLOR,

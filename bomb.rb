@@ -18,8 +18,9 @@
 require 'minigl'
 
 class Bomb < GameObject
-  STOP_TIME_COOLDOWN = 1800
   EXPLODE_COOLDOWN = 900
+  STOP_TIME_DURATION = 300
+  STOP_TIME_COOLDOWN = 1800
 
   attr_reader :type, :name, :hp, :saved_hp, :facing_right, :can_use_ability, :cooldown, :will_explode, :shielded, :poison_timer,
               :invulnerable, :invulnerable_time, :invulnerable_timer
@@ -144,7 +145,7 @@ class Bomb < GameObject
           if @type == :verde
             explode(false); @can_use_ability = false; @cooldown = EXPLODE_COOLDOWN
           elsif @type == :branca
-            SB.stage.stop_time; @can_use_ability = false; @cooldown = STOP_TIME_COOLDOWN
+            SB.stage.stop_time(STOP_TIME_DURATION); @can_use_ability = false; @cooldown = STOP_TIME_COOLDOWN
           end
         end
       else
