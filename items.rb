@@ -133,8 +133,20 @@ end
 class Life < FloatingItem
   def initialize(x, y, args, section, switch)
     return if check switch
-    super x + 2, y + 2, 28, 28, :sprite_Life, nil, 8, 1,
+    if args.nil?
+      x += 2
+      y += 2
+      w = 28
+      h = 28
+      img = :sprite_Life
+    else
+      w = 32
+      h = 32
+      img = :sprite_megalife
+    end
+    super x, y, w, h, img, nil, 8, 1,
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7], 6
+    @lives = args ? 5 : 1
   end
 
   def update(section)
@@ -145,7 +157,7 @@ class Life < FloatingItem
   end
 
   def use(section, switch)
-    SB.player.lives += 1
+    SB.player.lives += @lives
     set_switch(switch)
     true
   end
