@@ -578,7 +578,7 @@ class Section
     fire_rock_count = 0
     @elements.reverse_each do |e|
       is_enemy = e.is_a?(Enemy) || e.is_a?(Ekips) || e.is_a?(Faller) || e.is_a?(Kraklet)
-      e.update(self) if e.is_visible(@map) && ((stopped != :all && (stopped != :enemies || !is_enemy)) || e.stop_time_immune?)
+      e.update(self) if e.is_visible(@map) && ((stopped != :all && (stopped != :enemies || !is_enemy)) || is_enemy && e.dying || e.stop_time_immune?)
       if e.dead?
         @elements.delete(e)
       else

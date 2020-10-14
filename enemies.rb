@@ -468,8 +468,15 @@ class Ekips < GameObject
     end
   end
 
+  def dying; false; end
+
   def draw(map)
-    super(map, 2, 2)
+    color = 0xffffff
+    if SB.stage.stopped
+      remaining = SB.stage.stop_time_duration - SB.stage.stopped_timer
+      color = 0xff6666 if remaining >= 120 || (remaining / 5) % 2 == 0
+    end
+    super(map, 2, 2, 255, color)
   end
 end
 
@@ -527,9 +534,16 @@ class Faller < GameObject
     end
   end
 
+  def dying; false; end
+
   def draw(map)
-    @img[@img_index].draw @x - map.cam.x, @y - map.cam.y, 0, 2, 2
-    @bottom_img.draw @x - map.cam.x, @start.y + 15 - map.cam.y, 0, 2, 2
+    color = 0xffffffff
+    if SB.stage.stopped
+      remaining = SB.stage.stop_time_duration - SB.stage.stopped_timer
+      color = 0xffff6666 if remaining >= 120 || (remaining / 5) % 2 == 0
+    end
+    @img[@img_index].draw @x - map.cam.x, @y - map.cam.y, 0, 2, 2, color
+    @bottom_img.draw @x - map.cam.x, @start.y + 15 - map.cam.y, 0, 2, 2, color
   end
 end
 
@@ -2140,6 +2154,8 @@ end
 
 class Kraklet < SBGameObject
   SCORE = 320
+
+  attr_reader :dying
 
   def initialize(x, y, args, section)
     super(x - 2, y - 24, 36, 40, :sprite_Kraklet, Vector.new(-12, -56), 3, 2)
