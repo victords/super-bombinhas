@@ -576,16 +576,14 @@ class Section
 
     enemy_count = 0
     fire_rock_count = 0
-    unless stopped == :all
-      @elements.reverse_each do |e|
-        is_enemy = e.is_a?(Enemy) || e.is_a?(Ekips) || e.is_a?(Faller) || e.is_a?(Kraklet)
-        e.update(self) if e.is_visible(@map) && !(is_enemy && stopped == :enemies)
-        if e.dead?
-          @elements.delete(e)
-        else
-          enemy_count += 1 if is_enemy
-          fire_rock_count += 1 if e.is_a?(FireRock)
-        end
+    @elements.reverse_each do |e|
+      is_enemy = e.is_a?(Enemy) || e.is_a?(Ekips) || e.is_a?(Faller) || e.is_a?(Kraklet)
+      e.update(self) if e.is_visible(@map) && ((stopped != :all && (stopped != :enemies || !is_enemy)) || e.stop_time_immune?)
+      if e.dead?
+        @elements.delete(e)
+      else
+        enemy_count += 1 if is_enemy
+        fire_rock_count += 1 if e.is_a?(FireRock)
       end
     end
     @effects.each do |e|
@@ -702,11 +700,13 @@ class Section
       end
     end
 
-    @tile_timer += 1
-    if @tile_timer == C::TILE_ANIM_INTERVAL
-      @tile_3_index = (@tile_3_index + 1) % 3
-      @tile_4_index = (@tile_4_index + 1) % 4
-      @tile_timer = 0
+    unless SB.stage.stopped == :all
+      @tile_timer += 1
+      if @tile_timer == C::TILE_ANIM_INTERVAL
+        @tile_3_index = (@tile_3_index + 1) % 3
+        @tile_4_index = (@tile_4_index + 1) % 4
+        @tile_timer = 0
+      end
     end
 
     @hide_tiles.each do |t|

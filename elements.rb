@@ -174,6 +174,10 @@ class Goal < SBGameObject
     super x - 4, y - 118, 40, 150, :sprite_goal1, nil, 4, 1
   end
 
+  def stop_time_immune?
+    true
+  end
+
   def update(section)
     animate [0, 1, 2, 3], 7
     section.finish if SB.player.bomb.collide? self
@@ -265,6 +269,10 @@ class Door < GameObject
     set_animation(1)
     section.start_warp(@entrance)
     @opening = true
+  end
+
+  def stop_time_immune?
+    true
   end
 
   def draw(map)
@@ -489,7 +497,7 @@ class Spikes < TwoStateObject
   end
 
   def update(section)
-    super section
+    super section unless SB.stage.stopped == :all
 
     b = SB.player.bomb
     if @state2
@@ -503,6 +511,10 @@ class Spikes < TwoStateObject
   end
 
   def is_visible(map)
+    true
+  end
+
+  def stop_time_immune?
     true
   end
 
@@ -546,6 +558,10 @@ class FixedSpikes < GameObject
 
   def remove_obstacle(section)
     section.obstacles.delete(@block)
+  end
+
+  def stop_time_immune?
+    true
   end
 
   def draw(map)
@@ -658,17 +674,19 @@ class Ball < GameObject
           forces.x -= 0.15 * @speed.x
         end
 
-        SB.stage.switches.each do |s|
-          if s[:type] == BallReceptor and bounds.intersect? s[:obj].bounds
-            next if s[:obj].is_set
-            s[:obj].set section
-            s2 = SB.stage.find_switch self
-            s2[:extra] = @rec = s[:obj]
-            s2[:state] = :temp_taken
-            @active_bounds.x = @rec.x
-            @active_bounds.y = @rec.y - 31
-            @set = true
-            return
+        unless SB.stage.stopped == :all
+          SB.stage.switches.each do |s|
+            if s[:type] == BallReceptor and bounds.intersect? s[:obj].bounds
+              next if s[:obj].is_set
+              s[:obj].set section
+              s2 = SB.stage.find_switch self
+              s2[:extra] = @rec = s[:obj]
+              s2[:state] = :temp_taken
+              @active_bounds.x = @rec.x
+              @active_bounds.y = @rec.y - 31
+              @set = true
+              return
+            end
           end
         end
       end
@@ -677,6 +695,10 @@ class Ball < GameObject
       @active_bounds = Rectangle.new @x, @y, @w, @h
       @rotation = 3 * (@x - @start_x)
     end
+  end
+
+  def stop_time_immune?
+    true
   end
 
   def draw(map)
@@ -783,6 +805,10 @@ class HideTile
   end
 
   def is_visible(map)
+    true
+  end
+
+  def stop_time_immune?
     true
   end
 
@@ -1044,6 +1070,10 @@ class Water
 
   def is_visible(map)
     map.cam.intersect? @bounds
+  end
+
+  def stop_time_immune?
+    true
   end
 
   def draw(map); end
@@ -1677,6 +1707,10 @@ class Box < SBGameObject
   def is_visible(map)
     true
   end
+
+  def stop_time_immune?
+    true
+  end
 end
 
 class MountainBombie < SBGameObject
@@ -1835,6 +1869,10 @@ class IcyFloor
 
   def dead?
     false
+  end
+
+  def stop_time_immune?
+    true
   end
 
   def draw(map); end
@@ -2121,6 +2159,10 @@ class StickyFloor
 
   def dead?
     false
+  end
+
+  def stop_time_immune?
+    true
   end
 
   def draw(map); end

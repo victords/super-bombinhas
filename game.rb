@@ -153,6 +153,10 @@ class MiniGL::GameObject
   def position
     Vector.new(@x, @y)
   end
+
+  def stop_time_immune?
+    false
+  end
 end
 
 SBGame.new.show
