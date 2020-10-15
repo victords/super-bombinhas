@@ -1270,24 +1270,36 @@ end
 
 class Forsby < Enemy
   def initialize(x, y, args, section)
+    args = ',' if args.nil? || args.empty?
+    args = args.split(',', -1)
     super x - 8, y - 22, 48, 54, Vector.new(-11, -6), 2, 3, [0, 1, 0, 2], 15, 250, 2
-    @facing_right = !args.nil?
+    @facing_right = !args[0].empty?
+    if args[1] && !args[1].empty?
+      @img = Res.imgs(:sprite_Morsby, 2, 3)
+      @img_gap.y = -10
+      @score = 320
+      @intervals = [45, 60, 75]
+      @proj_type = 10
+    else
+      @intervals = [120, 180, 210]
+      @proj_type = 5
+    end
     @state = @timer = 0
   end
 
   def update(section)
     super(section) do
       @timer += 1
-      if @state == 0 && @timer > 120
+      if @state == 0 && @timer > @intervals[0]
         @indices = [3]
         set_animation 3
         @state = 1
-      elsif @state == 1 && @timer > 180
+      elsif @state == 1 && @timer > @intervals[1]
         @indices = [4]
         set_animation 4
-        section.add(Projectile.new(@facing_right ? @x + @w - 16 : @x - 5, @y + 14, 5, @facing_right ? 0 : 180, self))
+        section.add(Projectile.new(@facing_right ? @x + @w - 16 : @x - 5, @y + 14, @proj_type, @facing_right ? 0 : 180, self))
         @state = 2
-      elsif @state == 2 && @timer > 210
+      elsif @state == 2 && @timer > @intervals[2]
         @indices = [0, 1, 0, 2]
         set_animation 0
         @state = @timer = 0
