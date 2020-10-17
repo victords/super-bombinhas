@@ -101,6 +101,7 @@ class Section
     HeatBomb,
     Herb,
     Hooman,
+    Hourglass,
     Icel,
     IcyFloor,
     Ignel,

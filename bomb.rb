@@ -308,6 +308,11 @@ class Bomb < GameObject
     @aura_duration = duration
   end
 
+  def reset_cooldown
+    @cooldown = 0
+    @can_use_ability = true
+  end
+
   def reset(loaded = false)
     @will_explode = @exploding = @aura = @dying = @shielded = @poisoned = @invulnerable = false
     @active = @facing_right = @can_use_ability = true

@@ -546,6 +546,22 @@ class Attack4 < FloatingItem
   end
 end
 
+class Hourglass < FloatingItem
+  include Item
+
+  def initialize(x, y, args, section)
+    super x + 2, y + 2, 28, 28, :sprite_hourglass, nil, 8, 1,
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7], 6, :branca
+  end
+
+  def update(section)
+    super(section) do
+      SB.player.bomb.reset_cooldown
+      SB.play_sound(Res.sound(:getItem))
+    end
+  end
+end
+
 class Star < FloatingItem
   def initialize(x, y, args, section, switch)
     if switch[:state] == :used
