@@ -2301,7 +2301,7 @@ class Graphic < Sprite
     when 13..18 then x -= 64; y -= 88; @w = 160; @h = 120; cols = 1; rows = 3; img_index = SB.lang == :portuguese ? 1 : SB.lang == :english ? 0 : 2
     when 19..20 then x -= 64; y -= 88; @w = 160; @h = 120
     when 21..23 then x -= 14; @w = 60; @h = 32
-    when 24 then x -= 16; y -= 64; @w = 64; @h = 96
+    when 24 then x -= 64; y -= 88; @w = 160; @h = 120; cols = 1; rows = 2; img_index = SB.lang == :english ? 0 : 1
     end
     sprite_name = type == 0 ? args : "graphic#{type}"
     super x, y, "sprite_#{sprite_name}", cols, rows
@@ -2326,6 +2326,10 @@ class Graphic < Sprite
   end
 
   def dead?
+    false
+  end
+
+  def stop_time_immune?
     false
   end
 end
