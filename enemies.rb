@@ -356,28 +356,54 @@ class Fureel < FloorEnemy
 end
 
 class Yaw < Enemy
-  TRACK_POINTS_DISTANCE = 10.66
-
   def initialize(x, y, args, section)
-    super x, y, 32, 32, Vector.new(-4, -4), 3, 2, [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 2, 3, 4, 5], 6, 400
-    @points = [
-      Vector.new(x + 64, y),
-      Vector.new(x + 96, y + 32),
-      Vector.new(x + 96, y + 96),
-      Vector.new(x + 64, y + 128),
-      Vector.new(x, y + 128),
-      Vector.new(x - 32, y + 96),
-      Vector.new(x - 32, y + 32),
-      Vector.new(x, y)
-    ]
+    super x, y, 32, 32, Vector.new(-4, -4), 3, 2, [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 2, 3, 4, 5], 7, 400
 
+    if args.nil?
+      @points = [
+        Vector.new(@x + 64, @y),
+        Vector.new(@x + 96, @y + 32),
+        Vector.new(@x + 96, @y + 96),
+        Vector.new(@x + 64, @y + 128),
+        Vector.new(@x, @y + 128),
+        Vector.new(@x - 32, @y + 96),
+        Vector.new(@x - 32, @y + 32),
+        Vector.new(@x, @y)
+      ]
+      @speed_m = 3
+      tr_dist = 10.66
+    else
+      @x -= 6
+      @y -= 6
+      @w = @h = 44
+      @img = Res.imgs(:sprite_Yawnster, 3, 2)
+      @img_gap = Vector.new(-6, -6)
+      @score = 440
+      @points = [
+        Vector.new(@x + 128, @y + 128),
+        Vector.new(@x + 192, @y + 64),
+        Vector.new(@x + 128, @y),
+        Vector.new(@x, @y + 128),
+        Vector.new(@x - 64, @y + 64),
+        Vector.new(@x, @y)
+      ]
+      @speed_m = 4
+      tr_dist = 10
+    end
+
+    min_x = max_x = @x
+    min_y = max_y = @y
     @track = []
     @points.each_with_index do |p, i|
+      min_x = p.x if p.x < min_x
+      max_x = p.x if p.x > max_x
+      min_y = p.y if p.y < min_y
+      max_y = p.y if p.y > max_y
       n_p = i == @points.size - 1 ? @points[0] : @points[i + 1]
       d_x = n_p.x - p.x; d_y = n_p.y - p.y
       d = Math.sqrt(d_x**2 + d_y**2)
-      amount = (d / TRACK_POINTS_DISTANCE).to_i
-      ratio = TRACK_POINTS_DISTANCE / d
+      amount = (d / tr_dist).to_i
+      ratio = tr_dist / d
       (0...amount).each do |j|
         @track << [p.x + j * ratio * d_x - 1 + @w / 2, p.y + j * ratio * d_y - 1 + @h / 2,
                    p.x + j * ratio * d_x + 1 + @w / 2, p.y + j * ratio * d_y - 1 + @h / 2,
@@ -386,18 +412,20 @@ class Yaw < Enemy
       end
     end
 
-    @active_bounds = Rectangle.new(x - 32, y, 160, 160)
+    @active_bounds = Rectangle.new(min_x, min_y, max_x - min_x + @w, max_y - min_y + @h)
   end
 
   def update(section)
     super section do
-      cycle @points, 3
+      cycle @points, @speed_m
     end
   end
 
   def hit_by_bomb(section)
     SB.player.bomb.hit
   end
+
+  def hit_by_projectile(section); end
 
   def draw(map)
     @track.each do |t|
