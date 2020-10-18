@@ -1593,34 +1593,47 @@ class Boulder < GameObject
 end
 
 class HeatBomb < SBGameObject
+  class ProjectileHitBox
+    def initialize(x, y, w, h)
+      @x = x; @y = y; @w = w; @h = h
+    end
+
+    def bounds
+      Rectangle.new(@x, @y, @w, @h)
+    end
+  end
+
   def initialize(x, y, args, section)
-    super x, y, 32, 32, :sprite_HeatBomb, Vector.new(0, 0), 4, 2
+    super x, y, 32, 32, :sprite_HeatBomb, Vector.new(0, 0), 3, 2
     @state = 0
     @passable = false
     section.obstacles << self
+    @proj_hit_box = ProjectileHitBox.new(x - 10, y - 10, 52, 52)
   end
 
   def update(section)
     if @state == 0
-      animate [0, 1, 2, 1], 7
-      if SB.player.bomb.explode?(self) or section.explode?(self)
+      animate [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1], 5
+      if SB.player.bomb.explode?(self) || section.explode?(self) || section.projectile_hit?(@proj_hit_box)
         @state = 1
         @timer = 0
-        set_animation 3
+        set_animation 2
       end
     elsif @state == 1
-      animate [3, 0], 3
+      animate [2, 0], @timer < 60 ? 6 : 3
+      SB.play_sound(Res.sound(:beep)) if @timer >= 60 && @timer % 6 == 0 || @timer % 12 == 0
       @timer += 1
       if @timer == 120
         @state = 2
         @timer = 0
         section.add_effect(Explosion.new(@x + @w / 2, @y + @h / 2, 48, self))
-        set_animation 4
+        set_animation 3
+        section.obstacles.delete(self)
       end
     else
-      animate [4, 5, 6, 7], 5
+      animate [3, 4, 5], 7
       @timer += 1
-      if @timer == 20
+      if @timer == 21
         @dead = true
       end
     end
