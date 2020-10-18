@@ -1626,7 +1626,7 @@ class HeatBomb < SBGameObject
       if @timer == 120
         @state = 2
         @timer = 0
-        section.add_effect(Explosion.new(@x + @w / 2, @y + @h / 2, 48, self))
+        section.add_effect(Explosion.new(@x + @w / 2, @y + @h / 2, 60, self))
         set_animation 3
         section.obstacles.delete(self)
       end
