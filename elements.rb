@@ -647,8 +647,11 @@ end
 
 class Ball < GameObject
   def initialize(x, y, args, section, switch)
+    if switch[:state] == :taken
+      @dead = true
+      return
+    end
     super x, y, 32, 32, :sprite_Ball
-    @set = switch[:state] == :taken
     @start_x = x
     @rotation = 0
     @active_bounds = Rectangle.new @x, @y, @w, @h
@@ -656,12 +659,9 @@ class Ball < GameObject
   end
 
   def update(section)
+    return if @dead
+
     if @set
-      if @rec.nil?
-        @rec = section.get_next_ball_receptor
-        @x = @active_bounds.x = @rec.x
-        @y = @active_bounds.y = @rec.y - 31
-      end
       @x += (0.1 * (@rec.x - @x)) if @x.round(2) != @rec.x
     else
       forces = Vector.new 0, 0
@@ -712,12 +712,12 @@ class BallReceptor < SBGameObject
   def initialize(x, y, args, section, switch)
     super x, y + 31, 32, 1, :sprite_BallReceptor, Vector.new(0, -8), 1, 2
     @id = args.to_i
-    @will_set = switch[:state] == :taken
+    @loaded_set = switch[:state] == :taken
     @active_bounds = Rectangle.new x, y + 23, 32, 13
   end
 
   def update(section)
-    if @will_set
+    if @loaded_set && !@is_set
       section.activate_object(MovingWall, @id, false)
       @is_set = true
       @img_index = 1
@@ -730,6 +730,15 @@ class BallReceptor < SBGameObject
     section.activate_object MovingWall, @id
     @is_set = true
     @img_index = 1
+  end
+
+  def is_visible(map)
+    @loaded_set && !@is_set || map.cam.intersect?(@active_bounds)
+  end
+
+  def draw(map)
+    Res.img(:sprite_Ball).draw(@x - map.cam.x, @y - 31 - map.cam.y, 0, 2, 2) if @loaded_set
+    super(map)
   end
 end
 

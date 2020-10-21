@@ -79,19 +79,25 @@ class FloatingItem < GameObject
       @dead = true
       return
     end
-    @counter += 1
-    if @counter == 10
-      if @state == 0 or @state == 1; @y -= 1
-      else; @y += 1; end
-      @state += 1
-      @state = 0 if @state == 4
-      @counter = 0
+    unless SB.stage.stopped == :all
+      @counter += 1
+      if @counter == 10
+        if @state == 0 or @state == 1; @y -= 1
+        else; @y += 1; end
+        @state += 1
+        @state = 0 if @state == 4
+        @counter = 0
+      end
+      animate @indices, @interval if @indices
     end
-    animate @indices, @interval if @indices
   end
 
   def take_anim(section, store)
     take(section, store, @x - section.map.cam.x + @w, @y - section.map.cam.y)
+  end
+
+  def stop_time_immune?
+    true
   end
 
   def draw(map, scale_x = 2, scale_y = 2, alpha = 255, color = 0xffffff)
@@ -332,37 +338,42 @@ class Spring < GameObject
       @ready = true
     end
     b = SB.player.bomb
-    if b.bottom == self
-      reset if @state == 4
-      @timer += 1
-      if @timer == 10
-        case @state
-        when 0 then @y += 8; @img_gap.y -= 8; b.y += 8
-        when 1 then @y += 6; @img_gap.y -= 6; b.y += 6
-        when 2 then @y += 4; @img_gap.y -= 4; b.y += 4
+
+    unless SB.stage.stopped == :all
+      if b.bottom == self
+        reset if @state == 4
+        @timer += 1
+        if @timer == 10
+          case @state
+          when 0 then @y += 8; @img_gap.y -= 8; b.y += 8
+          when 1 then @y += 6; @img_gap.y -= 6; b.y += 6
+          when 2 then @y += 4; @img_gap.y -= 4; b.y += 4
+          end
+          @state += 1
+          set_animation @state
+          @timer = 0
         end
-        @state += 1
-        set_animation @state
-        @timer = 0
+      elsif @state > 0 and @state < 4
+        reset
       end
-    elsif b.collide?(self) and SB.key_pressed?(:up)
+
+      if @state == 4
+        animate @indices, 7
+        @timer += 1
+        b.stored_forces.y = -18 if @timer <= 6
+        if @timer == 70
+          reset
+        elsif @timer == 7
+          @y = @start_y
+          @img_gap.y = -16
+        end
+      end
+    end
+
+    if b.collide?(self) and SB.key_pressed?(:up)
       take(section, true, @x - section.map.cam.x + @w / 2, @y - section.map.cam.y + @h / 2)
       @dead = true
       section.obstacles.delete self
-    elsif @state > 0 and @state < 4
-      reset
-    end
-
-    if @state == 4
-      animate @indices, 7
-      @timer += 1
-      b.stored_forces.y = -18 if @timer <= 6
-      if @timer == 70
-        reset
-      elsif @timer == 7
-        @y = @start_y
-        @img_gap.y = -16
-      end
     end
   end
 
@@ -383,6 +394,10 @@ class Spring < GameObject
     spring = Spring.new(x, (b.y / C::TILE_SIZE).floor * C::TILE_SIZE, nil, section, @switch)
     switch[:obj] = spring
     section.add spring
+  end
+
+  def stop_time_immune?
+    true
   end
 
   def draw(map)

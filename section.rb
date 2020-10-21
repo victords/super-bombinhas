@@ -335,7 +335,6 @@ class Section
     @loaded = true
     @dead_timer = 0
 
-    @ball_receptors = []
     switches.each do |s|
       if s[:section] == self
         @elements << s[:obj]
@@ -480,16 +479,6 @@ class Section
     @inter_elements.each do |e|
       if e.is_a? type and x >= e.x and x <= e.x + e.w and y >= e.y and y <= e.y + e.h
         return e
-      end
-    end
-    nil
-  end
-
-  def get_next_ball_receptor
-    SB.stage.switches.each do |s|
-      if s[:section] == self && s[:type] == BallReceptor && s[:state] == :taken && !@ball_receptors.include?(s[:index])
-        @ball_receptors << s[:index]
-        return s[:obj]
       end
     end
     nil
