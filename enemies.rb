@@ -2548,7 +2548,7 @@ class Vamdark < Enemy
       b = SB.player.bomb
       if @state == :going_down
         move_free(@aim, 5)
-        @angle += 6 if @timer < 30
+        @angle += 6 if @angle < 180
         @timer += 1
         if @speed.x == 0 && @speed.y == 0
           @indices = [4, 5, 6, 5]
@@ -2559,6 +2559,7 @@ class Vamdark < Enemy
         end
       elsif @state == :attacking
         b.hit if b.bounds.intersect?(@attack_area)
+        @angle += 6 if @angle < 180
         @timer += 1
         if @timer == 90
           @indices = [3, 3, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -2568,7 +2569,7 @@ class Vamdark < Enemy
         end
       elsif @state == :returning
         move_free(@start_pos, 5)
-        @angle += 6 if @timer < 30
+        @angle += 6 if @angle < 360
         @timer += 1
         if @speed.x == 0 && @speed.y == 0
           @indices = [0]
