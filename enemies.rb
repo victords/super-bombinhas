@@ -141,7 +141,7 @@ class Enemy < GameObject
     @dying || super(map)
   end
 
-  def draw(map = nil, scale_x = 2, scale_y = 2, alpha = 0xff, color = 0xffffff, angle = nil, flip = nil, z_index = 0, round = false)
+  def draw(map = nil, section = nil, scale_x = 2, scale_y = 2, alpha = 0xff, color = 0xffffff, angle = nil, flip = nil, z_index = 0, round = false)
     return if @invulnerable && (@control_timer / 3) % 2 == 0
     if SB.stage.stopped
       remaining = SB.stage.stop_time_duration - SB.stage.stopped_timer
@@ -222,8 +222,8 @@ class FloorEnemy < Enemy
     end
   end
 
-  def draw(map, color = 0xffffff)
-    super(map, 2, 2, 255, color, nil, @facing_right ? :horiz : nil)
+  def draw(map, section = nil, color = 0xffffff)
+    super(map, section, 2, 2, 255, color, nil, @facing_right ? :horiz : nil)
   end
 end
 
@@ -331,8 +331,8 @@ class Sprinny < Enemy
     end
   end
 
-  def draw(map)
-    super(map, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
+  def draw(map, section)
+    super(map, section, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
   end
 end
 
@@ -427,7 +427,7 @@ class Yaw < Enemy
 
   def hit_by_projectile(section); end
 
-  def draw(map)
+  def draw(map, section)
     @track.each do |t|
       G.window.draw_quad(t[0] - map.cam.x, t[1] - map.cam.y, 0xffffffff,
                          t[2] - map.cam.x, t[3] - map.cam.y, 0xffffffff,
@@ -498,7 +498,7 @@ class Ekips < GameObject
 
   def dying; false; end
 
-  def draw(map)
+  def draw(map, section)
     color = 0xffffff
     if SB.stage.stopped
       remaining = SB.stage.stop_time_duration - SB.stage.stopped_timer
@@ -564,7 +564,7 @@ class Faller < GameObject
 
   def dying; false; end
 
-  def draw(map)
+  def draw(map, section)
     color = 0xffffffff
     if SB.stage.stopped
       remaining = SB.stage.stop_time_duration - SB.stage.stopped_timer
@@ -729,8 +729,8 @@ class Chamal < Enemy
     set_animation 0
   end
 
-  def draw(map)
-    super(map, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
+  def draw(map, section)
+    super(map, section, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
     draw_boss
   end
 end
@@ -816,8 +816,8 @@ class Chrazer < Enemy
     end
   end
 
-  def draw(map)
-    super(map, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
+  def draw(map, section)
+    super(map, section, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
   end
 end
 
@@ -900,8 +900,8 @@ class Flep < Enemy
     end
   end
 
-  def draw(map)
-    super map, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil
+  def draw(map, section)
+    super(map, section, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
   end
 end
 
@@ -953,8 +953,8 @@ class Jellep < Enemy
     end
   end
 
-  def draw(map)
-    super map, 2, 2, 255, 0xffffff, nil, @state == 2 ? :vert : nil
+  def draw(map, section)
+    super(map, section, 2, 2, 255, 0xffffff, nil, @state == 2 ? :vert : nil)
   end
 end
 
@@ -1005,8 +1005,8 @@ class Snep < Enemy
     end
   end
 
-  def draw(map)
-    super map, 2, 2, 255, 0xffffff, nil, @facing_right ? nil : :horiz
+  def draw(map, section)
+    super(map, section, 2, 2, 255, 0xffffff, nil, @facing_right ? nil : :horiz)
   end
 end
 
@@ -1131,8 +1131,8 @@ class Zep < Enemy
     end
   end
 
-  def draw(map)
-    super map, 2, 2, 255, 0xffffff, nil, @aim == @aim1 ? nil : :horiz
+  def draw(map, section)
+    super(map, section, 2, 2, 255, 0xffffff, nil, @aim == @aim1 ? nil : :horiz)
   end
 end
 
@@ -1290,7 +1290,7 @@ class Sahiss < FloorEnemy
     set_animation 0
   end
 
-  def draw(map)
+  def draw(map, section)
     super(map)
     draw_boss
   end
@@ -1339,8 +1339,8 @@ class Forsby < Enemy
     end
   end
 
-  def draw(map)
-    super map, 2, 2, 255, 0xffffff, nil, @facing_right ? nil : :horiz
+  def draw(map, section)
+    super(map, section, 2, 2, 255, 0xffffff, nil, @facing_right ? nil : :horiz)
   end
 end
 
@@ -1533,8 +1533,8 @@ class Warclops < Enemy
     end
   end
 
-  def draw(map)
-    super map, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil
+  def draw(map, section)
+    super(map, section, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
   end
 
   def hit_by_bomb(section)
@@ -1660,8 +1660,8 @@ class Ulor < FloorEnemy
 
   def hit_by_projectile(section); end
 
-  def draw(map)
-    super(map, @hp < 3 ? 0xff9999 : 0xffffff)
+  def draw(map, section)
+    super(map, section, @hp < 3 ? 0xff9999 : 0xffffff)
     draw_boss
   end
 end
@@ -1717,7 +1717,7 @@ class Umbrex < FloorEnemy
     end
   end
 
-  def draw(map)
+  def draw(map, section)
     d_y = 16 - 0.25 * (@hop_timer - 8)**2
     @y -= d_y
     super(map)
@@ -1805,7 +1805,7 @@ class Quartin < Enemy
 
   def hit_by_projectile(section); end
 
-  def draw(map)
+  def draw(map, section)
     super(map)
     @shields.each do |s|
       s.draw(map)
@@ -1918,8 +1918,8 @@ class Hooman < Enemy
     end
   end
 
-  def draw(map)
-    super(map, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
+  def draw(map, section)
+    super(map, section, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
   end
 end
 
@@ -1970,8 +1970,8 @@ class Gargoil < Enemy
     end
   end
 
-  def draw(map)
-    super(map, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
+  def draw(map, section)
+    super(map, section, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
   end
 end
 
@@ -2075,7 +2075,7 @@ class Zirkn < FloorEnemy
     @state = :walking
   end
 
-  def draw(map)
+  def draw(map, section)
     super(map)
     draw_boss
   end
@@ -2128,8 +2128,8 @@ class Frock < Enemy
     end
   end
 
-  def draw(map)
-    super(map, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
+  def draw(map, section)
+    super(map, section, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
   end
 end
 
@@ -2185,7 +2185,7 @@ class Pantan < Enemy
 
   def hit_by_projectile(section); end
 
-  def draw(map)
+  def draw(map, section)
     super(map)
     @bandage1.draw(map, 2, 2) if @leaf1_hit
     @bandage2.draw(map, 2, 2) if @leaf2_hit
@@ -2240,13 +2240,13 @@ class Kraklet < SBGameObject
     end
   end
 
-  def draw(map)
+  def draw(map, section)
     color = 0xffffff
     if SB.stage.stopped
       remaining = SB.stage.stop_time_duration - SB.stage.stopped_timer
       color = 0xff6666 if remaining >= 120 || (remaining / 5) % 2 == 0
     end
-    super(map, 2, 2, 255, color)
+    super(map, section, 2, 2, 255, color)
   end
 end
 
@@ -2458,7 +2458,7 @@ class Globb < FloorEnemy
   def hit_by_projectile(section); end
   def hit_by_explosion(section); end
 
-  def draw(map)
+  def draw(map, section)
     super(map)
     draw_boss
   end
@@ -2595,7 +2595,7 @@ class Vamdark < Enemy
     end
   end
 
-  def draw(map)
-    super(map, 2, 2, 0xff, 0xffffff, @angle)
+  def draw(map, section)
+    super(map, section, 2, 2, 0xff, 0xffffff, @angle)
   end
 end

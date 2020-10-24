@@ -100,7 +100,7 @@ class FloatingItem < GameObject
     true
   end
 
-  def draw(map, scale_x = 2, scale_y = 2, alpha = 255, color = 0xffffff)
+  def draw(map, section = nil, scale_x = 2, scale_y = 2, alpha = 255, color = 0xffffff)
     super(map, scale_x, scale_y, alpha, color)
   end
 end
@@ -108,6 +108,12 @@ end
 ################################################################################
 
 class FireRock < FloatingItem
+  LIGHT_TILES = [
+    [0, 0, 0],
+    [-1, 0, 50], [0, -1, 50], [1, 0, 50], [0, 1, 50],
+    [-1, -1, 125], [1, -1, 125], [-1, 1, 125], [1, 1, 125]
+  ]
+
   def initialize(x, y, args, section)
     super x + 6, y + 7, 20, 20, :sprite_FireRock, Vector.new(-2, -17), 4, 1, [0, 1, 2, 3], 5
     @score = case args
@@ -122,6 +128,10 @@ class FireRock < FloatingItem
              when '3' then 0x3399ff
              else          0xff9933
              end
+    @active_bounds.x -= C::TILE_SIZE
+    @active_bounds.y -= C::TILE_SIZE
+    @active_bounds.w += 2 * C::TILE_SIZE
+    @active_bounds.h += 2 * C::TILE_SIZE
   end
 
   def update(section)
@@ -131,8 +141,9 @@ class FireRock < FloatingItem
     end
   end
 
-  def draw(map)
-    super(map, 2, 2, 255, @color)
+  def draw(map, section)
+    super(map, section, 2, 2, 255, @color)
+    section.add_light_tiles(LIGHT_TILES, @x, @y, @w, @h)
   end
 end
 
@@ -400,7 +411,7 @@ class Spring < GameObject
     true
   end
 
-  def draw(map)
+  def draw(map, section)
     super(map, 2, 2)
     if SB.player.bomb.collide?(self)
       Res.img(:fx_Balloon2).draw(@x - map.cam.x, @y - map.cam.y - 40, 0, 2, 2)

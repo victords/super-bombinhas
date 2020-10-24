@@ -26,7 +26,7 @@ class SBGameObject < GameObject
     @active_bounds = Rectangle.new(@x + @img_gap.x, @y + @img_gap.y, @img[0].width * 2, @img[0].height * 2)
   end
 
-  def draw(map, scale_x = 2, scale_y = 2, alpha = 0xff, color = 0xffffff, angle = nil, flip = nil, z_index = 0, round = false)
+  def draw(map, section = nil, scale_x = 2, scale_y = 2, alpha = 0xff, color = 0xffffff, angle = nil, flip = nil, z_index = 0, round = false)
     super(map, scale_x, scale_y, alpha, color, angle, flip, z_index, round)
   end
 end
@@ -87,7 +87,7 @@ end
 
 class SBEffect < Effect
   def draw(map, scale_x = nil, scale_y = nil)
-    super map, 2, 2
+    super(map, 2, 2)
   end
 end
 
@@ -202,7 +202,7 @@ class Bombie < GameObject
     update_speech(section)
   end
 
-  def draw(map)
+  def draw(map, section)
     super(map, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
     @balloon.draw @x - map.cam.x + 16, @y - map.cam.y - 32, 0, 2, 2 if @active
     draw_speech
@@ -275,8 +275,8 @@ class Door < GameObject
     true
   end
 
-  def draw(map)
-    super map, 2, 2
+  def draw(map, section)
+    super(map, 2, 2)
     @lock.draw(@x + 18  - map.cam.x, @y - 38 - map.cam.y, 0, 2, 2) if @lock
   end
 end
@@ -312,8 +312,8 @@ class GunPowder < SBGameObject
     end
   end
 
-  def draw(map)
-    super(map, 2, 2, 255, @color)
+  def draw(map, section)
+    super(map, section, 2, 2, 255, @color)
   end
 end
 
@@ -518,7 +518,7 @@ class Spikes < TwoStateObject
     true
   end
 
-  def draw(map)
+  def draw(map, section)
     angle = case @dir
             when 0 then 0
             when 1 then 90
@@ -564,7 +564,7 @@ class FixedSpikes < GameObject
     true
   end
 
-  def draw(map)
+  def draw(map, section)
     angle = case @dir
             when 0 then 0
             when 1 then 90
@@ -635,7 +635,7 @@ class MovingWall < GameObject
     map.cam.intersect?(@active_bounds) || @active
   end
 
-  def draw(map)
+  def draw(map, section)
     @img[0].draw @x - map.cam.x, @y - map.cam.y, 0, 2, 2 if @h > 0
     y = 16
     while y < @h
@@ -701,7 +701,7 @@ class Ball < GameObject
     true
   end
 
-  def draw(map)
+  def draw(map, section)
     @img[0].draw_rot @x + (@w / 2) - map.cam.x, @y + (@h / 2) - map.cam.y, 0, @rotation, 0.5, 0.5, 2, 2
   end
 end
@@ -736,7 +736,7 @@ class BallReceptor < SBGameObject
     @loaded_set && !@is_set || map.cam.intersect?(@active_bounds)
   end
 
-  def draw(map)
+  def draw(map, section)
     Res.img(:sprite_Ball).draw(@x - map.cam.x, @y - 31 - map.cam.y, 0, 2, 2) if @loaded_set
     super(map)
   end
@@ -899,7 +899,7 @@ class Projectile < GameObject
     end
   end
 
-  def draw(map)
+  def draw(map, section)
     if @type == 9
       super(map, 2, 2)
     else
@@ -960,7 +960,7 @@ class Vortex < GameObject
     end
   end
 
-  def draw(map)
+  def draw(map, section)
     @img[@img_index].draw_rot @x + @w / 2 - map.cam.x, @y + @h/2 - map.cam.y, 0, @angle, 0.5, 0.5, 2, 2
   end
 end
@@ -1025,8 +1025,8 @@ class AirMattress < GameObject
     @active_bounds = Rectangle.new(@x, @y - 2, @w, 16)
   end
 
-  def draw(map)
-    super map, @w / C::TILE_SIZE, 2, 255, @color
+  def draw(map, section)
+    super(map, @w / C::TILE_SIZE, 2, 255, @color)
   end
 end
 
@@ -1043,7 +1043,7 @@ class Branch < GameObject
 
   def update(section); end
 
-  def draw(map)
+  def draw(map, section)
     super(map, @scale, 2, 255, 0xffffff, nil, @left ? nil : :horiz)
   end
 end
@@ -1086,7 +1086,7 @@ class Water
     true
   end
 
-  def draw(map); end
+  def draw(map, section); end
 end
 
 class ForceField < GameObject
@@ -1123,8 +1123,8 @@ class ForceField < GameObject
     @taken || @active_bounds && map.cam.intersect?(@active_bounds)
   end
 
-  def draw(map)
-    super map, 2, 2, @alpha
+  def draw(map, section)
+    super(map, 2, 2, @alpha)
   end
 end
 
@@ -1214,7 +1214,7 @@ class Board < GameObject
     @dead = true
   end
 
-  def draw(map)
+  def draw(map, section)
     super(map, 2, 2, 255, 0xffffff, nil, @facing_right ? nil : :horiz)
   end
 end
@@ -1293,8 +1293,8 @@ class Monep < GameObject
     SB.stage.set_switch(self)
   end
 
-  def draw(map)
-    super map, 2, 2
+  def draw(map, section)
+    super(map, 2, 2)
     @balloon.draw @x - map.cam.x, @y + 30 - map.cam.y, 0, 2, 2 if @state == :waiting and SB.player.bomb.collide?(self)
     draw_speech
   end
@@ -1400,7 +1400,7 @@ class TwinWalls < GameObject
     map.cam.intersect?(@active_bounds) || @active
   end
 
-  def draw(map)
+  def draw(map, section)
     @img[0].draw @x - map.cam.x, @y - map.cam.y, 0, 2, 2 if @h > 0
     y = 16
     while y < @h
@@ -1592,8 +1592,8 @@ class Boulder < GameObject
     end
   end
 
-  def draw(map)
-    super map, 2, 2, 255, 0xffffff, @x - @start_x
+  def draw(map, section)
+    super(map, 2, 2, 255, 0xffffff, @x - @start_x)
   end
 
   def is_visible(map)
@@ -1764,8 +1764,8 @@ class MountainBombie < SBGameObject
     set_animation 3
   end
 
-  def draw(map)
-    super(map, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
+  def draw(map, section)
+    super(map, section, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
     @balloon.draw @x - map.cam.x + 16, @y - map.cam.y - 32, 0, 2, 2 if @active
     draw_speech
   end
@@ -1869,8 +1869,8 @@ class SideSpring < SBGameObject
     end
   end
 
-  def draw(map)
-    super(map, 2, 2, 255, 0xffffff, @to_left ? -90 : 90)
+  def draw(map, section)
+    super(map, section, 2, 2, 255, 0xffffff, @to_left ? -90 : 90)
   end
 end
 
@@ -1898,7 +1898,7 @@ class IcyFloor
     true
   end
 
-  def draw(map); end
+  def draw(map, section); end
 end
 
 class Puzzle < SBGameObject
@@ -1931,7 +1931,7 @@ class Puzzle < SBGameObject
     end
   end
 
-  def draw(map)
+  def draw(map, section)
     super(map)
     @pieces.each_with_index do |p, i|
       next unless p
@@ -2000,8 +2000,8 @@ class Cannon < SBGameObject
     end
   end
 
-  def draw(map)
-    super(map, 2, 2, 255, 0xffffff, @angle)
+  def draw(map, section)
+    super(map, section, 2, 2, 255, 0xffffff, @angle)
     @base.draw_rot(@x + @w / 2 - map.cam.x, @y + @h / 2 - map.cam.y, 0, @base_angle, 0.5, -0.33333, 2, 2)
   end
 end
@@ -2060,7 +2060,7 @@ class FallingWall < GameObject
     end
   end
 
-  def draw(map)
+  def draw(map, section)
     img_angle = -((@angle * 180 / Math::PI) - 90)
     x_off = C::TILE_SIZE / 2 - map.cam.x
     y_off = C::TILE_SIZE / 2 - map.cam.y
@@ -2121,7 +2121,7 @@ class ThornyPlant < TwoStateObject
     true
   end
 
-  def draw(map)
+  def draw(map, section)
     (0...@tiles_x).each do |i|
       (0...@tiles_y.to_i).each do |j|
         @img[@img_index].draw(@x + i * C::TILE_SIZE - map.cam.x, @y + j * C::TILE_SIZE - map.cam.y, 0, 2, 2)
@@ -2188,7 +2188,7 @@ class StickyFloor
     true
   end
 
-  def draw(map); end
+  def draw(map, section); end
 end
 
 class Aldan < SBGameObject
@@ -2224,10 +2224,10 @@ class Aldan < SBGameObject
     end
   end
 
-  def draw(map)
+  def draw(map, section)
     return if @dead
 
-    super(map, 2, 2, 255, 0xffffff, nil, :horiz)
+    super(map, section, 2, 2, 255, 0xffffff, nil, :horiz)
     draw_speech
   end
 end
@@ -2247,7 +2247,7 @@ class Explosion < Effect
   end
 
   def draw(map, scale_x, scale_y)
-    super map, @scale, @scale
+    super(map, @scale, @scale)
   end
 end
 
@@ -2337,7 +2337,7 @@ class Graphic < Sprite
     @angle += @rot if @rot
   end
 
-  def draw(map)
+  def draw(map, section)
     @rot ?
       (@img[@img_index].draw_rot @x + @w / 2 - map.cam.x, @y + @h/2 - map.cam.y, -1, @angle, 0.5, 0.5, 2, 2) :
       super(map, 2, 2, 255, 0xffffff, nil, @flip, -1)

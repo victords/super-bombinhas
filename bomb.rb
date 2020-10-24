@@ -21,6 +21,18 @@ class Bomb < GameObject
   EXPLODE_COOLDOWN = 900
   STOP_TIME_DURATION = 300
   STOP_TIME_COOLDOWN = 1800
+  LIGHT_TILES = [
+    [0, 0, 0],
+    [-1, 0, 25], [0, -1, 25], [1, 0, 25], [0, 1, 25],
+    [-1, -1, 50], [1, -1, 50], [-1, 1, 50], [1, 1, 50],
+    [-2, 0, 75], [0, -2, 75], [2, 0, 75], [0, 2, 75],
+    [-1, -2, 100], [1, -2, 100], [2, -1, 100], [2, 1, 100], [1, 2, 100], [-1, 2, 100], [-2, 1, 100], [-2, -1, 100],
+    [-3, 0, 125], [0, -3, 125], [3, 0, 125], [0, 3, 125],
+    [-3, -1, 150], [-2, -2, 150], [-1, -3, 150], [1, -3, 150], [2, -2, 150], [3, -1, 150],
+    [3, 1, 150], [2, 2, 150], [1, 3, 150], [-1, 3, 150], [-2, 2, 150], [-3, 1, 150],
+    [0, -4, 175], [2, -3, 175], [3, -2, 175], [4, 0, 175], [3, 2, 175], [2, 3, 175],
+    [0, 4, 175], [-2, 3, 175], [-3, 2, 175], [-4, 0, 175], [-3, -2, 175], [-2, -3, 175]
+  ]
 
   attr_reader :type, :name, :hp, :saved_hp, :facing_right, :can_use_ability, :cooldown, :will_explode, :shielded, :poison_timer,
               :invulnerable, :invulnerable_time, :invulnerable_timer
@@ -344,7 +356,7 @@ class Bomb < GameObject
     true
   end
 
-  def draw(map)
+  def draw(map, section)
     super(map, 2, 2, 255, @paralyze_timer > 0 ? 0xff6666 : 0xffffff, nil, @facing_right ? nil : :horiz) unless @invulnerable && @invulnerable_timer % 6 < 3
     unless SB.player.dead?
       if @shielded
@@ -365,5 +377,7 @@ class Bomb < GameObject
       end
     end
     @explosion.draw map, 2 * @explosion_radius.to_f / 90, 2 * @explosion_radius.to_f / 90 if @exploding
+
+    section.add_light_tiles(LIGHT_TILES, @x, @y, @w, @h)
   end
 end

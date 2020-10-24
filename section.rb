@@ -328,8 +328,9 @@ class Section
 
   def start(switches, bomb_x, bomb_y)
     @elements = []
-    @inter_elements = [] # vetor de objetos que podem interagir com outros
-    @obstacles = [] # vetor de obstáculos não-tile
+    @inter_elements = [] # array of objects that can interact with other objects
+    @obstacles = [] # array of obstacles that are not wall tiles
+    @light_tiles = [] # array of tiles that receive light (for dark sections)
     @effects = []
     @reload = false
     @loaded = true
@@ -520,6 +521,12 @@ class Section
     add_effect ScoreEffect.new(x, y, score)
   end
 
+  def add_light_tiles(tiles, x, y, w, h)
+    t_x = (x + w / 2 - @map.cam.x).floor / C::TILE_SIZE
+    t_y = (y + h / 2 - @map.cam.y).floor / C::TILE_SIZE
+    @light_tiles += tiles.map { |t| [t_x + t[0], t_y + t[1], t[2]] }.select { |t| t[0] >= 0 && t[1] >= 0 && t[0] < 25 && t[1] < 19 }
+  end
+
   def save_check_point(id, obj)
     @entrance = id
     SB.stage.set_switch obj
@@ -566,6 +573,7 @@ class Section
 
     enemy_count = 0
     fire_rock_count = 0
+    @light_tiles.clear
     @elements.reverse_each do |e|
       is_enemy = e.is_a?(Enemy) || e.is_a?(Ekips) || e.is_a?(Faller) || e.is_a?(Kraklet)
       e.update(self) if e.is_visible(@map) && ((stopped != :all && (stopped != :enemies || !is_enemy)) || is_enemy && e.dying || e.stop_time_immune?)
@@ -672,9 +680,9 @@ class Section
     end
 
     @elements.each do |e|
-      e.draw @map if e.is_visible @map
+      e.draw(@map, self) if e.is_visible @map
     end
-    SB.player.bomb.draw @map
+    SB.player.bomb.draw(@map, self)
     @effects.each do |e|
       e.draw @map, 2, 2
     end
@@ -704,35 +712,21 @@ class Section
     end
 
     if @dark
-      b_x = SB.player.bomb.x + SB.player.bomb.w / 2 - @map.cam.x
-      b_y = SB.player.bomb.y + SB.player.bomb.h / 2 - @map.cam.y
-      s_w = C::SCREEN_WIDTH
-      s_h = C::SCREEN_HEIGHT
-      r = C::LIGHT_RADIUS
-      o = C::DARK_OPACITY
-      c = o << 24
-      G.window.draw_quad(b_x - s_w, b_y - s_h, c,
-                         b_x + s_w, b_y - s_h, c,
-                         b_x - s_w, b_y - r, c,
-                         b_x + s_w, b_y - r, c, 0)
-      G.window.draw_quad(b_x - s_w, b_y + r, c,
-                         b_x + s_w, b_y + r, c,
-                         b_x - s_w, b_y + s_h, c,
-                         b_x + s_w, b_y + s_h, c, 0)
-      G.window.draw_quad(b_x - s_w, b_y - r, c,
-                         b_x - r, b_y - r, c,
-                         b_x - s_w, b_y + r, c,
-                         b_x - r, b_y + r, c, 0)
-      G.window.draw_quad(b_x + r, b_y - r, c,
-                         b_x + s_w, b_y - r, c,
-                         b_x + r, b_y + r, c,
-                         b_x + s_w, b_y + r, c, 0)
-      ((b_x-r)..(b_x+r-4)).step(4) do |x|
-        ((b_y-r)..(b_y+r-4)).step(4) do |y|
-          a = (Math::sqrt((x - b_x)**2 + (y - b_y)**2) / r * o).round
-          a = o if a > o
-          c = a << 24
-          G.window.draw_quad x, y, c, x + 4, y, c, x, y + 4, c, x + 4, y + 4, c, 0
+      tiles = Array.new(25) {
+        Array.new(19) {
+          255
+        }
+      }
+      @light_tiles.each do |t|
+        tiles[t[0]][t[1]] = t[2] if tiles[t[0]][t[1]] > t[2]
+      end
+      tiles.each_with_index do |col, i|
+        col.each_with_index do |cell, j|
+          color = cell << 24
+          G.window.draw_quad(i * C::TILE_SIZE, j * C::TILE_SIZE, color,
+                             (i + 1) * C::TILE_SIZE, j * C::TILE_SIZE, color,
+                             i * C::TILE_SIZE, (j + 1) * C::TILE_SIZE, color,
+                             (i + 1) * C::TILE_SIZE, (j + 1) * C::TILE_SIZE, color, 0)
         end
       end
     end
