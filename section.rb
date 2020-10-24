@@ -112,6 +112,7 @@ class Section
     Lambul,
     Life,
     Lift,
+    Luminark,
     Mantul,
     Masstalactite,
     Monep,

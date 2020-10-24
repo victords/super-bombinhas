@@ -2599,3 +2599,57 @@ class Vamdark < Enemy
     super(map, section, 2, 2, 0xff, 0xffffff, @angle)
   end
 end
+
+class Luminark < Enemy
+  LIGHT_TILES = [
+    [0, 0, 0],
+    [-1, 0, 40], [0, -1, 40], [1, 0, 40], [0, 1, 40],
+    [-1, -1, 80], [1, -1, 80], [-1, 1, 80], [1, 1, 80],
+    [-2, 0, 120], [0, -2, 120], [2, 0, 120], [0, 2, 120],
+    [-1, -2, 150], [1, -2, 150], [2, -1, 150], [2, 1, 150], [1, 2, 150], [-1, 2, 150], [-2, 1, 150], [-2, -1, 150],
+  ]
+
+  def initialize(x, y, args, section)
+    super(x - 10, y - 18, 52, 50, Vector.new(-4, -10), 4, 2, [0, 1, 2], 7, 300, 2)
+    @leaps = 1000
+    @max_leaps = args.to_i
+    @facing_right = true
+    @idle_timer = 0
+  end
+
+  def update(section)
+    super(section) do
+      forces = Vector.new 0, 0
+      if @bottom && !@invulnerable
+        @speed.x = 0
+        @idle_timer += 1
+        if @idle_timer > 60
+          @leaps += 1
+          if @leaps > @max_leaps
+            @leaps = 1
+            @facing_right = !@facing_right
+          end
+          if @facing_right; forces.x = 3
+          else; forces.x = -3; end
+          forces.y = -5
+          @idle_timer = 0
+        end
+      end
+      prev_g = G.gravity.y
+      G.gravity.y *= 0.5
+      move(forces, section.get_obstacles(@x, @y), section.ramps)
+      G.gravity.y = prev_g
+    end
+  end
+
+  def hit_by_bomb(section)
+    SB.player.bomb.hit
+  end
+
+  def hit_by_explosion(section); end
+
+  def draw(map, section)
+    super(map)
+    section.add_light_tiles(LIGHT_TILES, @x, @y, @w, @h)
+  end
+end
