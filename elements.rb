@@ -1838,9 +1838,9 @@ class Masstalactite < SBGameObject
         else; @x -= 2; end
       end
       @timer += 1
-      @moving = true if @timer == 30
+      @moving = true if @timer == 12
     else
-      if b.x + b.w > @x - 120 && b.x < @x + @w + 120 && b.y > @y && b.y < @y + 320
+      if b.x + b.w > @x - 90 && b.x < @x + @w + 90 && b.y > @y && b.y < @y + 320
         @will_move = true
         @timer = 0
       end

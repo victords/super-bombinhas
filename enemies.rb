@@ -2610,7 +2610,7 @@ class Luminark < Enemy
   ]
 
   def initialize(x, y, args, section)
-    super(x - 10, y - 18, 52, 50, Vector.new(-4, -10), 4, 2, [0, 1, 2], 7, 300, 2)
+    super(x - 10, y - 18, 52, 50, Vector.new(-4, -10), 4, 2, [0, 1, 2, 3, 4, 5], 7, 300, 2)
     @leaps = 1000
     @max_leaps = args.to_i
     @facing_right = true
@@ -2619,8 +2619,9 @@ class Luminark < Enemy
 
   def update(section)
     super(section) do
+      next if @invulnerable
       forces = Vector.new 0, 0
-      if @bottom && !@invulnerable
+      if @bottom
         @speed.x = 0
         @idle_timer += 1
         if @idle_timer > 60
