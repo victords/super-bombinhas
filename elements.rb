@@ -2286,6 +2286,38 @@ class Fire < SBEffect
   end
 end
 
+class Lightning < SBGameObject
+  def initialize(x, y, args, section)
+    tile_count = 0
+    tile_count += 1 until section.obstacle_at?(x, y + tile_count * C::TILE_SIZE)
+    y -= C::TILE_SIZE if tile_count.odd?
+    @size = (tile_count + 1) / 2
+    super(x - 10, y, 20, @size * 2 * C::TILE_SIZE, :fx_lightning, Vector.new(-6, 0), 3, 2)
+    @active_bounds = Rectangle.new(@x - C::TILE_SIZE, @y, @w + 2 * C::TILE_SIZE, @h)
+    @lifetime = 150
+  end
+
+  def update(section)
+    animate(@lifetime > 90 ? [0, 1, 2] : [3, 4, 5], @lifetime > 90 ? 20 : 6)
+    @lifetime -= 1
+    @dead = true if @lifetime == 0
+    if @lifetime <= 90 && bounds.intersect?(SB.player.bomb.bounds)
+      SB.player.bomb.hit
+    end
+  end
+
+  def draw(map, section)
+    (0...@size).each do |i|
+      @img[@img_index].draw(@x + @img_gap.x - map.cam.x, @y + i * 2 * C::TILE_SIZE - map.cam.y, 0, 2, 2)
+      section.add_light_tiles([
+        [0, 2 * i, 0], [0, 2 * i + 1, 0],
+        [-1, 2 * i, 127], [-1, 2 * i + 1, 127],
+        [1, 2 * i, 127], [1, 2 * i + 1, 127],
+      ], @x, @y, @w, C::TILE_SIZE)
+    end
+  end
+end
+
 class SpecGate < SBGameObject
   def initialize(x, y, args, section)
     super x, y, 32, 32, :sprite_SpecGate

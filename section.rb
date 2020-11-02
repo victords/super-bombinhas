@@ -76,6 +76,7 @@ class Section
     Crack,
     Crusher,
     Door,
+    Drepz,
     Dynamike,
     Ekips,
     Electong,

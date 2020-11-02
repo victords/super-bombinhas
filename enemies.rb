@@ -2654,3 +2654,107 @@ class Luminark < Enemy
     section.add_light_tiles(LIGHT_TILES, @x, @y, @w, @h)
   end
 end
+
+class Drepz < Enemy
+  LIGHT_TILES = [
+    [0, 0, 0],
+    [-1, 0, 25], [0, -1, 25], [1, 0, 25], [0, 1, 25],
+    [-1, -1, 50], [1, -1, 50], [-1, 1, 50], [1, 1, 50],
+    [-2, 0, 75], [0, -2, 75], [2, 0, 75], [0, 2, 75],
+    [-1, -2, 100], [1, -2, 100], [2, -1, 100], [2, 1, 100], [1, 2, 100], [-1, 2, 100], [-2, 1, 100], [-2, -1, 100],
+    [-3, 0, 125], [0, -3, 125], [3, 0, 125], [0, 3, 125],
+    [-3, -1, 150], [-2, -2, 150], [-1, -3, 150], [1, -3, 150], [2, -2, 150], [3, -1, 150],
+    [3, 1, 150], [2, 2, 150], [1, 3, 150], [-1, 3, 150], [-2, 2, 150], [-3, 1, 150],
+    [0, -4, 175], [2, -3, 175], [3, -2, 175], [4, 0, 175], [3, 2, 175], [2, 3, 175],
+    [0, 4, 175], [-2, 3, 175], [-3, 2, 175], [-4, 0, 175], [-3, -2, 175], [-2, -3, 175]
+  ]
+
+  include Boss
+
+  alias :super_update :update
+
+  def initialize(x, y, args, section)
+    super(x - 5, y - 44, 42, 76, Vector.new(-10, -20), 3, 2, [1, 2, 1, 0], 7, 7000, 7)
+    @img_index = 1
+    @timer = 0
+    @jump_points = args.split(':').map { |p| p.split(',').map { |c| c.to_i * C::TILE_SIZE } }
+    @point_index = 0
+    @attack_area_x = x - 15 * C::TILE_SIZE
+    @attack_area_w = 29 * C::TILE_SIZE
+    @max_speed = Vector.new(100, 100)
+    init
+  end
+
+  def update(section)
+    update_boss(section) do
+      forces = Vector.new(0, 0)
+      obstacles = section.get_obstacles(@x, @y, @w, @h)
+      set_speed = false
+      if @state == :acting
+        @timer += 1
+        if @left || @speed.x < 0 && !section.obstacle_at?(@x - 1, @y + @h)
+          forces.x = @hp <= 1 ? 6 : @hp <= 4 ? 5 : 4.5
+          set_speed = true
+          @facing_right = true
+        elsif @speed.x == 0 || @right || @speed.x > 0 && !section.obstacle_at?(@x + @w, @y + @h)
+          forces.x = -(@hp <= 1 ? 6 : @hp <= 4 ? 5 : 4.5)
+          set_speed = true
+          @facing_right = false
+        end
+        if @timer == 300
+          d_x = @jump_points[@point_index][0] - 5 - @x
+          d_y = @jump_points[@point_index][1] - 44 - @y
+          v_y = -1 - Math.sqrt(1 - 2 * G.gravity.y * (d_y - C::TILE_SIZE))
+          t = (-v_y + Math.sqrt(v_y**2 - 2 * G.gravity.y * (-d_y))) / G.gravity.y
+          forces.x = d_x / t
+          forces.y = v_y
+          set_speed = true
+          @point_index += 1
+          @point_index = 0 if @point_index == @jump_points.size
+          @timer = 0
+          @indices = [3]
+          @state = :jumping
+        end
+      elsif @state == :jumping
+        if @bottom
+          @speed.x = 0
+          @indices = [1]
+          @timer += 1
+          if @timer == 60
+            @indices = [4, 5]
+            @timer = 0
+            @state = :attacking
+          end
+        end
+      elsif @state == :attacking
+        @timer += 1
+        if @timer % 30 == 0
+          section.add(Lightning.new(@attack_area_x + rand(@attack_area_w), 0, nil, section))
+        end
+        if @timer == (@hp <= 1 ? 300 : @hp <= 4 ? 240 : 180)
+          forces.y = -5
+          @indices = [3]
+          @state = :returning
+        end
+      elsif @state == :returning
+        obstacles = obstacles.select { |o| !o.passable }
+        if @bottom
+          @indices = [1, 2, 1, 0]
+          @timer = 0
+          @state = :acting
+        end
+      end
+      move(forces, obstacles, section.ramps, set_speed)
+    end
+  end
+
+  def hit_by_explosion(section)
+    hit(section)
+  end
+
+  def draw(map, section)
+    super(map, section, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
+    section.add_light_tiles(LIGHT_TILES, @x, @y, @w, @h)
+    draw_boss
+  end
+end
