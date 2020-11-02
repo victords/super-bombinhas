@@ -149,6 +149,7 @@ class Section
     StickyFloor,
     Stilty,
     ThornyPlant,
+    ToxicDrop,
     Turner,
     TwinWalls,
     Ulor,

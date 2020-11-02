@@ -183,7 +183,7 @@ class Bomb < GameObject
     end
     proj_type = section.projectile_hit?(self)
     if proj_type == 8
-      @paralyze_timer = 120 unless @invulnerable
+      paralyze(120) unless @invulnerable
     elsif proj_type
       hit
     end
@@ -296,6 +296,10 @@ class Bomb < GameObject
       end
       set_invulnerable
     end
+  end
+
+  def paralyze(duration)
+    @paralyze_timer = duration
   end
 
   def hp=(value)

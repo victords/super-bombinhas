@@ -358,6 +358,7 @@ class Elevator < SBGameObject
     when 6 then w = 224; cols = rows = nil; x_g = y_g = 0
     when 7 then w = 64; cols = rows = nil; x_g = y_g = 0
     when 8 then w = 64; cols = 2; rows = 3; x_g = y_g = 0; indices = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5]; interval = 5
+    when 9 then w = 32; cols = rows = nil; x_g = y_g = 0
     end
     super x, y, w, 1, "sprite_Elevator#{type}", Vector.new(x_g, y_g), cols, rows
     @passable = true
@@ -2229,6 +2230,48 @@ class Aldan < SBGameObject
 
     super(map, section, 2, 2, 255, 0xffffff, nil, :horiz)
     draw_speech
+  end
+end
+
+class ToxicDrop < SBGameObject
+  def initialize(x, y, args, section)
+    super(x, y - 4, 32, 16, :sprite_toxicDrop, Vector.new(0, 0), 2, 2)
+    @fall_time = (args || 90).to_i
+    @timer = 0
+    @drops = []
+  end
+
+  def update(section)
+    b = SB.player.bomb
+
+    @drops.reverse_each do |drop|
+      b.paralyze(30) if drop.bounds.intersect?(b.bounds)
+      drop.move(Vector.new(0, 0), section.get_obstacles(drop.x, drop.y), section.ramps)
+      @drops.delete(drop) if drop.bottom
+    end
+
+    b.paralyze(60) if b.collide?(self)
+
+    @timer += 1
+    if @timer == @fall_time + 15
+      set_animation(0)
+      @timer = 15
+    elsif @timer == @fall_time
+      drop = GameObject.new(@x + 14, @y + @h, 6, 10, :sprite_toxicDrop, Vector.new(-14, -@h), 2, 2)
+      drop.instance_exec { @img_index = 3 }
+      @drops << drop
+    elsif @timer == @fall_time - 30
+      set_animation(1)
+    end
+
+    animate([1, 2, 1], 15) if @timer >= @fall_time - 30
+  end
+
+  def draw(map, section)
+    super
+    @drops.each do |drop|
+      drop.draw(map, 2, 2)
+    end
   end
 end
 
