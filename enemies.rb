@@ -2610,7 +2610,7 @@ class Luminark < Enemy
   ]
 
   def initialize(x, y, args, section)
-    super(x - 10, y - 18, 52, 50, Vector.new(-4, -10), 4, 2, [0, 1, 2, 3, 4, 5], 7, 300, 2)
+    super(x - 10, y - 18, 52, 46, Vector.new(-4, -10), 4, 2, [0, 1, 2, 3, 4, 5], 7, 300, 2)
     @leaps = 1000
     @max_leaps = args.to_i
     @facing_right = true
@@ -2632,7 +2632,7 @@ class Luminark < Enemy
           end
           if @facing_right; forces.x = 3
           else; forces.x = -3; end
-          forces.y = -5
+          forces.y = -6
           @idle_timer = 0
         end
       end
