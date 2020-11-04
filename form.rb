@@ -67,7 +67,7 @@ class MenuText < MenuElement
       @text_id = nil
     else
       @text_id = text_or_id
-      @text = SB.text(text_or_id).gsub("\\n", "\n")
+      @text = SB.text(text_or_id)
     end
     @x = x
     @y = y

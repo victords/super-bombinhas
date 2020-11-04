@@ -59,6 +59,8 @@ zirkn_speech	It was so foolish of you to come here... Now, YOU SHALL PAY!
 zirkn_death		Curse youuuuu!!
 globb_speech	Grrrraaaaarrrblaaarrrgh!!! (Get out of my swamp!!!)
 globb_death		Ggaaaaarrrr! Bleearr...gh! (Aaaaah! Leave me al...one!)
+drepz_speech	I can't believe you made it this far... But it was all for nothing, because...\nYOU WILL NEVER LEAVE THIS PLACE!
+drepz_death		Heh... You're pretty strong... But I warn you: you will never defeat king Gaxlon!
 count_down		Countdown to explosion!
 world_1			Tars Island
 stage_1_1		Exploring the Tars Beach
@@ -91,7 +93,13 @@ stage_5_3		The crazy descent!
 stage_5_4		Night falls at Mual
 stage_5_5		A nest of vicious creatures
 world_6			Ooria Caves
-stage_6_1		???
+stage_6_1		Rocky road ahead
+stage_6_2		Moving platforms out of control!
+stage_6_3		The deep underground maze
+stage_6_4		Venturing in the dark
+stage_6_5		Drepz in the dark pit
+world_7			Bomb Town
+world_7_1		???
 bonus			Bonus
 bonus_1			Reach the goal
 bonus_2			Kill all enemies

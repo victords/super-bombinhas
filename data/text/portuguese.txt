@@ -59,6 +59,8 @@ zirkn_speech	Foi tolice da parte de vocês vir até aqui... Agora, VOCÊS VÃO P
 zirkn_death		Malditas sejam!!
 globb_speech	Grrrraaaaarrrblaaarrrgh!!! (Saia do meu pântano!!!)
 globb_death		Ggaaaaarrrr! Bleearr...gh! (Aaaaah! Deixe-me em p...az!)
+drepz_speech	Não acredito que vocês chegaram tão longe... Mas foi tudo em vão, porque...\nVOCÊS NUNCA SAIRÃO DAQUI!
+drepz_death		Heh... Vocês são bem fortes... Mas eu os aviso: vocês nunca derrotarão o rei Gaxlon!
 count_down		Contagem regressiva para explodir!
 world_1			Ilha de Tars
 stage_1_1		Explorando a Praia de Tars
@@ -92,7 +94,13 @@ stage_5_3		A descida maluca!
 stage_5_4		Cai a noite em Mual
 stage_5_5		Um ninho de criaturas perversas
 world_6			Cavernas Ooria
-stage_6_1		???
+stage_6_1		Estrada rochosa à frente
+stage_6_2		Plataformas móveis fora de controle!
+stage_6_3		O profundo labirinto subterrâneo
+stage_6_4		Aventurando-se no escuro
+stage_6_5		Drepz na cova sombria
+world_7			Cidade das Bombas
+world_7_1		???
 bonus			Bônus
 bonus_1			Chegue ao final
 bonus_2			Mate todos os inimigos

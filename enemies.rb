@@ -232,8 +232,8 @@ module Boss
     @activation_x = @x + @w / 2 - C::SCREEN_WIDTH / 2
     @timer = 0
     @state = :waiting
-    @speech = "#{self.class.to_s.downcase}_speech".to_sym
-    @death_speech = "#{self.class.to_s.downcase}_death".to_sym
+    @speech = SB.text("#{self.class.to_s.downcase}_speech".to_sym)
+    @death_speech = SB.text("#{self.class.to_s.downcase}_death".to_sym)
   end
 
   def update_boss(section, do_super_update = true, &block)
@@ -279,7 +279,7 @@ module Boss
                          795, 495, C::PANEL_COLOR,
                          5, 595, C::PANEL_COLOR,
                          795, 595, C::PANEL_COLOR, 1
-      SB.text_helper.write_breaking SB.text(@state == :speaking ? @speech : @death_speech), 10, 500, 780, :justified, 0, 255, 1
+      SB.text_helper.write_breaking(@state == :speaking ? @speech : @death_speech, 10, 500, 780, :justified, 0, 255, 1)
     end
   end
 end

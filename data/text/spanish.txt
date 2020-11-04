@@ -59,6 +59,8 @@ zirkn_speech	Fue tan tonto de su parte venir aquí ... ¡Ahora, USTEDES PAGARÁN
 zirkn_death		¡Malditas sean!
 globb_speech	Grrrraaaaarrrblaaarrrgh!!! (¡¡¡Sal de mi pantano!!!)
 globb_death		Ggaaaaarrrr! Bleearr...gh! (¡Aaaaah! ¡Déjame en p...az!)
+drepz_speech	No creo que han llegado tan lejos. Pero, ha sido tudo en vano, porque...\n¡NUNCA SALIRÁN DE AQUÍ!
+drepz_death		Jaja... Ustedes son bastante fuertes... Pero les advierto: ¡nunca derrotarán el rey Gaxlon!
 count_down		¡Cuenta regresiva para la explosión!
 world_1			Isla de Tars
 stage_1_1		Explorando la Playa de Tars
@@ -91,7 +93,13 @@ stage_5_3		¡El descenso loco!
 stage_5_4		Cae la noche en Mual
 stage_5_5		Un nido de criaturas viciosas
 world_6			Cuevas Ooria
-stage_6_1		???
+stage_6_1		Camino rocoso por delante
+stage_6_2		¡Plataformas móviles fuera de control!
+stage_6_3		El laberinto subterráneo profundo
+stage_6_4		Aventurándose en la oscuridad
+stage_6_5		Drepz en el pozo oscuro
+world_7			Ciudad de las Bombas
+world_7_1		???
 bonus			Bonus
 bonus_1			Alcanza la meta
 bonus_2			Mata todos los enemigos

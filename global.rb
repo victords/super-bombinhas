@@ -152,7 +152,7 @@ class SB
     end
 
     def text(id)
-      @texts[@lang].fetch(id.to_sym, '<!>')
+      @texts[@lang].fetch(id.to_sym, '<!>').gsub('\n', "\n")
     end
 
     def play_song(song)
