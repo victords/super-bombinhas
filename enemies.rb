@@ -2679,8 +2679,7 @@ class Drepz < Enemy
     @timer = 0
     @jump_points = args.split(':').map { |p| p.split(',').map { |c| c.to_i * C::TILE_SIZE } }
     @point_index = 0
-    @attack_area_x = x - 13 * C::TILE_SIZE
-    @attack_area_w = 27 * C::TILE_SIZE
+    @attack_area_limits = [x - 13 * C::TILE_SIZE, x + 14 * C::TILE_SIZE - 1]
     @max_speed = Vector.new(100, 100)
     init
   end
@@ -2701,7 +2700,7 @@ class Drepz < Enemy
           set_speed = true
           @facing_right = false
         end
-        if @timer == 300
+        if @timer == (300 - (7 - @hp) * 30)
           d_x = @jump_points[@point_index][0] - 5 - @x
           d_y = @jump_points[@point_index][1] - 44 - @y
           v_y = -1 - Math.sqrt(1 - 2 * G.gravity.y * (d_y - C::TILE_SIZE))
@@ -2729,7 +2728,10 @@ class Drepz < Enemy
       elsif @state == :attacking
         @timer += 1
         if @timer % 30 == 0
-          section.add(Lightning.new(@attack_area_x + rand(@attack_area_w - 1), 0, nil, section))
+          pos = SB.player.bomb.x - 3 * C::TILE_SIZE + rand(7 * C::TILE_SIZE)
+          pos = @attack_area_limits[0] if pos < @attack_area_limits[0]
+          pos = @attack_area_limits[1] if pos > @attack_area_limits[1]
+          section.add(Lightning.new(pos, 0, nil, section))
         end
         if @timer == (@hp <= 1 ? 300 : @hp <= 4 ? 240 : 180)
           forces.y = -5
