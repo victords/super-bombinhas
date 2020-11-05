@@ -2700,7 +2700,7 @@ class Drepz < Enemy
           set_speed = true
           @facing_right = false
         end
-        if @timer == (300 - (7 - @hp) * 30)
+        if @timer >= (300 - (7 - @hp) * 15)
           d_x = @jump_points[@point_index][0] - 5 - @x
           d_y = @jump_points[@point_index][1] - 44 - @y
           v_y = -1 - Math.sqrt(1 - 2 * G.gravity.y * (d_y - C::TILE_SIZE))
@@ -2728,7 +2728,7 @@ class Drepz < Enemy
       elsif @state == :attacking
         @timer += 1
         if @timer % 30 == 0
-          pos = SB.player.bomb.x - 3 * C::TILE_SIZE + rand(7 * C::TILE_SIZE)
+          pos = SB.player.bomb.x - 4 * C::TILE_SIZE + rand(9 * C::TILE_SIZE)
           pos = @attack_area_limits[0] if pos < @attack_area_limits[0]
           pos = @attack_area_limits[1] if pos > @attack_area_limits[1]
           section.add(Lightning.new(pos, 0, nil, section))
