@@ -99,7 +99,7 @@ stage_6_3		The deep underground maze
 stage_6_4		Venturing in the dark
 stage_6_5		Drepz in the dark pit
 world_7			Bomb Town
-world_7_1		???
+stage_7_1		???
 bonus			Bonus
 bonus_1			Reach the goal
 bonus_2			Kill all enemies

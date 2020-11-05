@@ -99,7 +99,7 @@ stage_6_3		El laberinto subterráneo profundo
 stage_6_4		Aventurándose en la oscuridad
 stage_6_5		Drepz en el pozo oscuro
 world_7			Ciudad de las Bombas
-world_7_1		???
+stage_7_1		???
 bonus			Bonus
 bonus_1			Alcanza la meta
 bonus_2			Mata todos los enemigos
