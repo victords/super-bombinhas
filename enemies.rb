@@ -2760,3 +2760,63 @@ class Drepz < Enemy
     draw_boss
   end
 end
+
+class Bombinfant < Enemy
+  MIN_IDLE_TIME = 30
+  IDLE_TIME_VAR = 90
+  MIN_WALK_TIME = 90
+  WALK_TIME_VAR = 90
+  SPEED = 3
+
+  def initialize(x, y, args, section)
+    super(x + 2, y - 4, 28, 36, Vector.new(-26, -16), 2, 2, [1, 3], 15, 300, 2)
+    @img_index = 1
+    @idle = true
+    @timer = 0
+    @time_limit = MIN_IDLE_TIME + rand(IDLE_TIME_VAR)
+  end
+
+  def update(section)
+    super(section) do
+      forces = Vector.new(0, 0)
+
+      if @idle
+        @timer += 1
+        if @timer == @time_limit
+          forces.x = @facing_right ? SPEED : -SPEED
+          @indices = [0, 1, 2, 1]
+          set_animation(0)
+          @time_limit = MIN_WALK_TIME + rand(WALK_TIME_VAR)
+          @timer = 0
+          @idle = false
+        end
+      else
+        if @facing_right && (@right || !section.obstacle_at?(@x + @w, @y + @h))
+          @speed.x = 0
+          forces.x = -SPEED
+          @facing_right = false
+        elsif !@facing_right && (@left || !section.obstacle_at?(@x - 1, @y + @h))
+          @speed.x = 0
+          forces.x = SPEED
+          @facing_right = true
+        end
+
+        @timer += 1
+        if @timer == @time_limit
+          forces.x = @speed.x = 0
+          @indices = [1, 3]
+          set_animation(1)
+          @time_limit = MIN_IDLE_TIME + rand(IDLE_TIME_VAR)
+          @timer = 0
+          @idle = true
+        end
+      end
+
+      move(forces, section.get_obstacles(@x, @y), section.ramps)
+    end
+  end
+
+  def draw(map, section)
+    super(map, section, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
+  end
+end

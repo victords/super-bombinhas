@@ -66,6 +66,7 @@ class Section
     BoardItem,
     Bombark,
     Bombie,
+    Bombinfant,
     Boulder,
     Box,
     Branch,
