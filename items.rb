@@ -234,13 +234,15 @@ end
 
 class Shield < FloatingItem
   def initialize(x, y, args, section, switch)
-    set_icon :shield
-    if check(switch)
-      @bomb_type = :azul
-      return
+    set_icon "shield#{args}"
+    switch[:extra] = args
+    case args
+    when '2' then @bomb_type = :amarela
+    else          @bomb_type = :azul
     end
-    super x + 2, y + 2, 28, 28, :sprite_shield, nil, 4, 2,
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7], 6, :azul
+    return if check(switch)
+    super x + 2, y + 2, 28, 28, "sprite_shield#{args}", nil, 4, 2,
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7], 6, @bomb_type
   end
 
   def update(section)
