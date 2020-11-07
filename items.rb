@@ -590,6 +590,37 @@ class Hourglass < FloatingItem
   end
 end
 
+class Attack5 < FloatingItem
+  def initialize(x, y, args, section, switch)
+    set_icon :attack5
+    if check switch
+      @bomb_type = :azul
+      return
+    end
+    super x + 2, y + 2, 28, 28, :sprite_attack5, nil, 4, 2,
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7], 6, :azul
+  end
+
+  def update(section)
+    super(section) do
+      take_anim(section, true)
+    end
+  end
+
+  def use(section, switch)
+    b = SB.player.bomb
+    return false if b.type != @bomb_type
+    c_x = b.x + b.w / 2 - 10
+    c_y = b.y + b.h / 2 - 5
+    (0..7).each do |i|
+      angle = i * 45
+      section.add(Projectile.new(c_x, c_y, 11, angle, b))
+    end
+    set_switch(switch)
+    true
+  end
+end
+
 class Star < FloatingItem
   def initialize(x, y, args, section, switch)
     if switch[:state] == :used

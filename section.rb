@@ -59,6 +59,7 @@ class Section
     Attack2,
     Attack3,
     Attack4,
+    Attack5,
     Ball,
     BallReceptor,
     Bardin,

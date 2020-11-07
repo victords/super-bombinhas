@@ -845,6 +845,7 @@ class Projectile < GameObject
     when 8 then w = 48; h = 40; x_g = -6; y_g = -4; cols = 1; rows = 3; indices = [0, 1, 2, 1]; @speed_m = 3.5
     when 9 then w = h = 8; x_g = y_g = -2; cols = rows = 2; indices = [0, 1, 2, 3]; @speed_m = angle == 0 ? 5 : -5; angle = nil; sprite = :sprite_Projectile2
     when 10 then w = 20; h = 20; x_g = -16; y_g = -4; cols = 1; rows = 2; indices = [0, 1]; @speed_m = 5.5
+    when 11 then w = 10; h = 10; x_g = -10; y_g = 0; cols = rows = 1; indices = [0]; @speed_m = 5.5
     end
 
     super x, y, w, h, sprite, Vector.new(x_g, y_g), cols, rows
