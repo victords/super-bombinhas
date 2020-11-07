@@ -64,6 +64,7 @@ class Section
     Bardin,
     Bell,
     BoardItem,
+    Bombarcher,
     Bombark,
     Bombie,
     Bombinfant,

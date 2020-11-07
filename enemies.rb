@@ -2785,6 +2785,7 @@ class Bombinfant < Enemy
         if @timer == @time_limit
           forces.x = @facing_right ? SPEED : -SPEED
           @indices = [0, 1, 2, 1]
+          @interval = 8
           set_animation(0)
           @time_limit = MIN_WALK_TIME + rand(WALK_TIME_VAR)
           @timer = 0
@@ -2805,6 +2806,7 @@ class Bombinfant < Enemy
         if @timer == @time_limit
           forces.x = @speed.x = 0
           @indices = [1, 3]
+          @interval = 15
           set_animation(1)
           @time_limit = MIN_IDLE_TIME + rand(IDLE_TIME_VAR)
           @timer = 0
@@ -2813,6 +2815,29 @@ class Bombinfant < Enemy
       end
 
       move(forces, section.get_obstacles(@x, @y), section.ramps)
+    end
+  end
+
+  def draw(map, section)
+    super(map, section, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
+  end
+end
+
+class Bombarcher < Enemy
+  def initialize(x, y, args, section)
+    super(x + 2, y - 4, 28, 36, Vector.new(-26, -16), 1, 2, [0, 1], 15, 250)
+  end
+
+  def update(section)
+    super(section) do
+      c = @x + @w / 2
+      b = SB.player.bomb
+      b_c = b.x + b.w / 2
+      if b_c >= c && !@facing_right
+        @facing_right = true
+      elsif b_c < c && @facing_right
+        @facing_right = false
+      end
     end
   end
 
