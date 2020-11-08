@@ -52,7 +52,7 @@ class Player
     when :vermelha then @last_world > 1
     when :amarela  then @last_world > 2
     when :verde    then @last_world > 3
-    when :branca   then @last_world > 5 && @last_stage > 1
+    when :branca   then @last_world > 6 || @last_world > 5 && @last_stage > 1
     else                true
     end
   end
