@@ -359,6 +359,7 @@ class Elevator < SBGameObject
     when 7 then w = 64; cols = rows = nil; x_g = y_g = 0
     when 8 then w = 64; cols = 2; rows = 3; x_g = y_g = 0; indices = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5]; interval = 5
     when 9 then w = 32; cols = rows = nil; x_g = y_g = 0
+    when 10 then w = 32; cols = rows = nil; x_g = y_g = 0
     end
     super x, y, w, 1, "sprite_Elevator#{type}", Vector.new(x_g, y_g), cols, rows
     @passable = true
@@ -846,7 +847,7 @@ class Projectile < GameObject
     when 9 then w = h = 8; x_g = y_g = -2; cols = rows = 2; indices = [0, 1, 2, 3]; @speed_m = angle == 0 ? 5 : -5; angle = nil; sprite = :sprite_Projectile2
     when 10 then w = 20; h = 20; x_g = -16; y_g = -4; cols = 1; rows = 2; indices = [0, 1]; @speed_m = 5.5
     when 11 then w = 10; h = 10; x_g = -10; y_g = 0; cols = rows = 1; indices = [0]; @speed_m = 5.5
-      when 12 then w = h = 12; x_g = -31; y_g = 1; cols = rows = 1; indices = [0]; @speed_m = angle == 330 ? 7 : -7
+    when 12 then w = h = 12; x_g = -31; y_g = 1; cols = rows = 1; indices = [0]; @speed_m = angle == 330 ? 6 : -6
     end
 
     super x, y, w, h, sprite, Vector.new(x_g, y_g), cols, rows

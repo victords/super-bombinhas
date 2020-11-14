@@ -2769,7 +2769,7 @@ class Bombinfant < Enemy
   SPEED = 3
 
   def initialize(x, y, args, section)
-    super(x + 2, y - 4, 28, 36, Vector.new(-26, -16), 2, 2, [1, 3], 15, 320, 2)
+    super(x + 2, y - 4, 28, 36, Vector.new(-26, -16), 1, 5, [1, 3], 15, 320, 2)
     @img_index = 1
     @idle = true
     @timer = 0
@@ -2832,8 +2832,9 @@ end
 class Bombarcher < Enemy
   def initialize(x, y, args, section)
     super(x + 2, y - 4, 28, 36, Vector.new(-26, -24), 3, 2, [0, 1], 15, 200)
-    @shoot_interval = (args || 120).to_i
+    @shoot_interval = (args || 60).to_i
     @timer = 0
+    @active_bounds.h += 3 * C::TILE_SIZE
   end
 
   def update(section)
