@@ -2291,6 +2291,73 @@ class ToxicDrop < SBGameObject
   end
 end
 
+class SpikeBall < SBGameObject
+  def initialize(x, y, args, section)
+    super(x + 1, y + 1, 30, 30, :sprite_SpikeBall, Vector.new(-6, -6), 2, 1)
+    @angle = 0
+    type = (args || 1).to_i
+    case type
+    when 1 then @h_speed = 3; @v_speed = -10; @g_scale = 0.5; @color = 0x9999ff
+    when 2 then @h_speed = 4; @v_speed = -10; @g_scale = 0.7; @color = 0xffff80
+    when 3 then @h_speed = 5; @v_speed = -18; @g_scale = 1.1; @color = 0xff4444
+    end
+  end
+
+  def update(section)
+    @angle += 1.5
+
+    forces = Vector.new(0, 0)
+    if @bottom
+      forces.y = @v_speed
+      forces.x = -@h_speed if @speed.x == 0
+    elsif @left
+      @speed.x = 0
+      forces.x = @h_speed
+    elsif @right
+      @speed.x = 0
+      forces.x = -@h_speed
+    end
+    prev_g = G.gravity.y
+    G.gravity.y *= @g_scale
+    move(forces, section.get_obstacles(@x, @y), section.ramps)
+    G.gravity.y = prev_g
+
+    t = (@y + @img_gap.y).floor
+    r = (@x + @img_gap.x + @img[0].width * 2).ceil
+    b = (@y + @img_gap.y + @img[0].height * 2).ceil
+    l = (@x + @img_gap.x).floor
+
+    if t > section.size.y
+      @dead = true
+    elsif r < 0; @dead = true
+    elsif b < C::TOP_MARGIN; @dead = true #para sumir por cima, a margem deve ser maior
+    elsif l > section.size.x; @dead = true
+    else
+      if t < @active_bounds.y
+        @active_bounds.h += @active_bounds.y - t
+        @active_bounds.y = t
+      end
+      @active_bounds.w = r - @active_bounds.x if r > @active_bounds.x + @active_bounds.w
+      @active_bounds.h = b - @active_bounds.y if b > @active_bounds.y + @active_bounds.h
+      if l < @active_bounds.x
+        @active_bounds.w += @active_bounds.x - l
+        @active_bounds.x = l
+      end
+    end
+
+    if SB.player.bomb.collide?(self)
+      SB.player.bomb.hit
+    end
+  end
+
+  def draw(map, section)
+    @img_index = 0
+    super(map, section, 2, 2, 255, @color, @angle)
+    @img_index = 1
+    super(map, section, 2, 2, 255, 0xffffff, @angle)
+  end
+end
+
 class Explosion < Effect
   attr_reader :c_x, :c_y, :radius, :owner
 

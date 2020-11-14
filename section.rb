@@ -143,6 +143,7 @@ class Section
     Snep,
     Spec,
     SpecGate,
+    SpikeBall,
     Spikes,
     Spring,
     Sprinny,
