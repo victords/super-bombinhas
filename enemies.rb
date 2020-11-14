@@ -2831,7 +2831,9 @@ end
 
 class Bombarcher < Enemy
   def initialize(x, y, args, section)
-    super(x + 2, y - 4, 28, 36, Vector.new(-26, -16), 1, 2, [0, 1], 15, 250)
+    super(x + 2, y - 4, 28, 36, Vector.new(-26, -24), 3, 2, [0, 1], 15, 200)
+    @shoot_interval = (args || 120).to_i
+    @timer = 0
   end
 
   def update(section)
@@ -2843,6 +2845,25 @@ class Bombarcher < Enemy
         @facing_right = true
       elsif b_c < c && @facing_right
         @facing_right = false
+      end
+
+      @timer += 1
+      if @attacking
+        if @timer == 20
+          section.add(Projectile.new(@facing_right ? @x + @w : @x - 8, @y + 4, 12, @facing_right ? 330 : 210, self))
+        elsif @timer == 30
+          @indices = [0, 1]
+          @interval = 15
+          set_animation(0)
+          @attacking = false
+          @timer = 0
+        end
+      elsif @timer == @shoot_interval
+        @indices = [2, 3, 4]
+        @interval = 10
+        set_animation(2)
+        @attacking = true
+        @timer = 0
       end
     end
   end

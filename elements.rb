@@ -846,6 +846,7 @@ class Projectile < GameObject
     when 9 then w = h = 8; x_g = y_g = -2; cols = rows = 2; indices = [0, 1, 2, 3]; @speed_m = angle == 0 ? 5 : -5; angle = nil; sprite = :sprite_Projectile2
     when 10 then w = 20; h = 20; x_g = -16; y_g = -4; cols = 1; rows = 2; indices = [0, 1]; @speed_m = 5.5
     when 11 then w = 10; h = 10; x_g = -10; y_g = 0; cols = rows = 1; indices = [0]; @speed_m = 5.5
+      when 12 then w = h = 12; x_g = -31; y_g = 1; cols = rows = 1; indices = [0]; @speed_m = angle == 330 ? 7 : -7
     end
 
     super x, y, w, h, sprite, Vector.new(x_g, y_g), cols, rows
@@ -856,18 +857,32 @@ class Projectile < GameObject
     @indices = indices
     @visible = true
     @timer = 0
-    @impulse = Vector.new(@speed_m, -6) if @type == 9
+    if @type == 9
+      @impulse = Vector.new(@speed_m, -6)
+      @gravity_scale = 0.5
+    elsif @type == 12
+      @impulse = Vector.new(@speed_m, -9)
+      @gravity_scale = 0.75
+    end
   end
 
   def update(section)
-    if @type == 9
+    if @type == 9 || @type == 12
       prev_g = G.gravity.y
-      G.gravity.y *= 0.5
+      G.gravity.y *= @gravity_scale
       move(@impulse || Vector.new(0, 0), [], [])
       G.gravity.y = prev_g
       @impulse = nil
     else
       move_free(@angle, @speed_m)
+    end
+
+    if @type == 12
+      if @angle >= 330 && @angle < 440
+        @angle += 2
+      elsif @angle <= 210 && @angle > 100
+        @angle -= 2
+      end
     end
 
     obst = section.get_obstacles(@x, @y)
