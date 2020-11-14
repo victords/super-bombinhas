@@ -2769,7 +2769,7 @@ class Bombinfant < Enemy
   SPEED = 3
 
   def initialize(x, y, args, section)
-    super(x + 2, y - 4, 28, 36, Vector.new(-26, -16), 2, 2, [1, 3], 15, 300, 2)
+    super(x + 2, y - 4, 28, 36, Vector.new(-26, -16), 2, 2, [1, 3], 15, 320, 2)
     @img_index = 1
     @idle = true
     @timer = 0
@@ -2778,6 +2778,12 @@ class Bombinfant < Enemy
 
   def update(section)
     super(section) do
+      attack_area = Rectangle.new(@facing_right ? @x + @w + 6 : @x - 22, @y - 10, 16, 40)
+      b = SB.player.bomb
+      if b.bounds.intersect?(attack_area)
+        b.hit
+      end
+
       forces = Vector.new(0, 0)
 
       if @idle
