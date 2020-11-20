@@ -2359,6 +2359,53 @@ class SpikeBall < SBGameObject
   end
 end
 
+class SeekBomb < SBGameObject
+  RANGE_SQ = 10000
+  SPEED = 3
+
+  def initialize(x, y, args, section)
+    super(x + 3, y + 3, 26, 26, :sprite_SeekBomb, Vector.new(-4, -4), 5, 1)
+  end
+
+  def update(section)
+    b = SB.player.bomb
+    b_c = Vector.new(b.x + b.w / 2, b.y + b.h / 2)
+    c = Vector.new(@w / 2, @h / 2)
+
+    if b.collide?(self)
+      b.hit
+    end
+
+    if @seeking
+      move_free(b_c - c, SPEED)
+      animate([1, 0, 0, 0, 0, 0, 0, 0, 0, 0], 6)
+      @timer += 1
+      if @timer == 120
+        @seeking = false
+        @exploding = true
+        @timer = 0
+      end
+    elsif @exploding
+      @timer += 1
+      if @timer == 60
+        @dead = true
+      elsif @timer == 30
+        section.add_effect(Explosion.new(@x + c.x, @y + c.y, 90, self))
+        set_animation(2)
+      end
+      if @timer >= 30
+        animate([2, 3, 4], 10)
+      else
+        animate([0, 1], 3)
+      end
+    elsif (b_c.x - @x - c.x)**2 + (b_c.y - @y - c.y)**2 <= RANGE_SQ
+      @seeking = true
+      set_animation(1)
+      @timer = 0
+    end
+  end
+end
+
 class Explosion < Effect
   attr_reader :c_x, :c_y, :radius, :owner
 

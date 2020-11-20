@@ -138,6 +138,7 @@ class Section
     Rock,
     Sahiss,
     SaveBombie,
+    SeekBomb,
     Shep,
     Shield,
     SideSpring,
