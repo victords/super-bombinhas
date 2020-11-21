@@ -26,6 +26,31 @@ class SBGameObject < GameObject
     @active_bounds = Rectangle.new(@x + @img_gap.x, @y + @img_gap.y, @img[0].width * 2, @img[0].height * 2)
   end
 
+  def update_active_bounds(section)
+    t = (@y + @img_gap.y).floor
+    r = (@x + @img_gap.x + @img[0].width * 2).ceil
+    b = (@y + @img_gap.y + @img[0].height * 2).ceil
+    l = (@x + @img_gap.x).floor
+
+    if t > section.size.y
+      @dead = true
+    elsif r < 0; @dead = true
+    elsif b < C::TOP_MARGIN; @dead = true #para sumir por cima, a margem deve ser maior
+    elsif l > section.size.x; @dead = true
+    else
+      if t < @active_bounds.y
+        @active_bounds.h += @active_bounds.y - t
+        @active_bounds.y = t
+      end
+      @active_bounds.w = r - @active_bounds.x if r > @active_bounds.x + @active_bounds.w
+      @active_bounds.h = b - @active_bounds.y if b > @active_bounds.y + @active_bounds.h
+      if l < @active_bounds.x
+        @active_bounds.w += @active_bounds.x - l
+        @active_bounds.x = l
+      end
+    end
+  end
+
   def draw(map, section = nil, scale_x = 2, scale_y = 2, alpha = 0xff, color = 0xffffff, angle = nil, flip = nil, z_index = 0, round = false)
     super(map, scale_x, scale_y, alpha, color, angle, flip, z_index, round)
   end
@@ -2323,28 +2348,7 @@ class SpikeBall < SBGameObject
     move(forces, section.get_obstacles(@x, @y), section.ramps)
     G.gravity.y = prev_g
 
-    t = (@y + @img_gap.y).floor
-    r = (@x + @img_gap.x + @img[0].width * 2).ceil
-    b = (@y + @img_gap.y + @img[0].height * 2).ceil
-    l = (@x + @img_gap.x).floor
-
-    if t > section.size.y
-      @dead = true
-    elsif r < 0; @dead = true
-    elsif b < C::TOP_MARGIN; @dead = true #para sumir por cima, a margem deve ser maior
-    elsif l > section.size.x; @dead = true
-    else
-      if t < @active_bounds.y
-        @active_bounds.h += @active_bounds.y - t
-        @active_bounds.y = t
-      end
-      @active_bounds.w = r - @active_bounds.x if r > @active_bounds.x + @active_bounds.w
-      @active_bounds.h = b - @active_bounds.y if b > @active_bounds.y + @active_bounds.h
-      if l < @active_bounds.x
-        @active_bounds.w += @active_bounds.x - l
-        @active_bounds.x = l
-      end
-    end
+    update_active_bounds(section)
 
     if SB.player.bomb.collide?(self)
       SB.player.bomb.hit
@@ -2360,7 +2364,7 @@ class SpikeBall < SBGameObject
 end
 
 class SeekBomb < SBGameObject
-  RANGE_SQ = 10000
+  RANGE = 100
   SPEED = 3
 
   def initialize(x, y, args, section)
@@ -2370,15 +2374,18 @@ class SeekBomb < SBGameObject
   def update(section)
     b = SB.player.bomb
     b_c = Vector.new(b.x + b.w / 2, b.y + b.h / 2)
-    c = Vector.new(@w / 2, @h / 2)
+    c = Vector.new(@x + @w / 2, @y + @h / 2)
+    distance = Math.sqrt((b_c.x - c.x)**2 + (b_c.y - c.y)**2)
 
     if b.collide?(self)
       b.hit
     end
 
     if @seeking
-      move_free(b_c - c, SPEED)
+      speed = Vector.new((b_c.x - c.x).to_f * SPEED / distance, (b_c.y - c.y).to_f * SPEED / distance)
+      move(speed, section.get_obstacles(@x, @y), section.ramps, true)
       animate([1, 0, 0, 0, 0, 0, 0, 0, 0, 0], 6)
+      update_active_bounds(section)
       @timer += 1
       if @timer == 120
         @seeking = false
@@ -2390,7 +2397,7 @@ class SeekBomb < SBGameObject
       if @timer == 60
         @dead = true
       elsif @timer == 30
-        section.add_effect(Explosion.new(@x + c.x, @y + c.y, 90, self))
+        section.add_effect(Explosion.new(c.x, c.y, 90, self))
         set_animation(2)
       end
       if @timer >= 30
@@ -2398,7 +2405,7 @@ class SeekBomb < SBGameObject
       else
         animate([0, 1], 3)
       end
-    elsif (b_c.x - @x - c.x)**2 + (b_c.y - @y - c.y)**2 <= RANGE_SQ
+    elsif distance <= RANGE
       @seeking = true
       set_animation(1)
       @timer = 0
