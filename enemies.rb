@@ -2774,6 +2774,7 @@ class Bombinfant < Enemy
     @idle = true
     @timer = 0
     @time_limit = MIN_IDLE_TIME + rand(IDLE_TIME_VAR)
+    @dont_fall = args.nil?
   end
 
   def update(section)
@@ -2798,11 +2799,11 @@ class Bombinfant < Enemy
           @idle = false
         end
       else
-        if @facing_right && (@right || !section.obstacle_at?(@x + @w, @y + @h))
+        if @facing_right && (@right || @dont_fall && !section.obstacle_at?(@x + @w, @y + @h))
           @speed.x = 0
           forces.x = -SPEED
           @facing_right = false
-        elsif !@facing_right && (@left || !section.obstacle_at?(@x - 1, @y + @h))
+        elsif !@facing_right && (@left || @dont_fall && !section.obstacle_at?(@x - 1, @y + @h))
           @speed.x = 0
           forces.x = SPEED
           @facing_right = true
@@ -2875,7 +2876,7 @@ class Bombarcher < Enemy
 end
 
 class Bombnight < Enemy
-  SPEED = 5
+  SPEED = 4.5
 
   def initialize(x, y, args, section)
     super(x, y - 18, 60, 50, Vector.new(-38, -34), 2, 3, [0, 1, 2, 3, 4, 5], 5, 480, 3)
@@ -2887,10 +2888,12 @@ class Bombnight < Enemy
       knight_area = Rectangle.new(@facing_right ? @x + 14 : @x + 18, @y - 24, 28, 28)
       b = SB.player.bomb
       if b.over?(knight_area)
-        hit(section)
-        b.bounce
+        hit_by_bomb(section)
       elsif b.bounds.intersect?(knight_area)
         b.hit
+      end
+      if section.projectile_hit?(knight_area) && !@invulnerable
+        hit(section)
       end
 
       forces = Vector.new(0, 0)

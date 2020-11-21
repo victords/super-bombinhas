@@ -495,9 +495,10 @@ class Section
   end
 
   def projectile_hit?(obj)
+    bounds = obj.respond_to?(:bounds) ? obj.bounds : obj
     @elements.each do |e|
       if e.is_a? Projectile
-        if e.owner != obj && e.bounds.intersect?(obj.bounds)
+        if e.owner != obj && e.bounds.intersect?(bounds)
           @elements.delete e
           return e.type
         end
