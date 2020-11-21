@@ -25,7 +25,7 @@ This is an ongoing platformer game project, built with Ruby and the Gosu and Min
 
 * The source code is distributed under the GNU GPLv3 license and the image and sound assets (contents of the folders data/img, data/song and data/tileset) under the Creative Commons Attribution-ShareAlike 4.0 license.
 * The game is not complete. You can expect to find some bugs - if you find them, please let me know.
-* Regarding the soundtrack, credits go to [Zergananda](https://soundcloud.com/zergananda) and [Francesco Corrado](https://soundcloud.com/francesco-corrado-846828), except for the track "Desert Theme" (file data/song/m0.ogg), which was created by me.
+* Regarding the soundtrack, credits go to [Zergananda](https://soundcloud.com/zergananda) and [Francesco Corrado](https://soundcloud.com/franzcorradomusic), except for the track "Desert Theme" (file data/song/m0.ogg), which was created by me.
 * The "bundle.rb" and "update_stages.rb" files are not part of the source code of the game, they're utility scripts I use to create a bundled file with all the source code and to update the stage files when new elements are created, respectively.
 * The level editor I have used to create all the stages is also available [here](https://github.com/victords/super-bombinhas-editor).
 
