@@ -458,10 +458,12 @@ class SaveBombie < SBGameObject
   end
 
   def update(section)
-    if not @saved and SB.player.bomb.collide? self
-      section.save_check_point @id, self
-      @saved = true
+    if !@saved && SB.player.bomb.collide?(self)
+      SB.player.bomb.reset_hp
+      section.save_check_point(@id, self)
       SB.play_sound(Res.sound(:checkPoint))
+      StageMenu.play_get_item_effect(@x - section.map.cam.x + @w / 2, @y - section.map.cam.y + @h / 2, :health)
+      @saved = true
     end
 
     if @saved

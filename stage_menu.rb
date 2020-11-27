@@ -303,7 +303,9 @@ class StageMenu
     end
 
     def play_get_item_effect(origin_x, origin_y, type = nil)
-      @effects << ItemEffect.new(origin_x, origin_y, type == :life ? 20 : type == :star ? 372 : 770, type == :life || type == :star ? 19 : 30)
+      @effects << ItemEffect.new(origin_x, origin_y,
+                                 type == :life ? 20 : type == :star ? 372 : type == :health ? 114 : 770,
+                                 type.nil? ? 30 : 19)
     end
 
     def draw

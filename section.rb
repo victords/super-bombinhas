@@ -26,10 +26,12 @@ Tile = Struct.new :back, :fore, :pass, :wall, :hide, :broken, :ramp_end
 class ScoreEffect
   attr_reader :dead
 
-  def initialize(x, y, score)
+  def initialize(x, y, score, life = false)
     @x = x
     @y = y
-    @text = score
+    @text = life ? "+#{score}" : score.to_s
+    @color = life ? 0x00ff00 : 0xffffff
+    @scale = life && score > 1 ? 3 : 1.5
     @alpha = 0
     @timer = 0
   end
@@ -46,7 +48,7 @@ class ScoreEffect
   end
 
   def draw(map, scale_x, scale_y)
-    SB.text_helper.write_line(@text, @x - map.cam.x, @y - map.cam.y, :center, 0xffffff, @alpha, :border, 0, 1, @alpha, 0, 1.5, 1.5)
+    SB.text_helper.write_line(@text, @x - map.cam.x, @y - map.cam.y, :center, @color, @alpha, :border, 0, @scale / 1.5, @alpha, 0, @scale, @scale)
   end
 end
 

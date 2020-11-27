@@ -170,6 +170,7 @@ class Life < FloatingItem
     super(section) do
       take(section, false)
       StageMenu.play_get_item_effect(@x - section.map.cam.x + @w / 2, @y - section.map.cam.y + @h / 2, :life)
+      section.add_effect(ScoreEffect.new(@x + @w / 2, @y, @lives, true))
     end
   end
 
@@ -277,6 +278,7 @@ class Heart < FloatingItem
     super(section) do
       SB.player.bomb.hp += 1
       SB.play_sound(Res.sound(:getItem))
+      StageMenu.play_get_item_effect(@x - section.map.cam.x + @w / 2, @y - section.map.cam.y + @h / 2, :health)
     end
   end
 end

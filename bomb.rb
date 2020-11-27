@@ -40,11 +40,11 @@ class Bomb < GameObject
 
   def initialize(type, hp)
     case type
-    when :azul     then @name = 'Bomba Azul';     @def_hp = 1; @max_hp = 1;   x_g = -12; y_g = -5
-    when :vermelha then @name = 'Bomba Vermelha'; @def_hp = 2; @max_hp = 999; x_g = -8;  y_g = -11
-    when :amarela  then @name = 'Bomba Amarela';  @def_hp = 1; @max_hp = 1;   x_g = -14; y_g = -22
+    when :azul     then @name = 'Bomba Azul';     @def_hp = 2; @max_hp = 2;   x_g = -12; y_g = -5
+    when :vermelha then @name = 'Bomba Vermelha'; @def_hp = 3; @max_hp = 999; x_g = -8;  y_g = -11
+    when :amarela  then @name = 'Bomba Amarela';  @def_hp = 2; @max_hp = 2;   x_g = -14; y_g = -22
     when :verde    then @name = 'Bomba Verde';    @def_hp = 2; @max_hp = 3;   x_g = -14; y_g = -11
-    else                @name = 'Aldan';          @def_hp = 1; @max_hp = 2;   x_g = -14; y_g = -27
+    else                @name = 'Aldan';          @def_hp = 2; @max_hp = 3;   x_g = -14; y_g = -27
     end
 
     super -1000, -1000, 16, 27, "sprite_Bomba#{type.to_s.capitalize}", Vector.new(x_g, y_g), 6, 2
@@ -305,6 +305,10 @@ class Bomb < GameObject
   def hp=(value)
     @hp = value
     @hp = @max_hp if @hp > @max_hp
+  end
+
+  def reset_hp
+    @hp = @def_hp if @hp < @def_hp
   end
 
   def save_hp
