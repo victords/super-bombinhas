@@ -2920,3 +2920,56 @@ class Bombnight < Enemy
     super(map, section, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
   end
 end
+
+class Bombaladin < Enemy
+  FORCE = 0.1
+
+  def initialize(x, y, args, section)
+    super(x, y - 18, 60, 50, Vector.new(-38, -48), 2, 3, [0, 1, 2, 3, 4, 5], 5, 750, 3)
+    @max_speed.x = 4.5
+  end
+
+  def update(section)
+    super(section) do
+      knight_area = Rectangle.new(@facing_right ? @x + 14 : @x + 18, @y - 24, 28, 28)
+      b = SB.player.bomb
+      if b.over?(knight_area)
+        hit_by_bomb(section)
+      elsif b.bounds.intersect?(knight_area)
+        b.hit
+      end
+      if section.projectile_hit?(knight_area) && !@invulnerable
+        hit(section)
+      end
+
+      attack_area = Rectangle.new(@facing_right ? @x + 42 : @x - 8, @y - 46, 26, 30)
+      if b.bounds.intersect?(attack_area)
+        b.hit
+      end
+
+      forces = Vector.new(0, 0)
+      if @invulnerable
+        @speed.x = 0
+      else
+        d = b.x + b.w / 2 - @x - @w / 2
+        forces.x = (d <=> 0) * FORCE
+      end
+      move(forces, section.get_obstacles(@x, @y, @w, @h), section.ramps)
+      if @speed.x > 0 && !@facing_right
+        @facing_right = true
+      elsif @speed.x < 0 and @facing_right
+        @facing_right = false
+      end
+    end
+  end
+
+  def hit_by_projectile(section); end
+
+  def hit_by_explosion(section)
+    hit(section, 2)
+  end
+
+  def draw(map, section)
+    super(map, section, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
+  end
+end
