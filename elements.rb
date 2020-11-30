@@ -2008,7 +2008,7 @@ class PoisonGas < SBGameObject
 end
 
 class Cannon < SBGameObject
-  ROT_SPEED = 3
+  ROT_SPEED = 6
 
   def initialize(x, y, args, section)
     super(x, y, 32, 32, :sprite_Cannon)
@@ -2036,7 +2036,7 @@ class Cannon < SBGameObject
     else
       section.add(Projectile.new(@x + @w / 2 - 8, @y + @h / 2 - 8, 7, @angle - 90, self)) if @timer == 0
       @timer += 1
-      if @timer == 150
+      if @timer == 60
         @a_index += 1
         @a_index = 0 if @a_index >= @angles.length
         @rotating = true
