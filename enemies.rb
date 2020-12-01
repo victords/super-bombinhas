@@ -2931,7 +2931,7 @@ class Bombaladin < Enemy
 
   def update(section)
     super(section) do
-      knight_area = Rectangle.new(@facing_right ? @x + 14 : @x + 18, @y - 24, 28, 28)
+      knight_area = Rectangle.new(@facing_right ? @x + 8 : @x + 12, @y - 24, 40, 28)
       b = SB.player.bomb
       if b.over?(knight_area)
         hit_by_bomb(section)
@@ -2942,7 +2942,7 @@ class Bombaladin < Enemy
         hit(section)
       end
 
-      attack_area = Rectangle.new(@facing_right ? @x + 42 : @x - 8, @y - 46, 26, 30)
+      attack_area = Rectangle.new(@facing_right ? @x + 50 : @x - 6, @y - 46, 16, 30)
       if b.bounds.intersect?(attack_area)
         b.hit
       end

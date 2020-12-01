@@ -2036,10 +2036,10 @@ class Cannon < SBGameObject
     else
       section.add(Projectile.new(@x + @w / 2 - 8, @y + @h / 2 - 8, 7, @angle - 90, self)) if @timer == 0
       @timer += 1
-      if @timer == 60
+      if @timer == 90
         @a_index += 1
         @a_index = 0 if @a_index >= @angles.length
-        @rotating = true
+        @rotating = true unless @angle == @angles[@a_index]
         @timer = 0
       end
     end
