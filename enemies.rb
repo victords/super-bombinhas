@@ -2973,3 +2973,84 @@ class Bombaladin < Enemy
     super(map, section, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
   end
 end
+
+class Bomblancer < Enemy
+  SPEED = 3
+  RANGE = 40
+
+  def initialize(x, y, args, section)
+    super(x + 2, y - 4, 28, 36, Vector.new(-58, -44), 2, 3, [0, 1, 2, 1], 7, 300, 2)
+    @stored_forces.x = -SPEED
+  end
+
+  def update(section)
+    super(section) do
+      return if @invulnerable
+
+      b = SB.player.bomb
+      if @attack == :up
+        attack_area = Rectangle.new(@facing_right ? @x + 26 : @x - 12, @y - 44, 14, 80)
+        b.hit if b.bounds.intersect?(attack_area)
+        @timer += 1
+        finish_attack if @timer == 120
+      elsif @attack == :side
+        @timer += 1
+        if @timer >= 30
+          attack_area = Rectangle.new(@facing_right ? @x + 28 : @x - 60, @y + 14, 60, 14)
+          b.hit if b.bounds.intersect?(attack_area)
+        end
+        if @timer == 30
+          @indices = [4]
+          set_animation(4)
+        elsif @timer == 90
+          finish_attack
+        end
+      elsif b.y + b.h > @y && @y + @h > b.y &&
+            (@facing_right && b.x > @x && b.x < @x + @w + RANGE ||
+             !@facing_right && b.x < @x && b.x + b.w > @x - RANGE)
+        @attack = :side
+        @timer = 0
+        @indices = [1]
+        set_animation(1)
+        section.add_effect(Effect.new(@x + @w / 2 - 4, @y - 30, :fx_alert, nil, nil, 0, nil, 30))
+      elsif b.x + b.w > @x && @x + @w > b.x &&
+            b.y < @y && b.y + b.h > @y - RANGE
+        @attack = :up
+        @indices = [3]
+        set_animation(3)
+        @timer = 0
+      else
+        forces = Vector.new(0, 0)
+        if @facing_right && (@right || !section.obstacle_at?(@x + @w, @y + @h))
+          @speed.x = 0
+          forces.x = -SPEED
+          @facing_right = false
+        elsif !@facing_right && (@left || !section.obstacle_at?(@x - 1, @y + @h))
+          @speed.x = 0
+          forces.x = SPEED
+          @facing_right = true
+        end
+        move(forces, section.get_obstacles(@x, @y, @w, @h), section.ramps)
+      end
+    end
+  end
+
+  def finish_attack
+    @indices = [0, 1, 2, 1]
+    set_animation(0)
+    @attack = nil
+  end
+
+  def hit_by_bomb(section)
+    is_hit = @attack == :side && !@invulnerable
+    if is_hit
+      finish_attack
+      hit(section)
+    end
+    SB.player.bomb.bounce(is_hit)
+  end
+
+  def draw(map, section)
+    super(map, section, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
+  end
+end

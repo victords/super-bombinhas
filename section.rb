@@ -72,6 +72,7 @@ class Section
     Bombark,
     Bombie,
     Bombinfant,
+    Bomblancer,
     Bombnight,
     Boulder,
     Box,
