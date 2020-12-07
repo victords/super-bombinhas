@@ -38,8 +38,7 @@ class MapStage
     @world = world
     @num = num
 
-    @has_all_stars = SB.player.all_stars.index("#{world}-#{num}")
-    @has_spec = SB.player.specs.index("#{world}-#{num}")
+    update_icons
   end
 
   def name
@@ -47,6 +46,7 @@ class MapStage
   end
 
   def update
+    update_icons
     return unless @glows
     if @state == 0
       @alpha -= 2
@@ -59,6 +59,11 @@ class MapStage
         @state = 0
       end
     end
+  end
+
+  def update_icons
+    @has_all_stars = SB.player.all_stars.index("#{@world}-#{@num}")
+    @has_spec = SB.player.specs.index("#{@world}-#{@num}")
   end
 
   def select(loaded_stage)
