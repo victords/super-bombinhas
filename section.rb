@@ -101,6 +101,7 @@ class Section
     Fureel,
     Gargoil,
     Gars,
+    Gate,
     Globb,
     Goal,
     Graphic,
