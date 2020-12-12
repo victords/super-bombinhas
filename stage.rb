@@ -236,6 +236,10 @@ class Stage
     @stop_time_duration = duration
   end
 
+  def resume_time
+    @stopped = nil
+  end
+
   def update_bomb
     @cur_section.update_passengers
   end

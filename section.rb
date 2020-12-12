@@ -567,11 +567,13 @@ class Section
     @camera_target_pos = Vector.new(x, y)
     @fixed_camera = true
     SB.player.bomb.active = false
+    SB.stage.stop_time(1_000_000_000, false)
   end
 
   def unset_fixed_camera
     @fixed_camera = false
     SB.player.bomb.active = true
+    SB.stage.resume_time
   end
 
   def finish

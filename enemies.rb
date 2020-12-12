@@ -143,7 +143,7 @@ class Enemy < GameObject
 
   def draw(map = nil, section = nil, scale_x = 2, scale_y = 2, alpha = 0xff, color = 0xffffff, angle = nil, flip = nil, z_index = 0, round = false)
     return if @invulnerable && (@control_timer / 3) % 2 == 0
-    if SB.stage.stopped
+    if SB.stage.stopped && SB.stage.stop_time_duration < 1_000_000_000
       remaining = SB.stage.stop_time_duration - SB.stage.stopped_timer
       color = 0xff6666 if remaining >= 120 || (remaining / 5) % 2 == 0
     end
@@ -500,7 +500,7 @@ class Ekips < GameObject
 
   def draw(map, section)
     color = 0xffffff
-    if SB.stage.stopped
+    if SB.stage.stopped && SB.stage.stop_time_duration < 1_000_000_000
       remaining = SB.stage.stop_time_duration - SB.stage.stopped_timer
       color = 0xff6666 if remaining >= 120 || (remaining / 5) % 2 == 0
     end
@@ -566,7 +566,7 @@ class Faller < GameObject
 
   def draw(map, section)
     color = 0xffffffff
-    if SB.stage.stopped
+    if SB.stage.stopped && SB.stage.stop_time_duration < 1_000_000_000
       remaining = SB.stage.stop_time_duration - SB.stage.stopped_timer
       color = 0xffff6666 if remaining >= 120 || (remaining / 5) % 2 == 0
     end
@@ -2242,7 +2242,7 @@ class Kraklet < SBGameObject
 
   def draw(map, section)
     color = 0xffffff
-    if SB.stage.stopped
+    if SB.stage.stopped && SB.stage.stop_time_duration < 1_000_000_000
       remaining = SB.stage.stop_time_duration - SB.stage.stopped_timer
       color = 0xff6666 if remaining >= 120 || (remaining / 5) % 2 == 0
     end
@@ -2952,7 +2952,7 @@ class Bombaladin < Enemy
         @speed.x = 0
       else
         d = b.x + b.w / 2 - @x - @w / 2
-        forces.x = (d <=> 0) * FORCE
+        forces.x = (d <=> 0) * FORCE * (@bottom.is_a?(Ramp) ? 2 : 1)
       end
       move(forces, section.get_obstacles(@x, @y, @w, @h), section.ramps)
       if @speed.x > 0 && !@facing_right

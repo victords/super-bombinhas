@@ -247,6 +247,7 @@ class Door < GameObject
     when '3' then x_g = -1; y_g = -63
     when '5' then x_g = -17; y_g = -95; cols = rows = nil
     when '6' then x_g = -1; y_g = -63
+    when '10' then x_g = -5; y_g = -67
     else          x_g = -10; y_g = -89 # all boss doors
     end
     super x + 1, y + 63, 30, 1, "sprite_Door#{type}", Vector.new(x_g, y_g), cols, rows
@@ -383,8 +384,7 @@ class Elevator < SBGameObject
     when 6 then w = 224; cols = rows = nil; x_g = y_g = 0
     when 7 then w = 64; cols = rows = nil; x_g = y_g = 0
     when 8 then w = 64; cols = 2; rows = 3; x_g = y_g = 0; indices = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5]; interval = 5
-    when 9 then w = 32; cols = rows = nil; x_g = y_g = 0
-    when 10 then w = 32; cols = rows = nil; x_g = y_g = 0
+    when 9..11 then w = 32; cols = rows = nil; x_g = y_g = 0
     end
     super x, y, w, 1, "sprite_Elevator#{type}", Vector.new(x_g, y_g), cols, rows
     @passable = true
@@ -2333,6 +2333,9 @@ class SpikeBall < SBGameObject
   end
 
   def update(section)
+    # stop when section.set_fixed_camera is called
+    return if SB.stage.stopped
+
     @angle += 1.5
 
     forces = Vector.new(0, 0)
@@ -2430,6 +2433,9 @@ class Gate < SBGameObject
   end
 
   def update(section)
+    # stop when section.set_fixed_camera is called
+    return if SB.stage.stopped && section.active_object != self
+
     if @active
       @timer += 1
       if @timer == 60 + @close_time
@@ -2437,7 +2443,10 @@ class Gate < SBGameObject
         @active = false
       elsif @timer > 60
         @h = 14 + ((@timer - 60).to_f / @close_time) * HEIGHT
-        section.unset_fixed_camera if @timer == 90
+        if @timer == 90
+          section.unset_fixed_camera
+          section.active_object = nil
+        end
       else
         @h = 14 + ((60 - @timer).to_f / 60) * HEIGHT
       end
@@ -2457,6 +2466,7 @@ class Gate < SBGameObject
     return if @active
     @active = true
     @timer = 0
+    section.active_object = self
     section.set_fixed_camera(@x + @w / 2, @y + @h / 2)
     SB.play_sound(Res.sound(:gate))
   end
@@ -2599,6 +2609,7 @@ class Graphic < Sprite
     when 19..20 then x -= 64; y -= 88; @w = 160; @h = 120
     when 21..23 then x -= 14; @w = 60; @h = 32
     when 24 then x -= 64; y -= 88; @w = 160; @h = 120; cols = 1; rows = 2; img_index = SB.lang == :english ? 0 : 1
+    when 25 then x -= 4; y -= 4; @w = 40; @h = 68
     end
     sprite_name = type == 0 ? args : "graphic#{type}"
     super x, y, "sprite_#{sprite_name}", cols, rows
