@@ -1465,7 +1465,6 @@ class WallButton < SBGameObject
       when '1' then TwinWalls
       when '2' then Elevator
       when '3' then Box
-      when '4' then Gate
       else          nil
       end
     @state = 0
@@ -2416,72 +2415,6 @@ class SeekBomb < SBGameObject
       set_animation(1)
       @timer = 0
     end
-  end
-end
-
-class Gate < SBGameObject
-  HEIGHT = 5 * C::TILE_SIZE - 10
-
-  attr_reader :id
-
-  def initialize(x, y, args, section)
-    super(x + 6, y, 20, 14 + HEIGHT, :sprite_gate, Vector.new(0, 0), 2, 1)
-    a = args.split(',')
-    @id = a[0].to_i
-    @close_time = (a[1] || 180).to_i
-    section.obstacles << self
-  end
-
-  def update(section)
-    # stop when section.set_fixed_camera is called
-    return if SB.stage.stopped && section.active_object != self
-
-    if @active
-      @timer += 1
-      if @timer == 60 + @close_time
-        @h = 14 + HEIGHT
-        @active = false
-      elsif @timer > 60
-        @h = 14 + ((@timer - 60).to_f / @close_time) * HEIGHT
-        if @timer == 90
-          section.unset_fixed_camera
-          section.active_object = nil
-        end
-      else
-        @h = 14 + ((60 - @timer).to_f / 60) * HEIGHT
-      end
-
-      b = SB.player.bomb
-      if b.bounds.intersect?(@active_bounds) && @y + @h > b.y
-        if b.bottom
-          b.hit(999)
-        else
-          b.y = @y + @h
-        end
-      end
-    end
-  end
-
-  def activate(section, arg = nil)
-    return if @active
-    @active = true
-    @timer = 0
-    section.active_object = self
-    section.set_fixed_camera(@x + @w / 2, @y + @h / 2)
-    SB.play_sound(Res.sound(:gate))
-  end
-
-  def draw(map, section)
-    super(map)
-    sub_h = ((@h - 14).to_f / HEIGHT * (@img[1].height - 7)).round
-    if sub_h > 0
-      sub_y = @img[1].height - sub_h
-      @img[1].subimage(0, sub_y, 10, sub_h).draw(@x - map.cam.x, @y + 14 - map.cam.y, 0, 2, 2)
-    end
-  end
-
-  def is_visible(map)
-    @active || map.cam.intersect?(@active_bounds)
   end
 end
 
