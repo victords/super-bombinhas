@@ -282,6 +282,10 @@ module Boss
       SB.text_helper.write_breaking(@state == :speaking ? @speech : @death_speech, 10, 500, 780, :justified, 0, 255, 1)
     end
   end
+
+  def stop_time_immune?
+    @state == :speaking
+  end
 end
 
 ################################################################################
@@ -2703,9 +2707,9 @@ class Drepz < Enemy
         if @timer >= (300 - (7 - @hp) * 15)
           d_x = @jump_points[@point_index][0] - 5 - @x
           d_y = @jump_points[@point_index][1] - 44 - @y
-          v_y = -1 - Math.sqrt(1 - 2 * G.gravity.y * (d_y - C::TILE_SIZE))
-          t = (-v_y + Math.sqrt(v_y**2 - 2 * G.gravity.y * (-d_y))) / G.gravity.y
-          forces.x = d_x / t
+          v_y = -Math.sqrt(-2 * G.gravity.y * (d_y - C::TILE_SIZE))
+          v_x = d_x / ((-v_y / G.gravity.y) + Math.sqrt(2 * C::TILE_SIZE / G.gravity.y))
+          forces.x = v_x
           forces.y = v_y
           set_speed = true
           @point_index += 1
@@ -3052,5 +3056,97 @@ class Bomblancer < Enemy
 
   def draw(map, section)
     super(map, section, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
+  end
+end
+
+class Gaxlon < Enemy
+  V_MARGIN = (2 * C::TILE_SIZE).to_f
+
+  include Boss
+
+  alias :super_update :update
+
+  def initialize(x, y, args, section)
+    super(x - 14, y - 86, 60, 118, Vector.new(-26, -42), 3, 2, [0, 1], 10, 10000, 10)
+    @jump_points = args.split(':').map { |p| p.split(',').map { |c| c.to_i * C::TILE_SIZE } }
+    @point_index = 0
+    @max_speed = Vector.new(100, 100)
+    init
+  end
+
+  def update(section)
+    update_boss(section, false) do
+      if @invulnerable
+        super_update(section)
+        return
+      end
+
+      b = SB.player.bomb
+      unless SB.player.dead?
+        if b.over?(self)
+          hit_by_bomb(section)
+        else
+          if b.collide?(self)
+            b.hit
+          end
+          if b.explode?(self) || section.explode?(self) || section.projectile_hit?(self)
+            hit(section)
+          end
+        end
+      end
+
+      if @state == :will_jump
+        @timer += 1
+        if @timer == 30
+          d_x = @jump_points[@point_index][0] - 14 - @x
+          d_y = @jump_points[@point_index][1] - 86 - @y
+          v_y = -Math.sqrt(-2 * G.gravity.y * (d_y - V_MARGIN))
+          v_x = d_x / ((-v_y / G.gravity.y) + Math.sqrt(2 * V_MARGIN / G.gravity.y))
+          forces = Vector.new(v_x, v_y)
+          @point_index += 1
+          @indices = [2]
+          set_animation(2)
+          move(forces, section.get_obstacles(@x, @y, @w, @h), section.ramps, true)
+          @state = :jumping
+        end
+      elsif @state == :jumping
+        move(Vector.new(0, 0), section.get_obstacles(@x, @y, @w, @h), section.ramps)
+        if @bottom
+          @indices = [0, 1]
+          set_animation(0)
+          @state = :normal
+        end
+      elsif @hp >= 9
+        # bomba azul
+      elsif @hp >= 7
+        # bomba vermelha
+      elsif @hp >= 5
+        # bomba amarela
+      elsif @hp >= 3
+        # bomba verde
+      else
+        # bomba branca
+      end
+
+      animate(@indices, @interval)
+      set_active_bounds(section)
+    end
+  end
+
+  def get_invulnerable
+    super
+    @indices = [@img.size - 1]
+    set_animation(@img.size - 1)
+  end
+
+  def return_vulnerable
+    super
+    @state = :will_jump
+    @timer = 0
+  end
+
+  def draw(map, section)
+    super(map, section, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
+    draw_boss
   end
 end

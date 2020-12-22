@@ -102,6 +102,7 @@ class Section
     Gargoil,
     Gars,
     Gate,
+    Gaxlon,
     Globb,
     Goal,
     Graphic,
