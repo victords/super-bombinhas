@@ -88,6 +88,7 @@ class Stage
   end
 
   def update
+    SB.check_song
     if @starting == 1
       @timer = 240 if @timer < 240 && SB.key_pressed?(:confirm)
       if @timer < 240

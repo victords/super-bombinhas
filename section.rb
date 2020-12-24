@@ -584,8 +584,6 @@ class Section
   end
 
   def update(stopped)
-    SB.check_song
-
     bomb = SB.player.bomb
     bomb.poisoned = false
 
@@ -677,8 +675,6 @@ class Section
     if SB.key_pressed?(:pause)
       SB.state = :paused
     end
-
-    SB.check_song
   end
 
   def draw
