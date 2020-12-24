@@ -228,12 +228,13 @@ class FloorEnemy < Enemy
 end
 
 module Boss
-  def init
+  def init(song_id = :boss)
     @activation_x = @x + @w / 2 - C::SCREEN_WIDTH / 2
     @timer = 0
     @state = :waiting
     @speech = SB.text("#{self.class.to_s.downcase}_speech".to_sym)
     @death_speech = SB.text("#{self.class.to_s.downcase}_death".to_sym)
+    @song_id = song_id
   end
 
   def update_boss(section, do_super_update = true, &block)
@@ -248,7 +249,7 @@ module Boss
         section.unset_fixed_camera
         @state = :acting
         @timer = 0
-        SB.play_song(Res.song(:boss))
+        SB.play_song(Res.song(@song_id))
       end
     else
       if @dying
@@ -3068,16 +3069,24 @@ class Gaxlon < Enemy
 
   def initialize(x, y, args, section)
     super(x - 14, y - 86, 60, 118, Vector.new(-26, -42), 3, 2, [0, 1], 10, 10000, 10)
-    @jump_points = args.split(':').map { |p| p.split(',').map { |c| c.to_i * C::TILE_SIZE } }
-    @point_index = 0
     @max_speed = Vector.new(100, 100)
-    init
+
+    @jump_points = args.split('$').map { |a| a.split(':').map { |p| p.split(',').map { |c| c.to_i * C::TILE_SIZE } } }
+    @point_index = 0
+    @subpoint_index = 0
+    @timer = 0
+    @spawns = {}
+    init(:finalBoss)
   end
 
   def update(section)
     update_boss(section, false) do
+      forces = Vector.new(0, 0)
+      obstacles = section.get_obstacles(@x, @y, @w, @h)
+
       if @invulnerable
         super_update(section)
+        move(forces, obstacles, section.ramps)
         return
       end
 
@@ -3095,29 +3104,51 @@ class Gaxlon < Enemy
         end
       end
 
+      set_speed = false
       if @state == :will_jump
-        @timer += 1
-        if @timer == 30
-          d_x = @jump_points[@point_index][0] - 14 - @x
-          d_y = @jump_points[@point_index][1] - 86 - @y
-          v_y = -Math.sqrt(-2 * G.gravity.y * (d_y - V_MARGIN))
-          v_x = d_x / ((-v_y / G.gravity.y) + Math.sqrt(2 * V_MARGIN / G.gravity.y))
-          forces = Vector.new(v_x, v_y)
-          @point_index += 1
-          @indices = [2]
-          set_animation(2)
-          move(forces, section.get_obstacles(@x, @y, @w, @h), section.ramps, true)
-          @state = :jumping
+        if @bottom
+          if @timer == 0
+            @indices = [0, 1]
+            set_animation(0)
+          end
+          @timer += 1
+          if @timer == 30
+            forces = jump_to(@jump_points[0][@point_index])
+            set_speed = true
+            @point_index += 1
+            @state = :jumping
+          end
+        else
+          obstacles = obstacles.select { |o| !o.passable }
         end
       elsif @state == :jumping
-        move(Vector.new(0, 0), section.get_obstacles(@x, @y, @w, @h), section.ramps)
         if @bottom
+          @speed.x = 0
           @indices = [0, 1]
           set_animation(0)
-          @state = :normal
+          @state = :acting
         end
       elsif @hp >= 9
-        # bomba azul
+        @timer += 1
+        if @timer % 60 == 0
+          forces = jump_to(@jump_points[1][@subpoint_index])
+          set_speed = true
+          @subpoint_index = (@subpoint_index + 1) % @jump_points[1].size
+          @state = :jumping
+        end
+        if @timer == 180
+          if @spawns.size < @jump_points[1].size
+            index = (0...@jump_points[1].size).find { |i| @spawns[i].nil? }
+            x = @jump_points[1][index][0]
+            y = @jump_points[1][index][1] + 3 * C::TILE_SIZE
+            item = Attack5.new(x, y, nil, section, {})
+            section.add_effect(Effect.new(x - 16, y - 16, :fx_spawn, 2, 2, 8))
+            section.add(item)
+            SB.stage.add_switch(item)
+            @spawns[index] = item
+          end
+          @timer = 0
+        end
       elsif @hp >= 7
         # bomba vermelha
       elsif @hp >= 5
@@ -3128,21 +3159,49 @@ class Gaxlon < Enemy
         # bomba branca
       end
 
+      @spawns.keys.reverse_each do |k|
+        if @spawns[k].dead?
+          obj = @spawns.delete(k)
+          SB.stage.delete_switch(obj)
+        end
+      end
+
       animate(@indices, @interval)
+      move(forces, obstacles, section.ramps, set_speed)
       set_active_bounds(section)
+      @facing_right = @speed.x > 0
     end
+  end
+
+  def jump_to(point)
+    d_x = point[0] - 14 - @x
+    d_y = point[1] - 86 - @y
+    d_y_1 = d_y > 0 ? -V_MARGIN : d_y - V_MARGIN
+    d_y_2 = d_y > 0 ? d_y + V_MARGIN : V_MARGIN
+    v_y = -Math.sqrt(-2 * G.gravity.y * d_y_1)
+    v_x = d_x / ((-v_y / G.gravity.y) + Math.sqrt(2 * d_y_2 / G.gravity.y))
+    @indices = [2]
+    set_animation(2)
+    Vector.new(v_x, v_y)
   end
 
   def get_invulnerable
     super
+    @speed.x = 0
     @indices = [@img.size - 1]
     set_animation(@img.size - 1)
   end
 
   def return_vulnerable
     super
-    @state = :will_jump
-    @timer = 0
+    if @hp % 2 == 0
+      @stored_forces.y = -10
+      @bottom = nil
+      @indices = [2]
+      set_animation(2)
+      @state = :will_jump
+      @timer = 0
+    end
   end
 
   def draw(map, section)

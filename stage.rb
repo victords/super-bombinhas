@@ -231,6 +231,23 @@ class Stage
     @switches.select{ |s| s[:state] == state }.map{ |s| s[:index] }
   end
 
+  def add_switch(obj)
+    @switches << {
+      type: obj.class,
+      obj: obj,
+      x: 0,
+      y: 0,
+      section: @cur_section,
+      state: :normal,
+      index: @switches.size
+    }
+  end
+
+  def delete_switch(obj)
+    switch = find_switch(obj)
+    @switches.delete(switch) unless switch.nil?
+  end
+
   def stop_time(duration, all = true)
     @stopped = all ? :all : :enemies
     @stopped_timer = 0
