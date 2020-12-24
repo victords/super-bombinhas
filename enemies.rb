@@ -3070,8 +3070,9 @@ class Gaxlon < Enemy
   def initialize(x, y, args, section)
     super(x - 14, y - 86, 60, 118, Vector.new(-26, -42), 3, 2, [0, 1], 10, 10000, 10)
     @max_speed = Vector.new(100, 100)
-
-    @jump_points = args.split('$').map { |a| a.split(':').map { |p| p.split(',').map { |c| c.to_i * C::TILE_SIZE } } }
+    args = args.split('%')
+    @jump_points = args[0].split('$').map { |a| a.split(':').map { |p| p.split(',').map { |c| c.to_i * C::TILE_SIZE } } }
+    @spawn_points = args[1].split('$').map { |a| a.split(':').map { |p| p.split(',').map { |c| c.to_i * C::TILE_SIZE } } }
     @point_index = 0
     @subpoint_index = 0
     @timer = 0
@@ -3106,20 +3107,12 @@ class Gaxlon < Enemy
 
       set_speed = false
       if @state == :will_jump
-        if @bottom
-          if @timer == 0
-            @indices = [0, 1]
-            set_animation(0)
-          end
-          @timer += 1
-          if @timer == 30
-            forces = jump_to(@jump_points[0][@point_index])
-            set_speed = true
-            @point_index += 1
-            @state = :jumping
-          end
-        else
-          obstacles = obstacles.select { |o| !o.passable }
+        @timer += 1
+        if @timer == 30
+          forces = jump_to(@jump_points[0][@point_index])
+          set_speed = true
+          @point_index += 1
+          @timer = 0
         end
       elsif @state == :jumping
         if @bottom
@@ -3130,27 +3123,58 @@ class Gaxlon < Enemy
         end
       elsif @hp >= 9
         @timer += 1
-        if @timer % 60 == 0
+        if @timer % 60 == 0 && @timer <= 120
           forces = jump_to(@jump_points[1][@subpoint_index])
           set_speed = true
           @subpoint_index = (@subpoint_index + 1) % @jump_points[1].size
-          @state = :jumping
         end
-        if @timer == 180
-          if @spawns.size < @jump_points[1].size
-            index = (0...@jump_points[1].size).find { |i| @spawns[i].nil? }
-            x = @jump_points[1][index][0]
-            y = @jump_points[1][index][1] + 3 * C::TILE_SIZE
+        if @timer == 150
+          @indices = [3, 4]
+          set_animation(3)
+          times = @hp > 9 ? 1 : 2
+          times.times do
+            @spawn_points[0].each_with_index do |p, i|
+              x = p[0] - 50 + rand(100)
+              y = p[1] - 50 + rand(100)
+              section.add(Projectile.new(x, y, 13, i * 90, self))
+            end
+          end
+          if @spawns.size < @spawn_points[1].size
+            index = (0...@spawn_points[1].size).find { |i| @spawns[i].nil? }
+            x = @spawn_points[1][index][0]
+            y = @spawn_points[1][index][1]
             item = Attack5.new(x, y, nil, section, {})
-            section.add_effect(Effect.new(x - 16, y - 16, :fx_spawn, 2, 2, 8))
+            add_spawn_effect(section, x, y)
             section.add(item)
             SB.stage.add_switch(item)
             @spawns[index] = item
           end
-          @timer = 0
+        elsif @timer == 210
+          @indices = [0, 1]
+          set_animation(0)
+          @timer = 30
         end
       elsif @hp >= 7
-        # bomba vermelha
+        if @timer == 0
+          @spawns.each do |_, v|
+            add_spawn_effect(section, v.x, v.y)
+            v.instance_exec { @dead = true }
+          end
+          points = @subpoint_index == 0 ? @spawn_points[2][0..2] : @spawn_points[2][3..5]
+          points.each_with_index do |p, i|
+            item = Heart.new(p[0], p[1], nil, section)
+            add_spawn_effect(section, p[0], p[1])
+            section.add(item)
+            @spawns[i] = item
+          end
+          @subpoint_index = @subpoint_index == 0 ? 1 : 0
+        end
+        @timer += 1
+        if @timer == 300
+          forces = jump_to(@jump_points[2][@subpoint_index])
+          set_speed = true
+          @timer = 0
+        end
       elsif @hp >= 5
         # bomba amarela
       elsif @hp >= 3
@@ -3182,7 +3206,12 @@ class Gaxlon < Enemy
     v_x = d_x / ((-v_y / G.gravity.y) + Math.sqrt(2 * d_y_2 / G.gravity.y))
     @indices = [2]
     set_animation(2)
+    @state = :jumping
     Vector.new(v_x, v_y)
+  end
+
+  def add_spawn_effect(section, x, y)
+    section.add_effect(Effect.new(x - 16, y - 16, :fx_spawn, 2, 2, 6))
   end
 
   def get_invulnerable
@@ -3195,12 +3224,12 @@ class Gaxlon < Enemy
   def return_vulnerable
     super
     if @hp % 2 == 0
-      @stored_forces.y = -10
-      @bottom = nil
-      @indices = [2]
-      set_animation(2)
-      @state = :will_jump
+      @indices = [0, 1]
+      set_animation(0)
+      @subpoint_index = 0
       @timer = 0
+      @spawns.clear
+      @state = :will_jump
     end
   end
 

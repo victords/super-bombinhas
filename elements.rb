@@ -875,6 +875,7 @@ class Projectile < GameObject
     when 10 then w = 20; h = 20; x_g = -16; y_g = -4; cols = 1; rows = 2; indices = [0, 1]; @speed_m = 5.5
     when 11 then w = 10; h = 10; x_g = -10; y_g = 0; cols = rows = 1; indices = [0]; @speed_m = 5.5
     when 12 then w = h = 12; x_g = -31; y_g = 1; cols = rows = 1; indices = [0]; @speed_m = angle == 330 ? 6 : -6
+    when 13 then w = h = 16; x_g = -6; y_g = -6; cols = rows = 2; indices = [0, 1, 2, 3]; @speed_m = 5
     end
 
     super x, y, w, h, sprite, Vector.new(x_g, y_g), cols, rows
@@ -913,14 +914,16 @@ class Projectile < GameObject
       end
     end
 
-    obst = section.get_obstacles(@x, @y)
-    obst.each do |o|
-      if !o.passable && o.bounds.intersect?(self)
-        @dead = true
-        break
+    if @type != 13
+      obst = section.get_obstacles(@x, @y)
+      obst.each do |o|
+        if !o.passable && o.bounds.intersect?(self)
+          @dead = true
+          break
+        end
       end
+      return if @dead
     end
-    return if @dead
 
     t = (@y + @img_gap.y).floor
     r = (@x + @img_gap.x + @img[0].width).ceil
