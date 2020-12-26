@@ -34,20 +34,20 @@ class Bomb < GameObject
     [0, 4, 175], [-2, 3, 175], [-3, 2, 175], [-4, 0, 175], [-3, -2, 175], [-2, -3, 175]
   ]
 
-  attr_reader :type, :name, :hp, :saved_hp, :facing_right, :can_use_ability, :cooldown, :will_explode, :shielded, :poison_timer,
-              :invulnerable, :invulnerable_time, :invulnerable_timer
+  attr_reader :type, :name, :hp, :saved_hp, :facing_right, :can_use_ability, :cooldown, :will_explode, :exploding,
+              :shielded, :poison_timer, :invulnerable, :invulnerable_time, :invulnerable_timer
   attr_accessor :active, :power, :slipping, :sticking, :poisoned
 
   def initialize(type, hp)
     case type
-    when :azul     then @name = 'Bomba Azul';     @def_hp = 2; @max_hp = 2;   x_g = -12; y_g = -5
-    when :vermelha then @name = 'Bomba Vermelha'; @def_hp = 3; @max_hp = 999; x_g = -8;  y_g = -11
-    when :amarela  then @name = 'Bomba Amarela';  @def_hp = 2; @max_hp = 2;   x_g = -14; y_g = -22
-    when :verde    then @name = 'Bomba Verde';    @def_hp = 2; @max_hp = 3;   x_g = -14; y_g = -11
-    else                @name = 'Aldan';          @def_hp = 2; @max_hp = 3;   x_g = -14; y_g = -27
+    when :azul     then @name = 'Bomba Azul';     @def_hp = 2; @max_hp = 2;   x_g = -12; y_g = -8
+    when :vermelha then @name = 'Bomba Vermelha'; @def_hp = 3; @max_hp = 999; x_g = -8;  y_g = -14
+    when :amarela  then @name = 'Bomba Amarela';  @def_hp = 2; @max_hp = 2;   x_g = -14; y_g = -25
+    when :verde    then @name = 'Bomba Verde';    @def_hp = 2; @max_hp = 3;   x_g = -14; y_g = -14
+    else                @name = 'Aldan';          @def_hp = 2; @max_hp = 3;   x_g = -14; y_g = -30
     end
 
-    super -1000, -1000, 16, 27, "sprite_Bomba#{type.to_s.capitalize}", Vector.new(x_g, y_g), 6, 2
+    super -1000, -1000, 16, 24, "sprite_Bomba#{type.to_s.capitalize}", Vector.new(x_g, y_g), 6, 2
     @hp = hp == 0 ? @def_hp : hp
     @saved_hp = @hp
     @max_speed_x = type == :amarela ? 5.5 : 4
@@ -252,10 +252,10 @@ class Bomb < GameObject
     SB.play_sound(Res.sound(:explode))
   end
 
-  def explode?(obj)
+  def explode?(obj, o_c_x = nil, o_c_y = nil)
     return false unless @exploding
     c_x = @explosion.x + @explosion.w / 2; c_y = @explosion.y + @explosion.h / 2
-    o_c_x = obj.x + obj.w / 2; o_c_y = obj.y + obj.h / 2
+    o_c_x ||= obj.x + obj.w / 2; o_c_y ||= obj.y + obj.h / 2
     sq_dist = (o_c_x - c_x)**2 + (o_c_y - c_y)**2
     sq_dist <= (obj.is_a?(Chamal) ? @explosion_radius * 1.25 : @explosion_radius)**2
   end

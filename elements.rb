@@ -331,7 +331,7 @@ class GunPowder < SBGameObject
 
   def update(section)
     b = SB.player.bomb
-    if b.collide? self and not b.will_explode
+    if b.collide?(self) && !b.will_explode && !b.exploding
       b.set_exploding(@life)
       SB.stage.set_switch self if @switch
       @dead = true
@@ -506,9 +506,13 @@ class Spikes < TwoStateObject
     when 2 then y_g = -1
     else        x_g = 1
     end
-    super(x - 2, y - 2, 36, 36, :sprite_Spikes, Vector.new(x_g, y_g), 5, 1, 150, 0, 2, [0], [4], [1, 2, 3, 4], [3, 2, 1, 0], !a[1].nil?)
+    super(x - 2, y - 2, 36, 36, :sprite_Spikes, Vector.new(x_g, y_g),
+          5, 1, 150, 0, 2,
+          [0], [4], [1, 2, 3, 4], [3, 2, 1, 0],
+          !a[1].nil? && a[1] != '', nil, (a[2] || 0).to_i)
     @active_bounds = Rectangle.new x, y, 32, 32
     @obst = Block.new(x, y, 32, 32)
+    @tint = !a[2].nil?
   end
 
   def s1_to_s2(section)
@@ -554,7 +558,8 @@ class Spikes < TwoStateObject
             when 2 then 180
             else        270
             end
-    @img[@img_index].draw_rot @x + @w/2 + @img_gap.x - map.cam.x, @y + @h/2 + @img_gap.y - map.cam.y, 0, angle, 0.5, 0.5, 2, 2
+    color = @tint ? 0xffff6600 : 0xffffffff
+    @img[@img_index].draw_rot @x + @w/2 + @img_gap.x - map.cam.x, @y + @h/2 + @img_gap.y - map.cam.y, 0, angle, 0.5, 0.5, 2, 2, color
   end
 end
 

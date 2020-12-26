@@ -3099,7 +3099,7 @@ class Gaxlon < Enemy
           if b.collide?(self)
             b.hit
           end
-          if b.explode?(self) || section.explode?(self) || section.projectile_hit?(self)
+          if b.explode?(self, nil, @x + @h) || section.projectile_hit?(self)
             hit(section)
           end
         end
@@ -3134,8 +3134,8 @@ class Gaxlon < Enemy
           times = @hp > 9 ? 1 : 2
           times.times do
             @spawn_points[0].each_with_index do |p, i|
-              x = p[0] - 50 + rand(100)
-              y = p[1] - 50 + rand(100)
+              x = p[0] - 64 + rand(128)
+              y = p[1] - 64 + rand(128)
               section.add(Projectile.new(x, y, 13, i * 90, self))
             end
           end
@@ -3176,9 +3176,47 @@ class Gaxlon < Enemy
           @timer = 0
         end
       elsif @hp >= 5
-        # bomba amarela
+        @timer += 1
+        if @timer == 60
+          forces = jump_to(@jump_points[3][@subpoint_index])
+          set_speed = true
+          @subpoint_index = (@subpoint_index + 1) % @jump_points[3].size
+        elsif @timer == 90 || @timer == 150
+          if @timer == 90
+            @indices = [3, 4]
+            set_animation(3)
+          end
+          @spawn_points[3].each_with_index do |p, i|
+            x = p[0] - 96 + rand(192)
+            y = p[1] - 96 + rand(192)
+            section.add(Projectile.new(x, y, 13, (i / 2) * 90, self))
+          end
+        elsif @timer == 330
+          @indices = [0, 1]
+          set_animation(0)
+          @timer = 0
+        end
       elsif @hp >= 3
-        # bomba verde
+        @timer += 1
+        if @timer % 60 == 0
+          forces = jump_to(@jump_points[4][@subpoint_index])
+          set_speed = true
+          @subpoint_index = (@subpoint_index + 1) % @jump_points[4].size
+        end
+        if @timer == 180
+          if @spawns.empty?
+            index = rand(@spawn_points[4].size)
+            x = @spawn_points[4][index][0]
+            y = @spawn_points[4][index][1]
+            item = GunPowder.new(x, y, '3', section, nil)
+            add_spawn_effect(section, x, y)
+            section.add(item)
+            @spawns[index] = item
+            @timer = 0
+          else
+            @timer -= 60
+          end
+        end
       else
         # bomba branca
       end
@@ -3223,9 +3261,9 @@ class Gaxlon < Enemy
 
   def return_vulnerable
     super
+    @indices = [0, 1]
+    set_animation(0)
     if @hp % 2 == 0
-      @indices = [0, 1]
-      set_animation(0)
       @subpoint_index = 0
       @timer = 0
       @spawns.clear
