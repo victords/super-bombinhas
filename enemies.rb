@@ -3077,6 +3077,7 @@ class Gaxlon < Enemy
     @subpoint_index = 0
     @timer = 0
     @spawns = {}
+    @rect = Rectangle.new(@spawn_points[5][0][0], @spawn_points[5][0][1], C::TILE_SIZE, C::TILE_SIZE)
     init(:finalBoss)
   end
 
@@ -3099,7 +3100,7 @@ class Gaxlon < Enemy
           if b.collide?(self)
             b.hit
           end
-          if b.explode?(self, nil, @x + @h) || section.projectile_hit?(self)
+          if b.explode?(self, nil, @y + @h) || section.projectile_hit?(self)
             hit(section)
           end
         end
@@ -3181,19 +3182,18 @@ class Gaxlon < Enemy
           forces = jump_to(@jump_points[3][@subpoint_index])
           set_speed = true
           @subpoint_index = (@subpoint_index + 1) % @jump_points[3].size
-        elsif @timer == 90 || @timer == 150
-          if @timer == 90
-            @indices = [3, 4]
-            set_animation(3)
-          end
+        elsif @timer == 90
+          @indices = [3, 4]
+          set_animation(3)
           @spawn_points[3].each_with_index do |p, i|
             x = p[0] - 96 + rand(192)
             y = p[1] - 96 + rand(192)
             section.add(Projectile.new(x, y, 13, (i / 2) * 90, self))
           end
-        elsif @timer == 330
+        elsif @timer == 150
           @indices = [0, 1]
           set_animation(0)
+        elsif @timer == 330
           @timer = 0
         end
       elsif @hp >= 3
@@ -3218,7 +3218,19 @@ class Gaxlon < Enemy
           end
         end
       else
-        # bomba branca
+        if @hp == 1 && @subpoint_index == 0
+          forces = jump_to(@jump_points[5][0])
+          set_speed = true
+          @subpoint_index = 1
+        end
+        if @spawns.empty? && @rect.intersect?(b.bounds)
+          x = @spawn_points[5][1][0]
+          y = @spawn_points[5][1][1]
+          item = Hourglass.new(x, y, nil, section)
+          add_spawn_effect(section, x, y)
+          section.add(item)
+          @spawns[0] = item
+        end
       end
 
       @spawns.keys.reverse_each do |k|
@@ -3269,6 +3281,14 @@ class Gaxlon < Enemy
       @spawns.clear
       @state = :will_jump
     end
+  end
+
+  def hit_by_bomb(section)
+    super(section)
+    return if @hp <= 0
+    b = SB.player.bomb
+    entrance = @hp >= 8 ? 1 : @hp >= 6 ? 2 : @hp >= 4 ? 3 : 5
+    section.add(Vortex.new(b.x + b.w / 2 - 27, b.y + b.h / 2 - 27, "#{entrance},$", section))
   end
 
   def draw(map, section)

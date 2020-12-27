@@ -985,7 +985,9 @@ class Vortex < GameObject
     super x - 11, y - 11, 54, 54, :sprite_vortex, Vector.new(-5, -5), 2, 2
     @active_bounds = Rectangle.new(@x, @y, @w, @h)
     @angle = 0
-    @entrance = args.to_i
+    a = args.split(',')
+    @entrance = a[0].to_i
+    @stop_time_immune = !a[1].nil?
   end
 
   def update(section)
@@ -1014,7 +1016,12 @@ class Vortex < GameObject
   end
 
   def draw(map, section)
-    @img[@img_index].draw_rot @x + @w / 2 - map.cam.x, @y + @h/2 - map.cam.y, 0, @angle, 0.5, 0.5, 2, 2
+    color = @stop_time_immune ? 0xffffff33 : 0xffffffff
+    @img[@img_index].draw_rot @x + @w / 2 - map.cam.x, @y + @h/2 - map.cam.y, 0, @angle, 0.5, 0.5, 2, 2, color
+  end
+
+  def stop_time_immune?
+    @stop_time_immune
   end
 end
 
