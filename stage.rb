@@ -18,6 +18,7 @@
 require_relative 'section'
 
 class Stage
+  attr_accessor :life_count
   attr_reader :num, :id, :starting, :cur_entrance, :switches, :star_count, :spec_taken,
               :is_bonus, :time, :objective, :reward, :won_reward, :stopped, :stopped_timer, :stop_time_duration
 
@@ -44,6 +45,7 @@ class Stage
 
     @warp_timer = 0
     @star_count = 0
+    @life_count = 0
     @switches = []
     taken_switches = loaded ? SB.save_data[9].split(',').map(&:to_i) : []
     used_switches = loaded ? SB.save_data[10].split(',').map(&:to_i) : []
@@ -128,6 +130,7 @@ class Stage
         Gosu::Song.current_song.stop
         SB.player.temp_startup_item = get_startup_item if @star_count >= C::STARS_PER_STAGE
         SB.player.lives += @reward if @reward
+        SB.player.lives += @life_count
         @won_reward = true
         return :finish
       elsif status == :next_section
@@ -225,6 +228,8 @@ class Stage
         s[:state] = :used
       end
     end
+    SB.player.lives += @life_count
+    @life_count = 0
   end
 
   def switches_by_state(state)

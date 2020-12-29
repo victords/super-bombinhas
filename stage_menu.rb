@@ -337,7 +337,7 @@ class StageMenu
                          204, 60, C::PANEL_COLOR,
                          4, 60, C::PANEL_COLOR, 0
       @lives_icon.draw 12, 9, 0, 2, 2
-      SB.font.draw_text p.lives, 40, 8, 0, 2, 2, 0xff000000
+      SB.font.draw_text p.lives + SB.stage.life_count, 40, 8, 0, 2, 2, 0xff000000
       @hp_icon.draw 105, 9, 0, 2, 2
       SB.font.draw_text p.bomb.hp, 135, 8, 0, 2, 2, 0xff000000
       @score_icon.draw 10, 32, 0, 2, 2

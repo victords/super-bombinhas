@@ -175,7 +175,7 @@ class Life < FloatingItem
   end
 
   def use(section, switch)
-    SB.player.lives += @lives
+    SB.stage.life_count += @lives
     set_switch(switch)
     true
   end
