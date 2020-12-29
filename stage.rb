@@ -279,17 +279,17 @@ class Stage
   def get_startup_item
     w = SB.player.last_world
     possible_items = [
-      Section::ELEMENT_TYPES.index(Attack1),
-      Section::ELEMENT_TYPES.index(BoardItem),
-      Section::ELEMENT_TYPES.index(Key),
-      Section::ELEMENT_TYPES.index(Shield),
+      Section::ELEMENT_TYPES.key(Attack1),
+      Section::ELEMENT_TYPES.key(BoardItem),
+      Section::ELEMENT_TYPES.key(Key),
+      Section::ELEMENT_TYPES.key(Shield),
     ]
     possible_items += [
-      Section::ELEMENT_TYPES.index(Attack2),
-      Section::ELEMENT_TYPES.index(Spring),
+      Section::ELEMENT_TYPES.key(Attack2),
+      Section::ELEMENT_TYPES.key(Spring),
     ] if w >= 2
     possible_items += [
-      Section::ELEMENT_TYPES.index(Attack3),
+      Section::ELEMENT_TYPES.key(Attack3),
     ] if w >= 3
     possible_items[rand(possible_items.size)]
   end
