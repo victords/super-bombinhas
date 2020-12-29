@@ -1480,6 +1480,7 @@ class WallButton < SBGameObject
       when '1' then TwinWalls
       when '2' then Elevator
       when '3' then Box
+      when '4' then Gate
       else          nil
       end
     @state = 0

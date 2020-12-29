@@ -135,6 +135,8 @@ class Player
   end
 
   def set_bomb(type)
+    return if SB.stage.stopped == :all
+
     @bomb.stop
     bomb = @bombs[type]
     bomb.x = @bomb.x
@@ -145,6 +147,8 @@ class Player
   end
 
   def shift_bomb(section)
+    return if SB.stage.stopped == :all
+
     ind = (@bombs.keys.index(@bomb.type) + 1) % @bombs.size
     set_bomb(BOMB_TYPES[ind])
     section.add_effect(Effect.new(@bomb.x + @bomb.w / 2 - 32, @bomb.y + @bomb.h / 2 - 32, :fx_spawn, 2, 2, 6))
