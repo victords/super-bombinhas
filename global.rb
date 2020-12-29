@@ -171,6 +171,8 @@ class SB
         else
           song = Res.song(song)
         end
+      else
+        @song = @intro_song = nil
       end
 
       if cur_song
