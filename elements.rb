@@ -239,21 +239,21 @@ class Door < GameObject
 
   def initialize(x, y, args, section, switch)
     args = args.split(',')
-    type = args[2]
+    type = args[2] ? args[2].to_i : nil
     cols = 5
     rows = 1
     case type
-    when nil then x_g = -1; y_g = -63
-    when '3' then x_g = -1; y_g = -63
-    when '5' then x_g = -17; y_g = -95; cols = rows = nil
-    when '6' then x_g = -1; y_g = -63
-    when '10' then x_g = -5; y_g = -67
-    else          x_g = -10; y_g = -89 # all boss doors
+    when nil    then x_g = -1; y_g = -63
+    when 3      then x_g = -1; y_g = -63
+    when 5      then x_g = -17; y_g = -95; cols = rows = nil
+    when 6      then x_g = -1; y_g = -63
+    when 10..13 then x_g = -5; y_g = -67
+    else             x_g = -10; y_g = -89 # all boss doors
     end
     super x + 1, y + 63, 30, 1, "sprite_Door#{type}", Vector.new(x_g, y_g), cols, rows
     @entrance = args[0].to_i
     @locked = (switch[:state] != :taken and args[1] == '.')
-    @type = type.to_i if type
+    @type = type
     @open = false
     @active_bounds = Rectangle.new x, y, 32, 64
     @lock = Res.img(:sprite_Lock) if @locked
@@ -303,7 +303,7 @@ class Door < GameObject
 
   def draw(map, section)
     super(map, 2, 2)
-    @lock.draw(@x + 18  - map.cam.x, @y - 38 - map.cam.y, 0, 2, 2) if @lock
+    @lock.draw(@x + 18 - map.cam.x, @y - 38 - map.cam.y, 0, 2, 2) if @lock
   end
 end
 
