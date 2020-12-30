@@ -177,8 +177,9 @@ class Section
     121 => Bombaladin,
     122 => Bomblancer,
     123 => Gate,
-    124 => Gaxlon,
-    125 => SpecGate
+    124 => BattleArena,
+    125 => Gaxlon,
+    126 => SpecGate
   }
 
   attr_reader :reload, :tiles, :obstacles, :ramps, :passengers, :size, :default_entrance, :warp, :tileset_num, :map
@@ -353,6 +354,7 @@ class Section
 
     switches.each do |s|
       if s[:section] == self
+        s[:obj] = s[:type].new(s[:x], s[:y], s[:args], self, s)
         @elements << s[:obj]
       end
     end

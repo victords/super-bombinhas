@@ -2439,41 +2439,78 @@ class Gate < SBGameObject
 
   attr_reader :id
 
-  def initialize(x, y, args, section)
-    super(x + 6, y, 20, 14 + HEIGHT, :sprite_gate, Vector.new(0, 0), 2, 1)
+  def initialize(x, y, args, section, switch)
     a = args.split(',')
     @id = a[0].to_i
     @close_time = (a[1] || 180).to_i
+    @normal = a[2].nil?
+    @first = a[3].nil?
+    @opened = switch[:state] == :taken
+    super(x + 6, y, 20, (@normal || !@first) && !@opened ? 14 + HEIGHT : 14, :sprite_gate, Vector.new(0, 0), 2, 1)
     section.obstacles << self
   end
 
   def update(section)
     # stop when section.set_fixed_camera is called
-    return if SB.stage.stopped && section.active_object != self
+    return if SB.stage.stopped && section.active_object != self || @opened
+
+    b = SB.player.bomb
 
     if @active
-      @timer += 1
-      if @timer == 60 + @close_time
-        @h = 14 + HEIGHT
-        @active = false
-      elsif @timer > 60
-        @h = 14 + ((@timer - 60).to_f / @close_time) * HEIGHT
-        if @timer == 90
-          section.unset_fixed_camera
-          section.active_object = nil
+      if @normal
+        @timer += 1
+        if @timer == 60 + @close_time
+          @h = 14 + HEIGHT
+          @active = false
+        elsif @timer > 60
+          @h = 14 + ((@timer - 60).to_f / @close_time) * HEIGHT
+          if @timer == 90
+            section.unset_fixed_camera
+            section.active_object = nil
+          end
+        else
+          @h = 14 + ((60 - @timer).to_f / 60) * HEIGHT
+        end
+        if b.bounds.intersect?(@active_bounds) && @y + @h > b.y
+          if b.bottom
+            b.hit(999)
+          else
+            b.y = @y + @h
+          end
         end
       else
-        @h = 14 + ((60 - @timer).to_f / 60) * HEIGHT
-      end
-
-      b = SB.player.bomb
-      if b.bounds.intersect?(@active_bounds) && @y + @h > b.y
-        if b.bottom
-          b.hit(999)
+        if @timer < 0
+          @timer += 1
+          @h = 14 + ((60 + @timer).to_f / 60) * HEIGHT
+          if @timer == 0
+            @h = 14 + HEIGHT
+            @active = false
+            section.unset_fixed_camera
+            section.active_object = nil
+          end
         else
-          b.y = @y + @h
+          @timer += 1
+          if @timer <= 60
+            @h = 14 + ((60 - @timer).to_f / 60) * HEIGHT
+          elsif @timer == 90
+            @active = false
+            @opened = true
+            section.unset_fixed_camera
+            section.active_object = nil
+          end
         end
       end
+    end
+
+    unless @normal
+      collide = b.bounds.intersect?(@active_bounds)
+      if @prev_collide && !collide
+        @active = true
+        @timer = -60
+        section.active_object = self
+        section.set_fixed_camera(@x + @w / 2, @y + @h / 2)
+      end
+      @prev_collide = collide
     end
   end
 
@@ -2484,6 +2521,7 @@ class Gate < SBGameObject
     section.active_object = self
     section.set_fixed_camera(@x + @w / 2, @y + @h / 2)
     SB.play_sound(Res.sound(:gate))
+    SB.stage.set_switch(self) unless @normal
   end
 
   def draw(map, section)
@@ -2497,6 +2535,69 @@ class Gate < SBGameObject
 
   def is_visible(map)
     @active || map.cam.intersect?(@active_bounds)
+  end
+end
+
+class BattleArena
+  def initialize(x, y, args, section, switch)
+    if switch[:state] == :taken
+      @dead = true
+      return
+    end
+
+    args = args.split(':')
+    @gate_ids = args[0..1].map(&:to_i)
+    @enemies = []
+    args[2..-1].each do |a|
+      p = a.split(',').map(&:to_i)
+      @enemies << Section::ELEMENT_TYPES[p[0]].new(x + p[1] * C::TILE_SIZE, y + p[2] * C::TILE_SIZE, nil, section)
+    end
+  end
+
+  def update(section)
+    return if @dead
+
+    if @timer.nil?
+      @enemies.each { |e| section.add(e) }
+      @timer = 0
+    end
+
+    if @enemies.empty?
+      if @timer == 0
+        section.activate_object(Gate, @gate_ids[0])
+        SB.stage.set_switch(self)
+      end
+      @timer += 1
+      if @timer == 91
+        section.activate_object(Gate, @gate_ids[1])
+        @dead = true
+      end
+    else
+      @enemies.reverse_each do |e|
+        @enemies.delete(e) if e.dead?
+      end
+    end
+  end
+
+  def is_visible(map)
+    true
+  end
+
+  def dead?; @dead; end
+
+  def draw(map, section); end
+end
+
+class SpecGate < SBGameObject
+  def initialize(x, y, args, section)
+    super x, y, 32, 32, :sprite_SpecGate
+    @active_bounds = Rectangle.new(x, y, 32, 32)
+  end
+
+  def update(section)
+    if SB.player.bomb.collide? self
+      SB.prepare_special_world
+    end
   end
 end
 
@@ -2582,19 +2683,6 @@ class Lightning < SBGameObject
         [-1, 2 * i, 127], [-1, 2 * i + 1, 127],
         [1, 2 * i, 127], [1, 2 * i + 1, 127],
       ], @x, @y, @w, C::TILE_SIZE)
-    end
-  end
-end
-
-class SpecGate < SBGameObject
-  def initialize(x, y, args, section)
-    super x, y, 32, 32, :sprite_SpecGate
-    @active_bounds = Rectangle.new(x, y, 32, 32)
-  end
-
-  def update(section)
-    if SB.player.bomb.collide? self
-      SB.prepare_special_world
     end
   end
 end
