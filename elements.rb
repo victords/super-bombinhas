@@ -1679,6 +1679,7 @@ class HeatBomb < SBGameObject
     @passable = false
     section.obstacles << self
     @proj_hit_box = ProjectileHitBox.new(x - 10, y - 10, 52, 52)
+    @radius = (args || 60).to_i
   end
 
   def update(section)
@@ -1696,7 +1697,7 @@ class HeatBomb < SBGameObject
       if @timer == 120
         @state = 2
         @timer = 0
-        section.add_effect(Explosion.new(@x + @w / 2, @y + @h / 2, 60, self))
+        section.add_effect(Explosion.new(@x + @w / 2, @y + @h / 2, @radius, self))
         set_animation 3
         section.obstacles.delete(self)
       end
