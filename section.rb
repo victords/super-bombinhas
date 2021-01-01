@@ -354,7 +354,6 @@ class Section
 
     switches.each do |s|
       if s[:section] == self
-        s[:obj] = s[:type].new(s[:x], s[:y], s[:args], self, s)
         @elements << s[:obj]
       end
     end

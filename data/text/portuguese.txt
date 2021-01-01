@@ -46,8 +46,8 @@ can_play		Agora você pode jogar com:
 msg1			Nem todas as chaves servem em todas as portas...
 msg2			Isto é apenas uma amostra do que o aguarda no próximo mundo... Fique atento para a próxima versão de Super Bombinhas!
 msg_monep		Ei! Alto lá! Se você quiser passar por aqui, tem que me trazer uma erva florestal. Isso mesmo, uma deliciosa erva florestal... Agora suma daqui e volte apenas quando tiver arranjado uma para mim!
-msg_mnt_bomb	Hi, I was taking a walk in the mountains and I lost my precious Jillis Stone. It's a big, shiny, green gem... Do you think you could find it for me?
-msg_mnt_bomb2	Thanks a lot, mate! Well... I don't have much to offer in return, but you can use this float machine if you want. It will help you reach the highest parts of the mountain./It's a wonderful view from there!
+msg_mnt_bomb	Olá, eu estava caminhando pelas montanhas e perdi minha preciosa Pedra Jillis. É uma jóia grande, verde e brilhante... você acha que pode encontrá-la para mim?
+msg_mnt_bomb2	Muito obrigado, amigo! Bom... Eu não tenho muito a oferecer em retorno, mas você pode usar essa máquina de flutuação se quiser. Ela vai te ajudar a alcançar as partes mais altas da montanha./É uma vista maravilhosa lá do alto!
 msg_aldan		Olá! É tão bom ver uma bomba amiga por aqui... obrigado por me libertar! Agora, temos que nos apressar e derrotar Gaxlon e seus capangas... nossos cidadãos estão sofrendo!
 chamal_speech	Então... você veio. Porém, temo que este seja o fim de sua vã jornada, pequena bomba. WHEELIAMS, PEGUEM-NO!
 chamal_death	Nããããããoooo...!! Como eu fui perder para um fracote como esse...?! Não... Não é poss...

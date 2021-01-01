@@ -245,7 +245,7 @@ module Boss
       end
     elsif @state == :speaking
       @timer += 1
-      if @timer >= 300 or SB.key_pressed?(:confirm)
+      if @timer >= 900 or SB.key_pressed?(:confirm)
         section.unset_fixed_camera
         @state = :acting
         @timer = 0
@@ -254,7 +254,7 @@ module Boss
     else
       if @dying
         @timer += 1
-        if @timer >= 300 or SB.key_pressed?(:confirm)
+        if @timer >= 600 or SB.key_pressed?(:confirm)
           section.unset_fixed_camera
           section.finish
           @dead = true
@@ -1188,12 +1188,17 @@ class Sahiss < FloorEnemy
   def initialize(x, y, args, section)
     super x - 54, y - 148, args, 148, 180, Vector.new(-139, -3), 2, 3, [0, 1, 0, 2], 7, 2000, 3, 4
     @time = 180 + rand(240)
-    section.active_object = self
     init
   end
 
   def update(section)
     update_boss(section, false) do
+      obj = section.active_object
+      if obj && !obj.dying && obj.bounds.intersect?(bounds)
+        hit(section)
+        next
+      end
+
       if @attacking
         move_free @aim, 6
         b = SB.player.bomb
@@ -1276,16 +1281,18 @@ class Sahiss < FloorEnemy
     unless @invulnerable
       super
       SB.play_sound(Res.sound(:stomp))
-      if @img_index == 5
-        set_bounds 3; set_bounds 4
-      elsif @img_index == 4
-        set_bounds 4
+      if @hp > 0
+        if @img_index == 5
+          set_bounds 3; set_bounds 4
+        elsif @img_index == 4
+          set_bounds 4
+        end
+        @attacking = false
+        @timer = 0
+        @time = 180 + rand(240)
       end
       @indices = [3]
       set_animation 3
-      @attacking = false
-      @timer = 0
-      @time = 180 + rand(240)
     end
   end
 
@@ -1426,7 +1433,7 @@ class Lambul < FloorEnemy
       elsif @timer >= 60
         animate [6, 5, 4, 3], 5
       elsif @timer >= 20
-        r = Rectangle.new(@facing_right ? @x : @x - 48, @y + 35, 88, 10)
+        r = Rectangle.new(@facing_right ? @x : @x - 48, @y + 40, 88, 30)
         b.hit if b.bounds.intersect?(r)
       else
         animate [3, 4, 5, 6], 5

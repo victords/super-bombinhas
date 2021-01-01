@@ -710,7 +710,7 @@ class Ball < GameObject
 
         unless SB.stage.stopped == :all
           SB.stage.switches.each do |s|
-            if s[:type] == BallReceptor and bounds.intersect? s[:obj].bounds
+            if s[:type] == BallReceptor && bounds.intersect?(s[:obj].bounds)
               next if s[:obj].is_set
               s[:obj].set section
               s2 = SB.stage.find_switch self
@@ -1191,7 +1191,7 @@ end
 class Stalactite < SBGameObject
   RANGE = 288
 
-  attr_reader :id
+  attr_reader :id, :dying
 
   def initialize(x, y, args, section)
     args = (args || '').split(',')
@@ -1199,6 +1199,7 @@ class Stalactite < SBGameObject
     @active_bounds = Rectangle.new(x + 2, y, 28, 48)
     @normal = args[1].nil?
     @id = args[2].to_i
+    section.active_object = self unless @normal
   end
 
   def update(section)
@@ -1209,10 +1210,6 @@ class Stalactite < SBGameObject
     elsif @moving
       move Vector.new(0, 0), section.get_obstacles(@x, @y), section.ramps
       SB.player.bomb.hit if SB.player.bomb.collide?(self)
-      obj = section.active_object
-      if obj.is_a? Sahiss and obj.bounds.intersect?(self)
-        obj.hit(section)
-      end
       if @bottom
         @dying = true
         @moving = false
@@ -2448,12 +2445,16 @@ class Gate < SBGameObject
     @first = a[3].nil?
     @opened = switch[:state] == :taken
     super(x + 6, y, 20, (@normal || !@first) && !@opened ? 14 + HEIGHT : 14, :sprite_gate, Vector.new(0, 0), 2, 1)
-    section.obstacles << self
   end
 
   def update(section)
     # stop when section.set_fixed_camera is called
     return if SB.stage.stopped && section.active_object != self || @opened
+
+    unless @inited
+      section.obstacles << self
+      @inited = true
+    end
 
     b = SB.player.bomb
 
