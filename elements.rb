@@ -2696,12 +2696,6 @@ class Graphic < Sprite
     img_index = nil
     @flip = nil
     case type
-    when 0
-      case args
-      when 'BombaVermelha' then x += 44; y += 88; @w = 40; @h = 40; cols = 6; rows = 2; @flip = :horiz
-      when 'BombaAmarela' then x += 40; y += 76; @w = 48; @h = 52; cols = 6; rows = 2; @flip = :horiz
-      when 'BombaVerde' then x += 44; y += 86; @w = 48; @h = 52; cols = 6; rows = 2; @flip = :horiz
-      end
     when 1 then @w = 32; @h = 64
     when 2 then x += 16; y += 16; @w = 64; @h = 64; cols = 2; rows = 2; @indices = [0, 1, 2, 3]; @interval = 7; @rot = -5
     when 3..5 then x -= 16; @w = 64; @h = 32
@@ -2709,15 +2703,27 @@ class Graphic < Sprite
     when 7..8 then @w = 128; @h = 64
     when 9 then x -= 16; @w = 160; @h = 64
     when 10 then x -= 236; y -= 416; @w = 600; @h = 480
-    when 12 then x -= 30; @w = 126; @h = 128; cols = 2; rows = 2; @indices = [0, SB.lang == :portuguese ? 1 : SB.lang == :english ? 2 : 3]; @interval = 60
+    when 12
+      x += 2; @w = 126; @h = 128; cols = 5; rows = 1
+      if SB.player.bomb_unlocked?(:vermelha)
+        img_index = 4
+      else
+        @indices = [0, SB.lang == :portuguese ? 1 : SB.lang == :english ? 2 : 3]; @interval = 60
+      end
     when 13..18 then x -= 64; y -= 88; @w = 160; @h = 120; cols = 1; rows = 3; img_index = SB.lang == :portuguese ? 1 : SB.lang == :english ? 0 : 2
     when 19..20 then x -= 64; y -= 88; @w = 160; @h = 120
     when 21..23 then x -= 14; @w = 60; @h = 32
     when 24 then x -= 64; y -= 88; @w = 160; @h = 120; cols = 1; rows = 2; img_index = SB.lang == :english ? 0 : 1
     when 25 then x -= 4; y -= 4; @w = 40; @h = 68
+    when 26..27
+      x += 2; @w = 126; @h = 128; cols = 5; rows = 1
+      if SB.player.bomb_unlocked?(type == 26 ? :amarela : :verde)
+        img_index = 4
+      else
+        @indices = [0, SB.lang == :portuguese ? 1 : SB.lang == :english ? 2 : 3]; @interval = 60
+      end
     end
-    sprite_name = type == 0 ? args : "graphic#{type}"
-    super x, y, "sprite_#{sprite_name}", cols, rows
+    super x, y, "sprite_graphic#{type}", cols, rows
     @img_index = img_index if img_index
     @active_bounds = Rectangle.new(x, y, @w, @h)
     @angle = 0 if @rot
