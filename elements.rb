@@ -243,11 +243,12 @@ class Door < GameObject
     cols = 5
     rows = 1
     case type
-    when nil    then x_g = -1; y_g = -63
-    when 3      then x_g = -1; y_g = -63
+    when nil    then x_g = -1;  y_g = -63
+    when 3      then x_g = -1;  y_g = -63
     when 5      then x_g = -17; y_g = -95; cols = rows = nil
-    when 6      then x_g = -1; y_g = -63
-    when 10..13 then x_g = -5; y_g = -67
+    when 6      then x_g = -1;  y_g = -63
+    when 10..13 then x_g = -5;  y_g = -67
+    when 14     then x_g = -11; y_g = -79
     else             x_g = -10; y_g = -89 # all boss doors
     end
     super x + 1, y + 63, 30, 1, "sprite_Door#{type}", Vector.new(x_g, y_g), cols, rows
@@ -363,6 +364,10 @@ class Crack < SBGameObject
         SB.stage.set_switch self
       end
     end
+  end
+
+  def is_visible(map)
+    true
   end
 end
 
@@ -642,6 +647,8 @@ class MovingWall < GameObject
           @dead = true
         elsif not @closed and @h == @max_size
           section.unset_fixed_camera
+          @active_bounds.y = @y
+          @active_bounds.h = @h
           @active = false
         end
       end
@@ -662,6 +669,8 @@ class MovingWall < GameObject
     else
       @y -= @max_size - @h
       @h = @max_size
+      @active_bounds.y = @y
+      @active_bounds.h = @h
     end
   end
 
@@ -2404,7 +2413,6 @@ class SeekBomb < SBGameObject
       speed = Vector.new((b_c.x - c.x).to_f * SPEED / distance, (b_c.y - c.y).to_f * SPEED / distance)
       move(speed, section.get_obstacles(@x, @y), section.ramps, true)
       animate([1, 0, 0, 0, 0, 0, 0, 0, 0, 0], 6)
-      update_active_bounds(section)
       @timer += 1
       if @timer == 120
         @seeking = false
@@ -2429,6 +2437,10 @@ class SeekBomb < SBGameObject
       set_animation(1)
       @timer = 0
     end
+  end
+
+  def is_visible(map)
+    @seeking || @exploding || map.cam.intersect?(@active_bounds)
   end
 end
 

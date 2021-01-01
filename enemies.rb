@@ -3225,12 +3225,14 @@ class Gaxlon < Enemy
           end
         end
       else
+        should_spawn = false
         if @hp == 1 && @subpoint_index == 0
           forces = jump_to(@jump_points[5][0])
           set_speed = true
+          should_spawn = true
           @subpoint_index = 1
         end
-        if @spawns.empty? && @rect.intersect?(b.bounds)
+        if @spawns.empty? && (should_spawn || @rect.intersect?(b.bounds))
           x = @spawn_points[5][1][0]
           y = @spawn_points[5][1][1]
           item = Hourglass.new(x, y, nil, section)
@@ -3294,7 +3296,7 @@ class Gaxlon < Enemy
     super(section)
     return if @hp <= 0
     b = SB.player.bomb
-    entrance = @hp >= 8 ? 1 : @hp >= 6 ? 2 : @hp >= 4 ? 3 : 5
+    entrance = @hp >= 8 ? 21 : @hp >= 6 ? 22 : @hp >= 4 ? 23 : 25
     section.add(Vortex.new(b.x + b.w / 2 - 27, b.y + b.h / 2 - 27, "#{entrance},$", section))
   end
 
