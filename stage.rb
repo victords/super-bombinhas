@@ -185,9 +185,13 @@ class Stage
   def check_warp
     if @cur_section.warp
       @warp_timer += 1
+      entrance = @entrances[@cur_section.warp]
+      section = @entrances[@cur_section.warp][:section]
+      if @warp_timer > 20 && section.bgm != @cur_section.bgm
+        Gosu::Song.current_song.volume = (1 - (@warp_timer - 20).to_f / 10) * 0.1 * SB.music_volume
+      end
       if @warp_timer == 30
-        entrance = @entrances[@cur_section.warp]
-        @cur_section = entrance[:section]
+        @cur_section = section
         if @cur_section.loaded
           @cur_section.do_warp entrance[:x], entrance[:y]
         else

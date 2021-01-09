@@ -2734,6 +2734,9 @@ class Graphic < Sprite
       else
         @indices = [0, SB.lang == :portuguese ? 1 : SB.lang == :english ? 2 : 3]; @interval = 60
       end
+    when 28 then x -= 12; @w = 56; @h = 36
+    when 29..32 then x -= 12; @w = 56; @h = 32
+    when 33 then x -= 88; y -= 96; @w = 208; @h = 128
     end
     super x, y, "sprite_graphic#{type}", cols, rows
     @img_index = img_index if img_index

@@ -182,7 +182,7 @@ class Section
     126 => SpecGate
   }
 
-  attr_reader :reload, :tiles, :obstacles, :ramps, :passengers, :size, :default_entrance, :warp, :tileset_num, :map
+  attr_reader :reload, :tiles, :obstacles, :ramps, :passengers, :size, :default_entrance, :warp, :tileset_num, :map, :bgm
   attr_accessor :entrance, :loaded, :active_object
 
   def initialize(file, entrances, switches, taken_switches, used_switches)
