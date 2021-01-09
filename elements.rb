@@ -2676,17 +2676,25 @@ class Fog
                    9
                  end
     @draw_fill = rt && dn && dr
+    @alpha = 255
+    @timer = 0
   end
 
-  def update(section); end
-
-  def is_visible(map)
-    map.cam.intersect?(@active_bounds)
+  def update(section)
+    @timer += 1
+    if @timer == 240
+      @timer = 0
+    end
+    @alpha = (255 - (@timer < 120 ? @timer : 240 - @timer) * 0.8).round
   end
+
+  def is_visible(map); true; end
 
   def draw(map)
-    @img[@img_index].draw(@x - map.cam.x, @y - map.cam.y, 0, 2, 2)
-    @img[11].draw(@x + 16 - map.cam.x, @y + 16 - map.cam.y, 0, 2, 2) if @draw_fill
+    return unless map.cam.intersect?(@active_bounds)
+    color = (@alpha << 24) | 0xffffff
+    @img[@img_index].draw(@x - map.cam.x, @y - map.cam.y, 0, 2, 2, color)
+    @img[11].draw(@x + 16 - map.cam.x, @y + 16 - map.cam.y, 0, 2, 2, color) if @draw_fill
   end
 end
 
