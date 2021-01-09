@@ -179,7 +179,7 @@ class Section
     123 => Gate,
     124 => BattleArena,
     125 => Gaxlon,
-    126 => SpecGate
+    126 => SpecGate,
   }
 
   attr_reader :reload, :tiles, :obstacles, :ramps, :passengers, :size, :default_entrance, :warp, :tileset_num, :map, :bgm
@@ -368,6 +368,8 @@ class Section
         if t.hide == 0
           @hide_tiles << HideTile.new(i, j, index, @tiles, @tileset_num)
           index += 1
+        elsif t.hide == 99
+          @hide_tiles << Fog.new(i, j, @tiles)
         elsif t.broken
           t.broken = false
         end
@@ -494,7 +496,7 @@ class Section
 
   def element_at(type, x, y)
     @inter_elements.each do |e|
-      if e.is_a? type and x >= e.x and x <= e.x + e.w and y >= e.y and y <= e.y + e.h
+      if e.is_a? type and x >= e.x and x < e.x + e.w and y >= e.y and y < e.y + e.h
         return e
       end
     end

@@ -389,7 +389,7 @@ class Elevator < SBGameObject
     when 6 then w = 224; cols = rows = nil; x_g = y_g = 0
     when 7 then w = 64; cols = rows = nil; x_g = y_g = 0
     when 8 then w = 64; cols = 2; rows = 3; x_g = y_g = 0; indices = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5]; interval = 5
-    when 9..11 then w = 32; cols = rows = nil; x_g = y_g = 0
+    when 9..12 then w = 32; cols = rows = nil; x_g = y_g = 0
     end
     super x, y, w, 1, "sprite_Elevator#{type}", Vector.new(x_g, y_g), cols, rows
     @passable = true
@@ -2612,6 +2612,81 @@ class SpecGate < SBGameObject
     if SB.player.bomb.collide? self
       SB.prepare_special_world
     end
+  end
+end
+
+class Fog
+  attr_reader :x, :y, :w, :h
+
+  def initialize(i, j, tiles)
+    @x = i * C::TILE_SIZE
+    @y = j * C::TILE_SIZE
+    @w = C::TILE_SIZE
+    @h = C::TILE_SIZE
+    @img = Res.imgs(:sprite_fog, 4, 4)
+    @active_bounds = Rectangle.new(@x, @y, @w, @h)
+    up = j > 0 && tiles[i][j - 1].hide == 99
+    rt = tiles[i + 1] && tiles[i + 1][j].hide == 99
+    dn = tiles[i][j + 1] && tiles[i][j + 1].hide == 99
+    lf = i > 0 && tiles[i - 1][j].hide == 99
+    dr = rt && dn && tiles[i + 1][j + 1].hide == 99
+    @img_index = if up
+                   if rt
+                     if dn
+                       if lf
+                         10
+                       else
+                         12
+                       end
+                     elsif lf
+                       13
+                     else
+                       4
+                     end
+                   elsif dn
+                     if lf
+                       14
+                     else
+                       3
+                     end
+                   elsif lf
+                     5
+                   else
+                     6
+                   end
+                 elsif rt
+                   if dn
+                     if lf
+                       15
+                     else
+                       0
+                     end
+                   elsif lf
+                     7
+                   else
+                     8
+                   end
+                 elsif dn
+                   if lf
+                     1
+                   else
+                     2
+                   end
+                 elsif lf
+                   9
+                 end
+    @draw_fill = rt && dn && dr
+  end
+
+  def update(section); end
+
+  def is_visible(map)
+    map.cam.intersect?(@active_bounds)
+  end
+
+  def draw(map)
+    @img[@img_index].draw(@x - map.cam.x, @y - map.cam.y, 0, 2, 2)
+    @img[11].draw(@x + 16 - map.cam.x, @y + 16 - map.cam.y, 0, 2, 2) if @draw_fill
   end
 end
 
