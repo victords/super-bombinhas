@@ -1614,13 +1614,13 @@ class Crusher < SBGameObject
     if b.bounds.intersect?(@active_bounds)
       if @y + @h > b.y
         if @y + @h + b.h > @bottom.y
-          b.hit(999)
+          b.hit(999, true)
         else
           b.y = @y + @h
         end
       elsif @bottom.y < b.y + b.h
         if @bottom.y - b.h < @y + @h
-          b.hit(999)
+          b.hit(999, true)
         else
           b.y = @bottom.y - b.h
         end
@@ -1689,6 +1689,8 @@ class HeatBomb < SBGameObject
   end
 
   def update(section)
+    return if section.fixed_camera
+
     if @state == 0
       animate [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1], 5
       if SB.player.bomb.explode?(self) || section.explode?(self) || section.projectile_hit?(@proj_hit_box)
@@ -1698,7 +1700,9 @@ class HeatBomb < SBGameObject
       end
     elsif @state == 1
       animate [2, 0], @timer < 60 ? 6 : 3
-      SB.play_sound(Res.sound(:beep)) if @timer >= 60 && @timer % 6 == 0 || @timer % 12 == 0
+      if section.map.cam.intersect?(@active_bounds) && (@timer >= 60 && @timer % 6 == 0 || @timer % 12 == 0)
+        SB.play_sound(Res.sound(:beep))
+      end
       @timer += 1
       if @timer == 120
         @state = 2
@@ -2487,7 +2491,7 @@ class Gate < SBGameObject
         end
         if b.bounds.intersect?(@active_bounds) && @y + @h > b.y
           if b.bottom
-            b.hit(999)
+            b.hit(999, true)
           else
             b.y = @y + @h
           end

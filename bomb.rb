@@ -35,8 +35,8 @@ class Bomb < GameObject
   ]
 
   attr_reader :type, :name, :hp, :saved_hp, :facing_right, :can_use_ability, :cooldown, :will_explode, :exploding,
-              :shielded, :poison_timer, :invulnerable, :invulnerable_time, :invulnerable_timer
-  attr_accessor :active, :power, :slipping, :sticking, :poisoned
+              :poison_timer, :invulnerable, :invulnerable_time, :invulnerable_timer
+  attr_accessor :active, :power, :slipping, :sticking, :poisoned, :shielded
 
   def initialize(type, hp)
     case type
@@ -260,12 +260,6 @@ class Bomb < GameObject
     sq_dist <= (obj.is_a?(Chamal) ? @explosion_radius * 1.25 : @explosion_radius)**2
   end
 
-  def set_shield
-    @max_hp += 1
-    @hp += 1
-    @shielded = true
-  end
-
   def collide?(obj)
     bounds.intersect? obj.bounds
   end
@@ -282,17 +276,17 @@ class Bomb < GameObject
     SB.play_sound(Res.sound(:stomp)) if play_sound
   end
 
-  def hit(damage = 1)
+  def hit(damage = 1, ignore_shield = false)
     if @active && !@invulnerable
-      @hp -= damage
-      @hp = 0 if @hp < 0
+      if @shielded && !ignore_shield
+        @shielded = false
+      else
+        @hp -= damage
+        @hp = 0 if @hp < 0
+      end
       if @hp == 0
         SB.player.die
         return
-      end
-      if @shielded
-        @max_hp -= 1
-        @shielded = false
       end
       set_invulnerable
     end

@@ -256,7 +256,7 @@ class Shield < FloatingItem
     b = SB.player.bomb
     return false if b.type != @bomb_type || b.shielded
 
-    b.set_shield
+    b.shielded = true
     set_switch(switch)
     true
   end
