@@ -917,7 +917,7 @@ class Jellep < Enemy
     @state = 0
     @timer = 0
     @active_bounds.y = y
-    @water = true
+    @water = args.nil?
   end
 
   def update(section)
@@ -973,10 +973,9 @@ class Snep < Enemy
     super(section) do
       b = SB.player.bomb
       if b.y + b.h > @y && b.y + b.h <= @y + @h &&
-         (@facing_right && b.x > @x && b.x < @x + @w + 16 || !@facing_right && b.x < @x && b.x + b.w > @x - 16)
+         (@facing_right && b.x > @x && b.x < @x + @w + 22 || !@facing_right && b.x < @x && b.x + b.w > @x - 22)
         if @attacking
-          @hurting = true if @img_index == 8
-          b.hit if @hurting
+          b.hit if @img_index == 8
         else
           @attacking = true
           @indices = [6, 7, 8, 7, 6, 0]
@@ -986,7 +985,7 @@ class Snep < Enemy
       end
 
       if @attacking && @img_index == 0
-        @attacking = @hurting = false
+        @attacking = false
         @indices = [0, 1, 0, 2]
         @interval = 12
         set_animation 0

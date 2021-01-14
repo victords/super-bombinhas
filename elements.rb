@@ -390,6 +390,7 @@ class Elevator < SBGameObject
     when 7 then w = 64; cols = rows = nil; x_g = y_g = 0
     when 8 then w = 64; cols = 2; rows = 3; x_g = y_g = 0; indices = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5]; interval = 5
     when 9..12 then w = 32; cols = rows = nil; x_g = y_g = 0
+    when 13 then w = 96; cols = rows = nil; x_g = y_g = 0
     end
     super x, y, w, 1, "sprite_Elevator#{type}", Vector.new(x_g, y_g), cols, rows
     @passable = true
@@ -2629,11 +2630,11 @@ class Fog
     @h = C::TILE_SIZE
     @img = Res.imgs(:sprite_fog, 4, 4)
     @active_bounds = Rectangle.new(@x, @y, @w, @h)
-    up = j > 0 && tiles[i][j - 1].hide == 99
-    rt = tiles[i + 1] && tiles[i + 1][j].hide == 99
-    dn = tiles[i][j + 1] && tiles[i][j + 1].hide == 99
-    lf = i > 0 && tiles[i - 1][j].hide == 99
-    dr = rt && dn && tiles[i + 1][j + 1].hide == 99
+    up = j > 0 && tiles[i][j - 1].hide >= 99
+    rt = tiles[i + 1] && tiles[i + 1][j].hide >= 99
+    dn = tiles[i][j + 1] && tiles[i][j + 1].hide >= 99
+    lf = i > 0 && tiles[i - 1][j].hide >= 99
+    dr = rt && dn && tiles[i + 1][j + 1].hide >= 99
     @img_index = if up
                    if rt
                      if dn
@@ -2682,6 +2683,7 @@ class Fog
     @draw_fill = rt && dn && dr
     @alpha = 255
     @timer = 0
+    tiles[i][j].hide = 100
   end
 
   def update(section)
@@ -2689,7 +2691,7 @@ class Fog
     if @timer == 240
       @timer = 0
     end
-    @alpha = (255 - (@timer < 120 ? @timer : 240 - @timer) * 0.8).round
+    @alpha = (255 - (@timer < 120 ? @timer : 240 - @timer) * 0.6).round
   end
 
   def is_visible(map); true; end
@@ -2824,6 +2826,7 @@ class Graphic < Sprite
     when 28 then x -= 12; @w = 56; @h = 36
     when 29..32 then x -= 12; @w = 56; @h = 32
     when 33 then x -= 88; y -= 96; @w = 208; @h = 128
+    when 34 then x -= 32; @w = 96; @h = 32
     end
     super x, y, "sprite_graphic#{type}", cols, rows
     @img_index = img_index if img_index
