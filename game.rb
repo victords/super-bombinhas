@@ -95,6 +95,7 @@ class SBGame < MiniGL::GameWindow
     elsif SB.state == :stage_end
       StageMenu.update_end
     elsif SB.state == :paused
+      SB.check_song
       StageMenu.update_paused
     elsif SB.state == :movie
       SB.movie.update

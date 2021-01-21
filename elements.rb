@@ -1524,6 +1524,7 @@ class Lift < SBGameObject
     args = args.split(',')
     case args[0]
     when '5' then w = 64; cols = rows = nil
+    when '13' then w = 96; cols = rows = nil
     end
     super x, section.size.y, w, 1, "sprite_Elevator#{args[0]}", Vector.new(0, 0), cols, rows
     @start = Vector.new(x, @y)
@@ -1535,7 +1536,6 @@ class Lift < SBGameObject
     @timer = @wait_time - 1
     @passable = true
     @active_bounds = Rectangle.new(x, @y - 5 * C::TILE_SIZE, 64, 5 * C::TILE_SIZE)
-    section.obstacles << self
   end
 
   def update(section)
@@ -1550,6 +1550,7 @@ class Lift < SBGameObject
       if @y > section.size.y + C::TILE_SIZE
         @x = @start.x; @y = @start.y
         @speed.x = @speed.y = @timer = 0
+        section.obstacles.delete(self)
         @launched = false
       end
     elsif @delay > 0
@@ -1562,6 +1563,7 @@ class Lift < SBGameObject
         move_carrying(Vector.new(@x_force, @y_force), nil, section.passengers, section.get_obstacles(b.x, b.y), section.ramps, true)
         G.gravity.y = prev_g
         @force = @y_force * 0.25
+        section.obstacles << self
         @launched = true
       end
     end

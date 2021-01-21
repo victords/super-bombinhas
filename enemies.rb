@@ -2146,7 +2146,7 @@ end
 
 class Pantan < Enemy
   def initialize(x, y, args, section)
-    super(x, y - 72, 32, 104, Vector.new(-44, -16), 3, 2, [0, 1, 2], 15, 280)
+    super(x, y - 72, 32, 104, Vector.new(-44, -16), 3, 2, [0, 1, 2], 15, 350)
     @leaf1 = Rectangle.new(x - 37, y - 36, 32, 10)
     @leaf2 = Rectangle.new(x + 28, y - 40, 42, 10)
     @roots = Rectangle.new(x - 29, y + 20, 92, 12)
