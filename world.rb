@@ -117,22 +117,21 @@ class World
     @song = Res.song("w#{@num}")
 
     @stages = []
-    File.open("#{Res.prefix}stage/#{@num}/world").each_with_index do |l, i|
+    lines = nil
+    File.open("#{Res.prefix}stage/#{@num}/world") do |f|
+      lines = f.read.split("\n")
+    end
+    @stage_count = lines.size - 1
+    lines.each_with_index do |l, i|
       coords = l.split ','
-      if i == 0; @mark.x = coords[0].to_i; @mark.y = coords[1].to_i; next; end
-      state =
-        if num < SB.player.last_world
-          :complete
-        elsif i < SB.player.last_stage
-          :complete
-        elsif i == SB.player.last_stage
-          :current
-        else
-          :unknown
-        end
+      if i == 0
+        @mark.x = coords[0].to_i
+        @mark.y = coords[1].to_i
+        next
+      end
+      state = SB.stage_completion(num, i, @stage_count)
       @stages << MapStage.new(@num, i, coords[0].to_i, coords[1].to_i, state)
     end
-    @stage_count = @stages.count
     @enabled_stage_count = num < SB.player.last_world ? @stage_count : SB.player.last_stage
     @cur = (loaded ? @loaded_stage : @enabled_stage_count) - 1
     @bomb = Sprite.new 0, 0, "sprite_Bomba#{SB.player.bomb.type.to_s.capitalize}", 6, 4
@@ -140,9 +139,11 @@ class World
     @trans_alpha = 0
   end
 
-  def resume
+  def resume(show_secret_world_animation = false)
     SB.play_song @song
     SB.state = :map
+
+    puts "show animation" if show_secret_world_animation
   end
 
   def update

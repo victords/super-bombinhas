@@ -2617,7 +2617,7 @@ class SpecGate < SBGameObject
 
   def update(section)
     if SB.player.bomb.collide? self
-      SB.prepare_special_world
+      SB.open_special_world
     end
   end
 end

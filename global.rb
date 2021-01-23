@@ -216,10 +216,11 @@ class SB
     end
 
     def new_game(name, index)
-      @player = Player.new name
-      @world = World.new
       @save_file_name = "#{@save_dir}/#{index}"
       @save_data = Array.new(12)
+      @game_completion = 0
+      @player = Player.new name
+      @world = World.new
 
       # @movie = Movie.new 0
       # @state = :movie
@@ -233,6 +234,9 @@ class SB
 
     def load_game(file_name)
       data = IO.readlines(file_name).map { |l| l.chomp }
+      @save_file_name = file_name
+      @save_data = data
+      @game_completion = @save_data[11].to_i
       world_stage = data[1].split('-')
       last_world_stage = data[2].split('-')
       @player = Player.new(data[0],
@@ -246,8 +250,6 @@ class SB
                            data[12] && !data[12].empty? ? data[12].to_i : nil,
                            data[13] || '')
       @world = World.new(world_stage[0].to_i, world_stage[1].to_i, true)
-      @save_file_name = file_name
-      @save_data = data
       @world.resume
       StageMenu.initialize
     end
@@ -259,7 +261,8 @@ class SB
     def end_stage
       if @bonus
         @bonus = nil
-        StageMenu.end_stage(false, false, true)
+        next_movie = @world.num == @player.last_world && @prev_stage.num == @world.stage_count
+        StageMenu.end_stage(false, false, next_movie, true)
       else
         if @stage.spec_taken
           @player.specs << @stage.id
@@ -269,10 +272,14 @@ class SB
         end
         prev_factor = @player.score / C::BONUS_THRESHOLD
         @player.score += @player.stage_score
-        factor = @player.score / C::BONUS_THRESHOLD
-        @bonus = (factor - 1) % C::BONUS_LEVELS + 1 if factor > prev_factor
-        @prev_stage = @stage
-        StageMenu.end_stage(@stage.unlock_bomb?, @bonus)
+        unless @world.num == C::LAST_WORLD - 1 && @stage.num == @world.stage_count && @game_completion == 0 ||
+               @world.num == C::LAST_WORLD && @game_completion < 3
+          factor = @player.score / C::BONUS_THRESHOLD
+          @bonus = (factor - 1) % C::BONUS_LEVELS + 1 if factor > prev_factor
+          @prev_stage = @stage
+        end
+        next_movie = @world.num == @player.last_world && @stage.num == @world.stage_count
+        StageMenu.end_stage(@stage.unlock_bomb?, @bonus, next_movie)
       end
       @state = :stage_end
     end
@@ -300,7 +307,7 @@ class SB
       @prev_stage = @bonus = nil
       if @world.num < @player.last_world ||
          @stage.num != @player.last_stage ||
-         @stage.num == @world.stage_count && @save_data[11].to_i >= C::LAST_WORLD - 1
+         @stage.num == @world.stage_count && @game_completion > 0
         save_and_exit(@stage.num)
         StageMenu.initialize
         return
@@ -321,9 +328,9 @@ class SB
         if @world.num < C::LAST_WORLD - 1
           @player.last_world = @world.num + 1
           @player.last_stage = 1
-          save
+          save(1)
         else
-          save(nil, @world.num)
+          save(@world.stage_count, @world.num == C::LAST_WORLD ? 3 : 1)
         end
         # @movie = Movie.new(@world.num)
         # @state = :movie
@@ -339,24 +346,17 @@ class SB
         @state = :game_end_2
       else
         @world = World.new(@world.num + 1, 1)
-        save(1)
         @world.resume
       end
-    end
-
-    def prepare_special_world
-      @movie = Movie.new('s')
-      @state = :movie
-      @player.reset
-      StageMenu.initialize
     end
 
     def open_special_world
       @player.last_world = C::LAST_WORLD
       @player.last_stage = 1
       @world = World.new(C::LAST_WORLD, 1)
-      save(1)
-      @world.resume
+      prev_completion = @save_data[11].to_i
+      save(1, 2)
+      @world.resume(prev_completion == 1)
     end
 
     def game_over
@@ -366,7 +366,10 @@ class SB
       @world.resume
     end
 
-    def save(stage_num = nil, special_world = nil)
+    def save(stage_num = nil, game_completion = nil)
+      if game_completion && game_completion > @game_completion
+        @game_completion = game_completion
+      end
       @save_data[0] = @player.name
       @save_data[1] = "#{@world.num}-#{stage_num || @stage.num}"
       @save_data[2] = "#{@player.last_world}-#{@player.last_stage}"
@@ -378,7 +381,7 @@ class SB
       @save_data[8] = @player.get_bomb_hps
       @save_data[9] = stage_num ? '' : @stage.switches_by_state(:taken).concat(@stage.switches_by_state(:taken_temp_used)).sort.join(',')
       @save_data[10] = stage_num ? '' : @stage.switches_by_state(:used).sort.join(',')
-      @save_data[11] = special_world.to_s || ''
+      @save_data[11] = @game_completion.to_s
       @save_data[12] = @player.startup_item.to_s
       @save_data[13] = @player.all_stars.join(',')
       File.open(@save_file_name, 'w') do |f|
@@ -394,6 +397,17 @@ class SB
         save(stage_num)
         @world.set_loaded @stage.num
         @world.resume
+      end
+    end
+
+    def stage_completion(world_num, stage_num, stage_count)
+      return :complete if world_num < @player.last_world
+      return :complete if stage_num < @player.last_stage
+      current = world_num == @player.last_world && stage_num == @player.last_stage
+      case @save_data[11].to_i
+      when 0 then return current ? :current : :unknown
+      when 1..2 then return world_num == C::LAST_WORLD - 1 && stage_num == stage_count ? :complete : :current
+      else return :complete
       end
     end
   end

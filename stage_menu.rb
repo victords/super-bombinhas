@@ -211,7 +211,7 @@ class StageMenu
       @stage_menu.update
     end
 
-    def end_stage(unlock_bomb, next_bonus = false, bonus = false)
+    def end_stage(unlock_bomb, next_bonus, next_movie, bonus = false)
       p = MenuPanel.new(-600, 150, 400, unlock_bomb ? 350 : 300)
       p.init_movement
       p.move_to 200, 150
@@ -266,7 +266,7 @@ class StageMenu
       end
 
       @stage_end_timer = 0
-      if unlock_bomb or next_bonus
+      if unlock_bomb or next_bonus or next_movie
         @stage_menu.section(3).clear
         @stage_menu.section(3).add(MenuButton.new(unlock_bomb ? 440 : 400, :continue) {
           SB.check_next_stage
