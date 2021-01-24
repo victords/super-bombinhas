@@ -221,10 +221,8 @@ class SB
       @game_completion = 0
       @player = Player.new name
       @world = World.new
-
-      # @movie = Movie.new 0
-      # @state = :movie
-      SB.start_new_game
+      @movie = Movie.new(0)
+      @state = :movie
     end
 
     def start_new_game
@@ -332,9 +330,8 @@ class SB
         else
           save(@world.stage_count, @world.num == C::LAST_WORLD ? 3 : 1)
         end
-        # @movie = Movie.new(@world.num)
-        # @state = :movie
-        next_world
+        @movie = Movie.new(@world.num)
+        @state = :movie
       end
       StageMenu.initialize
     end
