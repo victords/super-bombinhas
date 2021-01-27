@@ -43,8 +43,9 @@ restart			Pressione 'Enter' para recomeçar
 game_over		Fim de jogo!
 too_bad			Que pena!
 can_play		Agora você pode jogar com:
-msg1			Nem todas as chaves servem em todas as portas...
-msg2			Isto é apenas uma amostra do que o aguarda no próximo mundo... Fique atento para a próxima versão de Super Bombinhas!
+msg1			Esse artefato se chama Spec. Dizem que eles estão espalhados por todo o mundo, e aquele que coletar todos abrirá um portão para um mundo mágico... Bem louco, não?
+msg2			Nem todas as chaves servem em todas as portas...
+msg3			Você tem coletado esses artefatos? Diz a lenda que eles abrem um portão para um mundo mágico... Eu ouvi dizer que esse portão fica em algum lugar na Ilha de Tars.
 msg_monep		Ei! Alto lá! Se você quiser passar por aqui, tem que me trazer uma erva florestal. Isso mesmo, uma deliciosa erva florestal... Agora suma daqui e volte apenas quando tiver arranjado uma para mim!
 msg_mnt_bomb	Olá, eu estava caminhando pelas montanhas e perdi minha preciosa Pedra Jillis. É uma jóia grande, verde e brilhante... você acha que pode encontrá-la para mim?
 msg_mnt_bomb2	Muito obrigado, amigo! Bom... Eu não tenho muito a oferecer em retorno, mas você pode usar essa máquina de flutuação se quiser. Ela vai te ajudar a alcançar as partes mais altas da montanha./É uma vista maravilhosa lá do alto!

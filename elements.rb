@@ -2608,6 +2608,37 @@ class BattleArena
   def draw(map, section); end
 end
 
+class SpecPlatform < SBGameObject
+  def initialize(x, y, args, section)
+    unless SB.player.specs.size == C::TOTAL_SPECS
+      @dead = true
+      return
+    end
+    super(x, y + 32, 64, 1, :sprite_specPlatform, Vector.new(0, -32))
+    @passable = true
+    @alpha = 255
+    section.obstacles << self
+  end
+
+  def update(section)
+    if @alpha > 125
+      @alpha -= 5
+      if @alpha == 125
+        @alpha = -125
+      end
+    elsif @alpha < 0
+      @alpha -= 5
+      if @alpha == -255
+        @alpha = 255
+      end
+    end
+  end
+
+  def draw(map, section)
+    super(map, section, 2, 2, @alpha.abs)
+  end
+end
+
 class SpecGate < SBGameObject
   class WarpEffect < Effect
     def draw(map = nil, scale_x = 1, scale_y = 1, alpha = 0xff, color = 0xffffff, angle = nil, z_index = 0)

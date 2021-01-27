@@ -43,8 +43,9 @@ restart			Pulsa 'Enter' para reanudar
 game_over		¡Fin del juego!
 too_bad			¡Qué pena!
 can_play		Ahora puedes jugar con:
-msg1			No todas las llaves caben en todas las puertas...
-msg2			Esto es solo un adelanto de lo que te espera en el próximo mundo... ¡Está atento a la próxima versión de Super Bombinhas!
+msg1			Este artefacto se llama Spec. Se dice que están esparcidos por todo el mundo y que si alguien los colecciona todos, abren una puerta a un mundo mágico ... Bastante loco, ¿verdad?
+msg2			No todas las llaves caben en todas las puertas...
+msg3			¿Ha estado coleccionando estos artefactos? La leyenda dice que abren una puerta a algún tipo de mundo mágico ... Escuché que esta puerta se encuentra en algún lugar de la Isla de Tars.
 msg_monep		¡Oye! ¡Espera un minuto! Si quieres seguir adelante, debes traerme una Hierba del Bosque. Sí, una deliciosa Hierba del Bosque... ¡Ahora ve!¡Y solo vuelve aquí cuando la tengas!
 msg_mnt_bomb	Hola, anduve de caminata por las montañas, y he perdido mi piedra preciosa Jillis. Es una grande y brillante gema verde... ¿Crees que la podrías encontrar por mí?
 msg_mnt_bomb2	¡Muchas gracias, compañero! Bueno... No tengo mucho para ofrecerte a cambio, pero puedes usar esta máquina flotante si quieres. Te va a ayudar a llegar a las partes más altas de la montaña./¡La vista es maravillosa desde allí!

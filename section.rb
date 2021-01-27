@@ -179,7 +179,8 @@ class Section
     123 => Gate,
     124 => BattleArena,
     125 => Gaxlon,
-    126 => SpecGate,
+    126 => SpecPlatform,
+    127 => SpecGate,
   }
 
   attr_reader :reload, :tiles, :obstacles, :ramps, :passengers, :size, :default_entrance, :warp, :tileset_num, :map, :bgm, :fixed_camera
