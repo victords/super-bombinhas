@@ -137,13 +137,18 @@ class World
     @bomb = Sprite.new 0, 0, "sprite_Bomba#{SB.player.bomb.type.to_s.capitalize}", 6, 4
     set_bomb_position
     @trans_alpha = 0
+    @secret_world_alpha = 255
   end
 
   def resume(show_secret_world_animation = false)
     SB.play_song @song
     SB.state = :map
-
-    puts "show animation" if show_secret_world_animation
+    if show_secret_world_animation
+      @opening_secret_world = true
+      @secret_world_alpha = 0
+      @timer = 0
+      @secret_world_highlight = Res.img(:ui_secretWorldHighlight)
+    end
   end
 
   def update
@@ -160,6 +165,24 @@ class World
       return
     elsif @trans_alpha < 0xff
       @trans_alpha += 17
+    end
+
+    if @opening_secret_world
+      @timer += 1 if @timer < 60
+      if @timer == 60
+        if @secret_world_alpha < 0
+          @secret_world_alpha += 5
+          if @secret_world_alpha == 0
+            @opening_secret_world = false
+            @secret_world_alpha = 255
+          end
+        else
+          @secret_world_alpha += 5
+          if @secret_world_alpha == 255
+            @secret_world_alpha = -125
+          end
+        end
+      end
     end
 
     @stages.each(&:update)
@@ -228,7 +251,18 @@ class World
     end
     @map.draw 0, 0, 0, 2, 2, tint_color
     @parchment.draw 0, 0, 0, 2, 2
-    @secret_world.draw 88, 112, 0, 2, 2 if @secret_world
+    if @secret_world
+      color = @secret_world_alpha >= 0 ? (@secret_world_alpha << 24) | 0xffffff : 0xffffffff
+      @secret_world.draw 88, 112, 0, 2, 2, color
+    end
+    if @opening_secret_world
+      color = (@secret_world_alpha < 0 ? -@secret_world_alpha : 130) << 24
+      G.window.draw_quad(0, 0, color, C::SCREEN_WIDTH, 0, color, 0, 97, color, C::SCREEN_WIDTH, 97, color, 1)
+      G.window.draw_quad(0, 97, color, 87, 97, color, 0, 197, color, 87, 197, color, 1)
+      G.window.draw_quad(0, 197, color, C::SCREEN_WIDTH, 197, color, 0, C::SCREEN_HEIGHT, color, C::SCREEN_WIDTH, C::SCREEN_HEIGHT, color, 1)
+      G.window.draw_quad(187, 97, color, C::SCREEN_WIDTH, 97, color, 187, 197, color, C::SCREEN_WIDTH, 197, color, 1)
+      @secret_world_highlight.draw(87, 97, 1, 2, 2, color)
+    end
     @mark.draw nil, 2, 2
 
     line_color = @trans_alpha << 24
