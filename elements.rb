@@ -2884,16 +2884,39 @@ class Graphic < Sprite
     when 29..32 then x -= 12; @w = 56; @h = 32
     when 33 then x -= 88; y -= 96; @w = 208; @h = 128
     when 34 then x -= 32; @w = 96; @h = 32
+    when 35 then x -= 96; y -= 96; @w = @h = 224; cols = 3; rows = 1; @indices = [0, 1, 2]; @interval = 7; @move = 0
     end
     super x, y, "sprite_graphic#{type}", cols, rows
     @img_index = img_index if img_index
-    @active_bounds = Rectangle.new(x, y, @w, @h)
+    @active_bounds = Rectangle.new(@x, @y, @w, @h)
     @angle = 0 if @rot
+    @timer = 0 if @move
   end
 
   def update(section)
     animate @indices, @interval if @indices
     @angle += @rot if @rot
+    if @move
+      @timer += 1
+      if @timer == 10
+        case @move
+        when 0 then @y -= 3
+        when 1..2 then @y -= 2
+        when 3..4 then @y -= 1
+        when 5..6 then @y += 1
+        when 7..8 then @y += 2
+        when 9..10 then @y += 3
+        when 11..12 then @y += 2
+        when 13..14 then @y += 1
+        when 15..16 then @y -= 1
+        when 17..18 then @y -= 2
+        when 19 then @y -= 3
+        end
+        @move += 1
+        @move = 0 if @move == 20
+        @timer = 0
+      end
+    end
   end
 
   def draw(map, section)
