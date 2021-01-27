@@ -122,8 +122,15 @@ class Stage
           end
         end
       end
+      if @special_world_warp
+        @warp_timer += 1
+        if @warp_timer == 30
+          @special_world_warp.call
+        end
+      elsif @warp_timer > 0 && !@cur_section.warp
+        @warp_timer -= 1
+      end
       return :finish if @time == 0
-      @warp_timer -= 1 if @warp_timer > 0 && !@cur_section.warp
       status = @cur_section.update(@stopped)
       if status == :finish
         SB.play_sound(Res.sound(:victory), SB.music_volume * 0.1)
@@ -199,6 +206,10 @@ class Stage
         end
       end
     end
+  end
+
+  def special_world_warp(&block)
+    @special_world_warp = Proc.new(&block)
   end
 
   def find_switch(obj)

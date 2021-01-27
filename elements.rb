@@ -1013,7 +1013,6 @@ class Vortex < GameObject
         section.add_effect(Effect.new(@x - 3, @y - 3, :fx_transport, 2, 2, 7, [0, 1, 2, 3], 28))
         section.start_warp(@entrance)
       elsif @timer == 60
-
         @transporting = false
       end
     elsif b.collide? self
@@ -2610,15 +2609,71 @@ class BattleArena
 end
 
 class SpecGate < SBGameObject
+  class WarpEffect < Effect
+    def draw(map = nil, scale_x = 1, scale_y = 1, alpha = 0xff, color = 0xffffff, angle = nil, z_index = 0)
+      super(map, 4, 4)
+    end
+  end
+
   def initialize(x, y, args, section)
-    super x, y, 32, 32, :sprite_SpecGate
-    @active_bounds = Rectangle.new(x, y, 32, 32)
+    super x - 96, y - 124, 224, 156, :sprite_SpecGate, Vector.new(0, 0), 2, 4
+    @bg = Res.img(:sprite_specGateBg)
+    @portal = Res.imgs(:sprite_graphic2, 2, 2)
+    @open = @angle = @portal_index = @timer = @timer2 = 0
   end
 
   def update(section)
-    if SB.player.bomb.collide? self
-      SB.open_special_world
+    b = SB.player.bomb
+    if @open == 0
+      if b.x + b.w > @x - 96 && @x + @w + 96 > b.x && b.y + b.h == @y + @h
+        @open = 1
+        section.set_fixed_camera(@x + @w / 2, @y + @h / 2)
+      end
+    else
+      @angle += 5
+      @angle = 0 if @angle == 360
+
+      @timer += 1
+      if @timer == 7
+        @portal_index = (@portal_index + 1) % 4
+        @timer = 0
+      end
+
+      if @open == 1
+        @timer2 += 1
+        SB.play_sound(Res.sound(:wallOpen)) if @timer2 % 30 == 0 && @timer2 < 240
+        animate_once([0, 1, 2, 3, 4, 5, 6, 7], 30) do
+          @open = 2
+          @timer2 = 0
+          section.unset_fixed_camera
+        end
+      elsif @open == 2
+        if b.collide?(self)
+          b.stop
+          b.active = false
+          @aim = Vector.new(@x + (@w - b.w) / 2, @y + (@h - b.h) / 2 + 12)
+          @open = 3
+          @timer2 = 0
+        end
+      else
+        b.move_free(@aim, 4) if @timer2 < 30
+        @timer2 += 1
+        if @timer2 == 30
+          section.add_effect(WarpEffect.new(@x + @w / 2 - 60, @y + @h / 2 - 48, :fx_transport, 2, 2, 7, [0, 1, 2, 3], 28))
+          SB.open_special_world
+        end
+      end
     end
+  end
+
+  def draw(map, section)
+    @bg.draw(@x - map.cam.x, @y - map.cam.y, 0, 2, 2)
+    @portal[@portal_index].draw_rot(@x + @w / 2 - map.cam.x, @y + @h / 2 + 12 - map.cam.y, 0, @angle, 0.5, 0.5, 4, 4)
+    super(map, section)
+  end
+
+  def stop_time_immune?
+    true
   end
 end
 

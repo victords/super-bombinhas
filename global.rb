@@ -348,12 +348,14 @@ class SB
     end
 
     def open_special_world
-      @player.last_world = C::LAST_WORLD
-      @player.last_stage = 1
-      @world = World.new(C::LAST_WORLD, 1)
-      prev_completion = @save_data[11].to_i
-      save(1, 2)
-      @world.resume(prev_completion == 1)
+      @stage.special_world_warp do
+        @player.last_world = C::LAST_WORLD
+        @player.last_stage = 1
+        @world = World.new(C::LAST_WORLD, 1)
+        prev_completion = @save_data[11].to_i
+        save(1, 2)
+        @world.resume(prev_completion == 1)
+      end
     end
 
     def game_over
