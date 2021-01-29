@@ -298,7 +298,6 @@ class SB
     end
 
     def next_stage(continue = true)
-      # Res.clear
       @player.startup_item = @player.temp_startup_item
       @player.temp_startup_item = nil
       @player.stage_score = 0
@@ -306,7 +305,8 @@ class SB
       @prev_stage = @bonus = nil
       if @world.num < @player.last_world ||
          @stage.num != @player.last_stage ||
-         @stage.num == @world.stage_count && @game_completion > 0
+         @world.num == C::LAST_WORLD - 1 && @game_completion > 0 ||
+         @world.num == C::LAST_WORLD && @game_completion == 3
         save_and_exit(@stage.num)
         StageMenu.initialize
         return
@@ -327,9 +327,9 @@ class SB
         if @world.num < C::LAST_WORLD - 1
           @player.last_world = @world.num + 1
           @player.last_stage = 1
-          save(1)
+          save(@world.num + 1, 1)
         else
-          save(@world.stage_count, @world.num == C::LAST_WORLD ? 3 : 1)
+          save(nil, @world.stage_count, @world.num == C::LAST_WORLD ? 3 : 1)
         end
         @movie = Movie.new(@world.num)
         @state = :movie
@@ -354,7 +354,7 @@ class SB
         @player.last_stage = 1
         @world = World.new(C::LAST_WORLD, 1)
         prev_completion = @save_data[11].to_i
-        save(1, 2)
+        save(nil, 1, 2)
         @world.resume(prev_completion == 1)
       end
     end
@@ -362,16 +362,16 @@ class SB
     def game_over
       @player.game_over
       @world = World.new(@player.last_world, 1)
-      save(1)
+      save(nil, 1)
       @world.resume
     end
 
-    def save(stage_num = nil, game_completion = nil)
+    def save(world_num = nil, stage_num = nil, game_completion = nil)
       if game_completion && game_completion > @game_completion
         @game_completion = game_completion
       end
       @save_data[0] = @player.name
-      @save_data[1] = "#{@world.num}-#{stage_num || @stage.num}"
+      @save_data[1] = "#{world_num || @world.num}-#{stage_num || @stage.num}"
       @save_data[2] = "#{@player.last_world}-#{@player.last_stage}"
       @save_data[3] = @player.bomb.type.to_s
       @save_data[4] = @player.lives.to_s
@@ -394,7 +394,7 @@ class SB
         @stage = @prev_stage
         next_stage(false)
       else
-        save(stage_num)
+        save(nil, stage_num)
         @world.set_loaded @stage.num
         @world.resume
       end

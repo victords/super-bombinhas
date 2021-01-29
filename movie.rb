@@ -59,12 +59,12 @@ class Movie
   end
 
   def draw
-    @scenes[@scene].draw(80, 40, 0, 2, 2)
+    @scenes[@scene].draw(80, 20, 0, 2, 2)
     @texts.each_with_index do |text, i|
       next if @timer <= i * 60
       alpha = ((@timer - i * 60).to_f / 60 * 255).round
       alpha = 255 if alpha > 255
-      SB.text_helper.write_breaking(text, 80, 320 + i * 100, 640, :justified, 0xffffff, alpha)
+      SB.text_helper.write_breaking(text, 80, 280 + i * 100, 640, :justified, 0xffffff, alpha)
     end if @texts
     if @changing
       c = @alpha << 24

@@ -49,7 +49,7 @@ msg3			Have you been collecting these artifacts? Legend says they unlock a gate 
 msg_monep		Hey! Hold on! If you want to go any further, you must bring me a Forest Herb. Yes, a delicious Forest Herb... Now get lost and only come back here when you have it!
 msg_mnt_bomb	Hi, I was taking a walk in the mountains and I lost my precious Jillis Stone. It's a big, shiny, green gem... Do you think you could find it for me?
 msg_mnt_bomb2	Thanks a lot, mate! Well... I don't have much to offer in return, but you can use this float machine if you want. It will help you reach the highest parts of the mountain./It's a wonderful view from there!
-msg_aldan		¡Oye! Es tan bueno ver a un compañero bomba aquí ... ¡Gracias por liberarme! Ahora, debemos apurarnos y derrotar a Gaxlon y sus secuaces ... ¡nuestros ciudadanos están sufriendo!
+msg_aldan		Hey! It's so good to see a fellow bomb here... Thanks for freeing me! Now, we must hurry and defeat Gaxlon and his minions... our citizens are suffering!
 chamal_speech	So... you've come. Well, I'm afraid this is the end of your pointless journey, little bomb. GET HIM, WHEELIAMS!
 chamal_death	Noooooo...!! How come I lost to such a weakling...?! No, that's not... poss...
 sahiss_speech	Sssssss Ssssssssssss Sssss?! SSSSSS!! (Who are you who invades my sacred forest fortress?! PREPARE TO DIE!!)
@@ -100,7 +100,13 @@ stage_6_3		The deep underground maze
 stage_6_4		Venturing in the dark
 stage_6_5		Drepz in the dark pit
 world_7			Bomb Town
-stage_7_1		???
+stage_7_1		Sneaking through the town outskirts
+stage_7_2		The ilegitimate king's army
+stage_7_3		Approaching the castle walls
+stage_7_4		Entering the royal castle
+stage_7_5		A showdown for justice
+world_8			Lae, the magical forest
+stage_8_1		An odyssey through the mist
 bonus			Bonus
 bonus_1			Reach the goal
 bonus_2			Kill all enemies
@@ -109,6 +115,22 @@ movie_0_0		In a distant land, there is a beautiful village inhabited by living..
 movie_0_1		But the envy of Gaxlon, one of the king's counselors, has just unsettled this tranquility.../Gaxlon wanted to rule the kingdom by himself, so he imprisoned Aldan, the king. He couldn't bring himself to kill him, as they were once childhood friends.../As his minions captured the king, the 4 super bombs arrived and witnessed the terrible scene...
 movie_0_2		Gaxlon was quick and ordered his minions to also attack the super bombs, but Aldan protected them with an ancient magic./Seeing that the super bombs couldn't be defeated, he then ordered his minions to imprison each one of them in a distant place... And then he began his reign of terror.
 movie_0_3		As the super bombs were being taken to faraway places, Bomba Azul, the smartest of them, was able to trick his captor and escape.../He saw Bomba Vermelha being taken in the direction of the Tars Island, so he headed there to begin rescuing his friends...
+movie_1_0		Bomba Azul and Bomba vermelha rejoiced upon meeting again and having defeated the first of Gaxlon's minions./However, they had no time to lose and soon headed outside the castle to look for their other friends...
+movie_1_1		Bomba Vermelha said that he saw Bomba Amarela being carried in the direction of the Wisemen's Forest, in the continent./Bomba Azul looked at him and jokingly said: "I hope you're good at swimming!".
+movie_2_0		After defeating the scary snake Sahiss, Azul and Vermelha freed Bomba Amarela, who couldn't be happier. She started hopping, high as only she could./Again, they made haste to leave the place and look for Bomba Verde, the last of the captured Super Bombs.
+movie_2_1		Leaving the forest by the north, they saw the Rainy Mountains looming in the horizon./They thought that would be a nice hiding place for a Gaxlon minion, so ahead they went, ready to do a lot of climbing...
+movie_3_0		"RUN!!!", urged Bomba Verde to the others as icicles fell from the ceiling in the former Ulor's hideout./After escaping the threat, they could finally breathe and Bomba Verde thanked Azul, Vermelha and Amarela for the rescue./However, Bomba Verde wasn't in a good mood (as usual)...
+movie_3_1		He told the others that when he was being brought to the top of the mountain, he saw an evil-looking creature take over an innocent village right at the base of the mountains./"We gotta help those villagers!", he said, and they all agreed, starting the long descent...
+movie_4_0		After defeating the evil Zirk'n, the super bombs gathered around the village's elder, who profusely stated his gratefulness./He asked them if there was anything they could do in return, and the super bombs replied that what they needed most now was information, as they didn't know where to find Aldan.
+movie_4_1		The elder replied: "Little do I know about this vile Gaxlon you speak of, but I know of someone who might know.../It is said that a mysterious oracle lives in the Mual Swamp. I can't tell you his exact location, but I can give you this map to help you get to the swamp."/It seems another journey was about to begin...
+movie_5_0		Seeing the monster Globb defeated, a mysterious figure approached from the dark... It was the oracle mentioned by Inkut Village's elder!/The bombs asked him for a direction where to look for their king. The oracle then put his hands over a crystal ball and started mumbling.../"The overthrown king was captive in dark caves, but seems to have escaped to a less dark place nearby..."
+movie_5_1		The bombs concluded that he referred to the Ooria Caves, all the way to the north of Enmat, very far away.../"Don't worry friends, someone here might help you on your noble quest...", said the oracle, and then a large dragon-looking monster showed up and carried the super bombs to the sky!./"To the Ooria caves, please!", said Bomba Azul, and the creature seemed to understand.
+movie_6_0		The king and the four super bombs were filled with determination after the defeat of Gaxlon's second-in-command./"We had a victory here, but we must hurry, for our people are suffering the tyranny of Gaxlon as we speak!", the king spoke, and the super bombs felt motivated to put an end to that quest...
+movie_6_1		They headed towards Bomb Town, which was in the proximities, and as they approached its borders, it felt like Gaxlon was looking at them from the distance, with an evil smile in his face...
+movie_7_0		Gaxlon's reign of terror was finally ended. Aldan sentenced him to an eternal exile in a distant land, outside Enmat./The super bombs watched this moment relieved, as Gaxlon cowered in shame, backing away from the true king.
+movie_7_1		Peace was finally restored to Bomb Town! The king went out to the castle's walls and waved to the people./Everyone was ecstatic and cheered the king and the super bombs with lots of confetti... Surely, a day to be remembered!
+movie_8_0		As the bombs approached the massive artifact, beams of light started to shine from it, and a stunning voice seemed to come out of nowhere.../"Congratulations, travellers, you have reached a point never before reached by any others. However, if you seek true knowledge, the trip doesn't end here.../Come through this portal and a real test of your virtues will begin..."
+movie_8_1		An enormous portal opened up where the artifact was. The bombs looked at each other, perplexed./Then, Bomba Azul said with a smile: "I think we're done with tests for a while, right?". They all laughed, and started walking the long way back home...
 game_end		The End!
 game_end_sub	But... have you collected all the Specs?
 game_end_2		The End!
