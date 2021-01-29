@@ -62,6 +62,8 @@ globb_speech	Grrrraaaaarrrblaaarrrgh!!! (Saia do meu pântano!!!)
 globb_death		Ggaaaaarrrr! Bleearr...gh! (Aaaaah! Deixe-me em p...az!)
 drepz_speech	Não acredito que vocês chegaram tão longe... Mas foi tudo em vão, porque...\nVOCÊS NUNCA SAIRÃO DAQUI!
 drepz_death		Heh... Vocês são bem fortes... Mas eu os aviso: vocês nunca derrotarão o rei Gaxlon!
+gaxlon_speech	Uau, não acredito que vocês vieram até aqui... Não veem que é inútil? Eu sou muito mais poderoso do que todos vocês... Mas se é uma luta que querem, então MOSTREM-ME DO QUE SÃO CAPAZES!
+gaxlon_death	NÃOOOOOOO!!! Você tirou tudo de mim! Desde nossa infância, foi sempre assim... Por quê, Aldan, POR QUÊ?!?!
 count_down		Contagem regressiva para explodir!
 world_1			Ilha de Tars
 stage_1_1		Explorando a Praia de Tars
@@ -101,7 +103,13 @@ stage_6_3		O profundo labirinto subterrâneo
 stage_6_4		Aventurando-se no escuro
 stage_6_5		Drepz na cova sombria
 world_7			Cidade das Bombas
-stage_7_1		???
+stage_7_1		Esgueirando-se pelas bordas da cidade
+stage_7_2		O exército do rei ilegítimo
+stage_7_3		Aproximando-se dos muros do castelo
+stage_7_4		Entrando no castelo real
+stage_7_5		Um duelo por justiça
+world_8			Lae, a floresta mágica
+stage_8_1		Uma odisséia pela névoa
 bonus			Bônus
 bonus_1			Chegue ao final
 bonus_2			Mate todos os inimigos

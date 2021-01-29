@@ -267,7 +267,6 @@ module Boss
         yield
       end
       if @dying
-        set_animation 0
         section.set_fixed_camera(@x + @w / 2, @y + @h / 2)
         @timer = 0
       end

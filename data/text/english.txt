@@ -62,6 +62,8 @@ globb_speech	Grrrraaaaarrrblaaarrrgh!!! (Get out of my swamp!!!)
 globb_death		Ggaaaaarrrr! Bleearr...gh! (Aaaaah! Leave me al...one!)
 drepz_speech	I can't believe you made it this far... But it was all for nothing, because...\nYOU WILL NEVER LEAVE THIS PLACE!
 drepz_death		Heh... You're pretty strong... But I warn you: you will never defeat king Gaxlon!
+gaxlon_speech	Wow, I can't believe you came all the way here... Don't you see it's pointless? I'm much more powerful than all of you... But if it's a fight you want, then SHOW ME WHAT YOU GOT!
+gaxlon_death	NOOOOOOO!!! You took everything from me! Since our childhood, it's always been like that... Why, Aldan, WHY?!?!
 count_down		Countdown to explosion!
 world_1			Tars Island
 stage_1_1		Exploring the Tars Beach
@@ -101,7 +103,7 @@ stage_6_4		Venturing in the dark
 stage_6_5		Drepz in the dark pit
 world_7			Bomb Town
 stage_7_1		Sneaking through the town outskirts
-stage_7_2		The ilegitimate king's army
+stage_7_2		The illegitimate king's army
 stage_7_3		Approaching the castle walls
 stage_7_4		Entering the royal castle
 stage_7_5		A showdown for justice
