@@ -25,6 +25,7 @@ controls_0		Setas, Espaço, Shift, A, S
 controls_1		WASD, JKLI
 full_screen		Aperte F4 para alternar entre janela e tela cheia
 credits_text	- Design, Programação e Gráficos -\nVictor David Santos\n\n- Música -\nZergananda (soundcloud.com/zergananda)\nFrancesco Corrado (soundcloud.com/franzcorradomusic)\n\n- Agradecimentos Especiais -\n...\n...
+confirm_exit	Tem certeza de que deseja sair?
 ch_st_instruct	Aperte 'Enter' para começar.\nAperte 'Esc' ou 'Backspace' para voltar.
 stage			Fase
 loading			Carregando
@@ -32,7 +33,6 @@ lives			Vidas
 score			Pontos
 resume			Continuar
 change_bomb		Trocar Bomba
-save_exit		Salvar e Sair
 stage_complete	Fase completa!
 total			Total
 spec_taken		Spec encontrado?

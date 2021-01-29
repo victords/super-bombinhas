@@ -133,7 +133,7 @@ class StageMenu
             Options.set_temp
             @stage_menu.go_to_section 2
           },
-          MenuButton.new(357, :save_exit) {
+          MenuButton.new(357, :exit) {
             SB.save_and_exit
             @stage_menu.reset
           }
@@ -141,7 +141,7 @@ class StageMenu
           MenuButton.new(400, :continue, false, 219) {
             SB.next_stage
           },
-          MenuButton.new(400, :save_exit, false, 409) {
+          MenuButton.new(400, :exit, false, 409) {
             SB.next_stage false
           }
         ])
@@ -243,19 +243,22 @@ class StageMenu
         t5 = MenuNumber.new(SB.player.score, 590, 860, :right, next_bonus ? 0xff0000 : 0)
         t5.init_movement
         t5.move_to 590, 260
-        t6 = MenuText.new(:spec_taken, 210, 900)
+        t6 = MenuText.new(:stars, 210, 900)
         t6.init_movement
         t6.move_to 210, 300
-        t7 = MenuText.new(SB.player.specs.index(SB.stage.id) ? :yes : :no, 590, 900, 300, :right)
+        t7 = MenuText.new("#{SB.stage.star_count}/#{C::STARS_PER_STAGE}", 590, 900, 300, :right)
         t7.init_movement
-        t7.move_to 590, 300
-        t8 = MenuText.new(:stars, 210, 940)
-        t8.init_movement
-        t8.move_to 210, 340
-        t9 = MenuText.new("#{SB.stage.star_count}/#{C::STARS_PER_STAGE}", 590, 940, 300, :right)
-        t9.init_movement
-        t9.move_to(590, 340)
-        @stage_end_comps << t4 << t5 << t6 << t7 << t8 << t9
+        t7.move_to(590, 300)
+        @stage_end_comps << t4 << t5 << t6 << t7
+        unless SB.world.num == C::LAST_WORLD
+          t8 = MenuText.new(:spec_taken, 210, 940)
+          t8.init_movement
+          t8.move_to 210, 340
+          t9 = MenuText.new(SB.player.specs.index(SB.stage.id) ? :yes : :no, 590, 940, 300, :right)
+          t9.init_movement
+          t9.move_to 590, 340
+          @stage_end_comps << t8 << t9
+        end
 
         if SB.stage.star_count >= C::STARS_PER_STAGE
           t10 = MenuText.new(:all_stars_found, 590, 968, 300, :right)
@@ -281,7 +284,7 @@ class StageMenu
         @stage_menu.section(3).add(MenuButton.new(400, :continue, false, 219) {
           SB.check_next_stage
         })
-        @stage_menu.section(3).add(MenuButton.new(400, :save_exit, false, 409) {
+        @stage_menu.section(3).add(MenuButton.new(400, :exit, false, 409) {
           SB.check_next_stage false
         })
         @continue_only = false

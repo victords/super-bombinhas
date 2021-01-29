@@ -25,6 +25,7 @@ controls_0		Arrows, Space, Shift, A, S
 controls_1		WASD, JKLI
 full_screen		Press F4 to alternate between window and full screen
 credits_text	- Design, Programming and Graphics -\nVictor David Santos\n\n- Music -\nZergananda (soundcloud.com/zergananda)\nFrancesco Corrado (soundcloud.com/franzcorradomusic)\n\n- Special Thanks -\n...\n...\n...
+confirm_exit	Are you sure you want to exit?
 ch_st_instruct	Press 'Enter' to start.\nPress 'Esc' or 'Backspace' to go back.
 stage			Stage
 loading			Loading
@@ -32,7 +33,6 @@ lives			Lives
 score			Score
 resume			Resume
 change_bomb		Change Bomb
-save_exit		Save and Exit
 stage_complete	Stage Complete!
 total			Total
 spec_taken		Spec found?

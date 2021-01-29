@@ -187,7 +187,8 @@ class FormSection
         @cur_btn.unfocus if @cur_btn.respond_to? :unfocus
       elsif SB.key_pressed?(:confirm)
         @cur_btn.click if @cur_btn.respond_to? :click
-      elsif @back_btn && SB.key_pressed?(:back)
+      elsif @back_btn && (SB.key_pressed?(:back) && !@cur_btn.is_a?(TextField) ||
+                          KB.key_pressed?(Gosu::KB_ESCAPE) || KB.key_pressed?(Gosu::GP_0_BUTTON_1))
         @back_btn.click
       end
       @cur_btn = @buttons[@cur_btn_index]
@@ -214,6 +215,7 @@ class FormSection
 
   def reset
     @cur_btn = @buttons[@cur_btn_index = 0]
+    @buttons.select { |b| b.is_a?(TextField) }.each { |t| t.text = '' }
   end
 
   def update_lang

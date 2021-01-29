@@ -112,8 +112,7 @@ class Menu
           @form.go_to_section 6
         },
         MenuButton.new(470, :exit, true) {
-          SB.save_options
-          exit
+          @form.go_to_section(8)
         }
       ], [], [
         MenuButton.new(345, :continue) {
@@ -154,6 +153,15 @@ class Menu
           @form.go_to_section 0
         },
         MenuText.new(:help_text, 400, 170, 700, :center)
+      ], [
+        MenuText.new(:confirm_exit, 400, 250, 400, :center),
+        MenuButton.new(310, :yes, false, 219) {
+          SB.save_options
+          exit
+        },
+        MenuButton.new(310, :no, true, 409) {
+          @form.go_to_section(0)
+        }
       ])
       Options.form = @form
 
