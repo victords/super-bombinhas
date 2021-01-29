@@ -172,7 +172,13 @@ class Menu
         MenuButton.new(550, :back, true) {
           @form.go_to_section 0
         },
-        MenuText.new(:credits_text, 400, 200, 780, :center)
+        MenuText.new(:credits_prog, 400, 157, 780, :center, 1.5),
+        MenuText.new("Victor David Santos", 400, 180, 780, :center),
+        MenuText.new(:credits_music, 400, 237, 780, :center, 1.5),
+        MenuText.new("Zergananda (soundcloud.com/zergananda)\nFrancesco Corrado (soundcloud.com/franzcorradomusic)", 400, 260, 780, :center),
+        MenuText.new(:special_thanks, 400, 347, 780, :center, 1.5),
+        MenuText.new("Yuri David Santos  -  Maria Alice Armelin  -  Francesco Corrado\nVinícius de Araújo Barboza  -  Stefano Girardi", 400, 370, 780, :center),
+        MenuText.new(:special_thanks2, 400, 440, 780, :center),
       ], [
         MenuButton.new(550, :back, true) {
           @form.go_to_section 0

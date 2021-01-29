@@ -1,6 +1,5 @@
 powered_by		Powered by
 game_by			A game by
-presents		Presents...
 play			Play
 help			Help
 options			Options
@@ -26,7 +25,10 @@ controls		Controls
 controls_0		Arrows, Space, Shift, A, S
 controls_1		WASD, JKLI
 full_screen		Press F4 to alternate between window and full screen
-credits_text	- Design, Programming and Graphics -\nVictor David Santos\n\n- Music -\nZergananda (soundcloud.com/zergananda)\nFrancesco Corrado (soundcloud.com/franzcorradomusic)\n\n- Special Thanks -\n...\n...\n...
+credits_prog	- Design, Programming and Graphics -
+credits_music	- Music -
+special_thanks	- Special Thanks -
+special_thanks2	The Gosu community\n...and many other friends and family
 confirm_exit	Are you sure you want to exit?
 ch_st_instruct	Press 'Enter' to start.\nPress 'Esc' or 'Backspace' to go back.
 stage			Stage

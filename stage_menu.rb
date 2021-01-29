@@ -215,7 +215,7 @@ class StageMenu
       p = MenuPanel.new(-600, 150, 400, unlock_bomb ? 350 : 300)
       p.init_movement
       p.move_to 200, 150
-      t1 = MenuText.new(SB.player.dead? || SB.stage.time == 0 ? :too_bad : :stage_complete, 1200, 160, 400, :center, true)
+      t1 = MenuText.new(SB.player.dead? || SB.stage.time == 0 ? :too_bad : :stage_complete, 1200, 160, 400, :center, 3)
       t1.init_movement
       t1.move_to 400, 160
       t2 = MenuText.new(:score, 210, 820)

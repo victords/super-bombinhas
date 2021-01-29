@@ -61,7 +61,7 @@ class MenuText < MenuElement
   attr_reader :text_id
   attr_writer :text
 
-  def initialize(text_or_id, x, y, width = 760, mode = :justified, big = false)
+  def initialize(text_or_id, x, y, width = 760, mode = :justified, scale = 2)
     if text_or_id.is_a?(String)
       @text = text_or_id
       @text_id = nil
@@ -73,12 +73,11 @@ class MenuText < MenuElement
     @y = y
     @width = width
     @mode = mode
-    @big = big
+    @scale = scale
   end
 
   def draw
-    sc = @big ? 3 : 2
-    SB.text_helper.write_breaking(@text, @x, @y, @width, @mode, 0, 255, 0, sc, sc)
+    SB.text_helper.write_breaking(@text, @x, @y, @width, @mode, 0, 255, 0, @scale, @scale)
   end
 end
 
@@ -220,7 +219,7 @@ class FormSection
 
   def update_lang
     @components.each do |c|
-      c.text = SB.text(c.text_id).gsub("\\n", "\n") if c.respond_to? :text_id
+      c.text = SB.text(c.text_id).gsub("\\n", "\n") if c.respond_to?(:text_id) && c.text_id
       c.locale = (SB.lang == :portuguese ? 'pt-br' : 'en-us') if c.respond_to? :locale=
     end
   end
