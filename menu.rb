@@ -91,11 +91,36 @@ class SavedGame
   end
 end
 
+class CloudEffect
+  attr_reader :dead
+
+  def initialize(x, y, speed, scale)
+    @img = Res.img(:fx_cloud)
+    @x = x
+    @y = y
+    @speed = speed
+    @scale = scale
+  end
+
+  def update
+    @x += @speed
+    @dead = true if @x > C::SCREEN_WIDTH
+  end
+
+  def draw
+    @img.draw(@x, @y, 0, @scale, @scale)
+  end
+end
+
 class Menu
   class << self
     def initialize
-      @bg = Res.img :bg_start1, true
+      @bg = Res.img :bg_start, true
       @title = Res.img :ui_title, true
+      @clouds = []
+      5.times do
+        @clouds << CloudEffect.new(rand(500) - 1000, rand(210) - 10, 2 + rand * 3, 1.5 + rand * 1.5)
+      end
 
       @form = Form.new([
         MenuButton.new(270, :play) {
@@ -169,6 +194,13 @@ class Menu
     end
 
     def update
+      @clouds.reverse_each do |c|
+        c.update
+        if c.dead
+          @clouds.delete(c)
+          @clouds << CloudEffect.new(rand(500) - 1000, rand(210) - 10, 2 + rand * 3, 1.5 + rand * 1.5)
+        end
+      end
       if @form.cur_section_index == 3 && @form.section(3).cur_btn == @txt_name && SB.key_pressed?(:confirm)
         SB.new_game(@txt_name.text.downcase, @new_game_index) unless @txt_name.text.empty?
       end
@@ -231,6 +263,7 @@ class Menu
 
     def draw
       @bg.draw 0, 0, 0, 2, 2
+      @clouds.each(&:draw)
       @title.draw @form.cur_section_index == 1 ? 20 : 50, 20, 0, @form.cur_section_index == 1 ? 1 : 2, @form.cur_section_index == 1 ? 1 : 2
       @form.draw
     end
