@@ -38,7 +38,7 @@ class SBGame < MiniGL::GameWindow
     G.ramp_slip_force = 0.8
 	  SB.initialize
 
-    @logo = Res.img(:ui_alevaLogo)
+    @logo = Res.img(:ui_minigl)
     @timer = @state = @alpha = 0
   end
 
@@ -60,28 +60,28 @@ class SBGame < MiniGL::GameWindow
         return
       end
       @timer += 1
-      if @state < 2
+      if @state == 0 || @state == 2
         @alpha += 5 if @alpha < 255
-        if @timer == 120
+        if @timer == 240
+          @state += 1
+        end
+      elsif @state == 1 || @state == 3
+        @alpha -= 5
+        if @alpha == 0
           @state += 1
           @timer = 0
-          @alpha = 0 if @state == 1
+          if @state == 4
+            SB.play_song Res.song(:main)
+            @alpha = 255
+          end
         end
-      elsif @state > 2
+      else
         @alpha -= 17 if @alpha > 0
         @alpha = 0 if @alpha < 0
         if @timer == 15
           if @state == 5; SB.state = :menu
           else; @state += 1; @alpha = 255; end
           @timer = 0
-        end
-      else
-        @alpha -= 5 if @alpha > 0
-        if @timer == 120
-          @state += 1
-          @timer = 0
-          @alpha = 255
-          SB.play_song Res.song(:main)
         end
       end
     elsif SB.state == :menu
@@ -109,14 +109,18 @@ class SBGame < MiniGL::GameWindow
 
   def draw
     if SB.state == :presentation
-      @logo.draw 200, 235, 0, 1, 1, (@state == 1 ? 0xffffffff : (@alpha << 24) | 0xffffff)
-      SB.text_helper.write_line(SB.text(:presents), 400, 365, :center, 0xffffff, (@state == 0 ? 0 : @alpha))
-      if @state > 2
+      if @state <= 1
+        @logo.draw((C::SCREEN_WIDTH - @logo.width) / 2, (C::SCREEN_HEIGHT - @logo.height) / 2, 0, 1, 1, (@alpha << 24) | 0xffffff)
+        SB.text_helper.write_line(SB.text(:powered_by), 400, (C::SCREEN_HEIGHT - @logo.height) / 2 - 50, :center, 0xffffff, @alpha)
+      elsif @state <= 3
+        SB.text_helper.write_line(SB.text(:game_by), 400, C::SCREEN_HEIGHT / 2 - 70, :center, 0xffffff, @alpha)
+        SB.text_helper.write_line("Victor David Santos", 400, C::SCREEN_HEIGHT / 2 - 20, :center, 0xffffff, @alpha, nil, 0, 0, 0, 0, 3, 3)
+      else
         Menu.draw
         (0..3).each do |i|
           (0..3).each do |j|
             s = (i + j) % 3
-            c = @state < s + 3 ? 0xff000000 : @state == s + 3 ? @alpha << 24 : 0
+            c = @state < s + 4 ? 0xff000000 : @state == s + 4 ? @alpha << 24 : 0
             G.window.draw_quad i * 200, j * 150, c,
                                i * 200 + 200, j * 150, c,
                                i * 200, j * 150 + 150, c,

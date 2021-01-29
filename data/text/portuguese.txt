@@ -1,4 +1,5 @@
-presents		Apresenta...
+powered_by		Feito com
+game_by			Um jogo por
 play			Jogar
 help			Ajuda
 options			Opções
