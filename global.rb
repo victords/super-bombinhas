@@ -339,6 +339,7 @@ class SB
 
     def next_world
       if @world.num == C::LAST_WORLD - 1
+        Credits.initialize
         @state = :game_end
       elsif @world.num == C::LAST_WORLD
         @state = :game_end_2

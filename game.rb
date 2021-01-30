@@ -20,6 +20,7 @@ require 'gosu'
 require_relative 'menu'
 require_relative 'stage_menu'
 require_relative 'movie'
+require_relative 'credits'
 
 class SBGame < MiniGL::GameWindow
   def initialize
@@ -43,7 +44,7 @@ class SBGame < MiniGL::GameWindow
   end
 
   def needs_cursor?
-    SB.state != :main && SB.state != :map
+    SB.state != :main && SB.state != :map && SB.state != :game_end && SB.state != :game_end_2
   end
 
   def update
@@ -99,7 +100,9 @@ class SBGame < MiniGL::GameWindow
       StageMenu.update_paused
     elsif SB.state == :movie
       SB.movie.update
-    elsif SB.state == :game_end || SB.state == :game_end_2
+    elsif SB.state == :game_end
+      Credits.update
+    elsif SB.state == :game_end_2
       if SB.key_pressed?(:confirm)
         Menu.reset
         SB.state = :menu
@@ -137,10 +140,12 @@ class SBGame < MiniGL::GameWindow
       StageMenu.draw
     elsif SB.state == :movie
       SB.movie.draw
-    elsif SB.state == :game_end || SB.state == :game_end_2
+    elsif SB.state == :game_end
+      Credits.draw
+    elsif SB.state == :game_end_2
       clear 0
-      SB.text_helper.write_line(text: SB.text(SB.state), x: 400, y: 280, mode: :center, color: 0xffffff, scale_x: 3, scale_y: 3)
-      SB.text_helper.write_line(text: SB.text("#{SB.state}_sub"), x: 400, y: 320, mode: :center, color: 0xffffff, alpha: 51, scale_x: 1.5, scale_y: 1.5)
+      SB.text_helper.write_line(text: SB.text(:game_end), x: 400, y: 280, mode: :center, color: 0xffffff, scale_x: 3, scale_y: 3)
+      SB.text_helper.write_line(text: SB.text("#{SB.state}_sub"), x: 400, y: 320, mode: :center, color: 0xffffff, alpha: 127, scale_x: 1.5, scale_y: 1.5)
     end
   end
 end

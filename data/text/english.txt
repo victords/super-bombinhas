@@ -27,8 +27,15 @@ controls_1		WASD, JKLI
 full_screen		Press F4 to alternate between window and full screen
 credits_prog	- Design, Programming and Graphics -
 credits_music	- Music -
+sounds			- Sound Effects -
+sounds_edit		Edition by Victor David Santos
+developed		Fully developed on Linux
 special_thanks	- Special Thanks -
 special_thanks2	The Gosu community\n...and many other friends and family
+special_thanks3	The Gosu community\nAll other friends and family\nwho made this project possible...\nand YOU, for playing my game!\nTHANK YOU VERY MUCH!
+graph_soft		- Graphics Software -
+music_soft		- Music Software -
+langs_libs		- Languages and Frameworks -
 confirm_exit	Are you sure you want to exit?
 ch_st_instruct	Press 'Enter' to start.\nPress 'Esc' or 'Backspace' to go back.
 stage			Stage
@@ -139,5 +146,4 @@ movie_8_0		As the bombs approached the massive artifact, beams of light started 
 movie_8_1		An enormous portal opened up where the artifact was. The bombs looked at each other, perplexed./Then, Bomba Azul said with a smile: "I think we're done with tests for a while, right?". They all laughed, and started walking the long way back home...
 game_end		The End!
 game_end_sub	But... have you collected all the Specs?
-game_end_2		The End!
 game_end_2_sub	Seriously, now.

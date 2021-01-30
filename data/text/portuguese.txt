@@ -27,8 +27,15 @@ controls_1		WASD, JKLI
 full_screen		Aperte F4 para alternar entre janela e tela cheia
 credits_prog	- Design, Programação e Gráficos -
 credits_music	- Música -
+sounds			- Efeitos Sonoros -
+sounds_edit		Edição por Victor David Santos
+developed		Desenvolvido inteiramente em Linux
 special_thanks	- Agradecimentos Especiais -
 special_thanks2	A comunidade Gosu\n...e muitos outros amigos e família
+special_thanks3	A comunidade Gosu\nTodos os outros amigos e familiares\nque tornaram possível esse projeto...\ne VOCÊ, por jogar meu jogo!\nMUITO OBRIGADO!!
+graph_soft		- Software de Gráficos -
+music_soft		- Software de Música -
+langs_libs		- Linguagens e Frameworks -
 confirm_exit	Tem certeza de que deseja sair?
 ch_st_instruct	Aperte 'Enter' para começar.\nAperte 'Esc' ou 'Backspace' para voltar.
 stage			Fase
@@ -140,5 +147,4 @@ movie_8_0		Conforme as bombas se aproximaram do massivo artefato, raios de luz c
 movie_8_1		Um enorme portal abriu onde o artefato se encontrava. As bombas olharam umas às outras, perplexas./Então, Bomba Azul disse, com um sorriso: "Acho que estamos satisfeitas de testes por um tempo, não?"./Todos riram, e começaram a caminhar o longo caminho de volta para casa...
 game_end		Fim!
 game_end_sub	Mas... você pegou todos os Specs?
-game_end_2		Fim!
 game_end_2_sub	Agora é sério.

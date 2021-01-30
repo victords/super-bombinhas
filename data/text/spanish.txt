@@ -1,5 +1,5 @@
 powered_by		Desarrollado con
-game_by			Un juego por
+game_by			Un juego de
 play			Jugar
 help			Ayuda
 options			Opciones
@@ -27,8 +27,15 @@ controls_1		WASD, JKLI
 full_screen		Pulsa F4 para alternar entre ventana y pantalla completa
 credits_prog	- Diseño, Programación y Gráficos -
 credits_music	- Música -
+sounds			- Efectos de Sonido -
+sounds_edit		Edición de Victor David Santos
+developed		Completamente desarrollado en Linux
 special_thanks	- Agradecimientos Especiales -
 special_thanks2	La comunidad Gosu\n...y muchos otros amigos y familia
+special_thanks3	La comunidad Gosu\nTodos los demás amigos y familiares\nque hicieron posible este proyecto ...\n¡y TÚ, por jugar mi juego!\n¡¡MUCHAS GRACIAS!!
+graph_soft		- Software de Gráficos -
+music_soft		- Software de Música -
+langs_libs		- Lenguajes y Frameworks -
 confirm_exit	¿Estás seguro que deseas salir?
 ch_st_instruct	Pulsa 'Enter' para empezar.\nPulsa 'Esc' o 'Backspace' para volver.
 stage			Etapa
@@ -139,5 +146,4 @@ movie_8_0		Cuando las bombas se acercaron al enorme artefacto, empezó a emanar 
 movie_8_1		Se abrió un enorme portal donde estaba el artefacto. Las bombas se miraron perplejas./Entonces, Bomba Azul dijo con una sonrisa: "Creo que hemos terminado con las pruebas por un tiempo, ¿no?". Todos se rieron y comenzaron a caminar el largo camino de regreso a casa ...
 game_end		¡Fin!
 game_end_sub	Pero... ¿has recogido todos los Specs?
-game_end_2		¡Fin!
 game_end_2_sub	Ahora sí, de verdad.
