@@ -6,7 +6,7 @@ include MiniGL
 
 END
 
-file_names = %w(global bomb elements enemies form items movie options player section stage stage_menu world menu game)
+file_names = %w(global credits bomb elements enemies form items movie options player section stage stage_menu world menu game)
 
 file_names.each do |name|
   File.open("#{name}.rb") do |f|
