@@ -27,9 +27,9 @@ class SBGame < MiniGL::GameWindow
     os = RbConfig::CONFIG['host_os']
     dir =
       if /linux/ =~ os
-        "#{Dir.home}/.aleva-games/super-bombinhas"
+        "#{Dir.home}/.vds-games/super-bombinhas"
       else
-        "#{Dir.home}/AppData/Local/Aleva Games/Super Bombinhas"
+        "#{Dir.home}/AppData/Local/VDS Games/Super Bombinhas"
       end
     SB.load_options(dir)
 

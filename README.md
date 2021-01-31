@@ -1,6 +1,7 @@
 # Super Bombinhas
 
-This is an ongoing platformer game project, built with Ruby and the Gosu and MiniGL libraries.
+Super Bombinhas is a retro platformer game inspired by classics like Super Mario World, but with a unique change characters mechanic. It is built with Ruby and the Gosu and MiniGL libraries.
+You can download the installers from releases here in GitHub or in [itch.io](https://victords.itch.io/super-bombinhas), where you can also find a more detailed description and a gameplay video.
 
 ## Screenshots
 
@@ -24,8 +25,8 @@ This is an ongoing platformer game project, built with Ruby and the Gosu and Min
 ## Remarks
 
 * The source code is distributed under the GNU GPLv3 license and the image and sound assets (contents of the folders data/img, data/song and data/tileset) under the Creative Commons Attribution-ShareAlike 4.0 license.
-* The game is not complete. You can expect to find some bugs - if you find them, please let me know.
-* Regarding the soundtrack, credits go to [Zergananda](https://soundcloud.com/zergananda) and [Francesco Corrado](https://soundcloud.com/franzcorradomusic), except for the track "Desert Theme" (file data/song/m0.ogg), which was created by me.
+* The game was only tested thoroughly by me. You can expect to find some bugs - if you find them, please let me know.
+* Regarding the soundtrack, credits go to [Zergananda](https://soundcloud.com/zergananda) and [Francesco Corrado](https://soundcloud.com/franzcorradomusic).
 * The "bundle.rb" is not part of the source code of the game, it's a utility script I use to create a bundled file with all the source code.
 * The level editor I have used to create all the stages is also available [here](https://github.com/victords/super-bombinhas-editor).
 

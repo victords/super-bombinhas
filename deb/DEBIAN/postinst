@@ -1,5 +1,5 @@
 #!/bin/sh
 set -e
 gem uninstall minigl
-gem install minigl -v 2.3.3
+gem install minigl -v 2.3.4
 exit 0

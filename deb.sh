@@ -1,8 +1,6 @@
 #!/bin/bash
 
-# Aleva Deb Generation Script
-
 ruby bundle.rb
-mv sb.rb deb/opt/aleva-games/super-bombinhas/
-cp -r data deb/opt/aleva-games/super-bombinhas/
-dpkg -b deb super-bombinhas-0.8.0.deb
+mv sb.rb deb/opt/vds-games/super-bombinhas/
+cp -r data deb/opt/vds-games/super-bombinhas/
+dpkg -b deb super-bombinhas-1.0.0.deb

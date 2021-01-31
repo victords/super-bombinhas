@@ -1,11 +1,11 @@
 Package: super-bombinhas
 Priority: optional
-Version: 0.8.0
+Version: 1.0.0
 Architecture: all
-Maintainer: Aleva Games <contact@alevagames.com>
-Installed-Size: 34032
+Maintainer: Victor David Santos <victordavidsantos@gmail.com>
+Installed-Size: 41412
 Depends: build-essential, libsdl2-dev, libgl1-mesa-dev, libopenal-dev, libsndfile-dev, libmpg123-dev, libgmp-dev, libfontconfig1-dev, ruby, ruby-dev
-Homepage: http://alevagames.com
+Homepage: https://github.com/victords/super-bombinhas
 Section: games
 Description: Super Bombinhas
- A platformer adventure game (demo version).
+ A platformer adventure game where you play as heroic little bombs.
