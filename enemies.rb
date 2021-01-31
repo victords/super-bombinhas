@@ -2304,7 +2304,7 @@ class Gars < FloorEnemy
           b.bounce(false)
         else
           b.bounce
-          hit(section)
+          hit(section, b.power)
         end
       elsif b.bounds.intersect?(@hit_area)
         b.hit
@@ -3291,11 +3291,17 @@ class Gaxlon < Enemy
   end
 
   def hit_by_bomb(section)
+    return if @invulnerable
     super(section)
     return if @hp <= 0
     b = SB.player.bomb
     entrance = @hp >= 8 ? 21 : @hp >= 6 ? 22 : @hp >= 4 ? 23 : 25
     section.add(Vortex.new(b.x + b.w / 2 - 27, b.y + b.h / 2 - 27, "#{entrance},$", section))
+  end
+
+  def hit(section, amount = 1)
+    super(section, amount)
+    section.activate_object(MovingWall, @hp == 8 ? 4 : @hp == 6 ? 5 : @hp == 4 ? 6 : 7) if @hp % 2 == 0
   end
 
   def draw(map, section)

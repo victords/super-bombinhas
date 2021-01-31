@@ -439,7 +439,7 @@ class Elevator < SBGameObject
   def update(section)
     if @active
       b = SB.player.bomb
-      cycle @points, @speed_m, section.passengers, section.get_obstacles(b.x, b.y), section.ramps, @stop_time
+      cycle @points, @speed_m, section.passengers, section.passengers.map{|p| section.get_obstacles(p.x, p.y)}.flatten, section.ramps, @stop_time
     end
     animate @indices, @interval
   end
@@ -1638,16 +1638,17 @@ class Boulder < GameObject
     @state = :waiting
     @start_x = @x
     @facing_right = args.nil?
+    @max_speed.x = 5
   end
 
   def update(section)
     b = SB.player.bomb
     if @state == :waiting
-      if b.x > @x + 100 && b.y > @y
+      if b.x > @x + 100 && b.x < @x + 120 && b.y > @y
         @state = :falling
       end
     else
-      move(Vector.new(0, 0), section.get_obstacles(@x - 15, @y, 86, 86), section.ramps)
+      move(Vector.new(@facing_right ? 0.03 : -0.03, 0), section.get_obstacles(@x - 15, @y, 86, 86), section.ramps)
       if @x + @img_gap.x > section.size.x or @y + @img_gap.y > section.size.y
         @dead = true
         return
@@ -2604,6 +2605,10 @@ class BattleArena
   end
 
   def dead?; @dead; end
+
+  def stop_time_immune?
+    true
+  end
 
   def draw(map, section); end
 end

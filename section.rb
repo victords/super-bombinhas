@@ -208,7 +208,11 @@ class Section
     @bgm = s[4]
     @map = Map.new C::TILE_SIZE, C::TILE_SIZE, t_x_count, t_y_count
     @size = @map.get_absolute_size
-    @dark = s.length > 5
+    @dark = s[5] && s[5] == '.'
+    if s[5] && s[5] == '$'
+      @rain = Res.img(:fx_rain)
+      @rain_offset = Vector.new(0, 0)
+    end
   end
 
   def set_bgs(s)
@@ -747,6 +751,22 @@ class Section
                              (i + 1) * C::TILE_SIZE, (j + 1) * C::TILE_SIZE, color, 0)
         end
       end
+    elsif @rain
+      x = @rain_offset.x
+      y = @rain_offset.y
+      y -= @rain.height * 2 while y > 0
+      while x < C::SCREEN_WIDTH
+        y2 = y
+        while y2 < C::SCREEN_HEIGHT
+          @rain.draw(x, y2, 0, 2, 2)
+          y2 += @rain.height * 2
+        end
+        x += @rain.width * 2
+      end
+      @rain_offset.x -= 1.8
+      @rain_offset.x = 0 if @rain_offset.x <= -@rain.width * 2
+      @rain_offset.y += 7
+      @rain_offset.y = 0 if @rain_offset.y >= @rain.height * 2
     end
   end
 
