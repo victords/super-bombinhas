@@ -1986,7 +1986,7 @@ class Puzzle < SBGameObject
 
   def update(section)
     if @will_set
-      seciton.activate_object(MovingWall, @id, false)
+      section.activate_object(MovingWall, @id, false)
       @will_set = false
     end
 
