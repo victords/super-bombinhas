@@ -34,7 +34,7 @@ special_thanks	- Agradecimentos Especiais -
 special_thanks2	A comunidade Gosu\n...e muitos outros amigos e família
 special_thanks3	A comunidade Gosu\nTodos os outros amigos e familiares\nque tornaram possível esse projeto...\ne VOCÊ, por jogar meu jogo!\nMUITO OBRIGADO!!
 graph_soft		- Software de Gráficos -
-music_soft		- Software de Música -
+music_soft		- Software de Música/Áudio -
 langs_libs		- Linguagens e Frameworks -
 confirm_exit	Tem certeza de que deseja sair?
 ch_st_instruct	Aperte 'Enter' para começar.\nAperte 'Esc' ou 'Backspace' para voltar.

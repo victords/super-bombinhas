@@ -19,7 +19,7 @@ class Credits
         [SB.text(:graph_soft), 2],
         ["Aseprite\nInkscape", 3],
         [SB.text(:music_soft), 2],
-        ["Ardour 6\nmpv", 3],
+        ["Ardour 6\nmpv\nAudacity", 3],
         [SB.text(:langs_libs), 2],
         ["Ruby language\nGosu\nMiniGL\n" + SB.text(:developed), 3],
         [SB.text(:special_thanks), 2],
