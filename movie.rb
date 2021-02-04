@@ -28,6 +28,7 @@ class Movie
     @scene = @timer = 0
     @alpha = 255
     @changing = 1
+    @time_limit = id == 0 ? 890 : 1595
     SB.play_song(Res.song(id == 0 ? :movieSad : :movie))
   end
 
@@ -46,7 +47,7 @@ class Movie
       end
     else
       @timer += 1
-      @changing = 0 if @timer == 900 || SB.key_pressed?(:confirm)
+      @changing = 0 if SB.key_pressed?(:confirm) || @timer == @time_limit
     end
   end
 
