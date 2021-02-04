@@ -616,7 +616,10 @@ class Section
       t.update self if t.is_visible @map
     end
 
-    @camera_target_pos = Vector.new(bomb.x + bomb.w / 2, bomb.y + bomb.h / 2) unless @fixed_camera
+    unless @fixed_camera
+      @camera_target_pos = Vector.new(bomb.x + bomb.w / 2, bomb.y + bomb.h / 2)
+      @camera_target_pos.y += @camera_offset if @camera_offset
+    end
     d_x = @camera_target_pos.x - @camera_ref_pos.x
     d_y = @camera_target_pos.y - @camera_ref_pos.y
     should_move_x = d_x.abs > 0.5
@@ -628,9 +631,8 @@ class Section
 
     d_y_abs = d_y.abs
     if @camera_moving
-      if d_y_abs > 0.5
+      if d_y_abs >= C::CAMERA_VERTICAL_MIN
         @camera_ref_pos.y += C::CAMERA_VERTICAL_SPEED * d_y * [d_y_abs.to_f / C::CAMERA_VERTICAL_TOLERANCE, 1].max
-
         moved_y = true
       else
         @camera_moving = false
@@ -654,6 +656,7 @@ class Section
     bomb.update(self)
     SB.player.update_timers
 
+    @camera_offset = nil
     unless @fixed_camera
       if SB.player.dead?
         @dead_timer += 1 if @dead_timer < 120
@@ -664,6 +667,14 @@ class Section
       if SB.stage.is_bonus
         finish if SB.stage.objective == :kill_all && enemy_count == 0
         finish if SB.stage.objective == :get_all_rocks && fire_rock_count == 0
+      end
+
+      if bomb.bottom
+        if SB.key_down?(:up)
+          @camera_offset = -4 * C::TILE_SIZE
+        elsif SB.key_down?(:down)
+          @camera_offset = 4 * C::TILE_SIZE
+        end
       end
 
       if @finished
