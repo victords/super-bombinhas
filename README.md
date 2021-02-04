@@ -3,6 +3,14 @@
 Super Bombinhas is a retro platformer game inspired by classics like Super Mario World, but with a unique change characters mechanic. It is built with Ruby and the Gosu and MiniGL libraries.
 You can download the installers from releases here in GitHub or in [itch.io](https://victords.itch.io/super-bombinhas), where you can also find a more detailed description and a gameplay video.
 
+## Version 1.1.0
+
+* Bug fixes
+* Move camera up or down with arrow keys
+* Softened game over penalty
+* More time to read the stories
+* Added Audacity to credits
+
 ## Screenshots
 
 ![Super Bombinhas 1](https://raw.githubusercontent.com/victords/super-bombinhas/master/screenshot/game-menu.png)
