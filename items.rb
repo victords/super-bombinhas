@@ -299,9 +299,14 @@ class BoardItem < FloatingItem
 
   def use(section, switch)
     b = SB.player.bomb
-    @board = Board.new(b.x + (b.facing_right ? 0 : b.w - 50), b.y + b.h - 2, b.facing_right, section, switch)
-    section.add(@board)
-    set_switch(switch)
+    if b.bottom
+      @board = Board.new(b.x + (b.facing_right ? 0 : b.w - 50), b.y + b.h - 2, b.facing_right, section, switch)
+      section.add(@board)
+      set_switch(switch)
+      true
+    else
+      false
+    end
   end
 end
 
