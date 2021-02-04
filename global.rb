@@ -362,9 +362,10 @@ class SB
     end
 
     def game_over
-      @player.game_over
-      @world = World.new(@player.last_world, 1)
-      save(nil, 1)
+      @player.game_over(@world.num, @stage.num)
+      @world = World.new(@player.last_world, @player.last_stage, true)
+      @stage = Stage.new(@player.last_world, @player.last_stage)
+      save(nil, @player.last_stage)
       @world.resume
     end
 

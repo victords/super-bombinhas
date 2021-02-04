@@ -191,11 +191,10 @@ class Player
     @bombs.each { |k, v| v.reset(loaded) }
   end
 
-  def game_over
+  def game_over(world_num, stage_num)
     self.score -= C::GAME_OVER_PENALTY
-    @last_stage = 1
     @lives = 5
-    @specs.delete_if { |s| s =~ /^#{@last_world}-/ }
+    @specs.delete("#{world_num}-#{stage_num}")
     @startup_item = nil
     reset
   end
