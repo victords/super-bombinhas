@@ -125,8 +125,8 @@ bonus			Bônus
 bonus_1			Chegue ao final
 bonus_2			Mate todos os inimigos
 bonus_3			Pegue todas as Pedras de Fogo
-movie_0_0		Numa terra distante, há um belo vilarejo, habitado por... bombas./Este vilarejo foi um dia um lugar pacífico, onde o povo amava seu rei e vivia na prosperidade.
-movie_0_1		Mas a inveja de Gaxlon, um dos conselheiros do rei, acaba de abalar esta tranquilidade.../Gaxlon queria governar o reino com as próprias mãos, então ele aprisionou Aldan, o rei. Não foi capaz de matá-lo, já que eles foram amigos de infância no passado.../Enquanto seus capangas levavam o rei, as 4 super bombas chegaram e testemunharam a cena terrível.
+movie_0_0		Numa terra distante, há um belo vilarejo, habitado por... bombas./Este vilarejo foi um dia um lugar pacífico, onde o povo amava seu rei e vivia na prosperidade.../Mas a inveja de Gaxlon, um dos conselheiros do rei, acaba de abalar esta tranquilidade...
+movie_0_1		Gaxlon queria governar o reino com as próprias mãos, então ele aprisionou Aldan, o rei. Não foi capaz de matá-lo, já que eles foram amigos de infância no passado.../Enquanto seus capangas levavam o rei, as 4 super bombas chegaram e testemunharam a cena terrível.
 movie_0_2		Gaxlon foi rápido e ordenou que seus capangas atacassem as Super Bombas também, mas Aldan as protegeu com uma magia antiga./Vendo que as bombas não podiam ser derrotadas, Gaxlon ordenou que fossem aprisionadas cada uma num lugar distante... E assim começou seu reinado de terror.
 movie_0_3		Conforme as Super Bombas eram levadas para lugares distantes, Bomba Azul, o mais esperto deles, conseguiu enganar seu captor e escapar./Ele viu Bomba Vermelha sendo levado na direção da Ilha de Tars, então seguiu para lá para começar a resgatar seus amigos...
 movie_1_0		Bomba Azul e Bomba Vermelha comemoraram o reencontro e por terem derrotado o primeiro capanga de Gaxlon./No entanto, eles não tinham tempo a perder e logo se dirigiram para fora do castelo para procurar por seus outros amigos...
