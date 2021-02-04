@@ -657,7 +657,7 @@ class Section
     unless @fixed_camera
       if SB.player.dead?
         @dead_timer += 1 if @dead_timer < 120
-        @reload = true if SB.key_pressed?(:confirm) && @dead_timer >= 30 || SB.player.lives == 0 && @dead_timer >= 150
+        @reload = true if SB.key_pressed?(:confirm) && @dead_timer >= 30 || SB.player.lives + SB.stage.life_count == 0 && @dead_timer >= 150
         return
       end
 

@@ -64,7 +64,11 @@ class Player
   def die
     unless @dead
       unless SB.stage.is_bonus
-        @lives -= 1
+        if SB.stage.life_count == 0
+          @lives -= 1
+        else
+          SB.stage.life_count -= 1
+        end
         self.stage_score -= C::DEATH_PENALTY
       end
       @dead = true

@@ -180,7 +180,7 @@ class StageMenu
         @effects.delete(e) if e.dead
       end
       if SB.player.dead?
-        @dead_text = SB.player.lives == 0 ? :game_over : :dead if @dead_text.nil?
+        @dead_text = SB.player.lives + SB.stage.life_count == 0 ? :game_over : :dead if @dead_text.nil?
         @alpha += 17 if @alpha < 255
       elsif @dead_text
         @dead_text = nil
