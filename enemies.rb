@@ -73,17 +73,15 @@ class Enemy < GameObject
       b = SB.player.bomb
       if b.over?(self, tolerance)
         hit_by_bomb(section)
-      else
-        if b.collide?(self)
-          b.hit
-        end
-        unless @invulnerable
-          if b.explode?(self) or section.explode?(self)
-            hit_by_explosion(section)
-          else
-            proj = section.projectile_hit?(self)
-            hit_by_projectile(section) if proj && proj != 8
-          end
+      elsif b.collide?(self)
+        b.hit
+      end
+      unless @invulnerable
+        if b.explode?(self) or section.explode?(self)
+          hit_by_explosion(section)
+        else
+          proj = section.projectile_hit?(self)
+          hit_by_projectile(section) if proj && proj != 8
         end
       end
     end
@@ -1568,7 +1566,7 @@ class Necrul < FloorEnemy
     super(section) do
       @timer += 1
       if @timer % 28 == 0
-        section.add(Projectile.new(@facing_right ? @x + @w + 30 : @x - 30, @y + 30, 6, @facing_right ? 0 : 180, self))
+        section.add(Projectile.new(@facing_right ? @x + @w + 30 : @x - 30, @y + 34, 6, @facing_right ? 0 : 180, self))
         if @timer == 112
           @indices = [1, 0, 1, 2]
           set_animation(@indices[0])
