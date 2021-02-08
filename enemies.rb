@@ -1287,6 +1287,9 @@ class Sahiss < FloorEnemy
         @timer = 0
         @time = 180 + rand(240)
       end
+      if @hp == 2
+        section.activate_object(StalactiteGenerator, 0)
+      end
       @indices = [3]
       set_animation 3
     end
@@ -1678,13 +1681,15 @@ class Umbrex < FloorEnemy
   RANGE = 10
 
   def initialize(x, y, args, section)
-    super(x, y - 118, args, 32, 150, Vector.new(-64, -10), 4, 2, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1], 7, 250, 3)
+    super(x, y - 118, args, 64, 150, Vector.new(-48, -10), 4, 2, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1], 7, 250, 3)
     @hop_timer = 0
   end
 
   def update(section)
     b = SB.player.bomb
-    if @attacking
+    if @dying
+      super(section)
+    elsif @attacking
       @timer += 1
       if @timer == 80
         set_animation(0)
@@ -1697,8 +1702,7 @@ class Umbrex < FloorEnemy
       if @timer >= 10 && @timer < 60
         b.hit if b.collide?(self)
       end
-    elsif @dying
-      super(section)
+      check_hit(section, b)
     else
       area = Rectangle.new(@x + @img_gap.x, @y + @img_gap.y, 160, 160)
       if b.bounds.intersect?(area)
@@ -1712,6 +1716,7 @@ class Umbrex < FloorEnemy
         elsif b.over?(self)
           hit_by_bomb(section)
         end
+        check_hit(section, b)
       else
         super(section)
       end
@@ -1722,6 +1727,17 @@ class Umbrex < FloorEnemy
     else
       @hop_timer += 1
       @hop_timer = 0 if @hop_timer == 16
+    end
+  end
+
+  def check_hit(section, bomb)
+    unless @invulnerable
+      if bomb.explode?(self) or section.explode?(self)
+        hit_by_explosion(section)
+      else
+        proj = section.projectile_hit?(self)
+        hit_by_projectile(section) if proj && proj != 8
+      end
     end
   end
 
@@ -1744,9 +1760,10 @@ class Quartin < Enemy
       @x_c = x_c
       @y_c = y_c
       @angle = angle
+      @timer = 0
     end
 
-    def update(x_c, y_c)
+    def update(section, x_c, y_c)
       @x_c = x_c
       @y_c = y_c
       if @dying
@@ -1759,7 +1776,6 @@ class Quartin < Enemy
           b.bounce
           set_animation(1)
           @dying = true
-          @timer = 0
         else
           b.hit if b.collide?(self)
           @angle += 2
@@ -1767,6 +1783,12 @@ class Quartin < Enemy
           rad = @angle * Math::PI / 180
           @x = @x_c + Math.cos(rad) * RADIUS - @w / 2
           @y = @y_c + Math.sin(rad) * RADIUS - @h / 2
+        end
+        if b.explode?(self) || section.explode?(self)
+          @dying = true
+        else
+          proj = section.projectile_hit?(self)
+          @dying = true if proj && proj != 8
         end
       end
     end
@@ -1800,7 +1822,7 @@ class Quartin < Enemy
         @aim = Vector.new(@facing_right ? @x + @movement : @x - @movement, @y)
       end
       @shields.reverse_each do |s|
-        s.update(@x + @w / 2, @y + @h / 2)
+        s.update(section, @x + @w / 2, @y + @h / 2)
         @shields.delete(s) if s.dead
       end
       hit(section) if @shields.empty? && @hp > 0
@@ -1989,7 +2011,7 @@ class Zirkn < FloorEnemy
   alias :super_update :update
 
   def initialize(x, y, args, section)
-    super(x - 28, y - 84, args, 88, 116, Vector.new(-6, -12), 1, 7, [0, 1, 0, 2], 7, 3000, 4, 6)
+    super(x - 28, y - 84, args, 88, 116, Vector.new(-6, -12), 1, 7, [0, 1, 0, 2], 7, 3000, 4, 5)
     @timer = 0
     @spawn_point = Vector.new(x + C::TILE_SIZE / 2, y + C::TILE_SIZE)
     init
@@ -2001,7 +2023,11 @@ class Zirkn < FloorEnemy
       if @invulnerable
         super_update(section)
       elsif @state == :attacking
-        b.bounce(false) if b.over?(self)
+        if b.over?(self)
+          b.bounce(false)
+        elsif b.collide?(self)
+          b.hit
+        end
         @timer += 1
         if @hp <= 1
           end_time = 648
@@ -2036,7 +2062,11 @@ class Zirkn < FloorEnemy
           @state = :resting
         end
       elsif @state == :resting
-        b.bounce(false) if b.over?(self)
+        if b.over?(self)
+          b.bounce(false)
+        elsif b.collide?(self)
+          b.hit
+        end
         if b.explode?(@tail_area)
           @timer = 0
           @indices = [6]

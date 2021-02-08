@@ -74,6 +74,7 @@ class Bomb < GameObject
 
   def update(section)
     forces = Vector.new 0, 0
+    switched = false
     if @dying
       animate [9, 10, 11], 8 unless @img_index == 11
     elsif @exploding
@@ -147,12 +148,16 @@ class Bomb < GameObject
       end
       @stored_jump = 0 if @bottom
 
-      SB.player.change_item(-1) if SB.key_pressed?(:prev)
-      SB.player.change_item if SB.key_pressed?(:next)
-      SB.player.use_item(section) if SB.key_pressed?(:item)
-      SB.player.shift_bomb(section) if SB.key_pressed?(:bomb)
-
-      if @can_use_ability
+      if SB.key_pressed?(:prev)
+        SB.player.change_item(-1)
+      elsif SB.key_pressed?(:next)
+        SB.player.change_item
+      elsif SB.key_pressed?(:item)
+        SB.player.use_item(section)
+      elsif SB.key_pressed?(:bomb)
+        switched = true
+        SB.player.shift_bomb(section)
+      elsif @can_use_ability
         if SB.key_pressed? :ability
           if @type == :verde
             explode(false); @can_use_ability = false; @cooldown = EXPLODE_COOLDOWN
@@ -167,6 +172,8 @@ class Bomb < GameObject
         end
       end
     end
+
+    return if switched
 
     if @invulnerable
       @invulnerable_timer += 1
@@ -352,6 +359,7 @@ class Bomb < GameObject
 
   def stop
     @speed.x = @speed.y = @stored_forces.x = @stored_forces.y = 0
+    set_animation(0)
   end
 
   def is_visible(map)

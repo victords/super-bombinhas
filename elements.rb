@@ -1372,21 +1372,28 @@ class StalactiteGenerator < SBGameObject
     @active = true
     @limit = (args.to_i - 1) * C::TILE_SIZE
     @timer = 0
+    @s_x = []
     @s_y = @y - 10 + C::TILE_SIZE
+    @amount = 2
   end
 
   def update(section)
     if @active and SB.player.bomb.collide?(self)
       if @timer == 0
-        @s_x = @x + 96 + rand(@limit)
-        section.set_fixed_camera(@s_x, @s_y)
+        @amount.times do
+          @s_x << @x + 96 + rand(@limit)
+        end
+        section.set_fixed_camera(@s_x.sum / @s_x.size, @s_y)
       end
       @timer += 1
       if @timer == 60
-        section.add(Stalactite.new(@s_x, @s_y, ',$', section))
-        section.add_effect(Effect.new(@s_x - 16, @s_y - 32, :fx_spawn, 2, 2, 6))
+        @s_x.each do |s_x|
+          section.add(Stalactite.new(s_x, @s_y, ',$', section))
+          section.add_effect(Effect.new(s_x - 16, @s_y - 32, :fx_spawn, 2, 2, 6))
+        end
       elsif @timer == 120
         section.unset_fixed_camera
+        @s_x = []
         @active = false
       end
     elsif not @active
@@ -1397,6 +1404,12 @@ class StalactiteGenerator < SBGameObject
       end
     end
   end
+
+  def activate(section, arg = nil)
+    @amount = 1
+  end
+
+  def id; 0; end
 
   def is_visible(map)
     true
@@ -2091,14 +2104,14 @@ class FallingWall < GameObject
 
   def initialize(x, y, args, section)
     a = (args || '').split(',')
-    super(x, y + C::TILE_SIZE, 0, 0, "sprite_fallingWall#{a[0] || 1}", Vector.new(0, 0), 4, 2)
     size = (a[1] || 4).to_i
-    @active_bounds = Rectangle.new(x, y - (size - 1) * C::TILE_SIZE, C::TILE_SIZE, size * C::TILE_SIZE)
+    super(x, y - (size - 1) * C::TILE_SIZE, C::TILE_SIZE, size * C::TILE_SIZE, "sprite_fallingWall#{a[0] || 1}", Vector.new(0, 0), 4, 2)
+    @active_bounds = Rectangle.new(@x, @y, @w, @h)
     @blocks = []
     (0...size).each do |i|
-      b = MBlock.new(x, y - i * C::TILE_SIZE, C::TILE_SIZE, C::TILE_SIZE)
-      section.obstacles << b; @blocks << b
+      @blocks << MBlock.new(x, y - i * C::TILE_SIZE, C::TILE_SIZE, C::TILE_SIZE, true)
     end
+    section.obstacles << self
     @angle = Math::PI / 2
     @img_index = @timer = 0
   end
@@ -2122,15 +2135,19 @@ class FallingWall < GameObject
       c_a = Math.cos(@angle); s_a = Math.sin(@angle)
       c_c = Math.cos(c_angle); s_c = Math.sin(c_angle)
       @blocks.each_with_index do |b, i|
-        b.x = @x + c_a * i * C::TILE_SIZE + c_c * RADIUS - C::TILE_SIZE / 2
-        b.y = @y - s_a * i * C::TILE_SIZE - s_c * RADIUS - C::TILE_SIZE / 2
-        p.hit if p.collide?(b) && p.y > b.y
+        p.hit if p.collide?(b)
+        b.x = @x + (c_a * i - 0.5) * C::TILE_SIZE + c_c * RADIUS
+        b.y = @y + (@blocks.size - s_a * i - 0.5) * C::TILE_SIZE - s_c * RADIUS
       end
       if @angle == Math::PI
         @blocks.each { |b| section.obstacles.delete(b) }
         @crashing = true
       end
-    elsif p.y > @y - @blocks.length * C::TILE_SIZE && p.y + p.h <= @y && p.x > @x - @blocks.length * C::TILE_SIZE && p.x < @x
+    elsif p.y > @y && p.y < @y + @h && p.x > @x - @blocks.length * C::TILE_SIZE && p.x < @x
+      section.obstacles.delete(self)
+      @blocks.each do |b|
+        section.obstacles << b
+      end
       @falling = true
     end
   end
