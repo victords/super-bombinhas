@@ -1018,6 +1018,7 @@ class Vortex < GameObject
     elsif b.collide? self
       b.stop
       b.active = false
+      SB.play_sound(Res.sound(:portal))
       @aim = Vector.new(@x + (@w - b.w) / 2, @y + (@h - b.h) / 2 + 3)
       @transporting = true
       @timer = 0

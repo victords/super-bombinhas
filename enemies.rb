@@ -1852,6 +1852,7 @@ class Xylophob < FloorEnemy
     super
     @indices = [3]
     set_animation 3
+    SB.play_sound(Res.sound(:xylo))
   end
 
   def return_vulnerable

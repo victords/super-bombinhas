@@ -254,8 +254,8 @@ class SB
       StageMenu.initialize
     end
 
-    def play_sound(sound, volume = 1)
-      sound.play @sound_volume * 0.1 * volume if @sound_volume > 0
+    def play_sound(sound, volume = 1, speed = 1)
+      sound.play(@sound_volume * 0.1 * volume, speed) if @sound_volume > 0
     end
 
     def end_stage

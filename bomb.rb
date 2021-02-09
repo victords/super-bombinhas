@@ -160,9 +160,14 @@ class Bomb < GameObject
       elsif @can_use_ability
         if SB.key_pressed? :ability
           if @type == :verde
-            explode(false); @can_use_ability = false; @cooldown = EXPLODE_COOLDOWN
+            explode(false)
+            @can_use_ability = false
+            @cooldown = EXPLODE_COOLDOWN
           elsif @type == :branca
-            SB.stage.stop_time(STOP_TIME_DURATION); @can_use_ability = false; @cooldown = STOP_TIME_COOLDOWN
+            SB.stage.stop_time(STOP_TIME_DURATION)
+            SB.play_sound(Res.sound(:portal), 1, 1.5)
+            @can_use_ability = false
+            @cooldown = STOP_TIME_COOLDOWN
           end
         end
       else
