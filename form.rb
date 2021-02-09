@@ -248,6 +248,7 @@ class Form
     section_components.each do |c|
       @sections << FormSection.new(c)
     end
+    @highlight = Res.imgs(:ui_highlight, 3, 3, true)
     @highlight_alpha = 102
     @highlight_state = 0
     @cur_section = @sections[@cur_section_index = 0]
@@ -301,12 +302,25 @@ class Form
   def draw_highlight
     btn = @cur_section.cur_btn
     x = btn.x; y = btn.y; w = btn.w; h = btn.h
-    (1..4).each do |n|
-      color = ((@highlight_alpha * (1 - (n-1)/2 * 0.5)).round) << 24 | 0xffff00
-      G.window.draw_line x - n, y - n + 1, color, x + w + n - 1, y - n + 1, color
-      G.window.draw_line x - n, y + h + n, color, x + w + n, y + h + n, color
-      G.window.draw_line x - n + 1, y - n + 1, color, x - n + 1, y + h + n - 1, color
-      G.window.draw_line x + w + n, y - n, color, x + w + n - 1, y + h + n - 1, color
-    end
+    color1 = (@highlight_alpha << 24) | 0xffffff
+    color2 = (((@highlight_alpha * 0.5).round) << 24) | 0xffffff
+    draw_sliced(@highlight, x - 2, y - 2, w, h, color1)
+    draw_sliced(@highlight, x - 4, y - 4, w + 4, h + 4, color2)
+  end
+
+  def draw_sliced(img, x, y, w, h, color)
+    h_b = 2 * img[0].width
+    h_scale = w.to_f / img[0].width
+    v_b = 2 * img[0].height
+    v_scale = h.to_f / img[0].height
+    img[0].draw(x, y, 0, 2, 2, color)
+    img[1].draw(x + h_b, y, 0, h_scale, 2, color)
+    img[2].draw(x + h_b + w, y, 0, 2, 2, color)
+    img[3].draw(x, y + v_b, 0, 2, v_scale, color)
+    # img[4].draw(x + h_b, y + v_b, 0, h_scale, v_scale, color)
+    img[5].draw(x + h_b + w, y + v_b, 0, 2, v_scale, color)
+    img[6].draw(x, y + v_b + h, 0, 2, 2, color)
+    img[7].draw(x + h_b, y + v_b + h, 0, h_scale, 2, color)
+    img[8].draw(x + h_b + w, y + v_b + h, 0, 2, 2, color)
   end
 end
