@@ -1,9 +1,9 @@
 Package: super-bombinhas
 Priority: optional
-Version: 1.1.0
+Version: 1.2.0
 Architecture: all
 Maintainer: Victor David Santos <victordavidsantos@gmail.com>
-Installed-Size: 39528
+Installed-Size: 39788
 Depends: build-essential, libsdl2-dev, libgl1-mesa-dev, libopenal-dev, libsndfile-dev, libmpg123-dev, libgmp-dev, libfontconfig1-dev, ruby, ruby-dev
 Homepage: https://github.com/victords/super-bombinhas
 Section: games
