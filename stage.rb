@@ -219,6 +219,10 @@ class Stage
     nil
   end
 
+  def find_switches(type)
+    @switches.select { |s| s[:type] == type }
+  end
+
   def set_switch(obj)
     switch = self.find_switch obj
     switch[:state] = :temp_taken

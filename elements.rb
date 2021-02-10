@@ -1991,11 +1991,19 @@ class IcyFloor
 end
 
 class Puzzle < SBGameObject
-  def initialize(x, y, args, section, switch)
+  def initialize(x, y, args, section)
     super(x - 24, y - 46, 80, 78, :sprite_puzzle)
     @pieces = [nil, nil, nil, nil]
     @id = args.to_i
-    @will_set = switch[:state] == :taken
+
+    switches = SB.stage.find_switches(PuzzlePiece)
+    switches.each do |s|
+      if s[:state] == :used
+        num = s[:args].to_i
+        @pieces[num - 1] = Res.img("sprite_puzzlePiece#{num}")
+      end
+    end
+    @will_set = @pieces.all?
   end
 
   def update(section)
@@ -2014,7 +2022,6 @@ class Puzzle < SBGameObject
   def add_piece(section, number)
     @pieces[number - 1] = Res.img("sprite_puzzlePiece#{number}")
     if @pieces.all?
-      SB.stage.set_switch(self)
       section.activate_object(MovingWall, @id)
       section.active_object = nil
     end
