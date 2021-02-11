@@ -44,7 +44,7 @@ class SBGame < MiniGL::GameWindow
   end
 
   def needs_cursor?
-    SB.state != :main && SB.state != :map && SB.state != :game_end && SB.state != :game_end_2
+    SB.state == :menu || SB.state == :paused || SB.state == :stage_end
   end
 
   def update
