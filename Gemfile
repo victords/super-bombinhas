@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '~> 2.0'
+ruby '>= 2.0'
 
 gem 'gosu'
-gem 'minigl', '>= 2.3.4'
+gem 'minigl', '>= 2.3.5'
