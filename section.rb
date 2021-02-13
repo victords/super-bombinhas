@@ -581,7 +581,7 @@ class Section
 
   def unset_fixed_camera
     @fixed_camera = false
-    SB.player.bomb.active = true
+    SB.player.bomb.active = true unless SB.player.bomb.in_vortex
     SB.stage.resume_time
   end
 

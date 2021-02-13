@@ -60,7 +60,7 @@ class Enemy < GameObject
     end
   end
 
-  def update(section, tolerance = nil)
+  def update(section, tolerance = nil, check_active = false)
     if @dying
       @control_timer += 1
       @dead = true if @control_timer == 150
@@ -73,7 +73,7 @@ class Enemy < GameObject
       b = SB.player.bomb
       if b.over?(self, tolerance)
         hit_by_bomb(section)
-      elsif b.collide?(self)
+      elsif b.collide?(self) && (b.active || !check_active)
         b.hit
       end
       unless @invulnerable
@@ -3121,22 +3121,21 @@ class Gaxlon < Enemy
       obstacles = section.get_obstacles(@x, @y, @w, @h)
 
       if @invulnerable
-        super_update(section)
+        super_update(section, nil, true)
         move(forces, obstacles, section.ramps)
+        @speed.x = 0 if @bottom
         return
       end
 
       b = SB.player.bomb
       unless SB.player.dead?
         if b.over?(self)
+          hit_by_bomb(section, true)
+        elsif b.collide?(self) && b.active
+          b.hit
+        end
+        if b.explode?(self, nil, @y + @h) || section.projectile_hit?(self)
           hit_by_bomb(section)
-        else
-          if b.collide?(self)
-            b.hit
-          end
-          if b.explode?(self, nil, @y + @h) || section.projectile_hit?(self)
-            hit(section)
-          end
         end
       end
 
@@ -3251,7 +3250,7 @@ class Gaxlon < Enemy
             @timer -= 60
           end
         end
-      else
+      elsif !@invulnerable
         should_spawn = false
         if @hp == 1 && @subpoint_index == 0
           forces = jump_to(@jump_points[5][0])
@@ -3278,7 +3277,6 @@ class Gaxlon < Enemy
 
       animate(@indices, @interval)
       move(forces, obstacles, section.ramps, set_speed)
-      set_active_bounds(section)
       @facing_right = @speed.x > 0
     end
   end
@@ -3302,7 +3300,6 @@ class Gaxlon < Enemy
 
   def get_invulnerable
     super
-    @speed.x = 0
     @indices = [@img.size - 1]
     set_animation(@img.size - 1)
   end
@@ -3319,13 +3316,15 @@ class Gaxlon < Enemy
     end
   end
 
-  def hit_by_bomb(section)
+  def hit_by_bomb(section, bounce = false)
     return if @invulnerable
-    super(section)
-    return if @hp <= 0
+    hit(section)
     b = SB.player.bomb
-    entrance = @hp >= 8 ? 21 : @hp >= 6 ? 22 : @hp >= 4 ? 23 : 25
+    b.bounce(true) if bounce
+    return if @hp <= 0
+    entrance = @hp == 9 ? 26 : @hp == 8 ? 21 : @hp >= 6 ? 22 : @hp >= 4 ? 23 : @hp >= 2 ? 24 : 25
     section.add(Vortex.new(b.x + b.w / 2 - 27, b.y + b.h / 2 - 27, "#{entrance},$", section))
+    b.in_vortex = true
   end
 
   def hit(section, amount = 1)
@@ -3336,5 +3335,9 @@ class Gaxlon < Enemy
   def draw(map, section)
     super(map, section, 2, 2, 255, 0xffffff, nil, @facing_right ? :horiz : nil)
     draw_boss
+  end
+
+  def is_visible(map)
+    true
   end
 end

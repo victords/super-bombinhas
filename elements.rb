@@ -643,11 +643,11 @@ class MovingWall < GameObject
         @h += @closed ? -16 : 16
         SB.play_sound(Res.sound(:wallOpen)) if section.map.cam.intersect?(@active_bounds)
         if @closed and @h == 0
-          section.unset_fixed_camera
+          section.unset_fixed_camera if section.fixed_camera
           section.obstacles.delete(self)
           @dead = true
         elsif not @closed and @h == @max_size
-          section.unset_fixed_camera
+          section.unset_fixed_camera if section.fixed_camera
           @active_bounds.y = @y
           @active_bounds.h = @h
           @active = false
@@ -1005,6 +1005,8 @@ class Vortex < GameObject
     @angle += 5
     @angle = 0 if @angle == 360
 
+    return if section.fixed_camera
+
     b = SB.player.bomb
     if @transporting
       b.move_free @aim, 1.5 if @timer < 30
@@ -1012,10 +1014,11 @@ class Vortex < GameObject
       if @timer == 30
         section.add_effect(Effect.new(@x - 3, @y - 3, :fx_transport, 2, 2, 7, [0, 1, 2, 3], 28))
         section.start_warp(@entrance)
+        b.in_vortex = false
       elsif @timer == 60
         @transporting = false
       end
-    elsif b.collide? self
+    elsif b.collide?(self)
       b.stop
       b.active = false
       SB.play_sound(Res.sound(:portal))
@@ -2492,13 +2495,13 @@ class Gate < SBGameObject
   end
 
   def update(section)
-    # stop when section.set_fixed_camera is called
-    return if SB.stage.stopped && section.active_object != self || @opened
-
     unless @inited
       section.obstacles << self
       @inited = true
     end
+
+    # stop unless when section.set_fixed_camera is called by self
+    return if SB.stage.stopped && section.active_object != self || @opened
 
     b = SB.player.bomb
 
@@ -2581,6 +2584,10 @@ class Gate < SBGameObject
 
   def is_visible(map)
     @active || map.cam.intersect?(@active_bounds)
+  end
+
+  def stop_time_immune?
+    true
   end
 end
 

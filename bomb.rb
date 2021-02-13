@@ -36,7 +36,7 @@ class Bomb < GameObject
 
   attr_reader :type, :name, :hp, :saved_hp, :facing_right, :can_use_ability, :cooldown, :will_explode, :exploding,
               :poison_timer, :invulnerable, :invulnerable_time, :invulnerable_timer
-  attr_accessor :active, :power, :slipping, :sticking, :poisoned, :shielded
+  attr_accessor :active, :power, :slipping, :sticking, :poisoned, :shielded, :in_vortex
 
   def initialize(type, hp)
     case type
