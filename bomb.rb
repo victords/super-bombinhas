@@ -34,14 +34,14 @@ class Bomb < GameObject
     [0, 4, 175], [-2, 3, 175], [-3, 2, 175], [-4, 0, 175], [-3, -2, 175], [-2, -3, 175]
   ]
 
-  attr_reader :type, :name, :hp, :saved_hp, :facing_right, :can_use_ability, :cooldown, :will_explode, :exploding,
+  attr_reader :type, :name, :hp, :max_hp, :saved_hp, :facing_right, :can_use_ability, :cooldown, :will_explode, :exploding,
               :poison_timer, :invulnerable, :invulnerable_time, :invulnerable_timer
   attr_accessor :active, :power, :slipping, :sticking, :poisoned, :shielded, :in_vortex
 
   def initialize(type, hp)
     case type
     when :azul     then @name = 'Bomba Azul';     @def_hp = 2; @max_hp = 2;   x_g = -12; y_g = -8
-    when :vermelha then @name = 'Bomba Vermelha'; @def_hp = 3; @max_hp = 999; x_g = -8;  y_g = -14
+    when :vermelha then @name = 'Bomba Vermelha'; @def_hp = 3; @max_hp = -1; x_g = -8;  y_g = -14
     when :amarela  then @name = 'Bomba Amarela';  @def_hp = 2; @max_hp = 2;   x_g = -14; y_g = -25
     when :verde    then @name = 'Bomba Verde';    @def_hp = 2; @max_hp = 3;   x_g = -14; y_g = -14
     else                @name = 'Aldan';          @def_hp = 2; @max_hp = 3;   x_g = -14; y_g = -30
@@ -310,7 +310,7 @@ class Bomb < GameObject
 
   def hp=(value)
     @hp = value
-    @hp = @max_hp if @hp > @max_hp
+    @hp = @max_hp if @max_hp > 0 && @hp > @max_hp
   end
 
   def reset_hp

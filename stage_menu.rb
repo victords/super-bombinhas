@@ -342,7 +342,7 @@ class StageMenu
       @lives_icon.draw 12, 9, 0, 2, 2
       SB.font.draw_text p.lives + SB.stage.life_count, 40, 8, 0, 2, 2, 0xff000000
       @hp_icon.draw 105, 9, 0, 2, 2
-      SB.font.draw_text p.bomb.hp, 135, 8, 0, 2, 2, 0xff000000
+      SB.font.draw_text "#{p.bomb.hp}/#{p.bomb.max_hp > 0 ? p.bomb.max_hp : '∞'}", 135, 8, 0, 2, 2, 0xff000000
       @score_icon.draw 10, 32, 0, 2, 2
       SB.font.draw_text p.stage_score, 40, 30, 0, 2, 2, 0xff000000
 
