@@ -62,6 +62,8 @@ end
 class FloatingItem < GameObject
   include Item
 
+  attr_reader :bomb_type
+
   def initialize(x, y, w, h, img, img_gap = nil, sprite_cols = nil, sprite_rows = nil, indices = nil, interval = nil, bomb_type = nil)
     super x, y, w, h, img, img_gap, sprite_cols, sprite_rows
     img_gap = Vector.new(0, 0) if img_gap.nil?

@@ -148,6 +148,16 @@ class Player
     bomb.set_invulnerable(@bomb.invulnerable_time, @bomb.invulnerable_timer) if @bomb.invulnerable
     @bomb = bomb
     SB.stage.update_bomb
+
+    return if @items.empty?
+    cur_item = @items[@cur_item_type][0][:obj]
+    if cur_item.respond_to?(:bomb_type) && !cur_item.bomb_type.nil? && cur_item.bomb_type != type
+      item = @items.keys.find { |k| !@items[k][0][:obj].respond_to?(:bomb_type) || @items[k][0][:obj].bomb_type.nil? || @items[k][0][:obj].bomb_type == type }
+      if item
+        @item_index = @items.keys.index(item)
+        @cur_item_type = item
+      end
+    end
   end
 
   def shift_bomb(section)
