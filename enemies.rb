@@ -251,6 +251,7 @@ module Boss
       end
     else
       if @dying
+        return if SB.player.dead?
         @timer += 1
         if @timer >= 600 or SB.key_pressed?(:confirm)
           section.unset_fixed_camera
@@ -264,7 +265,7 @@ module Boss
       elsif block_given?
         yield
       end
-      if @dying
+      if @dying && !SB.player.dead?
         section.set_fixed_camera(@x + @w / 2, @y + @h / 2)
         @timer = 0
       end
@@ -272,7 +273,7 @@ module Boss
   end
 
   def draw_boss
-    if @state == :speaking or (@dying and not @dead)
+    if @state == :speaking || (@dying && !@dead && !SB.player.dead?)
       G.window.draw_quad 5, 495, C::PANEL_COLOR,
                          795, 495, C::PANEL_COLOR,
                          5, 595, C::PANEL_COLOR,
