@@ -1,13 +1,4 @@
-data/save/0
-data/save/1
-data/save/2
-data/save/3
-data/save/4
-data/save/5
-data/save/6
-data/save/7
-data/save/8
-data/save/9
+data/stage/custom
 Gemfile.lock
 .idea/*
 deb/opt

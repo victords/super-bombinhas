@@ -123,20 +123,23 @@ class Menu
       end
 
       @form = Form.new([
-        MenuButton.new(270, :play) {
+        MenuButton.new(250, :play) {
           @form.go_to_section 1
         },
-        MenuButton.new(320, :help) {
+        MenuButton.new(300, :help) {
           @form.go_to_section 7
         },
-        MenuButton.new(370, :options) {
+        MenuButton.new(350, :options) {
           Options.set_temp
           @form.go_to_section 5
         },
-        MenuButton.new(420, :credits) {
+        MenuButton.new(400, :credits) {
           @form.go_to_section 6
         },
-        MenuButton.new(470, :exit, true) {
+        MenuButton.new(450, :editor) {
+          SB.show_editor
+        },
+        MenuButton.new(500, :exit, true) {
           @form.go_to_section(8)
         }
       ], [], [

@@ -4,6 +4,7 @@ play			Play
 help			Help
 options			Options
 credits			Credits
+editor			Level Editor
 exit			Exit
 choose_game		Choose a game to load or 'New Game'
 new_game		New Game

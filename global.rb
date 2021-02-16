@@ -25,6 +25,8 @@ module C
   TILE_SIZE = 32
   SCREEN_WIDTH = 800
   SCREEN_HEIGHT = 600
+  EDITOR_SCREEN_WIDTH = 1366
+  EDITOR_SCREEN_HEIGHT = 768
   PLAYER_OVER_TOLERANCE = 12
   INVULNERABLE_TIME = 90
   BOUNCE_SPEED_BASE = 5
@@ -58,7 +60,7 @@ end
 
 class SB
   class << self
-    attr_reader :font, :text_helper, :save_dir, :save_data, :lang, :full_screen
+    attr_reader :font, :text_helper, :save_dir, :save_data, :lang, :full_screen, :editor
     attr_accessor :state, :player, :world, :stage, :movie, :music_volume, :sound_volume
 
     def load_options(save_dir)
@@ -415,6 +417,21 @@ class SB
       when 1..2 then return world_num == C::LAST_WORLD - 1 && stage_num == stage_count ? :complete : :current
       else return :complete
       end
+    end
+
+    def show_editor
+      G.window.width = C::EDITOR_SCREEN_WIDTH
+      G.window.height = C::EDITOR_SCREEN_HEIGHT
+      Gosu::Song.current_song.stop
+      @editor = Editor.new
+      @state = :editor
+    end
+
+    def close_editor
+      G.window.width = C::SCREEN_WIDTH
+      G.window.height = C::SCREEN_HEIGHT
+      play_song(Res.song(:main))
+      @state = :menu
     end
   end
 end

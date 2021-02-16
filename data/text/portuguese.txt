@@ -4,6 +4,7 @@ play			Jogar
 help			Ajuda
 options			Opções
 credits			Créditos
+editor			Editor de Fases
 exit			Sair
 choose_game		Escolha um jogo para carregar ou 'Novo Jogo'
 new_game		Novo Jogo

@@ -21,6 +21,7 @@ require_relative 'menu'
 require_relative 'stage_menu'
 require_relative 'movie'
 require_relative 'credits'
+require_relative 'editor'
 
 class SBGame < MiniGL::GameWindow
   def initialize
@@ -44,7 +45,7 @@ class SBGame < MiniGL::GameWindow
   end
 
   def needs_cursor?
-    SB.state == :menu || SB.state == :paused || SB.state == :stage_end
+    SB.state == :menu || SB.state == :paused || SB.state == :stage_end || SB.state == :editor
   end
 
   def update
@@ -107,6 +108,8 @@ class SBGame < MiniGL::GameWindow
         Menu.reset
         SB.state = :menu
       end
+    elsif SB.state == :editor
+      SB.editor.update
     end
   end
 
@@ -146,6 +149,8 @@ class SBGame < MiniGL::GameWindow
       clear 0
       SB.text_helper.write_line(text: SB.text(:game_end), x: 400, y: 280, mode: :center, color: 0xffffff, scale_x: 3, scale_y: 3)
       SB.text_helper.write_line(text: SB.text("#{SB.state}_sub"), x: 400, y: 320, mode: :center, color: 0xffffff, alpha: 127, scale_x: 1.5, scale_y: 1.5)
+    elsif SB.state == :editor
+      SB.editor.draw
     end
   end
 end

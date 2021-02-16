@@ -4,6 +4,7 @@ play			Jugar
 help			Ayuda
 options			Opciones
 credits			Créditos
+editor			Editor de Niveles
 exit			Salir
 choose_game		Elige una partida para cargar o 'Nuevo Juego'
 new_game		Nuevo Juego
