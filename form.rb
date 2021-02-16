@@ -137,6 +137,14 @@ class MenuTextField < TextField
   end
 end
 
+class MenuDropDownList < DropDownList
+  include FormElement
+
+  def initialize(y, options, x = 314)
+    super(x: x, y: y, font: SB.font, img: :ui_ddl, opt_img: :ui_ddlOpt, options: options, text_margin: 5, retro: true, scale_x: 2, scale_y: 2)
+  end
+end
+
 class FormSection
   attr_reader :cur_btn, :changing
 

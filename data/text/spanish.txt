@@ -6,6 +6,8 @@ options			Opciones
 credits			Créditos
 editor			Editor de Niveles
 exit			Salir
+story			Historia
+custom			Niveles del editor
 choose_game		Elige una partida para cargar o 'Nuevo Juego'
 new_game		Nuevo Juego
 what_name		¿Cómo te llamas?

@@ -6,6 +6,8 @@ options			Options
 credits			Credits
 editor			Level Editor
 exit			Exit
+story			Story
+custom			Custom Levels
 choose_game		Choose a game to load or 'New Game'
 new_game		New Game
 what_name		What is your name?

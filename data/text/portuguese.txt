@@ -6,6 +6,8 @@ options			Opções
 credits			Créditos
 editor			Editor de Fases
 exit			Sair
+story			História
+custom			Níveis do editor
 choose_game		Escolha um jogo para carregar ou 'Novo Jogo'
 new_game		Novo Jogo
 what_name		Qual é o seu nome?

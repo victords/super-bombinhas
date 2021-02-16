@@ -124,7 +124,7 @@ class Menu
 
       @form = Form.new([
         MenuButton.new(250, :play) {
-          @form.go_to_section 1
+          @form.go_to_section 9
         },
         MenuButton.new(300, :help) {
           @form.go_to_section 7
@@ -143,13 +143,13 @@ class Menu
           @form.go_to_section(8)
         }
       ], [], [
-        MenuButton.new(345, :continue) {
+        MenuButton.new(295, :continue) {
           SB.load_game @selected_game
         },
-        MenuButton.new(395, :delete) {
+        MenuButton.new(345, :delete) {
           @form.go_to_section 4
         },
-        MenuButton.new(445, :back, true) {
+        MenuButton.new(395, :back, true) {
           @form.go_to_section 1
         }
       ], [
@@ -195,6 +195,25 @@ class Menu
         },
         MenuButton.new(310, :no, true, 409) {
           @form.go_to_section(0)
+        }
+      ], [
+        MenuButton.new(295, :story) {
+          @form.go_to_section(1)
+        },
+        MenuButton.new(345, :custom) {
+          add_custom_slots
+          @form.go_to_section(10)
+        },
+        MenuButton.new(395, :back, true) {
+          @form.go_to_section(0)
+        }
+      ], [
+        (@ddl_custom_levels = MenuDropDownList.new(270, [])),
+        MenuButton.new(345, :play) {
+          puts "will play #{@ddl_custom_levels.value}"
+        },
+        MenuButton.new(395, :back, true) {
+          @form.go_to_section(9)
         }
       ])
       Options.form = @form
@@ -257,12 +276,21 @@ class Menu
         components << NewGameButton.new(i + 1, 20 + (i % 2) * 390, 95 + (i / 2) * 90, self)
       end
       components << MenuButton.new(550, :back, true) {
-        @form.go_to_section 0
+        @form.go_to_section 9
       }
       components << MenuText.new(:choose_game, 780, 25, 380, :right)
       section = @form.section(1)
       section.clear
       components.each { |c| section.add(c) }
+    end
+
+    def add_custom_slots
+      levels = Dir["data/stage/custom/*"].reduce([]) do |obj, l|
+        stage = l.split('/')[-1].split('-')[0]
+        obj << stage unless obj.include?(stage)
+      end
+      puts levels
+      @ddl_custom_levels.options = levels
     end
 
     def go_to_new_game(index)
