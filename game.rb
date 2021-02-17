@@ -56,7 +56,7 @@ class SBGame < MiniGL::GameWindow
     SB.full_screen_toggled if KB.key_down?(Gosu::KB_LEFT_ALT) && KB.key_pressed?(Gosu::KB_RETURN)
 
     if SB.state == :presentation
-      if SB.key_pressed?(:confirm)
+      if SB.key_pressed?(:confirm) || Mouse.button_down?(:left)
         SB.state = :menu
         SB.play_song Res.song(:main)
         return

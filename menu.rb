@@ -201,21 +201,13 @@ class Menu
           @form.go_to_section(1)
         },
         MenuButton.new(345, :custom) {
-          add_custom_slots
+          set_custom_slots
           @form.go_to_section(10)
         },
         MenuButton.new(395, :back, true) {
           @form.go_to_section(0)
         }
-      ], [
-        (@ddl_custom_levels = MenuDropDownList.new(270, [])),
-        MenuButton.new(345, :play) {
-          puts "will play #{@ddl_custom_levels.value}"
-        },
-        MenuButton.new(395, :back, true) {
-          @form.go_to_section(9)
-        }
-      ])
+      ], [])
       Options.form = @form
 
       add_game_slots
@@ -284,13 +276,33 @@ class Menu
       components.each { |c| section.add(c) }
     end
 
-    def add_custom_slots
-      levels = Dir["data/stage/custom/*"].reduce([]) do |obj, l|
+    def set_custom_slots(page = 0)
+      section = @form.section(10)
+      section.clear
+      section.add(MenuText.new(:select_level, 400, 230, 760, :center))
+      levels = (Dir["data/stage/custom/*"].reduce([]) do |obj, l|
         stage = l.split('/')[-1].split('-')[0]
         obj << stage unless obj.include?(stage)
+      end).sort
+      levels[(page * 20)...((page + 1) * 20)].each_with_index do |l, i|
+        section.add(MenuButton.new(270 + (i / 4) * 50, l, false, 44 + (i % 4) * 180, true) {
+          puts "Will play #{l}"
+        })
       end
-      puts levels
-      @ddl_custom_levels.options = levels
+      page_count = (levels.size - 1) / 20 + 1
+      if page_count > 1 && page > 0
+        section.add(MenuArrowButton.new(44, 550, 'Left') {
+          set_custom_slots(page - 1)
+        })
+      end
+      section.add(MenuButton.new(550, :back, true) {
+        @form.go_to_section(9)
+      })
+      if page_count > 1 && page < page_count - 1
+        section.add(MenuArrowButton.new(720, 550, 'Right') {
+          set_custom_slots(page + 1)
+        })
+      end
     end
 
     def go_to_new_game(index)

@@ -211,13 +211,13 @@ class Editor
       ###########################################################################
 
       ################################### File ##################################
-      Panel.new(0, 0, 520, 48, [
-        Label.new(x: 7, y: 0, font: SB.font, text: 'World', scale_x: 2, scale_y: 2, anchor: :left),
-        (txt_world = TextField.new(x: 59, y: 0, font: SB.font, img: :editor_textField, margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2, text: '1', anchor: :left)),
-        Label.new(x: 107, y: 0, font: SB.font, text: 'Stage', scale_x: 2, scale_y: 2, anchor: :left),
-        (txt_stage = TextField.new(x: 161, y: 0, font: SB.font, img: :editor_textField, margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2, text: '1', anchor: :left)),
-        Label.new(x: 207, y: 0, font: SB.font, text: 'Section', scale_x: 2, scale_y: 2, anchor: :left),
-        (txt_section = TextField.new(x: 279, y: 0, font: SB.font, img: :editor_textField, margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2, text: '1', anchor: :left)),
+      Panel.new(0, 0, 560, 48, [
+        Label.new(x: 7, y: 0, font: SB.font, text: 'Stage', scale_x: 2, scale_y: 2, anchor: :left),
+        (txt_stage = TextField.new(x: 64, y: 0, font: SB.font, img: :editor_textField2, margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2, text: '1', anchor: :left,
+                                   allowed_chars: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,!?', max_length: 15)),
+        Label.new(x: 247, y: 0, font: SB.font, text: 'Section', scale_x: 2, scale_y: 2, anchor: :left),
+        (txt_section = TextField.new(x: 319, y: 0, font: SB.font, img: :editor_textField, margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2, text: '1', anchor: :left,
+                                     allowed_chars: '0123456789', max_length: 2)),
         (lbl_conf_save = Label.new(x: 0, y: 50, font: SB.font, text: 'Overwrite?', scale_x: 2, scale_y: 2, anchor: :bottom)),
         Button.new(x: 132, y: 0, img: :editor_btn1, font: SB.font, text: 'Clear', scale_x: 2, scale_y: 2, anchor: :right) do
           @objects = Array.new(@tiles_x) {
@@ -452,10 +452,10 @@ class Editor
       enemy_items << { img: @enemies[k], x: 4 + (i % 10) * 33, y: 4 + (i / 10) * 33, name: names[k], index: k }
     end
     @floating_panels = [
-      FloatingPanel.new(:tile, other_tile_btn.x + 40, other_tile_btn.y - 148, 337, 337, @tilesets[@cur_tileset].map.with_index{ |t, i| { img: t, x: 4 + (i % 10) * 33, y: 4 + (i / 10) * 33 } }, self),
-      FloatingPanel.new(:ramp, ramp_btn.x + 40, ramp_btn.y, 271, 40, (0..7).map { |i| { img: Res.img("editor_ramp#{i}"), x: 4 + i * 33, y: 4 } }, self),
-      FloatingPanel.new(:obj, btn_obj.x - 337, btn_obj.y, 337, 300, obj_items, self),
-      FloatingPanel.new(:enemy, btn_enemy.x - 337, btn_enemy.y, 337, 300, enemy_items, self),
+      FloatingPanel.new(:tile, other_tile_btn.x + 64, other_tile_btn.y - 148, 337, 337, @tilesets[@cur_tileset].map.with_index{ |t, i| { img: t, x: 4 + (i % 10) * 33, y: 4 + (i / 10) * 33 } }, self),
+      FloatingPanel.new(:ramp, ramp_btn.x + 64, ramp_btn.y, 271, 40, (0..7).map { |i| { img: Res.img("editor_ramp#{i}"), x: 4 + i * 33, y: 4 } }, self),
+      FloatingPanel.new(:obj, btn_obj.x - 341, btn_obj.y, 337, 300, obj_items, self),
+      FloatingPanel.new(:enemy, btn_enemy.x - 341, btn_enemy.y, 337, 300, enemy_items, self),
     ]
 
     @dropdowns = [ddl_bg, ddl_bgm, ddl_exit, ddl_ts, @ddl_tile_type]

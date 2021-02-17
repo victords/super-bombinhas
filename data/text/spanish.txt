@@ -15,8 +15,9 @@ back			Volver
 continue		Continuar
 delete			Borrar
 delete_confirm	¿Estás seguro que deseas borrar esta partida?
-yes			    Sí
+yes				Sí
 no				No
+select_level	Selecciona un nivel para jugar
 help_text		Este es un juego de plataformas. Utilice las teclas de flecha derecha e izquierda para moverse, la barra espaciadora para saltar, X para accionar ítem, Z o V para cambiar de ítem, C para habilidades, Shift para cambiar de personaje, flecha hacia arriba para abrir puertas, Esc para pausar.\nEl juego también ofrece soporte para joystick (conéctalo antes de iniciar el juego), pero el mapeo de botones puede variar. Para un control de XBOX 360, utilice el mando analógico o el pad direccional como las teclas de flechas, A para saltar o confirmar, B para accionar ítem o cancelar, X para habilidades, Y para cambiar de personaje, LB y RB para cambiar de ítem, Start para pausar.\nUtilice F4 para alternar entre pantalla completa y ventana.
 save			Guardar
 cancel			Cancelar

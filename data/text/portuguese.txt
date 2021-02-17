@@ -17,6 +17,7 @@ delete			Apagar
 delete_confirm	Tem certeza que quer apagar este jogo?
 yes				Sim
 no				Não
+select_level	Selecione uma fase para jogar
 help_text		Este é um jogo de plataforma. Use as setas esquerda e direita para se mover, espaço para pular, X para itens, Z ou V para alternar entre itens, C para habilidades, Shift para trocar de personagem, seta para cima para abrir portas, Esc para pausar.\nO jogo também suporta joysticks (conecte antes de abrir o jogo), mas o mapeamento de botões pode variar. Para um controle de XBOX 360, use o analógico esquerdo ou direcionais como as setas, A para pular e confirmar, B para itens e cancelar, X para habilidades, Y para trocar de personagem, LB e RB para trocar itens, Start para pausar.\nUse F4 para alternar entre tela cheia e janela.
 save			Salvar
 cancel			Cancelar

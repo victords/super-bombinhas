@@ -102,9 +102,10 @@ class MenuButton < Button
 
   attr_reader :back, :text_id
 
-  def initialize(y, text_id, back = false, x = 314, &action)
-    super(x, y, SB.font, SB.text(text_id), :ui_button1, 0, 0x808080, 0, 0, true, true, 0, 7, 0, 0, 0, nil, 2, 2, &action)
-    @text_id = text_id
+  def initialize(y, text_id, back = false, x = 314, fixed_text = false, &action)
+    text = fixed_text ? text_id : SB.text(text_id)
+    super(x, y, SB.font, text, :ui_button1, 0, 0x808080, 0, 0, true, true, 0, 7, 0, 0, 0, nil, 2, 2, &action)
+    @text_id = fixed_text ? nil : text_id
     @back = back
     @sound = Res.sound(back ? :btn2 : :btn1)
   end
