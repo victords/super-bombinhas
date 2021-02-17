@@ -224,7 +224,7 @@ class SB
 
     def new_game(name, index)
       @save_file_name = "#{@save_dir}/#{index}"
-      @save_data = Array.new(12)
+      @save_data = Array.new(14)
       @game_completion = 0
       @player = Player.new name
       @world = World.new
@@ -238,7 +238,7 @@ class SB
     end
 
     def load_game(file_name)
-      data = IO.readlines(file_name).map { |l| l.chomp }
+      data = IO.readlines(file_name).map(&:chomp)
       @save_file_name = file_name
       @save_data = data
       @game_completion = @save_data[11].to_i
@@ -397,10 +397,34 @@ class SB
       end
     end
 
+    def save_custom
+      @save_data[0] = ''
+      @save_data[1] = ''
+      @save_data[2] = ''
+      @save_data[3] = @player.bomb.type.to_s
+      @save_data[4] = '5'
+      @save_data[5] = '0'
+      @save_data[6] = ''
+      @save_data[7] = @stage.cur_entrance[:index].to_s
+      @save_data[8] = @player.get_bomb_hps
+      @save_data[9] = @stage.switches_by_state(:taken).concat(@stage.switches_by_state(:taken_temp_used)).sort.join(',')
+      @save_data[10] = @stage.switches_by_state(:used).sort.join(',')
+      @save_data[11] = '0'
+      @save_data[12] = ''
+      @save_data[13] = ''
+      File.open("#{@save_dir}/custom", 'w') do |f|
+        @save_data.each { |s| f.print(s + "\n") }
+      end
+    end
+
     def save_and_exit(stage_num = nil)
       if @bonus
         @stage = @prev_stage
         next_stage(false)
+      elsif @stage.is_custom
+        save_custom
+        play_song(Res.song(:main))
+        @state = :menu
       else
         save(nil, stage_num)
         @world.set_loaded @stage.num
@@ -432,6 +456,25 @@ class SB
       G.window.height = C::SCREEN_HEIGHT
       play_song(Res.song(:main))
       @state = :menu
+    end
+
+    def load_custom_stage(name)
+      custom_save_path = "#{@save_dir}/custom"
+      if File.exist?(custom_save_path)
+        @save_data = IO.readlines(custom_save_path).map(&:chomp)
+      else
+        @save_data = Array.new(14)
+        @save_data[7] = '0'
+        @save_data[9] = ''
+        @save_data[10] = ''
+      end
+
+      @player = Player.new('', C::LAST_WORLD, 1, (@save_data[3] || :azul).to_sym, @save_data[8])
+      StageMenu.initialize
+
+      @stage = Stage.new('custom', name)
+      @stage.start(true)
+      @state = :main
     end
   end
 end

@@ -19,16 +19,17 @@ require_relative 'section'
 
 class Stage
   attr_accessor :life_count
-  attr_reader :num, :id, :starting, :cur_entrance, :switches, :star_count, :spec_taken,
-              :is_bonus, :time, :objective, :reward, :won_reward, :stopped, :stopped_timer, :stop_time_duration
+  attr_reader :num, :id, :starting, :cur_entrance, :switches, :star_count, :spec_taken, :is_bonus, :is_custom,
+              :time, :objective, :reward, :won_reward, :stopped, :stopped_timer, :stop_time_duration
 
   def initialize(world, num)
     @world = world
     @num = num
     @id = "#{world}-#{num}"
     @is_bonus = world == 'bonus'
-    @world_name = @is_bonus ? "#{SB.text(:bonus)} #{@num}" : SB.text("world_#{@world}")
-    @name = @is_bonus ? SB.text("bonus_#{@num}") : "#{@world}-#{@num}: #{SB.text("stage_#{@world}_#{@num}")}"
+    @is_custom = world == 'custom'
+    @world_name = @is_bonus ? "#{SB.text(:bonus)} #{@num}" : @is_custom ? SB.text(:custom) : SB.text("world_#{@world}")
+    @name = @is_bonus ? SB.text("bonus_#{@num}") : @is_custom ? num : "#{@world}-#{@num}: #{SB.text("stage_#{@world}_#{@num}")}"
   end
 
   def start(loaded = false, time = nil, objective = nil, reward = nil)
@@ -185,7 +186,11 @@ class Stage
     if @cur_section.entrance
       @cur_entrance = @entrances[@cur_section.entrance]
       @cur_section.entrance = nil
-      SB.save
+      if @is_custom
+        SB.save_custom
+      else
+        SB.save
+      end
     end
   end
 

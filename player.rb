@@ -32,7 +32,7 @@ class Player
       if hps
         hps.split(',').map{ |s| s.to_i }
       else
-        [0, 0, 0, 0, 0]
+        [2, 3, 2, 2, 2]
       end
     BOMB_TYPES.each_with_index do |b, i|
       @bombs[b] = Bomb.new(b, hps[i]) if bomb_unlocked?(b)

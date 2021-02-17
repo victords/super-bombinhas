@@ -283,10 +283,11 @@ class Menu
       levels = (Dir["data/stage/custom/*"].reduce([]) do |obj, l|
         stage = l.split('/')[-1].split('-')[0]
         obj << stage unless obj.include?(stage)
+        obj
       end).sort
       levels[(page * 20)...((page + 1) * 20)].each_with_index do |l, i|
         section.add(MenuButton.new(270 + (i / 4) * 50, l, false, 44 + (i % 4) * 180, true) {
-          puts "Will play #{l}"
+          SB.load_custom_stage(l)
         })
       end
       page_count = (levels.size - 1) / 20 + 1
