@@ -112,7 +112,7 @@ class StageMenu
   class << self
     attr_reader :ready
 
-    def initialize
+    def initialize(custom = false)
       if @ready
         @stage_menu.reset
         set_bomb_screen_comps
@@ -137,7 +137,11 @@ class StageMenu
             SB.save_and_exit
             @stage_menu.reset
           }
-        ], [], options_comps, [
+        ], [], options_comps, custom ? [
+          MenuButton.new(400, :exit, false) {
+            SB.leave_custom_stage(true)
+          }
+        ] : [
           MenuButton.new(400, :continue, false, 219) {
             SB.next_stage
           },
@@ -250,7 +254,7 @@ class StageMenu
         t7.init_movement
         t7.move_to(590, 300)
         @stage_end_comps << t4 << t5 << t6 << t7
-        unless SB.world.num == C::LAST_WORLD
+        unless SB.stage.world == C::LAST_WORLD
           t8 = MenuText.new(:spec_taken, 210, 940)
           t8.init_movement
           t8.move_to 210, 340

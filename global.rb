@@ -268,6 +268,8 @@ class SB
         @bonus = nil
         next_movie = @world.num == @player.last_world && @prev_stage.num == @world.stage_count
         StageMenu.end_stage(false, false, next_movie, true)
+      elsif @stage.is_custom
+        StageMenu.end_stage(false, false, false)
       else
         if @stage.spec_taken
           @player.specs << @stage.id
@@ -367,11 +369,15 @@ class SB
     end
 
     def game_over
-      @player.game_over(@world.num, @stage.num)
-      @world = World.new(@player.last_world, @player.last_stage, true)
-      @stage = Stage.new(@player.last_world, @player.last_stage)
-      save(nil, @player.last_stage)
-      @world.resume
+      @player.game_over(@stage.world, @stage.num)
+      if @stage.is_custom
+        leave_custom_stage(true)
+      else
+        @world = World.new(@player.last_world, @player.last_stage, true)
+        @stage = Stage.new(@player.last_world, @player.last_stage)
+        save(nil, @player.last_stage)
+        @world.resume
+      end
     end
 
     def save(world_num = nil, stage_num = nil, game_completion = nil)
@@ -397,18 +403,18 @@ class SB
       end
     end
 
-    def save_custom
+    def save_custom(reset = false)
       @save_data[0] = ''
       @save_data[1] = ''
       @save_data[2] = ''
       @save_data[3] = @player.bomb.type.to_s
-      @save_data[4] = '5'
-      @save_data[5] = '0'
+      @save_data[4] = @player.lives.to_s
+      @save_data[5] = @player.score.to_s
       @save_data[6] = ''
-      @save_data[7] = @stage.cur_entrance[:index].to_s
+      @save_data[7] = reset ? '0' : @stage.cur_entrance[:index].to_s
       @save_data[8] = @player.get_bomb_hps
-      @save_data[9] = @stage.switches_by_state(:taken).concat(@stage.switches_by_state(:taken_temp_used)).sort.join(',')
-      @save_data[10] = @stage.switches_by_state(:used).sort.join(',')
+      @save_data[9] = reset ? '' : @stage.switches_by_state(:taken).concat(@stage.switches_by_state(:taken_temp_used)).sort.join(',')
+      @save_data[10] = reset ? '' : @stage.switches_by_state(:used).sort.join(',')
       @save_data[11] = '0'
       @save_data[12] = ''
       @save_data[13] = ''
@@ -422,9 +428,7 @@ class SB
         @stage = @prev_stage
         next_stage(false)
       elsif @stage.is_custom
-        save_custom
-        play_song(Res.song(:main))
-        @state = :menu
+        leave_custom_stage
       else
         save(nil, stage_num)
         @world.set_loaded @stage.num
@@ -469,12 +473,24 @@ class SB
         @save_data[10] = ''
       end
 
-      @player = Player.new('', C::LAST_WORLD, 1, (@save_data[3] || :azul).to_sym, @save_data[8])
-      StageMenu.initialize
+      @player = Player.new('',
+                           C::LAST_WORLD,
+                           1,
+                           (@save_data[3] || :azul).to_sym,
+                           @save_data[8],
+                           (@save_data[4] || 5).to_i,
+                           (@save_data[5] || 0).to_i)
+      StageMenu.initialize(true)
 
       @stage = Stage.new('custom', name)
       @stage.start(true)
       @state = :main
+    end
+
+    def leave_custom_stage(reset = false)
+      save_custom(reset)
+      play_song(Res.song(:main))
+      @state = :menu
     end
   end
 end
