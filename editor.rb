@@ -722,25 +722,43 @@ class Editor
   end
 
   def check_fill(i, j, ctrl)
-    return unless @cur_element == :wall || @cur_element == :hide || @cur_element == :tile && @ddl_tile_type.value == 'b'
-    if @cur_element == :wall
-      @objects[i][j].back = 'b11'
-      set_surrounding_wall_tiles(i, j)
-    elsif @cur_element == :hide
-      @objects[i][j].hide = ctrl ? 'h99' : 'h00'
-    else
-      @objects[i][j].back = "b#{@cur_index}"
+    return unless @cur_element == :wall || @cur_element == :hide || @cur_element == :tile && (@ddl_tile_type.value == 'b' || @ddl_tile_type.value == 'f')
+
+    queue = [[i, j]]
+    queued = { "#{i},#{j}" => true }
+
+    enqueue = ->(i, j) do
+      key = "#{i},#{j}"
+      if i >= 0 && i < @tiles_x && j >= 0 && j < @tiles_y && cell_empty?(i, j) && !queued[key]
+        queue << [i, j]
+        queued[key] = true
+      end
     end
-    check_fill i - 1, j, ctrl if i > 0 and cell_empty?(i - 1, j)
-    check_fill i + 1, j, ctrl if i < @tiles_x - 1 and cell_empty?(i + 1, j)
-    check_fill i, j - 1, ctrl if j > 0 and cell_empty?(i, j - 1)
-    check_fill i, j + 1, ctrl if j < @tiles_y - 1 and cell_empty?(i, j + 1)
+
+    until queue.empty?
+      i, j = queue.shift
+      if @cur_element == :wall
+        @objects[i][j].back = 'b11'
+        set_surrounding_wall_tiles(i, j)
+      elsif @cur_element == :hide
+        @objects[i][j].hide = ctrl ? 'h99' : 'h00'
+      elsif @ddl_tile_type.value == 'b'
+        @objects[i][j].back = "b#{@cur_index}"
+      else
+        @objects[i][j].fore = "f#{@cur_index}"
+      end
+      enqueue.call(i - 1, j)
+      enqueue.call(i + 1, j)
+      enqueue.call(i, j - 1)
+      enqueue.call(i, j + 1)
+    end
   end
 
   def cell_empty?(i, j)
     @cur_element == :wall && @objects[i][j].back.nil? && @objects[i][j].fore.nil? && @objects[i][j].obj.nil? ||
       @cur_element == :hide && @objects[i][j].hide.nil? ||
-      @cur_element == :tile && @objects[i][j].back.nil? && (@objects[i][j].obj.nil? || @objects[i][j].obj[0] != 'w' && @objects[i][j].obj[0] != 'p')
+      @cur_element == :tile && (@ddl_tile_type.value == 'b' && @objects[i][j].back.nil? || @ddl_tile_type.value == 'f' && @objects[i][j].fore.nil?) &&
+        (@objects[i][j].obj.nil? || @objects[i][j].obj[0] != 'w' && @objects[i][j].obj[0] != 'p')
   end
 
   def get_cell_string(i, j)
