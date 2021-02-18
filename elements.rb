@@ -2553,7 +2553,7 @@ class Gate < SBGameObject
 
     unless @normal
       collide = b.bounds.intersect?(@active_bounds)
-      if @prev_collide && !collide
+      if @prev_collide && !collide && b.x > @x
         @active = true
         @timer = -60
         section.active_object = self
