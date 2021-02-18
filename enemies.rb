@@ -827,6 +827,7 @@ end
 class Robort < FloorEnemy
   def initialize(x, y, args, section)
     super x - 12, y - 31, args, 56, 63, Vector.new(-14, -9), 3, 2, [0, 1, 2, 1], 6, 450, 2.2, 3
+    @timer = 0
   end
 
   def update(section)
@@ -1438,6 +1439,20 @@ class Lambul < FloorEnemy
       else
         animate [3, 4, 5, 6], 5
       end
+
+      if b.over?(self)
+        hit_by_bomb(section)
+      elsif b.collide?(self)
+        b.hit
+      end
+      unless @invulnerable
+        if b.explode?(self) or section.explode?(self)
+          hit_by_explosion(section)
+        else
+          proj = section.projectile_hit?(self)
+          hit_by_projectile(section) if proj && proj != 8
+        end
+      end
     elsif !SB.player.dead? && b.y + b.h >= @y + @h - 10 && b.y + b.h < @y + @h + 10 && (b.x + b.w/2 - @x - @w/2).abs <= 80 && (b.x < @x && !@facing_right || b.x > @x && @facing_right)
       @x += @facing_right ? 10 : -10
       @attacking = true
@@ -1449,7 +1464,10 @@ class Lambul < FloorEnemy
   end
 
   def hit_by_bomb(section)
-    hit(section) if SB.player.bomb.power > 1
+    if SB.player.bomb.power > 1
+      SB.player.bomb.bounce(true)
+      hit(section)
+    end
   end
 end
 
@@ -3135,7 +3153,7 @@ class Gaxlon < Enemy
         elsif b.collide?(self) && b.active
           b.hit
         end
-        if b.explode?(self, nil, @y + @h) || section.projectile_hit?(self)
+        if b.explode?(self, nil, (3..4) === @hp ? @y + @h : @y + @h / 2) || section.projectile_hit?(self)
           hit_by_bomb(section)
         end
       end
