@@ -1,5 +1,5 @@
 #!/bin/sh
 set -e
-gem install gosu -v 1.1.0
-gem install minigl -v 2.3.5
+gem install gosu -v 1.1.0 --conservative
+gem install minigl -v 2.3.5 --conservative
 exit 0
