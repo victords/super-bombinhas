@@ -16,6 +16,7 @@ file_names.each do |name|
     c = f.read
     c.gsub!(/^require(_relative)? '[a-z0-9_]+'\n/, '')
     c.gsub!(/^include [A-Za-z0-9_]+\n/, '')
+    c.gsub!(/^gem .*?\n/, '')
     c.gsub!(/^\s*#.*\n/, '')
     c.gsub!(/ #[^"\n]+$/, '')
     bundle += c + "\n"
