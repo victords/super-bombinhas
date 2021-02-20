@@ -2789,7 +2789,7 @@ class Drepz < Enemy
           pos = SB.player.bomb.x - 4 * C::TILE_SIZE + rand(9 * C::TILE_SIZE)
           pos = @attack_area_limits[0] if pos < @attack_area_limits[0]
           pos = @attack_area_limits[1] if pos > @attack_area_limits[1]
-          section.add(Lightning.new(pos, 0, nil, section))
+          section.add(Lightning.new(pos, 0, section))
         end
         if @timer == (@hp <= 1 ? 300 : @hp <= 4 ? 240 : 180)
           forces.y = -5

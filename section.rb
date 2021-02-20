@@ -119,7 +119,7 @@ class Section
     63  => Ignel,
     64  => Attack3,
     65  => Box,
-    66  => WallButton,
+    66  => AButton,
     67  => Warclops,
     68  => Mantul,
     69  => Lambul,

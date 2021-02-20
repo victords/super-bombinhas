@@ -238,7 +238,7 @@ class Door < GameObject
   attr_reader :locked, :type
 
   def initialize(x, y, args, section, switch)
-    args = args.split(',')
+    args = (args || '').split(',')
     type = args[2] ? args[2].to_i : nil
     cols = 5
     rows = 1
@@ -375,13 +375,12 @@ class Elevator < SBGameObject
   attr_reader :id
 
   def initialize(x, y, args, section)
-    a = args.split(':')
+    a = (args || '').split(':')
     type = a[0].to_i
-    open = a[0][-1] == '!'
+    open = a[0] && a[0][-1] == '!'
     indices = nil
     interval = 0
     case type
-    when 1 then w = 96; cols = rows = nil; x_g = y_g = 0
     when 2 then w = 64; cols = 4; rows = 1; x_g = y_g = 0; interval = 8
     when 3 then w = 64; cols = rows = nil; x_g = 0; y_g = -3
     when 4 then w = 96; cols = rows = nil; x_g = 0; y_g = -3
@@ -391,33 +390,27 @@ class Elevator < SBGameObject
     when 8 then w = 64; cols = 2; rows = 3; x_g = y_g = 0; indices = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5]; interval = 5
     when 9..12 then w = 32; cols = rows = nil; x_g = y_g = 0
     when 13 then w = 96; cols = rows = nil; x_g = y_g = 0
+    else type = 1; w = 96; cols = rows = nil; x_g = y_g = 0
     end
     super x, y, w, 1, "sprite_Elevator#{type}", Vector.new(x_g, y_g), cols, rows
     @passable = true
 
-    @speed_m = a[1].to_i
+    @speed_m = (a[1] || 0).to_i
     @moving = false
     @points = []
-    min_x = x; min_y = y
-    max_x = x; max_y = y
 
-    if a[2].index(',')
+    if a[2] && a[2].index(',')
       @stop_time = 30
-      ps = a[2..-1]
+      ps = a[2..-1] || []
     else
       @stop_time = a[2].to_i
-      ps = a[3..-1]
+      ps = a[3..-1] || []
     end
 
     ps.each do |p|
       coords = p.split ','
-      p_x = coords[0].to_i * C::TILE_SIZE; p_y = coords[1].to_i * C::TILE_SIZE
-
-      min_x = p_x if p_x < min_x
-      min_y = p_y if p_y < min_y
-      max_x = p_x if p_x > max_x
-      max_y = p_y if p_y > max_y
-
+      p_x = coords[0].to_i * C::TILE_SIZE
+      p_y = coords[1].to_i * C::TILE_SIZE
       @points << Vector.new(p_x, p_y)
     end
     if open
@@ -429,8 +422,7 @@ class Elevator < SBGameObject
     indices = *(0...@img.size) if indices.nil?
     @indices = indices
     @interval = interval
-    @active_bounds = Rectangle.new min_x, min_y, (max_x - min_x + w), (max_y - min_y + @img[0].height)
-    @active = a[1][-1] != ")"
+    @active = !a[1] || a[1][-1] != ")"
     @id = a[1].split('(')[1].to_i unless @active
 
     section.obstacles << self
@@ -438,7 +430,6 @@ class Elevator < SBGameObject
 
   def update(section)
     if @active
-      b = SB.player.bomb
       cycle @points, @speed_m, section.passengers, section.passengers.map{|p| section.get_obstacles(p.x, p.y)}.flatten, section.ramps, @stop_time
     end
     animate @indices, @interval
@@ -620,7 +611,7 @@ class MovingWall < GameObject
 
   def initialize(x, y, args, section)
     super x + 2, y + C::TILE_SIZE, 28, 0, :sprite_MovingWall, Vector.new(0, 0), 1, 2
-    args = args.split ','
+    args = (args || '').split ','
     @id = args[0].to_i
     @closed = args[1].nil?
     if @closed
@@ -995,7 +986,7 @@ class Vortex < GameObject
     super x - 11, y - 11, 54, 54, :sprite_vortex, Vector.new(-5, -5), 2, 2
     @active_bounds = Rectangle.new(@x, @y, @w, @h)
     @angle = 0
-    a = args.split(',')
+    a = (args || '').split(',')
     @entrance = a[0].to_i
     @stop_time_immune = !a[1].nil?
   end
@@ -1040,22 +1031,20 @@ end
 
 class AirMattress < GameObject
   def initialize(x, y, args, section)
-    a = args.split(',')
-    super x, y + 16, (a[2] || '2').to_i * C::TILE_SIZE, 1, :sprite_airMattress, Vector.new(0, -2), 1, 3
+    a = (args || '').split(',')
+    super x, y + 16, (a[1] || 2).to_i * C::TILE_SIZE, 1, :sprite_airMattress, Vector.new(0, -2), 1, 3
     @active_bounds = Rectangle.new(@x, @y - 2, @w, 16)
-    @color = a[0].to_i(16)
     @timer = 0
     @points = [
       Vector.new(@x, @y),
       Vector.new(@x, @y + 16)
     ]
     @speed_m = 0.16
-    @speed_d =
-      case a[1]
-      when '2' then 2
-      when '3' then 4
-      else          0.5
-      end
+    case a[0]
+    when '2' then @speed_d = 2; @color = 0xcccc00
+    when '3' then @speed_d = 4; @color = 0xff3333
+    else          @speed_d = 0.5; @color = 0x338000
+    end
     @passable = true
     @state = :normal
     section.obstacles << self
@@ -1125,11 +1114,11 @@ class Water
   attr_reader :x, :y, :w, :h, :bounds
 
   def initialize(x, y, args, section)
-    a = args.split ','
+    a = (args || '').split ','
     @x = x
     @y = y + 8
-    @w = C::TILE_SIZE * a[0].to_i
-    @h = C::TILE_SIZE * a[1].to_i - 8
+    @w = C::TILE_SIZE * (a[0] || 1).to_i
+    @h = C::TILE_SIZE * (a[1] || 1).to_i - 8
     @bounds = Rectangle.new(@x, @y, @w, @h)
     section.add_interacting_element(self)
   end
@@ -1163,11 +1152,10 @@ class Water
 end
 
 class ForceField < GameObject
-  LIFE_TIME = 1200
-
   def initialize(x, y, args, section, switch)
     return if switch[:state] == :taken
     super x, y, 32, 32, :sprite_ForceField, Vector.new(-14, -14), 3, 1
+    @life_time = (args || 20).to_i * 60
     @active_bounds = Rectangle.new(x - 14, y - 14, 60, 60)
     @alpha = 255
   end
@@ -1178,14 +1166,14 @@ class ForceField < GameObject
     if @taken
       @x = b.x + b.w / 2 - 16; @y = b.y + b.h / 2 - 16
       @timer += 1
-      @dead = true if @timer == LIFE_TIME
-      if @timer >= LIFE_TIME - 120
+      @dead = true if @timer == @life_time
+      if @timer >= @life_time - 120
         if @timer % 5 == 0
           @alpha = @alpha == 0 ? 255 : 0
         end
       end
     elsif b.collide? self
-      b.set_invulnerable LIFE_TIME
+      b.set_invulnerable @life_time
       SB.stage.set_switch self
       @taken = true
       @timer = 0
@@ -1292,14 +1280,12 @@ end
 class Rock < SBGameObject
   def initialize(x, y, args, section)
     case args
-    when '1' then
-      objs = [['l', 0, 0, 26, 96], [26, 0, 32, 96], [58, 27, 31, 69], ['r', 89, 27, 18, 35], [89, 62, 30, 34]]
-      w = 120; h = 96; x -= 44; y -= 64
     when '2' then
       objs = [[4, 54, 186, 42], [56, 26, 108, 28], [164, 46, 20, 8], ['l', 60, 0, 56, 26], ['r', 116, 0, 46, 26]]
       w = 192; h = 96; x -= 80; y -= 64
     else
-      objs = []; w = h = 0
+      objs = [['l', 0, 0, 26, 96], [26, 0, 32, 96], [58, 27, 31, 69], ['r', 89, 27, 18, 35], [89, 62, 30, 34]]
+      w = 120; h = 96; x -= 44; y -= 64
     end
     objs.each do |o|
       if o[0].is_a? String
@@ -1308,7 +1294,7 @@ class Rock < SBGameObject
         section.obstacles << Block.new(x + o[0], y + o[1], o[2], o[3])
       end
     end
-    super x, y, w, h, "sprite_rock#{args}", Vector.new(0, 0)
+    super x, y, w, h, "sprite_rock#{args || 1}", Vector.new(0, 0)
   end
 
   def update(section); end
@@ -1425,15 +1411,15 @@ class TwinWalls < GameObject
 
   def initialize(x, y, args, section)
     super x + 2, y + C::TILE_SIZE, 28, 0, :sprite_MovingWall, Vector.new(0, 0), 1, 2
-    args = args.split ','
-    @id = args[0].to_i
+    args = (args || '').split ','
+    @id = (args[0] || 1).to_i
     @closed = args[1] == '.'
     if @id != 0
       section.add(@twin = TwinWalls.new(C::TILE_SIZE * args[2].to_i, C::TILE_SIZE * args[3].to_i, "0,#{@closed ? '!' : '.'}", section))
     end
 
     if @closed
-      until section.obstacle_at? @x, @y - 1
+      until @y <= 0 || section.obstacle_at?(@x, @y - 1)
         @y -= C::TILE_SIZE
         @h += C::TILE_SIZE
       end
@@ -1493,10 +1479,11 @@ class TwinWalls < GameObject
   end
 end
 
-class WallButton < SBGameObject
+# named 'AButton' to not conflict with MiniGL's Button
+class AButton < SBGameObject
   def initialize(x, y, args, section)
-    super x, y + 16, 32, 16, :sprite_WallButton, Vector.new(0, 0), 1, 3
-    args = args.split ','
+    super x, y + 18, 32, 16, :sprite_Button, Vector.new(0, 0), 1, 3
+    args = (args || '').split ','
     @id = args[0].to_i
     @type =
       case args[1]
@@ -1524,9 +1511,6 @@ class WallButton < SBGameObject
     elsif @state == 0 && b.collide?(self)
       if @type
         section.activate_object(@type, @id)
-      else
-        section.activate_object(TwinWalls, @id)
-        section.activate_object(Elevator, @id)
       end
       @state = 1
       set_animation 1
@@ -1534,18 +1518,18 @@ class WallButton < SBGameObject
   end
 end
 
-
 class Lift < SBGameObject
   def initialize(x, y, args, section)
-    args = args.split(',')
+    args = (args || '').split(',')
     case args[0]
-    when '5' then w = 64; cols = rows = nil
-    when '13' then w = 96; cols = rows = nil
+    when '5'  then w = 64
+    when '13' then w = 96
+    else           w = 96; args[0] = '1'
     end
-    super x, section.size.y, w, 1, "sprite_Elevator#{args[0]}", Vector.new(0, 0), cols, rows
+    super x, section.size.y, w, 1, "sprite_Elevator#{args[0]}", Vector.new(0, 0)
     @start = Vector.new(x, @y)
     @x_force = args[1].to_f
-    @y_force = -(args[2].to_f)
+    @y_force = -((args[2] || 8).to_f)
     @gravity_scale = (args[3] || 0.3).to_f
     @delay = (args[4] || 0).to_i
     @wait_time = (args[5] || 60).to_i
@@ -1747,8 +1731,8 @@ end
 
 class FragileFloor < SBGameObject
   def initialize(x, y, args, section)
-    args ||= 1
-    super x, y, 32, 32, "sprite_fragileFloor#{args}", Vector.new(0, 0), 4, 1
+    type = args == '2' ? 2 : 1
+    super x, y, 32, 32, "sprite_fragileFloor#{type}", Vector.new(0, 0), 4, 1
     @life = 10
 
     section.obstacles << self
@@ -2044,7 +2028,7 @@ end
 class PoisonGas < SBGameObject
   def initialize(x, y, args, section)
     super(x - 18, y - 18, 68, 68, :sprite_poisonGas, Vector.new(-2, -2), 3, 1)
-    @lifetime = args
+    @lifetime = args if args.is_a?(Integer)
   end
 
   def update(section)
@@ -2066,7 +2050,8 @@ class Cannon < SBGameObject
 
   def initialize(x, y, args, section)
     super(x, y, 32, 32, :sprite_Cannon)
-    @angles = args.split(',').map(&:to_i)
+    @angles = (args || '').split(',').map(&:to_i)
+    @angles << 0 if @angles.empty?
     @a_index = 0
     @angle = @angles[0]
     @timer = 0
@@ -2085,8 +2070,14 @@ class Cannon < SBGameObject
 
   def update(section)
     if @rotating
-      @angle = (@angle + ROT_SPEED) % 360
-      @rotating = false if @angle == @angles[@a_index]
+      next_angle = @angles[@a_index]
+      if @angle < next_angle && @angle + ROT_SPEED >= next_angle ||
+         @angle < next_angle + 360 && @angle + ROT_SPEED >= next_angle + 360
+        @angle = next_angle
+        @rotating = false
+      else
+        @angle = (@angle + ROT_SPEED) % 360
+      end
     else
       section.add(Projectile.new(@x + @w / 2 - 8, @y + @h / 2 - 8, 7, @angle - 90, self)) if @timer == 0
       @timer += 1
@@ -2115,8 +2106,9 @@ class FallingWall < GameObject
 
   def initialize(x, y, args, section)
     a = (args || '').split(',')
+    type = a[0] == '2' ? 2 : 1
     size = (a[1] || 4).to_i
-    super(x, y - (size - 1) * C::TILE_SIZE, C::TILE_SIZE, size * C::TILE_SIZE, "sprite_fallingWall#{a[0] || 1}", Vector.new(0, 0), 4, 2)
+    super(x, y - (size - 1) * C::TILE_SIZE, C::TILE_SIZE, size * C::TILE_SIZE, "sprite_fallingWall#{type}", Vector.new(0, 0), 4, 2)
     @active_bounds = Rectangle.new(@x, @y, @w, @h)
     @blocks = []
     (0...size).each do |i|
@@ -2381,11 +2373,10 @@ class SpikeBall < SBGameObject
   def initialize(x, y, args, section)
     super(x + 1, y + 1, 30, 30, :sprite_SpikeBall, Vector.new(-6, -6), 2, 1)
     @angle = 0
-    type = (args || 1).to_i
-    case type
-    when 1 then @h_speed = 3; @v_speed = -10; @g_scale = 0.5; @color = 0x9999ff
-    when 2 then @h_speed = 4; @v_speed = -10; @g_scale = 0.7; @color = 0xffff80
-    when 3 then @h_speed = 5; @v_speed = -18; @g_scale = 1.1; @color = 0xff4444
+    case args
+    when '2' then @h_speed = 4; @v_speed = -10; @g_scale = 0.7; @color = 0xffff80
+    when '3' then @h_speed = 5; @v_speed = -18; @g_scale = 1.1; @color = 0xff4444
+    else          @h_speed = 3; @v_speed = -10; @g_scale = 0.5; @color = 0x9999ff
     end
   end
 
@@ -2485,7 +2476,7 @@ class Gate < SBGameObject
   attr_reader :id
 
   def initialize(x, y, args, section, switch)
-    a = args.split(',')
+    a = (args || '').split(',')
     @id = a[0].to_i
     @close_time = (a[1] || 180).to_i
     @normal = a[2].nil?
@@ -2598,9 +2589,10 @@ class BattleArena
       return
     end
 
-    args = args.split(':')
+    args = (args || '').split(':')
     @gate_ids = args[0..1].map(&:to_i)
     @enemies = []
+    return if args.size < 3
     args[2..-1].each do |a|
       p = a.split(',').map(&:to_i)
       @enemies << Section::ELEMENT_TYPES[p[0]].new(x + p[1] * C::TILE_SIZE, y + p[2] * C::TILE_SIZE, nil, section)
@@ -2884,7 +2876,7 @@ class Fire < SBEffect
 end
 
 class Lightning < SBGameObject
-  def initialize(x, y, args, section)
+  def initialize(x, y, section)
     tile_count = 0
     tile_count += 1 until section.obstacle_at?(x, y + tile_count * C::TILE_SIZE)
     y -= C::TILE_SIZE if tile_count.odd?
@@ -2922,7 +2914,7 @@ class Graphic < Sprite
     img_index = nil
     @flip = nil
     case type
-    when 1 then @w = 32; @h = 64
+    when 0..1 then @w = 32; @h = 64
     when 2 then x += 16; y += 16; @w = 64; @h = 64; cols = 2; rows = 2; @indices = [0, 1, 2, 3]; @interval = 7; @rot = -5
     when 3..5 then x -= 16; @w = 64; @h = 32
     when 6 then x -= 134; y -= 208; @w = 300; @h = 240
