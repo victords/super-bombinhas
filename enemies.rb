@@ -515,6 +515,7 @@ class Faller < GameObject
   def initialize(x, y, args, section)
     super x, y, 32, 12, :sprite_Faller, Vector.new(-1, 0), 4, 1
     @range = args.to_i
+    @range = 0 if @range < 0
     @start = Vector.new x, y
     @up = Vector.new x, y - @range * 32
     @active_bounds = Rectangle.new x, @up.y, 32, (@range + 1) * 32
@@ -885,7 +886,9 @@ end
 class Flep < Enemy
   def initialize(x, y, args, section)
     super x, y, 64, 20, Vector.new(0, 0), 1, 3, [0, 1, 2], 6, 250, 2
-    @movement = C::TILE_SIZE * args.to_i
+    m = args.to_i
+    m = 1 if m <= 0
+    @movement = m * C::TILE_SIZE
     @aim = Vector.new(@x - @movement, @y)
     @facing_right = false
   end
@@ -916,7 +919,6 @@ class Jellep < Enemy
     @state = 0
     @timer = 0
     @active_bounds.y = y
-    @water = args.nil?
   end
 
   def update(section)
@@ -938,8 +940,14 @@ class Jellep < Enemy
           @y = section.size.y - 1
           @state = 0
         end
-        @prev_water = @water
-        @water = section.element_at(Water, @x, @y)
+        water = section.element_at(Water, @x, @y)
+        if @inited
+          @prev_water = @water
+          @water = water
+        else
+          @prev_water = @water = water
+          @inited = true
+        end
         if @water && !@prev_water || @prev_water && !@water
           section.add_effect(Effect.new(@x - 16, (@water || @prev_water).y - 19, :fx_water, 1, 4, 8, nil, nil, :splash))
         end
@@ -1018,9 +1026,9 @@ class Vamep < Enemy
     super x, y, 29, 22, Vector.new(-24, -18), 2, 2, [0, 1, 2, 3, 2, 1], 6, 150
     @angle = 0
     if args
-      args = args.split ','
+      args = args.split(',')
       @radius = args[0].to_i * C::TILE_SIZE
-      @speed = (args[1] || '3').to_f
+      @speed = (args[1] || 3.0).to_f
     else
       @radius = C::TILE_SIZE
       @speed = 3
@@ -1143,7 +1151,7 @@ class Butterflep < Enemy
   def initialize(x, y, args, section)
     super(x - 12, y - 12, 56, 54, Vector.new(-4, -4), 2, 2, [0, 1, 2, 1], 10, 250)
     @speed_m = 5
-    ps = args.split(':')
+    ps = (args || '').split(':')
     @points = []
     ps.each do |p|
       pp = p.split(',')
@@ -1184,7 +1192,7 @@ class Sahiss < FloorEnemy
   alias :super_update :update
 
   def initialize(x, y, args, section)
-    super x - 54, y - 148, args, 148, 180, Vector.new(-139, -3), 2, 3, [0, 1, 0, 2], 7, 2000, 3, 4
+    super x - 54, y - 148, nil, 148, 180, Vector.new(-139, -3), 2, 3, [0, 1, 0, 2], 7, 2000, 3, 4
     @time = 180 + rand(240)
     init
   end
@@ -1614,7 +1622,7 @@ class Ulor < FloorEnemy
   alias :super_update :update
 
   def initialize(x, y, args, section)
-    super(x - 34, y - 88, args, 100, 120, Vector.new(-20, -8), 2, 2, [0, 1, 0, 2], 7, 2400, 3, 5)
+    super(x - 34, y - 88, nil, 100, 120, Vector.new(-20, -8), 2, 2, [0, 1, 0, 2], 7, 2400, 3, 5)
     @timer = 0
     @state = :walking
     @spawn_point = Vector.new(x - 12 * C::TILE_SIZE, y - 9 * C::TILE_SIZE)
@@ -1827,7 +1835,7 @@ class Quartin < Enemy
       QuartinShield.new(@x - 34, @y + 2, x_c, y_c, 180),
       QuartinShield.new(@x + 2, @y + 38, x_c, y_c, 270)
     ]
-    args = args.split(',')
+    args = (args || '').split(',')
     @movement = C::TILE_SIZE * args[0].to_i
     @facing_right = args[1].nil?
     @aim = Vector.new(@facing_right ? @x + @movement : @x - @movement, @y)
@@ -1940,7 +1948,6 @@ end
 class Hooman < Enemy
   def initialize(x, y, args, section)
     super(x + 2, y - 28, 28, 60, Vector.new(-6, -4), 2, 2, [0, 1, 2, 1], 7, 270, 2)
-    @facing_right = !args.nil?
     @max_speed.x = 4
   end
 
@@ -1978,8 +1985,10 @@ class Gargoil < Enemy
 
   def initialize(x, y, args, section)
     super(x - 18, y, 68, 34, Vector.new(-6, -20), 1, 5, [0, 1, 2, 1], 6, 400, 2)
-    args = args.split(',')
-    @movement = C::TILE_SIZE * args[0].to_i
+    args = (args || '').split(',')
+    m = args[0].to_i
+    m = 1 if m <= 0
+    @movement = C::TILE_SIZE * m
     @facing_right = args[1].nil?
     @aim = Vector.new(@facing_right ? @x + @movement : @x - @movement, @y)
   end
@@ -2031,7 +2040,7 @@ class Zirkn < FloorEnemy
   alias :super_update :update
 
   def initialize(x, y, args, section)
-    super(x - 28, y - 84, args, 88, 116, Vector.new(-6, -12), 1, 7, [0, 1, 0, 2], 7, 3000, 4, 5)
+    super(x - 28, y - 84, nil, 88, 116, Vector.new(-6, -12), 1, 7, [0, 1, 0, 2], 7, 3000, 4, 5)
     @timer = 0
     @spawn_point = Vector.new(x + C::TILE_SIZE / 2, y + C::TILE_SIZE)
     init
@@ -2424,7 +2433,7 @@ class Globb < FloorEnemy
   alias :super_update :update
 
   def initialize(x, y, args, section)
-    super(x - 26, y - 82, args, 84, 114, Vector.new(-28, -8), 2, 3, [0, 1, 2, 1], 10, 3700, 2.5, 5)
+    super(x - 26, y - 82, nil, 84, 114, Vector.new(-28, -8), 2, 3, [0, 1, 2, 1], 10, 3700, 2.5, 5)
     @start_pos = Vector.new(x, y)
     @floor_tolerance = 16
     @turn_counter = 0
@@ -2735,7 +2744,7 @@ class Drepz < Enemy
     super(x - 5, y - 44, 42, 76, Vector.new(-10, -20), 3, 2, [1, 2, 1, 0], 7, 7000, 7)
     @img_index = 1
     @timer = 0
-    @jump_points = args.split(':').map { |p| p.split(',').map { |c| c.to_i * C::TILE_SIZE } }
+    @jump_points = (args || '').split(':').map { |p| p.split(',').map { |c| c.to_i * C::TILE_SIZE } }
     @point_index = 0
     @attack_area_limits = [x - 13 * C::TILE_SIZE, x + 14 * C::TILE_SIZE - 1]
     @max_speed = Vector.new(100, 100)
@@ -2758,7 +2767,7 @@ class Drepz < Enemy
           set_speed = true
           @facing_right = false
         end
-        if @timer >= (300 - (7 - @hp) * 15)
+        if @timer >= (300 - (7 - @hp) * 15) && !@jump_points.empty?
           d_x = @jump_points[@point_index][0] - 5 - @x
           d_y = @jump_points[@point_index][1] - 44 - @y
           v_y = -Math.sqrt(-2 * G.gravity.y * (d_y - C::TILE_SIZE))
