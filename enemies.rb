@@ -3132,9 +3132,39 @@ class Gaxlon < Enemy
   def initialize(x, y, args, section)
     super(x - 14, y - 86, 60, 118, Vector.new(-26, -42), 3, 2, [0, 1], 10, 10000, 10)
     @max_speed = Vector.new(100, 100)
-    args = args.split('%')
-    @jump_points = args[0].split('$').map { |a| a.split(':').map { |p| p.split(',').map { |c| c.to_i * C::TILE_SIZE } } }
-    @spawn_points = args[1].split('$').map { |a| a.split(':').map { |p| p.split(',').map { |c| c.to_i * C::TILE_SIZE } } }
+    args = (args || '').split('%')
+    @jump_points = (args[0] || '').split('$').map { |a| a.split(':').map { |p| p.split(',').map { |c| c.to_i * C::TILE_SIZE } } }
+    @spawn_points = (args[1] || '').split('$').map { |a| a.split(':').map { |p| p.split(',').map { |c| c.to_i * C::TILE_SIZE } } }
+    @entrances = (args[2] || '').split(',').map(&:to_i)
+
+    if @jump_points.size < 6
+      (6 - @jump_points.size).times { @jump_points << [] }
+    end
+    if @jump_points[0].size < 4
+      (4 - @jump_points[0].size).times { @jump_points[0] << [x, y] }
+    end
+    (1..5).each do |i|
+      if @jump_points[i].empty?
+        @jump_points[i] << [x, y]
+      end
+    end
+
+    if @spawn_points.size < 6
+      (6 - @spawn_points.size).times { @spawn_points << [] }
+    end
+    if @spawn_points[5].size < 2
+      (2 - @spawn_points[5].size).times { @spawn_points[5] << [x, y - 5 * C::TILE_SIZE] }
+    end
+    (0..4).each do |i|
+      if @spawn_points[i].empty?
+        @spawn_points[i] << [x, y - 5 * C::TILE_SIZE]
+      end
+    end
+
+    if @entrances.size < 6
+      (6 - @entrances.size).times { @entrances << 0 }
+    end
+
     @point_index = 0
     @subpoint_index = 0
     @timer = 0
@@ -3229,7 +3259,7 @@ class Gaxlon < Enemy
             section.add(item)
             @spawns[i] = item
           end
-          @subpoint_index = @subpoint_index == 0 ? 1 : 0
+          @subpoint_index = (@subpoint_index + 1) % @jump_points[2].size
         end
         @timer += 1
         if @timer == 300
@@ -3350,7 +3380,7 @@ class Gaxlon < Enemy
     b = SB.player.bomb
     b.bounce(true) if bounce
     return if @hp <= 0
-    entrance = @hp == 9 ? 26 : @hp == 8 ? 21 : @hp >= 6 ? 22 : @hp >= 4 ? 23 : @hp >= 2 ? 24 : 25
+    entrance = @entrances[@hp == 9 ? 0 : @hp == 8 ? 1 : @hp >= 6 ? 2 : @hp >= 4 ? 3 : @hp >= 2 ? 4 : 5]
     section.add(Vortex.new(b.x + b.w / 2 - 27, b.y + b.h / 2 - 27, "#{entrance},$", section))
     b.in_vortex = true
   end
