@@ -21,7 +21,7 @@ require_relative 'elements'
 require_relative 'enemies'
 require_relative 'items'
 
-Tile = Struct.new :back, :fore, :pass, :wall, :hide, :broken, :ramp_end
+Tile = Struct.new :back, :fore, :pass, :wall, :hide, :broken, :ramp_end, :obj, :code
 
 class ScoreEffect
   attr_reader :dead
@@ -199,7 +199,7 @@ class Section
     t_x_count = s[0].to_i; t_y_count = s[1].to_i
     @tiles = Array.new(t_x_count) {
       Array.new(t_y_count) {
-        Tile.new -1, -1, -1, -1, -1, false, false
+        Tile.new
       }
     }
     @border_exit = s[2].to_i # 0: top, 1: right, 2: down, 3: left, 4: none
@@ -384,7 +384,7 @@ class Section
     @tile_3_index = 0
     @tile_4_index = 0
 
-    @margin = Vector.new(C::SCREEN_WIDTH / 2, C::SCREEN_HEIGHT / 2)
+    @margin = Vector.new(@map.cam.w / 2, @map.cam.h / 2)
     do_warp bomb_x, bomb_y
 
     SB.play_song @bgm
@@ -443,14 +443,14 @@ class Section
       ((i-offset_x)..(i+offset_x)).each do |k|
         next if k < 0
         if @tiles[k] and @tiles[k][l]
-          if @tiles[k][l].pass >= 0
+          if @tiles[k][l].pass
             if bw > 0 && !pass
               add_block(obstacles, k - bw, l, bw, false)
               bw = 0
             end
             bw += 1
             pass = true
-          elsif not @tiles[k][l].broken and @tiles[k][l].wall >= 0
+          elsif not @tiles[k][l].broken and @tiles[k][l].wall
             if @tiles[k][l].ramp_end
               add_block(obstacles, k - bw, l, bw, pass) if bw > 0
               add_block(obstacles, k, l, 1, true)
@@ -484,7 +484,7 @@ class Section
   def obstacle_at?(x, y)
     i = x / C::TILE_SIZE
     j = y / C::TILE_SIZE
-    return true if @tiles[i] && @tiles[i][j] && (@tiles[i][j].pass >= 0 || @tiles[i][j].wall >= 0) && !@tiles[i][j].broken
+    return true if @tiles[i] && @tiles[i][j] && (@tiles[i][j].pass || @tiles[i][j].wall) && !@tiles[i][j].broken
     @obstacles.each do |o|
       return true if x >= o.x && x < o.x + o.w && y >= o.y && y < o.y + o.h
     end
@@ -701,15 +701,15 @@ class Section
 
     @map.foreach do |i, j, x, y|
       b = @tiles[i][j].back
-      if b >= 0
+      if b
         ind = b
         if b >= 90 && b < 93; ind = 90 + (b - 90 + @tile_3_index) % 3
         elsif b >= 93 && b < 96; ind = 93 + (b - 93 + @tile_3_index) % 3
         elsif b >= 96; ind = 96 + (b - 96 + @tile_4_index) % 4; end
         @tileset[ind].draw x, y, -2, 2, 2
       end
-      @tileset[@tiles[i][j].pass].draw x, y, -2, 2, 2 if @tiles[i][j].pass >= 0
-      @tileset[@tiles[i][j].wall].draw x, y, -2, 2, 2 if @tiles[i][j].wall >= 0 and not @tiles[i][j].broken
+      @tileset[@tiles[i][j].pass].draw x, y, -2, 2, 2 if @tiles[i][j].pass
+      @tileset[@tiles[i][j].wall].draw x, y, -2, 2, 2 if @tiles[i][j].wall and not @tiles[i][j].broken
     end
 
     @elements.each do |e|
@@ -722,7 +722,7 @@ class Section
 
     @map.foreach do |i, j, x, y|
       f = @tiles[i][j].fore
-      if f >= 0
+      if f
         ind = f
         if f >= 90 && f < 93; ind = 90 + (f - 90 + @tile_3_index) % 3
         elsif f >= 93 && f < 96; ind = 93 + (f - 93 + @tile_3_index) % 3
@@ -766,9 +766,9 @@ class Section
       x = @rain_offset.x
       y = @rain_offset.y
       y -= @rain.height * 2 while y > 0
-      while x < C::SCREEN_WIDTH
+      while x < @map.cam.w
         y2 = y
-        while y2 < C::SCREEN_HEIGHT
+        while y2 < @map.cam.h
           @rain.draw(x, y2, 0, 2, 2)
           y2 += @rain.height * 2
         end
@@ -785,7 +785,7 @@ class Section
     @bgs.each_with_index do |bg, ind|
       back_x = -@map.cam.x * (0.5 + ind * 0.1)
       back_y = @repeat_bg_y ? -@map.cam.y * (0.5 + ind * 0.1) :
-                              -(@map.cam.y.to_f / (@map.get_absolute_size.y - C::SCREEN_HEIGHT) * (bg.height * 2 - C::SCREEN_HEIGHT))
+                              -(@map.cam.y.to_f / (@map.get_absolute_size.y - @map.cam.h) * (bg.height * 2 - @map.cam.h))
       tiles_x = @size.x / bg.width / 2
       tiles_y = @repeat_bg_y ? @size.y / bg.height / 2 : 1
       (1...tiles_x).each do |i|
@@ -801,9 +801,9 @@ class Section
         end
       end
       first_back_y = back_y
-      while back_x < C::SCREEN_WIDTH
-        while back_y < C::SCREEN_HEIGHT
-          bg.draw back_x, back_y, -3, 2, 2
+      while back_x < @map.cam.w
+        while back_y < @map.cam.h
+          bg.draw back_x, back_y, -10, 2, 2
           back_y += bg.height * 2
         end
         back_x += bg.width * 2

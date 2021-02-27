@@ -615,7 +615,7 @@ class MovingWall < GameObject
     @id = args[0].to_i
     @closed = args[1].nil?
     if @closed
-      until section.obstacle_at? @x, @y - 1
+      until section.obstacle_at?(@x, @y - 1) || @y <= 0
         @y -= C::TILE_SIZE
         @h += C::TILE_SIZE
       end
@@ -792,7 +792,7 @@ class HideTile
 
   def check_tile(i, j, tiles, dir)
     return -1 if tiles[i].nil? or tiles[i][j].nil?
-    return tiles[i][j].wall if tiles[i][j].hide < 0
+    return tiles[i][j].wall || -1 if tiles[i][j].hide.nil?
     return 0 if tiles[i][j].hide == @group
 
     tiles[i][j].hide = @group

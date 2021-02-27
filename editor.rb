@@ -14,9 +14,277 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 require_relative 'global'
+require_relative 'stage'
 include MiniGL
 
-Cell = Struct.new(:back, :fore, :obj, :hide)
+class EditorRamp < Ramp
+  attr_reader :code
+
+  def initialize(x, y, w, h, left, code)
+    super(x, y, w, h, left)
+    @code = code
+  end
+end
+
+class EditorStage < Stage
+  attr_reader :entrances
+
+  def initialize
+    super('custom', 'test')
+    @entrances = []
+    @switches = []
+  end
+end
+
+class EditorSection < Section
+  def initialize(file, entrances, switches)
+    if file.index('/')
+      super(file, entrances, switches, [], [])
+    else
+      parts = file.split('#', -1)
+      set_map_tileset parts[0].split ','
+      set_bgs parts[1].split ','
+      set_elements parts[2].split(';'), entrances, switches, [], []
+      set_ramps parts[3].split ';'
+    end
+
+    @map = Map.new(C::TILE_SIZE, C::TILE_SIZE, @tiles.size, @tiles[0].size, C::EDITOR_SCREEN_WIDTH, C::EDITOR_SCREEN_HEIGHT)
+    @size = @map.get_absolute_size
+
+    @elements = []
+    @inter_elements = []
+    @obstacles = []
+    @light_tiles = []
+    @effects = []
+    @dead_timer = 0
+    @tile_timer = 0
+    @tile_3_index = 0
+    @tile_4_index = 0
+    @margin = Vector.new(C::EDITOR_SCREEN_WIDTH / 2, C::EDITOR_SCREEN_HEIGHT / 2)
+    @wall_ish_tiles = [11, 7, 46, 47, 8, 9, 17, 18, 26, 36, 37, 48, 49, 27, 28, 38, 39, 19, 29]
+  end
+
+  def set_elements(s, entrances, switches, taken_switches, used_switches)
+    s_index = switches.length
+    super
+
+    @element_info.each do |el|
+      i = el[:x] / C::TILE_SIZE
+      j = el[:y] / C::TILE_SIZE
+      @tiles[i][j].obj = el[:type].new(el[:x], el[:y], el[:args], self)
+      @tiles[i][j].obj.update(self)
+    end
+    switches[s_index..-1].each do |s|
+      i = s[:x] / C::TILE_SIZE
+      j = s[:y] / C::TILE_SIZE
+      @tiles[i][j].obj = s[:obj]
+      @tiles[i][j].obj.update(self)
+    end
+  end
+
+  def set_ramps(s)
+    @ramps = []
+    s.each do |r|
+      left = r[0] == 'l'
+      a = r[1] == "'" ? 2 : 1
+      rw = r[a].to_i
+      w = rw * C::TILE_SIZE
+      h = r[a + 1].to_i * C::TILE_SIZE
+      h -= 1 if r[1] == "'"
+      coords = r.split(':')[1].split(',')
+      i = coords[0].to_i
+      j = coords[1].to_i
+      x = i * C::TILE_SIZE
+      y = j * C::TILE_SIZE
+      @ramps << EditorRamp.new(x, y, w, h, left, r)
+      @tiles[i + (left ? rw : -1)][j].ramp_end = true
+    end
+  end
+
+  def change_size(w, h)
+    return if w <= 0 || h <= 0
+    
+    p_w = @tiles.size
+    p_h = @tiles[0].size
+    if w < p_w
+      @tiles = @tiles[0...w]
+    elsif w > p_w
+      min_y = h < p_h ? h : p_h
+      (p_w...w).each do |i|
+        @tiles[i] = []
+        (0...min_y).each { |j| @tiles[i][j] = Tile.new(-1, -1, -1, -1, -1) }
+      end
+    end
+    if h < p_h
+      @tiles.map! { |o| o[0...h] }
+    elsif h > p_h
+      @tiles.each do |o|
+        (p_h...h).each { |j| o[j] = Tile.new(-1, -1, -1, -1, -1) }
+      end
+    end
+    @ramps.reverse_each do |r|
+      @ramps.delete(r) if r.x + r.w > w || r.y + r.h > h
+    end
+    @map = Map.new(C::TILE_SIZE, C::TILE_SIZE, w, h, C::EDITOR_SCREEN_WIDTH, C::EDITOR_SCREEN_HEIGHT)
+  end
+
+  def clear
+    w = @tiles.size
+    h = @tiles[0].size
+    @tiles = Array.new(w) {
+      Array.new(h) {
+        Tile.new(-1, -1, -1, -1, -1, false, false, nil)
+      }
+    }
+    @ramps.clear
+  end
+
+  def set_wall_tile(i, j, must_set = false)
+    return if i < 0 || j < 0 || i >= @map.size.x || j >= @map.size.y
+    return unless must_set || @tiles[i][j].wall && @tiles[i][j].wall < 50 || @tiles[i][j].back == 11
+    up = j == 0 || wall_ish_tile?(i, j - 1)
+    rt = i == @map.size.x - 1 || wall_ish_tile?(i + 1, j)
+    dn = j == @map.size.y - 1 || wall_ish_tile?(i, j + 1)
+    lf = i == 0 || wall_ish_tile?(i - 1, j)
+    tl = !up && i > 0 && j > 0 && (wall_ish_tile?(i - 1, j - 1) || wall_ish_tile?(i - 1, j, true))
+    tr = !up && i < @map.size.x - 1 && j > 0 && (wall_ish_tile?(i + 1, j - 1) || wall_ish_tile?(i + 1, j, true))
+    tile =
+      if up && rt && dn && lf; 11
+      elsif up && rt && dn; 10
+      elsif up && rt && lf; 21
+      elsif up && dn && lf; 12
+      elsif up && rt; 20
+      elsif up && dn; 13
+      elsif up && lf; 22
+      elsif up; 23
+      elsif tl && tr && rt && dn && lf; 6
+      elsif tl && rt && dn && lf; 4
+      elsif tr && rt && dn && lf; 5
+      elsif tl && tr && rt && lf; 16
+      elsif tl && rt && lf; 14
+      elsif tr && rt && lf; 15
+      elsif tr && rt && dn; 24
+      elsif tl && dn && lf; 25
+      elsif tr && rt; 34
+      elsif tl && lf; 35
+      elsif rt && dn && lf; 1
+      elsif rt && dn; 0
+      elsif rt && lf; 31
+      elsif dn && lf; 2
+      elsif rt; 30
+      elsif dn; 3
+      elsif lf; 32
+      else; 33; end
+    @tiles[i][j].back = tile == 11 ? tile : nil
+    @tiles[i][j].wall = tile == 11 ? nil : tile
+  end
+
+  def set_surrounding_wall_tiles(i, j)
+    set_wall_tile(i, j - 1)
+    set_wall_tile(i + 1, j)
+    set_wall_tile(i, j + 1)
+    set_wall_tile(i - 1, j)
+    set_wall_tile(i - 1, j + 1)
+    set_wall_tile(i + 1, j + 1)
+  end
+
+  def wall_ish_tile?(i, j, back_only = false)
+    !back_only && @tiles[i][j].wall && @tiles[i][j].wall < 50 || @tiles[i][j].back && @wall_ish_tiles.include?(@tiles[i][j].back)
+  end
+
+  def check_fill(type, i, j, ctrl, index)
+    queue = [[i, j]]
+    queued = { "#{i},#{j}" => true }
+
+    enqueue = ->(i, j) do
+      key = "#{i},#{j}"
+      if i >= 0 && i < @tiles.size && j >= 0 && j < @tiles[0].size && cell_empty?(type, i, j) && !queued[key]
+        queue << [i, j]
+        queued[key] = true
+      end
+    end
+
+    until queue.empty?
+      i, j = queue.shift
+      if type == :wall
+        @tiles[i][j].back = 11
+        set_surrounding_wall_tiles(i, j)
+      elsif type == :hide
+        @tiles[i][j].hide = ctrl ? 99 : 0
+      elsif type == :back
+        @tiles[i][j].back = index
+      else
+        @tiles[i][j].fore = index
+      end
+      enqueue.call(i - 1, j)
+      enqueue.call(i + 1, j)
+      enqueue.call(i, j - 1)
+      enqueue.call(i, j + 1)
+    end
+  end
+
+  def cell_empty?(type, i, j)
+    type == :wall && @tiles[i][j].back.nil? && @tiles[i][j].fore.nil? && @tiles[i][j].obj.nil? && @tiles[i][j].wall.nil? && @tiles[i][j].pass.nil? ||
+      type == :hide && @tiles[i][j].hide.nil? ||
+      type == :back && @tiles[i][j].back.nil? && @tiles[i][j].wall.nil? && @tiles[i][j].pass.nil? ||
+      type == :fore && @tiles[i][j].fore.nil? && @tiles[i][j].wall.nil? && @tiles[i][j].pass.nil?
+  end
+
+  def set_object(i, j, code, args, switches)
+    type = ELEMENT_TYPES[code]
+    if type.instance_method(:initialize).parameters.length == 5
+      switches << (el = {x: i * C::TILE_SIZE, y: j * C::TILE_SIZE, type: type, args: args, state: :normal, section: self, index: switches.size})
+      @tiles[i][j].obj = el[:obj] = ELEMENT_TYPES[code].new(i * C::TILE_SIZE, j * C::TILE_SIZE, args, self, el)
+    else
+      @tiles[i][j].obj = ELEMENT_TYPES[code].new(i * C::TILE_SIZE, j * C::TILE_SIZE, args, self)
+    end
+    @tiles[i][j].obj.update(self)
+    @tiles[i][j].code = "@#{code}:#{args}"
+  end
+
+  def set_ramp(i, j, w, h, left, tiles)
+    @ramps << EditorRamp.new(i * C::TILE_SIZE, j * C::TILE_SIZE, w * C::TILE_SIZE, h * C::TILE_SIZE, left, "#{left ? 'l' : 'r'}#{w}#{h}:#{i},#{j}")
+    tiles.each do |t|
+      @tiles[i + t[0]][j + t[1]].obj = nil
+      @tiles[i + t[0]][j + t[1]].back = t[2]
+    end
+  end
+
+  def delete_at(i, j, all)
+    if all
+      @tiles[i][j] = Tile.new
+      delete_ramp(i, j)
+      set_surrounding_wall_tiles(i, j)
+    elsif !delete_ramp(i, j) && @tiles[i][j].hide
+      @tiles[i][j].hide = nil
+    elsif @tiles[i][j].fore
+      @tiles[i][j].fore = nil
+    elsif @tiles[i][j].obj
+      @tiles[i][j].obj = nil
+    elsif @tiles[i][j].wall
+      @tiles[i][j].wall = nil
+      set_surrounding_wall_tiles(i, j)
+    elsif @tiles[i][j].pass
+      @tiles[i][j].pass = nil
+    elsif @tiles[i][j].back
+      @tiles[i][j].back = nil
+    end
+  end
+
+  def delete_ramp(i, j)
+    @ramps.each do |r|
+      x = r.x / C::TILE_SIZE
+      y = r.y / C::TILE_SIZE
+      w = r.w / C::TILE_SIZE
+      h = r.h / C::TILE_SIZE
+      if i >= x && i < x + w && j >= y && j < y + h
+        @ramps.delete(r)
+        return true
+      end
+    end
+    false
+  end
+end
 
 class FloatingPanel
   COLOR = 0x80ffffff
@@ -80,15 +348,9 @@ class Editor
   attr_writer :cur_element, :cur_index
 
   def initialize
-    @tiles_x = @tiles_y = 300
-    @map = Map.new(32, 32, @tiles_x, @tiles_y, C::EDITOR_SCREEN_WIDTH, C::EDITOR_SCREEN_HEIGHT)
-    @objects = Array.new(@tiles_x) {
-      Array.new(@tiles_y) {
-        Cell.new
-      }
-    }
+    SB.init_editor_stage(EditorStage.new)
+    @section = EditorSection.new('300,300,0,1,s1#1!##', SB.stage.entrances, SB.stage.switches)
 
-    @ramps = []
     @cur_index = -1
 
     bg_files = Dir["data/img/bg/*"].sort
@@ -132,7 +394,6 @@ class Editor
       img = Res.img("editor_el_#{name}")
       index, name = name.split('-')
       index = index.to_i
-      @crack_index = index if name == 'Crack'
       @elements[index] = img
       if name.end_with?('!')
         @enemies[index] = img
@@ -156,7 +417,7 @@ class Editor
         Label.new(x: 70, y: 0, font: SB.font, text: 'H', scale_x: 2, scale_y: 2, anchor: :left),
         (txt_h = TextField.new(x: 84, y: 0, img: :editor_textField, font: SB.font, text: '300', allowed_chars: '0123456789', margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2, anchor: :left)),
         Button.new(x: 130, y: 0, img: :editor_btn1, font: SB.font, text: 'OK', scale_x: 2, scale_y: 2, anchor: :left) do
-          reset_map(txt_w.text.to_i, txt_h.text.to_i)
+          @section.change_size(txt_w.text.to_i, txt_h.text.to_i)
         end,
         Label.new(x: 200, y: 0, font: SB.font, text: 'BG', scale_x: 2, scale_y: 2, anchor: :left),
         (ddl_bg = DropDownList.new(x: 224, y: 0, font: SB.font, img: :editor_ddl, opt_img: :editor_ddlOpt, options: bg_options, text_margin: 4, scale_x: 2, scale_y: 2, anchor: :left) do |_, v|
@@ -220,27 +481,17 @@ class Editor
                                      allowed_chars: '0123456789', max_length: 2)),
         (lbl_conf_save = Label.new(x: 0, y: 50, font: SB.font, text: 'Overwrite?', scale_x: 2, scale_y: 2, anchor: :bottom)),
         Button.new(x: 132, y: 0, img: :editor_btn1, font: SB.font, text: 'Clear', scale_x: 2, scale_y: 2, anchor: :right) do
-          @objects = Array.new(@tiles_x) {
-            Array.new(@tiles_y) {
-              Cell.new
-            }
-          }
-          @ramps.clear
+          @section.clear
         end,
         Button.new(x: 68, y: 0, img: :editor_btn1, font: SB.font, text: 'Load', scale_x: 2, scale_y: 2, anchor: :right) do
           path = "data/stage/custom/#{txt_stage.text}-#{txt_section.text}"
           if File.exist? path
             f = File.open(path)
-            all = f.readline.chomp.split('#'); f.close
-            infos = all[0].split(','); bg_infos = all[1].split(','); elms = all[2].split(';')
-            @tiles_x = infos[0].to_i; @tiles_y = infos[1].to_i
-            @map = Map.new(32, 32, @tiles_x, @tiles_y, C::EDITOR_SCREEN_WIDTH, C::EDITOR_SCREEN_HEIGHT)
+            all = f.readline.chomp.split('#')
+            f.close
+            infos = all[0].split(',')
+            bg_infos = all[1].split(',')
             txt_w.text = infos[0]; txt_h.text = infos[1]
-            @objects = Array.new(@tiles_x) {
-              Array.new(@tiles_y) {
-                Cell.new
-              }
-            }
 
             @cur_exit = infos[2].to_i
             ddl_exit.value = exit_options[@cur_exit]
@@ -274,45 +525,7 @@ class Editor
             chk_dark.checked = infos[5] && infos[5] == '.'
             chk_rain.checked = infos[5] && infos[5] == '$'
 
-            i = 0; j = 0
-            elms.each do |e|
-              if e[0] == '_'
-                i += e[1..-1].to_i
-                if i >= @map.size.x
-                  j += i / @map.size.x
-                  i %= @map.size.x
-                end
-              elsif e.size > 3 && e[3] == '*'
-                amount = e[4..-1].to_i
-                tile = e[0..2]
-                amount.times do
-                  if e[0] == 'b'; @objects[i][j].back = tile
-                  elsif e[0] == 'f'; @objects[i][j].fore = tile
-                  elsif e[0] == 'h'; @objects[i][j].hide = tile
-                  else; @objects[i][j].obj = tile; end
-                  i += 1
-                  begin i = 0; j += 1 end if i == @tiles_x
-                end
-              else
-                ind = 0
-                while ind < e.size
-                  if e[ind] == 'b'; @objects[i][j].back = e.slice(ind, 3)
-                  elsif e[ind] == 'f'; @objects[i][j].fore = e.slice(ind, 3)
-                  elsif e[ind] == 'h'; @objects[i][j].hide = e.slice(ind, 3)
-                  elsif e[ind] == 'p' || e[ind] == 'w'
-                    @objects[i][j].obj = e.slice(ind, 3)
-                  else
-                    @objects[i][j].obj = e[ind..-1]
-                    ind += 1000
-                  end
-                  ind += 3
-                end
-                i += 1
-                begin i = 0; j += 1 end if i == @tiles_x
-              end
-            end
-            @ramps.clear
-            @ramps = all[3].split(';') if all[3]
+            @section = EditorSection.new(path, SB.stage.entrances, SB.stage.switches)
           end
         end,
         Button.new(x: 4, y: 0, img: :editor_btn1, font: SB.font, text: 'Save', scale_x: 2, scale_y: 2, anchor: :right) do
@@ -330,15 +543,17 @@ class Editor
           if will_save
             FileUtils.mkdir_p('data/stage/custom')
 
-            code = "#{@tiles_x},#{@tiles_y},#{@cur_exit},#{ddl_ts.value},#{ddl_bgm.value}#{chk_dark.checked ? ',.' : chk_rain.checked ? ',$' : ''}#"
+            tiles_x = @section.tiles.size
+            tiles_y = @section.tiles[0].size
+            code = "#{tiles_x},#{tiles_y},#{@cur_exit},#{ddl_ts.value},#{ddl_bgm.value}#{chk_dark.checked ? ',.' : chk_rain.checked ? ',$' : ''}#"
             code += "#{ddl_bg.value}#{chk_bg_tile.checked ? '' : '!'}"
             code += ",#{ddl_bg2.value}#{chk_bg2_tile.checked ? '' : '!'}" if ddl_bg2.value != '-'
             code += '#'
 
             count = 1
             last_element = get_cell_string(0, 0)
-            (0...@tiles_y).each do |j|
-              (0...@tiles_x).each do |i|
+            (0...tiles_y).each do |j|
+              (0...tiles_x).each do |i|
                 next if i == 0 && j == 0
                 element = get_cell_string i, j
                 if element == last_element &&
@@ -366,8 +581,8 @@ class Editor
             else
               code += last_element + (count > 1 ? "*#{count}" : '') + '#'
             end
-            @ramps.each { |r| code += "#{r};" }
-            code.chop! unless @ramps.empty?
+            @section.ramps.each { |r| code += "#{r.code};" }
+            code.chop! unless @section.ramps.empty?
 
             File.open(path, 'w') { |f| f.write code }
           end
@@ -416,14 +631,16 @@ class Editor
           o_y = @txt_offset_y.text.to_i
           start_x = @selection ? @selection[0] : 0
           start_y = @selection ? @selection[1] : 0
-          end_x = @selection ? @selection[2] : @tiles_x - 1
-          end_y = @selection ? @selection[3] : @tiles_y - 1
+          tiles_x = @section.tiles.size
+          tiles_y = @section.tiles[0].size
+          end_x = @selection ? @selection[2] : tiles_x - 1
+          end_y = @selection ? @selection[3] : tiles_y - 1
           x_range = o_x > 0 ? end_x.downto(start_x) : start_x.upto(end_x)
           y_range = o_y > 0 ? end_y.downto(start_y) : start_y.upto(end_y)
           x_range.each do |i|
             y_range.each do |j|
               ii = i + o_x; jj = j + o_y
-              @objects[ii][jj] = @objects[i][j] if ii >= 0 && ii < @tiles_x && jj >= 0 && jj < @tiles_y
+              @objects[ii][jj] = @objects[i][j] if ii >= 0 && ii < tiles_x && jj >= 0 && jj < tiles_y
               @objects[i][j] = Cell.new
             end
           end
@@ -460,7 +677,7 @@ class Editor
 
     @dropdowns = [ddl_bg, ddl_bgm, ddl_exit, ddl_ts, @ddl_tile_type]
 
-    @ramp_sizes = %w(11 21 32 12)
+    @ramp_sizes = [[1, 1], [2, 1], [3, 2], [1, 2]]
     @ramp_tiles = [
       [[0, 0, 7]], # l 1x1
       [[0, 0, 46], [1, 0, 47]], # l 2x1
@@ -471,7 +688,6 @@ class Editor
       [[0, 0, 27], [1, 0, 28], [0, 1, 11], [1, 1, 38], [2, 1, 39]], # r 3x2
       [[0, 0, 19], [0, 1, 29]], # r 1x2
     ]
-    @wall_ish_tiles = [11, 7, 46, 47, 8, 9, 17, 18, 26, 36, 37, 48, 49, 27, 28, 38, 39, 19, 29]
   end
 
   def needs_cursor?
@@ -503,112 +719,89 @@ class Editor
     end
 
     speed = KB.key_down?(Gosu::KbLeftShift) || KB.key_down?(Gosu::KbRightShift) ? 10 : 20
-    @map.move_camera 0, -speed if KB.key_down?(Gosu::KbUp) || KB.key_down?(Gosu::KB_W)
-    @map.move_camera speed, 0 if KB.key_down?(Gosu::KbRight) || KB.key_down?(Gosu::KB_D)
-    @map.move_camera 0, speed if KB.key_down?(Gosu::KbDown) || KB.key_down?(Gosu::KB_S)
-    @map.move_camera -speed, 0 if KB.key_down?(Gosu::KbLeft) || KB.key_down?(Gosu::KB_A)
+    @section.map.move_camera 0, -speed if KB.key_down?(Gosu::KbUp) || KB.key_down?(Gosu::KB_W)
+    @section.map.move_camera speed, 0 if KB.key_down?(Gosu::KbRight) || KB.key_down?(Gosu::KB_D)
+    @section.map.move_camera 0, speed if KB.key_down?(Gosu::KbDown) || KB.key_down?(Gosu::KB_S)
+    @section.map.move_camera -speed, 0 if KB.key_down?(Gosu::KbLeft) || KB.key_down?(Gosu::KB_A)
 
     return if @over_panel.any?
 
     ctrl = KB.key_down?(Gosu::KbLeftControl) || KB.key_down?(Gosu::KbRightControl)
     alt = KB.key_down?(Gosu::KbLeftAlt) || KB.key_down?(Gosu::KbRightAlt)
-    mp = @map.get_map_pos(Mouse.x, Mouse.y)
-    return if mp.x >= @tiles_x || mp.y >= @tiles_y
+    mp = @section.map.get_map_pos(Mouse.x, Mouse.y)
+    i = mp.x; j = mp.y
+    return if i >= @section.tiles.size || j >= @section.tiles[0].size
     if Mouse.double_click?(:left)
-      check_fill(mp.x, mp.y, ctrl)
+      type = @cur_element == :tile ? (@ddl_tile_type.value == 'b' ? :back : @ddl_tile_type.value == 'f' ? :fore : nil) : @cur_element
+      @section.check_fill(type, i, j, ctrl, @cur_index) if type == :wall || type == :hide || type == :back || type == :fore
     elsif Mouse.button_pressed?(:left)
       if ctrl
         case @cur_element
         when /(obj|enemy)/
-          @txt_args.text += (@txt_args.text.empty? ? '' : ':') + "#{mp.x},#{mp.y}"
+          @txt_args.text += (@txt_args.text.empty? ? '' : ':') + "#{i},#{j}"
         when :pass
-          @pass_start = [mp.x, mp.y]
+          @pass_start = [i, j]
         end
       elsif alt
-        @selection = [mp.x, mp.y]
+        @selection = [i, j]
       else
         @selection = nil
         case @cur_element
         when :pass
-          @pass_start = [mp.x, mp.y]
+          @pass_start = [i, j]
         when :ramp
-          @ramps << (@cur_index < 4 ? 'l' : 'r') + @ramp_sizes[@cur_index % 4] + ":#{mp.x},#{mp.y}"
-          @ramp_tiles[@cur_index].each do |t|
-            @objects[mp.x + t[0]][mp.y + t[1]].obj = nil
-            @objects[mp.x + t[0]][mp.y + t[1]].back = 'b%02d' % t[2]
-          end
+          sz = @ramp_sizes[@cur_index % 4]
+          @section.set_ramp(i, j, sz[0], sz[1], @cur_index < 4, @ramp_tiles[@cur_index])
         when :bomb
-          @objects[mp.x][mp.y].obj = '!' + @txt_args.text + (@chk_default.checked ? '!' : '')
+          SB.stage.entrances << {x: i * C::TILE_SIZE, y: j * C::TILE_SIZE, section: @section}
         end
       end
     elsif !alt && Mouse.button_down?(:left)
       if ctrl
-        @objects[mp.x][mp.y].hide = 'h99' if @cur_element == :hide
+        @section.tiles[i][j].hide = 99 if @cur_element == :hide
       else
         case @cur_element
         when :wall
-          set_wall_tile(mp.x, mp.y, true)
-          set_surrounding_wall_tiles(mp.x, mp.y)
+          @section.set_wall_tile(i, j, true)
+          @section.set_surrounding_wall_tiles(i, j)
         when :hide
-          @objects[mp.x][mp.y].hide = 'h00'
+          @section.tiles[i][j].hide = 0
         when :tile
           t = @ddl_tile_type.value
-          prop = t == 'w' || t == 'p' ? :obj= : t == 'b' ? :back= : :fore=
-          @objects[mp.x][mp.y].send(prop, t + '%02d' % @cur_index)
-        when :obj
-          @objects[mp.x][mp.y].obj = '@' + ('%02d' % @cur_index) + (@txt_args.text.empty? ? '' : ":#{@txt_args.text}")
-        when :enemy
-          @objects[mp.x][mp.y].obj = '@' + ('%02d' % @cur_index) + (@txt_args.text.empty? ? '' : ":#{@txt_args.text}")
+          prop = t == 'w' ? :wall= : t == 'p' ? :pass= : t == 'b' ? :back= : :fore=
+          @section.tiles[i][j].send(prop, @cur_index)
+        when :obj, :enemy
+          @section.set_object(i, j, @cur_index, @txt_args.text, SB.stage.switches)
         end
       end
     elsif Mouse.button_released?(:left)
       if alt
-        @selection << mp.x << mp.y
+        @selection << i << j
       else
         @selection = nil
         if @cur_element == :pass
-          min_x, max_x = mp.x < @pass_start[0] ? [mp.x, @pass_start[0]] : [@pass_start[0], mp.x]
-          min_y, max_y = mp.y < @pass_start[1] ? [mp.y, @pass_start[1]] : [@pass_start[1], mp.y]
-          (min_y..max_y).each do |j|
-            (min_x..max_x).each do |i|
-              cell = @objects[i][j]
-              next if ctrl && %w(b11 b43 b44 b45).include?(cell.back)
-              if j == min_y
-                next if ctrl && cell.obj && cell.obj[0] == 'w'
-                cell.obj = 'p' + (i == min_x ? '40' : i == max_x ? '42' : '41')
+          min_x, max_x = i < @pass_start[0] ? [i, @pass_start[0]] : [@pass_start[0], i]
+          min_y, max_y = j < @pass_start[1] ? [j, @pass_start[1]] : [@pass_start[1], j]
+          (min_y..max_y).each do |l|
+            (min_x..max_x).each do |k|
+              cell = @section.tiles[k][l]
+              next if ctrl && [11, 43, 44, 45].include?(cell.back)
+              if l == min_y
+                next if ctrl && cell.wall
+                cell.pass = k == min_x ? 40 : k == max_x ? 42 : 41
               else
-                cell.back = 'b' + (i == min_x ? '43' : i == max_x ? '45' : '44')
-                cell.obj = nil if cell.obj && cell.obj[0] == 'p' && !ctrl
+                cell.back = k == min_x ? 43 : k == max_x ? 45 : 44
+                cell.pass = nil if cell.pass && !ctrl
               end
             end
           end
           @pass_start = nil
         end
       end
-    elsif ctrl && Mouse.button_pressed?(:right) || !ctrl && Mouse.button_down?(:right)
-      @ramps.each do |ramp|
-        coords = ramp.split(':')[1].split(',')
-        x = coords[0].to_i; y = coords[1].to_i
-        a = ramp[1] == "'" ? 2 : 1
-        w = ramp[a].to_i * 32; h = ramp[a + 1].to_i * 32
-        pos = @map.get_screen_pos(x, y)
-        @ramps.delete(ramp) if Mouse.over?(pos.x, pos.y, w, h)
-      end
-      obj = @objects[mp.x][mp.y].obj
-      if @objects[mp.x][mp.y].hide
-        @objects[mp.x][mp.y].hide = nil
-      elsif @objects[mp.x][mp.y].fore
-        @objects[mp.x][mp.y].fore = nil
-      elsif obj
-        @objects[mp.x][mp.y].obj = nil
-        if obj[0] == 'w' && obj[1..2].to_i < 50
-          set_surrounding_wall_tiles(mp.x, mp.y)
-        end
-      else
-        b = @objects[mp.x][mp.y].back
-        @objects[mp.x][mp.y].back = nil
-        set_surrounding_wall_tiles(mp.x, mp.y) if b && b[1..2].to_i < 50
-      end
+    elsif !ctrl && Mouse.button_pressed?(:right)
+      @section.delete_at(i, j, false)
+    elsif ctrl && Mouse.button_down?(:right)
+      @section.delete_at(i, j, true)
     end
   end
 
@@ -637,205 +830,44 @@ class Editor
     end
   end
 
-  def set_wall_tile(i, j, must_set = false)
-    @crack = false
-    return if i < 0 || j < 0 || i >= @map.size.x || j >= @map.size.y
-    return unless must_set || @objects[i][j].obj && @objects[i][j].obj[0] == 'w' && @objects[i][j].obj[1..2].to_i < 50 || @objects[i][j].back == 'b11'
-    up = j == 0 || wall_ish_tile?(i, j - 1)
-    rt = i == @map.size.x - 1 || wall_ish_tile?(i + 1, j)
-    dn = j == @map.size.y - 1 || wall_ish_tile?(i, j + 1)
-    lf = i == 0 || wall_ish_tile?(i - 1, j)
-    tl = !up && i > 0 && j > 0 && (wall_ish_tile?(i - 1, j - 1) || wall_ish_tile?(i - 1, j, true))
-    tr = !up && i < @map.size.x - 1 && j > 0 && (wall_ish_tile?(i + 1, j - 1) || wall_ish_tile?(i + 1, j, true))
-    tile =
-      if up && rt && dn && lf; @crack ? 'w11' : 'b11'
-      elsif up && rt && dn; 'w10'
-      elsif up && rt && lf; 'w21'
-      elsif up && dn && lf; 'w12'
-      elsif up && rt; 'w20'
-      elsif up && dn; 'w13'
-      elsif up && lf; 'w22'
-      elsif up; 'w23'
-      elsif tl && tr && rt && dn && lf; 'w06'
-      elsif tl && rt && dn && lf; 'w04'
-      elsif tr && rt && dn && lf; 'w05'
-      elsif tl && tr && rt && lf; 'w16'
-      elsif tl && rt && lf; 'w14'
-      elsif tr && rt && lf; 'w15'
-      elsif tr && rt && dn; 'w24'
-      elsif tl && dn && lf; 'w25'
-      elsif tr && rt; 'w34'
-      elsif tl && lf; 'w35'
-      elsif rt && dn && lf; 'w01'
-      elsif rt && dn; 'w00'
-      elsif rt && lf; 'w31'
-      elsif dn && lf; 'w02'
-      elsif rt; 'w30'
-      elsif dn; 'w03'
-      elsif lf; 'w32'
-      else; 'w33'; end
-    @objects[i][j].back = tile[0] == 'b' ? tile : nil
-    @objects[i][j].obj = tile[0] == 'b' ? nil : tile
-  end
-
-  def set_surrounding_wall_tiles(i, j)
-    set_wall_tile(i, j - 1)
-    set_wall_tile(i + 1, j)
-    set_wall_tile(i, j + 1)
-    set_wall_tile(i - 1, j)
-    set_wall_tile(i - 1, j + 1)
-    set_wall_tile(i + 1, j + 1)
-  end
-
-  def wall_ish_tile?(i, j, back_only = false)
-    !back_only && @objects[i][j].obj &&
-      (@objects[i][j].obj[0] == 'w' && @objects[i][j].obj[1..2].to_i < 50 || @objects[i][j].obj[1..2].to_i == @crack_index && (@crack = true)) ||
-      @objects[i][j].back && @wall_ish_tiles.include?(@objects[i][j].back[1..-1].to_i)
-  end
-
-  def reset_map(tiles_x, tiles_y)
-    if tiles_x < @tiles_x
-      @objects = @objects[0...tiles_x]
-    elsif tiles_x > @tiles_x
-      min_y = tiles_y < @tiles_y ? tiles_y : @tiles_y
-      (@tiles_x...tiles_x).each do |i|
-        @objects[i] = []
-        (0...min_y).each { |j| @objects[i][j] = Cell.new }
-      end
-    end
-    if tiles_y < @tiles_y
-      @objects.map! { |o| o[0...tiles_y] }
-    elsif tiles_y > @tiles_y
-      @objects.each do |o|
-        (@tiles_y...tiles_y).each { |j| o[j] = Cell.new }
-      end
-    end
-    ramps_to_remove = []
-    @ramps.each do |r|
-      w = r[1].to_i; h = r[2].to_i
-      x, y = r.split(':')[1].split(',').map(&:to_i)
-      ramps_to_remove << r if x + w > tiles_x || y + h > tiles_y
-    end
-    @ramps -= ramps_to_remove
-    @map = Map.new 32, 32, tiles_x, tiles_y, C::EDITOR_SCREEN_WIDTH, C::EDITOR_SCREEN_HEIGHT
-    @tiles_x = tiles_x; @tiles_y = tiles_y
-  end
-
-  def check_fill(i, j, ctrl)
-    return unless @cur_element == :wall || @cur_element == :hide || @cur_element == :tile && (@ddl_tile_type.value == 'b' || @ddl_tile_type.value == 'f')
-
-    queue = [[i, j]]
-    queued = { "#{i},#{j}" => true }
-
-    enqueue = ->(i, j) do
-      key = "#{i},#{j}"
-      if i >= 0 && i < @tiles_x && j >= 0 && j < @tiles_y && cell_empty?(i, j) && !queued[key]
-        queue << [i, j]
-        queued[key] = true
-      end
-    end
-
-    until queue.empty?
-      i, j = queue.shift
-      if @cur_element == :wall
-        @objects[i][j].back = 'b11'
-        set_surrounding_wall_tiles(i, j)
-      elsif @cur_element == :hide
-        @objects[i][j].hide = ctrl ? 'h99' : 'h00'
-      elsif @ddl_tile_type.value == 'b'
-        @objects[i][j].back = "b#{@cur_index}"
-      else
-        @objects[i][j].fore = "f#{@cur_index}"
-      end
-      enqueue.call(i - 1, j)
-      enqueue.call(i + 1, j)
-      enqueue.call(i, j - 1)
-      enqueue.call(i, j + 1)
-    end
-  end
-
-  def cell_empty?(i, j)
-    @cur_element == :wall && @objects[i][j].back.nil? && @objects[i][j].fore.nil? && @objects[i][j].obj.nil? ||
-      @cur_element == :hide && @objects[i][j].hide.nil? ||
-      @cur_element == :tile && (@ddl_tile_type.value == 'b' && @objects[i][j].back.nil? || @ddl_tile_type.value == 'f' && @objects[i][j].fore.nil?) &&
-        (@objects[i][j].obj.nil? || @objects[i][j].obj[0] != 'w' && @objects[i][j].obj[0] != 'p')
-  end
-
   def get_cell_string(i, j)
     str = ''
-    str += @objects[i][j].back if @objects[i][j].back
-    str += @objects[i][j].fore if @objects[i][j].fore
-    str += @objects[i][j].hide if @objects[i][j].hide
-    str += @objects[i][j].obj if @objects[i][j].obj
+    str += "b#{'%02d' % @section.tiles[i][j].back}" if @section.tiles[i][j].back
+    str += "f#{'%02d' % @section.tiles[i][j].fore}" if @section.tiles[i][j].fore
+    str += "h#{'%02d' % @section.tiles[i][j].hide}" if @section.tiles[i][j].hide
+    str += "p#{'%02d' % @section.tiles[i][j].pass}" if @section.tiles[i][j].pass
+    str += "w#{'%02d' % @section.tiles[i][j].wall}" if @section.tiles[i][j].wall
+    str += @section.tiles[i][j].code if @section.tiles[i][j].obj
     str
   end
 
   def draw
     return unless @inited
 
-    G.window.clear 0x666666
-
-    bg = @bgs[@cur_bg]
-    bgx = 0
-    while bgx < C::EDITOR_SCREEN_WIDTH
-      bgy = 0
-      while bgy < C::EDITOR_SCREEN_HEIGHT
-        bg.draw(bgx, bgy, 0, 2, 2)
-        bgy += 2 * bg.height
-      end
-      bgx += 2 * bg.width
-    end
-    if @cur_bg2
-      bg = @bgs[@cur_bg2]
-      bgx = 0
-      while bgx < C::EDITOR_SCREEN_WIDTH
-        bgy = 0
-        while bgy < C::EDITOR_SCREEN_HEIGHT
-          bg.draw(bgx, bgy, 0, 2, 2)
-          bgy += 2 * bg.height
-        end
-        bgx += 2 * bg.width
-      end
-    end
-
-    @map.foreach do |i, j, x, y|
+    @section.map.foreach do |i, j, x, y|
       G.window.draw_quad x + 1, y + 1, NULL_COLOR,
                          x + 31, y + 1, NULL_COLOR,
                          x + 1, y + 31, NULL_COLOR,
-                         x + 31, y + 31, NULL_COLOR, 0
-      if @objects[i][j].back
-        @tilesets[@cur_tileset][@objects[i][j].back[1..2].to_i].draw x, y, 0, 2, 2
-        SB.font.draw_text 'b', x + 20, y + 18, 1, 1, 1, BLACK if @show_codes
-      end
-      draw_object i, j, x, y
-      if @objects[i][j].fore
-        @tilesets[@cur_tileset][@objects[i][j].fore[1..2].to_i].draw x, y, 0, 2, 2
-        SB.font.draw_text 'f', x + 20, y + 8, 1, 1, 1, BLACK if @show_codes
-      end
-      if @objects[i][j].hide
-        if @objects[i][j].hide == 'h00'
-          G.window.draw_quad x, y, HIDE_COLOR,
-                             x + 32, y, HIDE_COLOR,
-                             x, y + 32, HIDE_COLOR,
-                             x + 32, y + 32, HIDE_COLOR, 0
-        else
-          @fog.draw(x, y, 0, 2, 2)
-        end
-      end
+                         x + 31, y + 31, NULL_COLOR, -3
     end
-    @ramps.each do |r|
-      p = r.split(':')[1].split(',')
-      pos = @map.get_screen_pos(p[0].to_i, p[1].to_i)
-      a = r[1] == "'" ? 2 : 1
-      w = r[a].to_i * 32; h = r[a + 1].to_i * 32
-      draw_ramp pos.x, pos.y, w, h, r[0] == 'l', a == 2
+    @section.draw
+    @section.map.foreach do |i, j, x, y|
+      @section.tiles[i][j].obj.draw(@section.map, @section) if @section.tiles[i][j].obj
+      G.window.draw_quad x, y, HIDE_COLOR,
+                         x + C::TILE_SIZE, y, HIDE_COLOR,
+                         x, y + C::TILE_SIZE, HIDE_COLOR,
+                         x + C::TILE_SIZE, y + C::TILE_SIZE, HIDE_COLOR, 0 if @section.tiles[i][j].hide
+      SB.font.draw_text('b', x, y, 0, 1, 1, 0xff000000) if @section.tiles[i][j].back
+      SB.font.draw_text('f', x, y + 11, 0, 1, 1, 0xff000000) if @section.tiles[i][j].fore
+      SB.font.draw_text('p', x, y + 22, 0, 1, 1, 0xff000000) if @section.tiles[i][j].pass
+      SB.font.draw_text('w', x, y + 22, 0, 1, 1, 0xff000000) if @section.tiles[i][j].wall
     end
 
     if @selection && @selection.size == 4
       (@selection[0]..@selection[2]).each do |x|
-        xx = x * 32 - @map.cam.x
+        xx = x * 32 - @section.map.cam.x
         (@selection[1]..@selection[3]).each do |y|
-          yy = y * 32 - @map.cam.y
+          yy = y * 32 - @section.map.cam.y
           G.window.draw_quad xx, yy, SELECTION_COLOR,
                              xx + 32, yy, SELECTION_COLOR,
                              xx, yy + 32, SELECTION_COLOR,
@@ -851,35 +883,8 @@ class Editor
     @floating_panels.each(&:draw)
 
     unless @over_panel.any?
-      p = @map.get_map_pos(Mouse.x, Mouse.y)
+      p = @section.map.get_map_pos(Mouse.x, Mouse.y)
       SB.font.draw_text "#{p.x}, #{p.y}", Mouse.x, Mouse.y - 15, 1, 2, 2, BLACK
     end
-  end
-
-  def draw_object(i, j, x, y)
-    obj = @objects[i][j].obj
-    if obj
-      if obj[0] == 'w' || obj[0] == 'p'
-        @tilesets[@cur_tileset][obj[1..2].to_i].draw x, y, 0, 2, 2
-        SB.font.draw_text obj[0], x + 20, y - 2, 1, 1, 1, BLACK if @show_codes
-      elsif obj[0] == '!'
-        @bomb.draw x, y, 0, 2, 2
-        SB.font.draw_text obj[1..-1], x, y, 0, 1, 1, BLACK if @show_codes
-      else
-        code = obj[1..-1].split(':')
-        @elements[code[0].to_i].draw x, y, 0, 2, 2
-        if @show_codes && code.size > 1
-          code[1..-1].each_with_index do |c, i|
-            SB.font.draw_text c, x, y + i * 9, 0, 1, 1, BLACK
-          end
-        end
-      end
-    end
-  end
-
-  def draw_ramp(x, y, w, h, left, up)
-    G.window.draw_triangle x + (left ? w : 0), y, up ? RAMP_UP_COLOR : RAMP_COLOR,
-                  x, y + h, up ? RAMP_UP_COLOR : RAMP_COLOR,
-                  x + w, y + h, up ? RAMP_UP_COLOR : RAMP_COLOR, 0
   end
 end

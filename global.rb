@@ -463,6 +463,11 @@ class SB
       @state = :menu
     end
 
+    def init_editor_stage(stage)
+      @player = Player.new('', C::LAST_WORLD, 1, :azul, nil, 5, 0)
+      @stage = stage
+    end
+
     def load_custom_stage(name)
       custom_save_path = "#{@save_dir}/custom"
       if File.exist?(custom_save_path)
