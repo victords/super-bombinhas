@@ -620,7 +620,9 @@ class MovingWall < GameObject
         @h += C::TILE_SIZE
       end
     else
-      @max_size = C::TILE_SIZE * args[1].to_i
+      h = args[1].to_i
+      h = 1 if h == 0
+      @max_size = C::TILE_SIZE * h
     end
     @active_bounds = Rectangle.new @x, @y, @w, @h
     section.obstacles << self

@@ -38,6 +38,13 @@ end
 
 class EditorSection < Section
   def initialize(file, entrances, switches)
+    @elements = []
+    @inter_elements = []
+    @obstacles = []
+    @light_tiles = []
+    @effects = []
+    @ramps = []
+
     if file.index('/')
       super(file, entrances, switches, [], [])
     else
@@ -51,11 +58,6 @@ class EditorSection < Section
     @map = Map.new(C::TILE_SIZE, C::TILE_SIZE, @tiles.size, @tiles[0].size, C::EDITOR_SCREEN_WIDTH, C::EDITOR_SCREEN_HEIGHT)
     @size = @map.get_absolute_size
 
-    @elements = []
-    @inter_elements = []
-    @obstacles = []
-    @light_tiles = []
-    @effects = []
     @dead_timer = 0
     @tile_timer = 0
     @tile_3_index = 0
@@ -73,12 +75,21 @@ class EditorSection < Section
       j = el[:y] / C::TILE_SIZE
       @tiles[i][j].obj = el[:type].new(el[:x], el[:y], el[:args], self)
       @tiles[i][j].obj.update(self)
+      @tiles[i][j].code = "@#{ELEMENT_TYPES.key(el[:type])}#{el[:args] ? ":#{el[:args]}" : ''}"
+    end
+    entrances.select { |e| e[:section] == self }.each do |e|
+      i = e[:x] / C::TILE_SIZE
+      j = e[:y] / C::TILE_SIZE
+      @tiles[i][j].obj = Bomb.new(:azul, 1)
+      @tiles[i][j].obj.do_warp(e[:x], e[:y])
+      @tiles[i][j].code = "!#{e[:index]}#{e[:index] == @default_entrance ? '!' : ''}"
     end
     switches[s_index..-1].each do |s|
       i = s[:x] / C::TILE_SIZE
       j = s[:y] / C::TILE_SIZE
-      @tiles[i][j].obj = s[:obj]
+      @tiles[i][j].obj = s[:obj] = s[:type].new(s[:x], s[:y], s[:args], self, s)
       @tiles[i][j].obj.update(self)
+      @tiles[i][j].code = "@#{ELEMENT_TYPES.key(s[:type])}#{s[:args] ? ":#{s[:args]}" : ''}"
     end
   end
 
@@ -112,14 +123,14 @@ class EditorSection < Section
       min_y = h < p_h ? h : p_h
       (p_w...w).each do |i|
         @tiles[i] = []
-        (0...min_y).each { |j| @tiles[i][j] = Tile.new(-1, -1, -1, -1, -1) }
+        (0...min_y).each { |j| @tiles[i][j] = Tile.new }
       end
     end
     if h < p_h
       @tiles.map! { |o| o[0...h] }
     elsif h > p_h
       @tiles.each do |o|
-        (p_h...h).each { |j| o[j] = Tile.new(-1, -1, -1, -1, -1) }
+        (p_h...h).each { |j| o[j] = Tile.new }
       end
     end
     @ramps.reverse_each do |r|
@@ -133,7 +144,7 @@ class EditorSection < Section
     h = @tiles[0].size
     @tiles = Array.new(w) {
       Array.new(h) {
-        Tile.new(-1, -1, -1, -1, -1, false, false, nil)
+        Tile.new
       }
     }
     @ramps.clear
@@ -232,6 +243,9 @@ class EditorSection < Section
 
   def set_object(i, j, code, args, switches)
     type = ELEMENT_TYPES[code]
+    args = nil if args.empty?
+    @obstacles.delete(@tiles[i][j].obj)
+    @inter_elements.delete(@tiles[i][j].obj)
     if type.instance_method(:initialize).parameters.length == 5
       switches << (el = {x: i * C::TILE_SIZE, y: j * C::TILE_SIZE, type: type, args: args, state: :normal, section: self, index: switches.size})
       @tiles[i][j].obj = el[:obj] = ELEMENT_TYPES[code].new(i * C::TILE_SIZE, j * C::TILE_SIZE, args, self, el)
@@ -239,7 +253,15 @@ class EditorSection < Section
       @tiles[i][j].obj = ELEMENT_TYPES[code].new(i * C::TILE_SIZE, j * C::TILE_SIZE, args, self)
     end
     @tiles[i][j].obj.update(self)
-    @tiles[i][j].code = "@#{code}:#{args}"
+    @tiles[i][j].code = "@#{code}#{args ? ":#{args}" : ''}"
+  end
+
+  def set_entrance(i, j, index, default)
+    SB.stage.entrances[index] = {x: i * C::TILE_SIZE, y: j * C::TILE_SIZE, section: self, index: index}
+    @default_entrance = index if default
+    @tiles[i][j].obj = Bomb.new(:azul, 1)
+    @tiles[i][j].obj.do_warp(i * C::TILE_SIZE, j * C::TILE_SIZE)
+    @tiles[i][j].code = "!#{index}#{default ? '!' : ''}"
   end
 
   def set_ramp(i, j, w, h, left, tiles)
@@ -371,6 +393,7 @@ class Editor
     @cur_bgm = 0
 
     exit_options = %w(/\\ → \\/ ← -)
+    @cur_exit = 0
 
     ts_files = Dir["data/tileset/*.png"].sort
     @tilesets = []
@@ -381,8 +404,6 @@ class Editor
       ts_options << num
     end
     @cur_tileset = 0
-
-    @cur_exit = 0
 
     el_files = Dir["data/img/editor/el/*"]
     @elements = {}
@@ -404,7 +425,6 @@ class Editor
       end
     end
 
-    @bomb = Res.img(:editor_Bomb)
     @fog = Res.img(:editor_fog)
 
     save_confirm = false
@@ -525,6 +545,7 @@ class Editor
             chk_dark.checked = infos[5] && infos[5] == '.'
             chk_rain.checked = infos[5] && infos[5] == '$'
 
+            SB.init_editor_stage(EditorStage.new)
             @section = EditorSection.new(path, SB.stage.entrances, SB.stage.switches)
           end
         end,
@@ -557,12 +578,12 @@ class Editor
                 next if i == 0 && j == 0
                 element = get_cell_string i, j
                 if element == last_element &&
-                    (last_element == '' ||
-                        ((last_element[0] == 'w' ||
-                            last_element[0] == 'p' ||
-                            last_element[0] == 'b' ||
-                            last_element[0] == 'f' ||
-                            last_element[0] == 'h') && last_element.size == 3))
+                  (last_element == '' ||
+                    ((last_element[0] == 'w' ||
+                      last_element[0] == 'p' ||
+                      last_element[0] == 'b' ||
+                      last_element[0] == 'f' ||
+                      last_element[0] == 'h') && last_element.size == 3))
                   count += 1
                 else
                   if last_element == ''
@@ -753,7 +774,7 @@ class Editor
           sz = @ramp_sizes[@cur_index % 4]
           @section.set_ramp(i, j, sz[0], sz[1], @cur_index < 4, @ramp_tiles[@cur_index])
         when :bomb
-          SB.stage.entrances << {x: i * C::TILE_SIZE, y: j * C::TILE_SIZE, section: @section}
+          @section.set_entrance(i, j, @txt_args.text.to_i, @chk_default.checked)
         end
       end
     elsif !alt && Mouse.button_down?(:left)
@@ -852,15 +873,19 @@ class Editor
     end
     @section.draw
     @section.map.foreach do |i, j, x, y|
-      @section.tiles[i][j].obj.draw(@section.map, @section) if @section.tiles[i][j].obj
+      tile = @section.tiles[i][j]
+      if tile.obj
+        tile.obj.draw(@section.map, @section)
+        SB.text_helper.write_line(tile.code[1..-1], x + C::TILE_SIZE, y, :right, 0, 255, nil, 0, 0, 0, 0, 1, 1) if tile.obj.is_a?(Bomb)
+      end
       G.window.draw_quad x, y, HIDE_COLOR,
                          x + C::TILE_SIZE, y, HIDE_COLOR,
                          x, y + C::TILE_SIZE, HIDE_COLOR,
-                         x + C::TILE_SIZE, y + C::TILE_SIZE, HIDE_COLOR, 0 if @section.tiles[i][j].hide
-      SB.font.draw_text('b', x, y, 0, 1, 1, 0xff000000) if @section.tiles[i][j].back
-      SB.font.draw_text('f', x, y + 11, 0, 1, 1, 0xff000000) if @section.tiles[i][j].fore
-      SB.font.draw_text('p', x, y + 22, 0, 1, 1, 0xff000000) if @section.tiles[i][j].pass
-      SB.font.draw_text('w', x, y + 22, 0, 1, 1, 0xff000000) if @section.tiles[i][j].wall
+                         x + C::TILE_SIZE, y + C::TILE_SIZE, HIDE_COLOR, 0 if tile.hide
+      SB.font.draw_text('b', x, y, 0, 1, 1, 0xff000000) if tile.back
+      SB.font.draw_text('f', x, y + 11, 0, 1, 1, 0xff000000) if tile.fore
+      SB.font.draw_text('p', x, y + 22, 0, 1, 1, 0xff000000) if tile.pass
+      SB.font.draw_text('w', x, y + 22, 0, 1, 1, 0xff000000) if tile.wall
     end
 
     if @selection && @selection.size == 4
