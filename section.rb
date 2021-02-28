@@ -217,17 +217,13 @@ class Section
 
   def set_bgs(s)
     @bgs = []
-    @repeat_bg_y = true
     s.each do |bg|
+      tiled = true
       if bg.end_with?('!')
-        @repeat_bg_y = false
         bg = bg[0..-2]
+        tiled = false
       end
-      if File.exist?("#{Res.prefix}img/bg/#{bg}.png")
-        @bgs << Res.img("bg_#{bg}", false, true)
-      else
-        @bgs << Res.img("bg_#{bg}", false, true, '.jpg')
-      end
+      @bgs << {img: Res.img("bg_#{bg}", false, true), tiled: tiled}
     end
   end
 
@@ -782,12 +778,13 @@ class Section
   end
 
   def draw_bgs
-    @bgs.each_with_index do |bg, ind|
+    @bgs.each_with_index do |obj, ind|
+      bg = obj[:img]
       back_x = -@map.cam.x * (0.5 + ind * 0.1)
-      back_y = @repeat_bg_y ? -@map.cam.y * (0.5 + ind * 0.1) :
-                              -(@map.cam.y.to_f / (@map.get_absolute_size.y - @map.cam.h) * (bg.height * 2 - @map.cam.h))
+      back_y = obj[:tiled] ? -@map.cam.y * (0.5 + ind * 0.1) :
+                             -(@map.cam.y.to_f / (@map.get_absolute_size.y - @map.cam.h) * (bg.height * 2 - @map.cam.h))
       tiles_x = @size.x / bg.width / 2
-      tiles_y = @repeat_bg_y ? @size.y / bg.height / 2 : 1
+      tiles_y = obj[:tiled] ? @size.y / bg.height / 2 : 1
       (1...tiles_x).each do |i|
         if back_x + i * bg.width * 2 > 0
           back_x += (i - 1) * bg.width * 2

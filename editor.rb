@@ -139,6 +139,19 @@ class EditorSection < Section
     @map = Map.new(C::TILE_SIZE, C::TILE_SIZE, w, h, C::EDITOR_SCREEN_WIDTH, C::EDITOR_SCREEN_HEIGHT)
   end
 
+  def change_bg(index, bg, tiled)
+    if bg == '-'
+      @bgs.delete_at(index)
+    else
+      @bgs[index] = {img: Res.img("bg_#{bg}"), tiled: tiled}
+    end
+  end
+
+  def change_tileset(num)
+    @tileset_num = num.to_i
+    @tileset = Res.tileset(num, 16, 16)
+  end
+
   def clear
     w = @tiles.size
     h = @tiles[0].size
@@ -442,15 +455,21 @@ class Editor
         Label.new(x: 200, y: 0, font: SB.font, text: 'BG', scale_x: 2, scale_y: 2, anchor: :left),
         (ddl_bg = DropDownList.new(x: 224, y: 0, font: SB.font, img: :editor_ddl, opt_img: :editor_ddlOpt, options: bg_options, text_margin: 4, scale_x: 2, scale_y: 2, anchor: :left) do |_, v|
           @cur_bg = bg_options.index(v)
+          @section.change_bg(0, v, @chk_bg_tile.checked)
         end),
         Label.new(x: 268, y: -10, font: SB.font, text: 'tiled', scale_x: 2, scale_y: 2, anchor: :left),
-        (chk_bg_tile = ToggleButton.new(x: 268, y: 10, img: :editor_chk, scale_x: 2, scale_y: 2, anchor: :left)),
+        (@chk_bg_tile = ToggleButton.new(x: 268, y: 10, img: :editor_chk, scale_x: 2, scale_y: 2, anchor: :left) do |v|
+          @section.change_bg(0, bg_options[@cur_bg], v)
+        end),
         Label.new(x: 318, y: 0, font: SB.font, text: 'BG2', scale_x: 2, scale_y: 2, anchor: :left),
         (ddl_bg2 = DropDownList.new(x: 354, y: 0, font: SB.font, img: :editor_ddl, opt_img: :editor_ddlOpt, options: bg2_options, text_margin: 4, scale_x: 2, scale_y: 2, anchor: :left) do |_, v|
           @cur_bg2 = bg_options.index(v)
+          @section.change_bg(1, v, @chk_bg2_tile.checked)
         end),
         Label.new(x: 398, y: -10, font: SB.font, text: 'tiled', scale_x: 2, scale_y: 2, anchor: :left),
-        (chk_bg2_tile = ToggleButton.new(x: 398, y: 10, img: :editor_chk, scale_x: 2, scale_y: 2, anchor: :left)),
+        (@chk_bg2_tile = ToggleButton.new(x: 398, y: 10, img: :editor_chk, scale_x: 2, scale_y: 2, anchor: :left) do |v|
+          @section.change_bg(1, bg_options[@cur_bg2], v) if ddl_bg2.value != '-'
+        end),
         Label.new(x: 450, y: 0, font: SB.font, text: 'BGM', scale_x: 2, scale_y: 2, anchor: :left),
         (ddl_bgm = DropDownList.new(x: 486, y: 0, font: SB.font, img: :editor_ddl, opt_img: :editor_ddlOpt, options: bgm_options, text_margin: 4, scale_x: 2, scale_y: 2, anchor: :left) do |_, v|
           @cur_bgm = bgm_options.index(v)
@@ -471,6 +490,7 @@ class Editor
         (ddl_ts = DropDownList.new(x: 0, y: 4, font: SB.font, img: :editor_ddl, opt_img: :editor_ddlOpt, options: ts_options, text_margin: 4, scale_x: 2, scale_y: 2, anchor: :top) do |_, v|
           @cur_tileset = ts_options.index(v)
           @floating_panels[0].set_children(@tilesets[@cur_tileset].map.with_index{ |t, i| { img: t, x: 4 + (i % 10) * 33, y: 4 + (i / 10) * 33 } })
+          @section.change_tileset(v)
         end),
         Button.new(x: 0, y: 38, img: :editor_btn1, font: SB.font, text: 'Wall', scale_x: 2, scale_y: 2, anchor: :top) do
           @cur_element = :wall
@@ -518,19 +538,19 @@ class Editor
 
             if bg_infos[0].end_with?('!')
               ddl_bg.value = bg_infos[0][0..-2]
-              chk_bg_tile.checked = false
+              @chk_bg_tile.checked = false
             else
               ddl_bg.value = bg_infos[0]
-              chk_bg_tile.checked = true
+              @chk_bg_tile.checked = true
             end
             @cur_bg = bg_options.index(ddl_bg.value)
             if bg_infos[1]
               if bg_infos[1].end_with?('!')
                 ddl_bg2.value = bg_infos[1][0..-2]
-                chk_bg2_tile.checked = false
+                @chk_bg2_tile.checked = false
               else
                 ddl_bg2.value = bg_infos[1]
-                chk_bg2_tile.checked = true
+                @chk_bg2_tile.checked = true
               end
               @cur_bg2 = bg_options.index(ddl_bg2.value)
             else
@@ -567,8 +587,8 @@ class Editor
             tiles_x = @section.tiles.size
             tiles_y = @section.tiles[0].size
             code = "#{tiles_x},#{tiles_y},#{@cur_exit},#{ddl_ts.value},#{ddl_bgm.value}#{chk_dark.checked ? ',.' : chk_rain.checked ? ',$' : ''}#"
-            code += "#{ddl_bg.value}#{chk_bg_tile.checked ? '' : '!'}"
-            code += ",#{ddl_bg2.value}#{chk_bg2_tile.checked ? '' : '!'}" if ddl_bg2.value != '-'
+            code += "#{ddl_bg.value}#{@chk_bg_tile.checked ? '' : '!'}"
+            code += ",#{ddl_bg2.value}#{@chk_bg2_tile.checked ? '' : '!'}" if ddl_bg2.value != '-'
             code += '#'
 
             count = 1
