@@ -29,8 +29,9 @@ end
 class EditorStage < Stage
   attr_reader :entrances
 
-  def initialize
-    super('custom', 'test')
+  def initialize(name = nil)
+    name ||= '__temp'
+    super('custom', name)
     @entrances = []
     @switches = []
   end
@@ -440,8 +441,6 @@ class Editor
 
     @fog = Res.img(:editor_fog)
 
-    save_confirm = false
-
     @panels = [
       ################################## General ##################################
       Panel.new(0, 0, 720, 48, [
@@ -453,7 +452,7 @@ class Editor
           @section.change_size(txt_w.text.to_i, txt_h.text.to_i)
         end,
         Label.new(x: 200, y: 0, font: SB.font, text: 'BG', scale_x: 2, scale_y: 2, anchor: :left),
-        (ddl_bg = DropDownList.new(x: 224, y: 0, font: SB.font, img: :editor_ddl, opt_img: :editor_ddlOpt, options: bg_options, text_margin: 4, scale_x: 2, scale_y: 2, anchor: :left) do |_, v|
+        (@ddl_bg = DropDownList.new(x: 224, y: 0, font: SB.font, img: :editor_ddl, opt_img: :editor_ddlOpt, options: bg_options, text_margin: 4, scale_x: 2, scale_y: 2, anchor: :left) do |_, v|
           @cur_bg = bg_options.index(v)
           @section.change_bg(0, v, @chk_bg_tile.checked)
         end),
@@ -462,7 +461,7 @@ class Editor
           @section.change_bg(0, bg_options[@cur_bg], v)
         end),
         Label.new(x: 318, y: 0, font: SB.font, text: 'BG2', scale_x: 2, scale_y: 2, anchor: :left),
-        (ddl_bg2 = DropDownList.new(x: 354, y: 0, font: SB.font, img: :editor_ddl, opt_img: :editor_ddlOpt, options: bg2_options, text_margin: 4, scale_x: 2, scale_y: 2, anchor: :left) do |_, v|
+        (@ddl_bg2 = DropDownList.new(x: 354, y: 0, font: SB.font, img: :editor_ddl, opt_img: :editor_ddlOpt, options: bg2_options, text_margin: 4, scale_x: 2, scale_y: 2, anchor: :left) do |_, v|
           @cur_bg2 = bg_options.index(v)
           @section.change_bg(1, v, @chk_bg2_tile.checked)
         end),
@@ -471,7 +470,7 @@ class Editor
           @section.change_bg(1, bg_options[@cur_bg2], v) if ddl_bg2.value != '-'
         end),
         Label.new(x: 450, y: 0, font: SB.font, text: 'BGM', scale_x: 2, scale_y: 2, anchor: :left),
-        (ddl_bgm = DropDownList.new(x: 486, y: 0, font: SB.font, img: :editor_ddl, opt_img: :editor_ddlOpt, options: bgm_options, text_margin: 4, scale_x: 2, scale_y: 2, anchor: :left) do |_, v|
+        (@ddl_bgm = DropDownList.new(x: 486, y: 0, font: SB.font, img: :editor_ddl, opt_img: :editor_ddlOpt, options: bgm_options, text_margin: 4, scale_x: 2, scale_y: 2, anchor: :left) do |_, v|
           @cur_bgm = bgm_options.index(v)
         end),
         Label.new(x: 532, y: 0, font: SB.font, text: 'Exit', scale_x: 2, scale_y: 2, anchor: :left),
@@ -479,15 +478,15 @@ class Editor
           @cur_exit = exit_options.index(v)
         end),
         Label.new(x: 30, y: -10, font: SB.font, text: 'Dark', scale_x: 2, scale_y: 2, anchor: :right),
-        (chk_dark = ToggleButton.new(x: 10, y: -10, img: :editor_chk, scale_x: 2, scale_y: 2, anchor: :right)),
+        (@chk_dark = ToggleButton.new(x: 10, y: -10, img: :editor_chk, scale_x: 2, scale_y: 2, anchor: :right)),
         Label.new(x: 30, y: 10, font: SB.font, text: 'Rain', scale_x: 2, scale_y: 2, anchor: :right),
-        (chk_rain = ToggleButton.new(x: 10, y: 10, img: :editor_chk, scale_x: 2, scale_y: 2, anchor: :right))
+        (@chk_rain = ToggleButton.new(x: 10, y: 10, img: :editor_chk, scale_x: 2, scale_y: 2, anchor: :right))
       ], :editor_pnl, :tiled, true, 2, 2, :top),
       ###########################################################################
 
       ################################# Tileset #################################
       Panel.new(0, 0, 68, 300, [
-        (ddl_ts = DropDownList.new(x: 0, y: 4, font: SB.font, img: :editor_ddl, opt_img: :editor_ddlOpt, options: ts_options, text_margin: 4, scale_x: 2, scale_y: 2, anchor: :top) do |_, v|
+        (@ddl_ts = DropDownList.new(x: 0, y: 4, font: SB.font, img: :editor_ddl, opt_img: :editor_ddlOpt, options: ts_options, text_margin: 4, scale_x: 2, scale_y: 2, anchor: :top) do |_, v|
           @cur_tileset = ts_options.index(v)
           @floating_panels[0].set_children(@tilesets[@cur_tileset].map.with_index{ |t, i| { img: t, x: 4 + (i % 10) * 33, y: 4 + (i / 10) * 33 } })
           @section.change_tileset(v)
@@ -514,17 +513,17 @@ class Editor
       ################################### File ##################################
       Panel.new(0, 0, 560, 48, [
         Label.new(x: 7, y: 0, font: SB.font, text: 'Stage', scale_x: 2, scale_y: 2, anchor: :left),
-        (txt_stage = TextField.new(x: 64, y: 0, font: SB.font, img: :editor_textField2, margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2, text: '1', anchor: :left,
-                                   allowed_chars: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,!?', max_length: 15)),
+        (@txt_stage = TextField.new(x: 64, y: 0, font: SB.font, img: :editor_textField2, margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2, text: '1', anchor: :left,
+                                    allowed_chars: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,!?', max_length: 15)),
         Label.new(x: 247, y: 0, font: SB.font, text: 'Section', scale_x: 2, scale_y: 2, anchor: :left),
-        (txt_section = TextField.new(x: 319, y: 0, font: SB.font, img: :editor_textField, margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2, text: '1', anchor: :left,
-                                     allowed_chars: '0123456789', max_length: 2)),
-        (lbl_conf_save = Label.new(x: 0, y: 50, font: SB.font, text: 'Overwrite?', scale_x: 2, scale_y: 2, anchor: :bottom)),
+        (@txt_section = TextField.new(x: 319, y: 0, font: SB.font, img: :editor_textField, margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2, text: '1', anchor: :left,
+                                      allowed_chars: '0123456789', max_length: 2)),
+        (@lbl_conf_save = Label.new(x: 0, y: 50, font: SB.font, text: 'Overwrite?', scale_x: 2, scale_y: 2, anchor: :bottom)),
         Button.new(x: 132, y: 0, img: :editor_btn1, font: SB.font, text: 'Clear', scale_x: 2, scale_y: 2, anchor: :right) do
           @section.clear
         end,
         Button.new(x: 68, y: 0, img: :editor_btn1, font: SB.font, text: 'Load', scale_x: 2, scale_y: 2, anchor: :right) do
-          path = "data/stage/custom/#{txt_stage.text}-#{txt_section.text}"
+          path = "data/stage/custom/#{@txt_stage.text}-#{@txt_section.text}"
           if File.exist? path
             f = File.open(path)
             all = f.readline.chomp.split('#')
@@ -537,96 +536,42 @@ class Editor
             ddl_exit.value = exit_options[@cur_exit]
 
             if bg_infos[0].end_with?('!')
-              ddl_bg.value = bg_infos[0][0..-2]
+              @ddl_bg.value = bg_infos[0][0..-2]
               @chk_bg_tile.checked = false
             else
-              ddl_bg.value = bg_infos[0]
+              @ddl_bg.value = bg_infos[0]
               @chk_bg_tile.checked = true
             end
-            @cur_bg = bg_options.index(ddl_bg.value)
+            @cur_bg = bg_options.index(@ddl_bg.value)
             if bg_infos[1]
               if bg_infos[1].end_with?('!')
-                ddl_bg2.value = bg_infos[1][0..-2]
+                @ddl_bg2.value = bg_infos[1][0..-2]
                 @chk_bg2_tile.checked = false
               else
-                ddl_bg2.value = bg_infos[1]
+                @ddl_bg2.value = bg_infos[1]
                 @chk_bg2_tile.checked = true
               end
-              @cur_bg2 = bg_options.index(ddl_bg2.value)
+              @cur_bg2 = bg_options.index(@ddl_bg2.value)
             else
-              ddl_bg2.value = '-'
+              @ddl_bg2.value = '-'
               @cur_bg2 = nil
             end
-            ddl_ts.value = infos[3]
-            @cur_tileset = ts_options.index(ddl_ts.value)
-            ddl_bgm.value = infos[4]
-            @cur_bgm = bgm_options.index(ddl_bgm.value)
+            @ddl_ts.value = infos[3]
+            @cur_tileset = ts_options.index(@ddl_ts.value)
+            @ddl_bgm.value = infos[4]
+            @cur_bgm = bgm_options.index(@ddl_bgm.value)
 
-            chk_dark.checked = infos[5] && infos[5] == '.'
-            chk_rain.checked = infos[5] && infos[5] == '$'
+            @chk_dark.checked = infos[5] && infos[5] == '.'
+            @chk_rain.checked = infos[5] && infos[5] == '$'
 
-            SB.init_editor_stage(EditorStage.new)
+            @saved_name = @txt_stage.text
+            SB.init_editor_stage(EditorStage.new(@saved_name))
             @section = EditorSection.new(path, SB.stage.entrances, SB.stage.switches)
           end
         end,
         Button.new(x: 4, y: 0, img: :editor_btn1, font: SB.font, text: 'Save', scale_x: 2, scale_y: 2, anchor: :right) do
-          path = "data/stage/custom/#{txt_stage.text}-#{txt_section.text}"
-          will_save = if save_confirm
-                        save_confirm = lbl_conf_save.visible = false
-                        File.delete path
-                        true
-                      elsif File.exist? path
-                        save_confirm = lbl_conf_save.visible = true
-                        false
-                      else
-                        true
-                      end
-          if will_save
-            FileUtils.mkdir_p('data/stage/custom')
-
-            tiles_x = @section.tiles.size
-            tiles_y = @section.tiles[0].size
-            code = "#{tiles_x},#{tiles_y},#{@cur_exit},#{ddl_ts.value},#{ddl_bgm.value}#{chk_dark.checked ? ',.' : chk_rain.checked ? ',$' : ''}#"
-            code += "#{ddl_bg.value}#{@chk_bg_tile.checked ? '' : '!'}"
-            code += ",#{ddl_bg2.value}#{@chk_bg2_tile.checked ? '' : '!'}" if ddl_bg2.value != '-'
-            code += '#'
-
-            count = 1
-            last_element = get_cell_string(0, 0)
-            (0...tiles_y).each do |j|
-              (0...tiles_x).each do |i|
-                next if i == 0 && j == 0
-                element = get_cell_string i, j
-                if element == last_element &&
-                  (last_element == '' ||
-                    ((last_element[0] == 'w' ||
-                      last_element[0] == 'p' ||
-                      last_element[0] == 'b' ||
-                      last_element[0] == 'f' ||
-                      last_element[0] == 'h') && last_element.size == 3))
-                  count += 1
-                else
-                  if last_element == ''
-                    code += "_#{count}"
-                  else
-                    code += last_element + (count > 1 ? "*#{count}" : '')
-                  end
-                  code += ';'
-                  last_element = element
-                  count = 1
-                end
-              end
-            end
-            if last_element == ''
-              code = code.chop + '#'
-            else
-              code += last_element + (count > 1 ? "*#{count}" : '') + '#'
-            end
-            @section.ramps.each { |r| code += "#{r.code};" }
-            code.chop! unless @section.ramps.empty?
-
-            File.open(path, 'w') { |f| f.write code }
-          end
+          save
+          @saved_name = @txt_stage.text
         end,
       ], :editor_pnl, :tiled, true, 2, 2, :bottom),
       ###########################################################################
@@ -699,7 +644,7 @@ class Editor
       ###########################################################################
     ]
 
-    @panels[4].visible = @panels[5].visible = lbl_conf_save.visible = false
+    @panels[4].visible = @panels[5].visible = @lbl_conf_save.visible = false
 
     obj_items = []
     @objs.keys.sort.each_with_index do |k, i|
@@ -716,7 +661,7 @@ class Editor
       FloatingPanel.new(:enemy, btn_enemy.x - 341, btn_enemy.y, 337, 300, enemy_items, self),
     ]
 
-    @dropdowns = [ddl_bg, ddl_bgm, ddl_exit, ddl_ts, @ddl_tile_type]
+    @dropdowns = [@ddl_bg, @ddl_bgm, ddl_exit, @ddl_ts, @ddl_tile_type]
 
     @ramp_sizes = [[1, 1], [2, 1], [3, 2], [1, 2]]
     @ramp_tiles = [
@@ -731,19 +676,36 @@ class Editor
     ]
   end
 
-  def needs_cursor?
-    true
-  end
-
   def update
     unless @inited
       @inited = true
     end
 
+    if @testing
+      if KB.key_pressed?(Gosu::KbEscape)
+        Gosu::Song.current_song.stop
+        SB.player.bomb.do_warp(-1000, -1000)
+        G.window.width = C::EDITOR_SCREEN_WIDTH
+        G.window.height = C::EDITOR_SCREEN_HEIGHT
+        @testing = false
+      else
+        SB.stage.update
+      end
+      return
+    end
+
     SB.close_editor if KB.key_pressed?(Gosu::KbEscape)
     toggle_args_panel if KB.key_pressed?(Gosu::KbReturn)
     toggle_offset_panel if KB.key_pressed?(Gosu::KbTab)
-    @show_codes = !@show_codes if KB.key_pressed?(Gosu::KB_PERIOD)
+
+    if KB.key_pressed?(Gosu::KB_SPACE)
+      @save_confirm = @testing = true
+      save(@saved_name || '__temp')
+      G.window.width = C::SCREEN_WIDTH
+      G.window.height = C::SCREEN_HEIGHT
+      SB.stage.start
+      return
+    end
 
     @over_panel = [false, false, false, false, false]
     @dropdowns.each_with_index do |d, i|
@@ -871,6 +833,66 @@ class Editor
     end
   end
 
+  def save(stage_name = nil)
+    stage_name ||= @txt_stage.text
+    path = "data/stage/custom/#{stage_name}-#{@txt_section.text}"
+    will_save = if @save_confirm
+                  @save_confirm = @lbl_conf_save.visible = false
+                  true
+                elsif File.exist? path
+                  @save_confirm = @lbl_conf_save.visible = true
+                  false
+                else
+                  true
+                end
+    if will_save
+      FileUtils.mkdir_p('data/stage/custom')
+
+      tiles_x = @section.tiles.size
+      tiles_y = @section.tiles[0].size
+      code = "#{tiles_x},#{tiles_y},#{@cur_exit},#{@ddl_ts.value},#{@ddl_bgm.value}#{@chk_dark.checked ? ',.' : @chk_rain.checked ? ',$' : ''}#"
+      code += "#{@ddl_bg.value}#{@chk_bg_tile.checked ? '' : '!'}"
+      code += ",#{@ddl_bg2.value}#{@chk_bg2_tile.checked ? '' : '!'}" if @ddl_bg2.value != '-'
+      code += '#'
+
+      count = 1
+      last_element = get_cell_string(0, 0)
+      (0...tiles_y).each do |j|
+        (0...tiles_x).each do |i|
+          next if i == 0 && j == 0
+          element = get_cell_string i, j
+          if element == last_element &&
+            (last_element == '' ||
+              ((last_element[0] == 'w' ||
+                last_element[0] == 'p' ||
+                last_element[0] == 'b' ||
+                last_element[0] == 'f' ||
+                last_element[0] == 'h') && last_element.size == 3))
+            count += 1
+          else
+            if last_element == ''
+              code += "_#{count}"
+            else
+              code += last_element + (count > 1 ? "*#{count}" : '')
+            end
+            code += ';'
+            last_element = element
+            count = 1
+          end
+        end
+      end
+      if last_element == ''
+        code = code.chomp(';') + '#'
+      else
+        code += last_element + (count > 1 ? "*#{count}" : '') + '#'
+      end
+      @section.ramps.each { |r| code += "#{r.code};" }
+      code.chop! unless @section.ramps.empty?
+
+      File.open(path, 'w') { |f| f.write code }
+    end
+  end
+
   def get_cell_string(i, j)
     str = ''
     str += "b#{'%02d' % @section.tiles[i][j].back}" if @section.tiles[i][j].back
@@ -884,6 +906,11 @@ class Editor
 
   def draw
     return unless @inited
+
+    if @testing
+      SB.stage.draw
+      return
+    end
 
     @section.map.foreach do |i, j, x, y|
       G.window.draw_quad x + 1, y + 1, NULL_COLOR,
