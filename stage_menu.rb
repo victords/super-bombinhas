@@ -112,7 +112,7 @@ class StageMenu
   class << self
     attr_reader :ready
 
-    def initialize(custom = false)
+    def initialize(custom = false, editor = false)
       if @ready
         @stage_menu.reset
         set_bomb_screen_comps
@@ -139,7 +139,11 @@ class StageMenu
           }
         ], [], options_comps, custom ? [
           MenuButton.new(400, :exit, false) {
-            SB.leave_custom_stage(true)
+            if editor
+              SB.editor_stop_test
+            else
+              SB.leave_custom_stage(true)
+            end
           }
         ] : [
           MenuButton.new(400, :continue, false, 219) {
@@ -316,7 +320,7 @@ class StageMenu
     end
 
     def draw
-      if SB.state == :main
+      if SB.state == :main || SB.state == :editor
         st = SB.stage
         unless st.starting > 0
           draw_player_stats

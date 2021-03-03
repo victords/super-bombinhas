@@ -468,6 +468,10 @@ class SB
       @stage = stage
     end
 
+    def editor_stop_test
+      @editor.stop_test
+    end
+
     def load_custom_stage(name)
       custom_save_path = "#{@save_dir}/custom"
       if File.exist?(custom_save_path)

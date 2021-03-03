@@ -17,6 +17,18 @@ require_relative 'global'
 require_relative 'stage'
 include MiniGL
 
+class Entrance
+  def initialize(x, y)
+    @x = x
+    @y = y
+    @img = Res.img(:editor_entrance)
+  end
+
+  def draw(map, section)
+    @img.draw(@x - map.cam.x, @y - map.cam.y, 0, 2, 2)
+  end
+end
+
 class EditorRamp < Ramp
   attr_reader :code
 
@@ -28,12 +40,41 @@ end
 
 class EditorStage < Stage
   attr_reader :entrances
+  attr_accessor :start_pos
 
   def initialize(name = nil)
     name ||= '__temp'
     super('custom', name)
     @entrances = []
     @switches = []
+  end
+
+  def start(loaded = false, time = nil, objective = nil, reward = nil)
+    @warp_timer = 0
+    @star_count = 0
+    @life_count = 0
+    @switches = []
+    taken_switches = []
+    used_switches = []
+
+    @sections = []
+    @entrances = []
+    sections = Dir["#{Res.prefix}stage/#{@world}/#{@num}-*"]
+    sections.sort.each do |s|
+      @sections << Section.new(s, @entrances, @switches, taken_switches, used_switches)
+    end
+
+    SB.player.reset(loaded)
+
+    if @start_pos
+      @cur_entrance = {x: @start_pos[0], y: @start_pos[1]}
+      @cur_section = @sections.find { |s| s.id == @start_pos[2] }
+    else
+      @cur_entrance = @entrances[0]
+      @cur_section = @cur_entrance[:section]
+    end
+
+    reset(true)
   end
 end
 
@@ -81,8 +122,7 @@ class EditorSection < Section
     entrances.select { |e| e[:section] == self }.each do |e|
       i = e[:x] / C::TILE_SIZE
       j = e[:y] / C::TILE_SIZE
-      @tiles[i][j].obj = Bomb.new(:azul, 1)
-      @tiles[i][j].obj.do_warp(e[:x], e[:y])
+      @tiles[i][j].obj = Entrance.new(e[:x], e[:y])
       @tiles[i][j].code = "!#{e[:index]}#{e[:index] == @default_entrance ? '!' : ''}"
     end
     switches[s_index..-1].each do |s|
@@ -271,10 +311,10 @@ class EditorSection < Section
   end
 
   def set_entrance(i, j, index, default)
-    SB.stage.entrances[index] = {x: i * C::TILE_SIZE, y: j * C::TILE_SIZE, section: self, index: index}
+    x = i * C::TILE_SIZE; y = j * C::TILE_SIZE
+    SB.stage.entrances[index] = {x: x, y: y, section: self, index: index}
     @default_entrance = index if default
-    @tiles[i][j].obj = Bomb.new(:azul, 1)
-    @tiles[i][j].obj.do_warp(i * C::TILE_SIZE, j * C::TILE_SIZE)
+    @tiles[i][j].obj = Entrance.new(x, y)
     @tiles[i][j].code = "!#{index}#{default ? '!' : ''}"
   end
 
@@ -439,7 +479,8 @@ class Editor
       end
     end
 
-    @fog = Res.img(:editor_fog)
+    @bomb = Res.imgs(:sprite_BombaAzul, 6, 2)
+    @entrance = Res.img(:editor_entrance)
 
     @panels = [
       ################################## General ##################################
@@ -577,19 +618,22 @@ class Editor
       ###########################################################################
 
       ################################# Elements ################################
-      Panel.new(0, 0, 68, 300, [
-        Button.new(x: 0, y: 4, img: :editor_btn1, font: SB.font, text: 'BOMB', scale_x: 2, scale_y: 2, anchor: :top) do
+      Panel.new(0, 0, 68, 344, [
+        Button.new(x: 0, y: 4, img: :editor_btn1, font: SB.font, text: 'Bomb', scale_x: 2, scale_y: 2, anchor: :top) do
           @cur_element = :bomb
         end,
-        Label.new(x: 0, y: 48, font: SB.font, text: 'Default', scale_x: 1, scale_y: 1, anchor: :top),
-        (@chk_default = ToggleButton.new(x: 0, y: 60, img: :editor_chk, checked: true, scale_x: 2, scale_y: 2, anchor: :top)),
-        (btn_obj = Button.new(x: 0, y: 100, img: :editor_btn1, font: SB.font, text: 'obj', scale_x: 2, scale_y: 2, anchor: :top) do
+        Button.new(x: 0, y: 48, img: :editor_btn1, font: SB.font, text: 'entr.', scale_x: 2, scale_y: 2, anchor: :top) do
+          @cur_element = :entrance
+        end,
+        Label.new(x: 0, y: 92, font: SB.font, text: 'Default', scale_x: 1, scale_y: 1, anchor: :top),
+        (@chk_default = ToggleButton.new(x: 0, y: 104, img: :editor_chk, checked: true, scale_x: 2, scale_y: 2, anchor: :top)),
+        (btn_obj = Button.new(x: 0, y: 144, img: :editor_btn1, font: SB.font, text: 'obj', scale_x: 2, scale_y: 2, anchor: :top) do
           toggle_floating_panel(2)
         end),
-        (btn_enemy = Button.new(x: 0, y: 144, img: :editor_btn1, font: SB.font, text: 'enmy', scale_x: 2, scale_y: 2, anchor: :top) do
+        (btn_enemy = Button.new(x: 0, y: 188, img: :editor_btn1, font: SB.font, text: 'enmy', scale_x: 2, scale_y: 2, anchor: :top) do
           toggle_floating_panel(3)
         end),
-        Button.new(x: 0, y: 188, img: :editor_btn1, font: SB.font, text: 'args', scale_x: 2, scale_y: 2, anchor: :top) do
+        Button.new(x: 0, y: 232, img: :editor_btn1, font: SB.font, text: 'args', scale_x: 2, scale_y: 2, anchor: :top) do
           toggle_args_panel
         end,
         Button.new(x: 0, y: 4, img: :editor_btn1, font: SB.font, text: 'offst', scale_x: 2, scale_y: 2, anchor: :bottom) do
@@ -683,13 +727,15 @@ class Editor
 
     if @testing
       if KB.key_pressed?(Gosu::KbEscape)
-        Gosu::Song.current_song.stop
-        SB.player.bomb.do_warp(-1000, -1000)
-        G.window.width = C::EDITOR_SCREEN_WIDTH
-        G.window.height = C::EDITOR_SCREEN_HEIGHT
-        @testing = false
+        stop_test
       else
-        SB.stage.update
+        status = SB.stage.update
+        @testing = :finish if status == :finish
+        if @testing == :finish
+          StageMenu.update_end
+        else
+          StageMenu.update_main
+        end
       end
       return
     end
@@ -699,11 +745,7 @@ class Editor
     toggle_offset_panel if KB.key_pressed?(Gosu::KbTab)
 
     if KB.key_pressed?(Gosu::KB_SPACE)
-      @save_confirm = @testing = true
-      save(@saved_name || '__temp')
-      G.window.width = C::SCREEN_WIDTH
-      G.window.height = C::SCREEN_HEIGHT
-      SB.stage.start
+      start_test
       return
     end
 
@@ -755,7 +797,7 @@ class Editor
         when :ramp
           sz = @ramp_sizes[@cur_index % 4]
           @section.set_ramp(i, j, sz[0], sz[1], @cur_index < 4, @ramp_tiles[@cur_index])
-        when :bomb
+        when :entrance
           @section.set_entrance(i, j, @txt_args.text.to_i, @chk_default.checked)
         end
       end
@@ -775,6 +817,8 @@ class Editor
           @section.tiles[i][j].send(prop, @cur_index)
         when :obj, :enemy
           @section.set_object(i, j, @cur_index, @txt_args.text, SB.stage.switches)
+        when :bomb
+          SB.stage.start_pos = [i * C::TILE_SIZE, j * C::TILE_SIZE, @txt_section.text]
         end
       end
     elsif Mouse.button_released?(:left)
@@ -806,6 +850,24 @@ class Editor
     elsif ctrl && Mouse.button_down?(:right)
       @section.delete_at(i, j, true)
     end
+  end
+
+  def start_test
+    @save_confirm = true
+    save(@saved_name || '__temp')
+    G.window.width = C::SCREEN_WIDTH
+    G.window.height = C::SCREEN_HEIGHT
+    StageMenu.initialize(true, true)
+    SB.stage.start
+    @testing = :main
+  end
+
+  def stop_test
+    Gosu::Song.current_song.stop
+    SB.player.bomb.do_warp(-1000, -1000)
+    G.window.width = C::EDITOR_SCREEN_WIDTH
+    G.window.height = C::EDITOR_SCREEN_HEIGHT
+    @testing = nil
   end
 
   def toggle_floating_panel(index)
@@ -909,6 +971,7 @@ class Editor
 
     if @testing
       SB.stage.draw
+      StageMenu.draw
       return
     end
 
@@ -923,16 +986,24 @@ class Editor
       tile = @section.tiles[i][j]
       if tile.obj
         tile.obj.draw(@section.map, @section)
-        SB.text_helper.write_line(tile.code[1..-1], x + C::TILE_SIZE, y, :right, 0, 255, nil, 0, 0, 0, 0, 1, 1) if tile.obj.is_a?(Bomb)
+        SB.text_helper.write_line(tile.code[1..-1], x + C::TILE_SIZE, y, :right, 0, 255, nil, 0, 0, 0, 0, 1, 1) if tile.obj.is_a?(Entrance)
       end
-      G.window.draw_quad x, y, HIDE_COLOR,
-                         x + C::TILE_SIZE, y, HIDE_COLOR,
-                         x, y + C::TILE_SIZE, HIDE_COLOR,
-                         x + C::TILE_SIZE, y + C::TILE_SIZE, HIDE_COLOR, 0 if tile.hide
+      if tile.hide
+        color = tile.hide == 0 ? HIDE_COLOR : NULL_COLOR
+        G.window.draw_quad x, y, color,
+                           x + C::TILE_SIZE, y, color,
+                           x, y + C::TILE_SIZE, color,
+                           x + C::TILE_SIZE, y + C::TILE_SIZE, color, 0
+      end
       SB.font.draw_text('b', x, y, 0, 1, 1, 0xff000000) if tile.back
       SB.font.draw_text('f', x, y + 11, 0, 1, 1, 0xff000000) if tile.fore
       SB.font.draw_text('p', x, y + 22, 0, 1, 1, 0xff000000) if tile.pass
       SB.font.draw_text('w', x, y + 22, 0, 1, 1, 0xff000000) if tile.wall
+    end
+
+    s_pos = SB.stage.start_pos
+    if s_pos
+      @bomb[0].draw(s_pos[0] - @section.map.cam.x, s_pos[1] - @section.map.cam.y, 0, 2, 2)
     end
 
     if @selection && @selection.size == 4

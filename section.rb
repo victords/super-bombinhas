@@ -183,10 +183,11 @@ class Section
     127 => SpecGate,
   }
 
-  attr_reader :reload, :tiles, :obstacles, :ramps, :passengers, :size, :default_entrance, :warp, :tileset_num, :map, :bgm, :fixed_camera
+  attr_reader :id, :reload, :tiles, :obstacles, :ramps, :passengers, :size, :default_entrance, :warp, :tileset_num, :map, :bgm, :fixed_camera
   attr_accessor :entrance, :loaded, :active_object
 
   def initialize(file, entrances, switches, taken_switches, used_switches)
+    @id = file.split('/')[-1].split('-')[1]
     parts = File.read(file).chomp.split('#', -1)
     set_map_tileset parts[0].split ','
     set_bgs parts[1].split ','
