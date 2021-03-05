@@ -169,7 +169,7 @@ class Stage
 
   def check_reload
     if @cur_section.reload
-      if SB.player.lives + @life_count == 0
+      if SB.player.lives >= 0 && SB.player.lives + @life_count == 0
         SB.game_over
       else
         @sections.each do |s|

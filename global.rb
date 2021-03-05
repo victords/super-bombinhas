@@ -470,7 +470,10 @@ class SB
 
     def editor_stop_test
       Gosu::Song.current_song.stop if Gosu::Song.current_song
-      @editor.stop_test
+      G.window.width = C::EDITOR_SCREEN_WIDTH
+      G.window.height = C::EDITOR_SCREEN_HEIGHT
+      @player.bomb.do_warp(-1000, -1000)
+      @state = :editor
     end
 
     def load_custom_stage(name)

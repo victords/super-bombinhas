@@ -18,9 +18,12 @@ require_relative 'stage'
 include MiniGL
 
 class Entrance
-  def initialize(x, y)
+  attr_reader :index
+
+  def initialize(x, y, index)
     @x = x
     @y = y
+    @index = index
     @img = Res.img(:editor_entrance)
   end
 
@@ -67,8 +70,9 @@ class EditorStage < Stage
     SB.player.reset(loaded)
 
     if @start_pos
-      @cur_entrance = {x: @start_pos[0], y: @start_pos[1]}
-      @cur_section = @sections.find { |s| s.id == @start_pos[2] }
+      section = @sections.find { |s| s.id == @start_pos[2] }
+      @cur_entrance = {x: @start_pos[0] * C::TILE_SIZE, y: @start_pos[1] * C::TILE_SIZE, section: section}
+      @cur_section = section
     else
       @cur_entrance = @entrances[0]
       @cur_section = @cur_entrance[:section]
@@ -122,7 +126,7 @@ class EditorSection < Section
     entrances.select { |e| e[:section] == self }.each do |e|
       i = e[:x] / C::TILE_SIZE
       j = e[:y] / C::TILE_SIZE
-      @tiles[i][j].obj = Entrance.new(e[:x], e[:y])
+      @tiles[i][j].obj = Entrance.new(e[:x], e[:y], e[:index])
       @tiles[i][j].code = "!#{e[:index]}#{e[:index] == @default_entrance ? '!' : ''}"
     end
     switches[s_index..-1].each do |s|
@@ -314,7 +318,7 @@ class EditorSection < Section
     x = i * C::TILE_SIZE; y = j * C::TILE_SIZE
     SB.stage.entrances[index] = {x: x, y: y, section: self, index: index}
     @default_entrance = index if default
-    @tiles[i][j].obj = Entrance.new(x, y)
+    @tiles[i][j].obj = Entrance.new(x, y, index)
     @tiles[i][j].code = "!#{index}#{default ? '!' : ''}"
   end
 
@@ -328,6 +332,7 @@ class EditorSection < Section
 
   def delete_at(i, j, all)
     if all
+      check_delete_entrance(i, j)
       @tiles[i][j] = Tile.new
       delete_ramp(i, j)
       set_surrounding_wall_tiles(i, j)
@@ -336,6 +341,7 @@ class EditorSection < Section
     elsif @tiles[i][j].fore
       @tiles[i][j].fore = nil
     elsif @tiles[i][j].obj
+      check_delete_entrance(i, j)
       @tiles[i][j].obj = nil
     elsif @tiles[i][j].wall
       @tiles[i][j].wall = nil
@@ -345,6 +351,11 @@ class EditorSection < Section
     elsif @tiles[i][j].back
       @tiles[i][j].back = nil
     end
+  end
+
+  def check_delete_entrance(i, j)
+    obj = @tiles[i][j].obj
+    SB.stage.entrances.delete_at(obj.index) if obj.is_a?(Entrance)
   end
 
   def delete_ramp(i, j)
@@ -611,8 +622,7 @@ class Editor
           end
         end,
         Button.new(x: 4, y: 0, img: :editor_btn1, font: SB.font, text: 'Save', scale_x: 2, scale_y: 2, anchor: :right) do
-          save
-          @saved_name = @txt_stage.text
+          @saved_name = @txt_stage.text if save
         end,
       ], :editor_pnl, :tiled, true, 2, 2, :bottom),
       ###########################################################################
@@ -684,11 +694,21 @@ class Editor
             @selection[3] += o_y
           end
         end
+      ], :editor_pnl, :tiled, true, 2, 2, :center),
+      ###########################################################################
+
+      ############################### CONFIRMATION ##############################
+      Panel.new(0, 0, 360, 120, [
+        (@lbl_msg1 = Label.new(x: 0, y: 10, font: SB.font, text: 'The level must have an entrance', scale_x: 2, scale_y: 2, anchor: :top)),
+        (@lbl_msg2 = Label.new(x: 0, y: 40, font: SB.font, text: 'or a start point', scale_x: 2, scale_y: 2, anchor: :top)),
+        Button.new(x: 0, y: 10, img: :editor_btn1, font: SB.font, text: 'OK', scale_x: 2, scale_y: 2, anchor: :bottom) {
+          @panels[6].visible = false
+        }
       ], :editor_pnl, :tiled, true, 2, 2, :center)
       ###########################################################################
     ]
 
-    @panels[4].visible = @panels[5].visible = @lbl_conf_save.visible = false
+    @panels[4].visible = @panels[5].visible = @panels[6].visible = @lbl_conf_save.visible = false
 
     obj_items = []
     @objs.keys.sort.each_with_index do |k, i|
@@ -803,7 +823,7 @@ class Editor
         when :obj, :enemy
           @section.set_object(i, j, @cur_index, @txt_args.text, SB.stage.switches)
         when :bomb
-          SB.stage.start_pos = [i * C::TILE_SIZE, j * C::TILE_SIZE, @txt_section.text]
+          SB.stage.start_pos = [i, j, @txt_section.text]
         end
       end
     elsif Mouse.button_released?(:left)
@@ -830,28 +850,29 @@ class Editor
           @pass_start = nil
         end
       end
-    elsif !ctrl && Mouse.button_pressed?(:right)
-      @section.delete_at(i, j, false)
-    elsif ctrl && Mouse.button_down?(:right)
+    elsif !ctrl && Mouse.button_down?(:right)
+      s_pos = SB.stage.start_pos
+      SB.stage.start_pos = nil if s_pos && s_pos[0] == i && s_pos[1] == j
       @section.delete_at(i, j, true)
+    elsif ctrl && Mouse.button_pressed?(:right)
+      s_pos = SB.stage.start_pos
+      deleted = false
+      if s_pos && s_pos[0] == i && s_pos[1] == j
+        SB.stage.start_pos = nil
+        deleted = true
+      end
+      @section.delete_at(i, j, false) unless deleted
     end
   end
 
   def start_test
     @save_confirm = true
-    save(@saved_name || '__temp')
+    return unless save(@saved_name || '__temp')
     G.window.width = C::SCREEN_WIDTH
     G.window.height = C::SCREEN_HEIGHT
     StageMenu.initialize(true, true)
     SB.stage.start
     SB.state = :main
-  end
-
-  def stop_test
-    SB.player.bomb.do_warp(-1000, -1000)
-    G.window.width = C::EDITOR_SCREEN_WIDTH
-    G.window.height = C::EDITOR_SCREEN_HEIGHT
-    SB.state = :editor
   end
 
   def toggle_floating_panel(index)
@@ -880,6 +901,12 @@ class Editor
   end
 
   def save(stage_name = nil)
+    if (stage_name && !SB.stage.start_pos && !SB.stage.entrances[0]) || (!stage_name && !SB.stage.entrances[0])
+      @lbl_msg2.text = stage_name ? 'or a start point' : ''
+      @panels[6].visible = true
+      return false
+    end
+
     stage_name ||= @txt_stage.text
     path = "data/stage/custom/#{stage_name}-#{@txt_section.text}"
     will_save = if @save_confirm
@@ -937,6 +964,7 @@ class Editor
 
       File.open(path, 'w') { |f| f.write code }
     end
+    true
   end
 
   def get_cell_string(i, j)
@@ -981,7 +1009,7 @@ class Editor
 
     s_pos = SB.stage.start_pos
     if s_pos
-      @bomb[0].draw(s_pos[0] - @section.map.cam.x, s_pos[1] - @section.map.cam.y, 0, 2, 2)
+      @bomb[0].draw(s_pos[0] * C::TILE_SIZE - @section.map.cam.x, s_pos[1] * C::TILE_SIZE - @section.map.cam.y, 0, 2, 2)
     end
 
     if @selection && @selection.size == 4
