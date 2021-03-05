@@ -464,11 +464,12 @@ class SB
     end
 
     def init_editor_stage(stage)
-      @player = Player.new('', C::LAST_WORLD, 1, :azul, nil, 5, 0)
+      @player = Player.new('', C::LAST_WORLD, 1, :azul, nil, -1, 0)
       @stage = stage
     end
 
     def editor_stop_test
+      Gosu::Song.current_song.stop if Gosu::Song.current_song
       @editor.stop_test
     end
 

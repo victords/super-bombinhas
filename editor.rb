@@ -725,21 +725,6 @@ class Editor
       @inited = true
     end
 
-    if @testing
-      if KB.key_pressed?(Gosu::KbEscape)
-        stop_test
-      else
-        status = SB.stage.update
-        @testing = :finish if status == :finish
-        if @testing == :finish
-          StageMenu.update_end
-        else
-          StageMenu.update_main
-        end
-      end
-      return
-    end
-
     SB.close_editor if KB.key_pressed?(Gosu::KbEscape)
     toggle_args_panel if KB.key_pressed?(Gosu::KbReturn)
     toggle_offset_panel if KB.key_pressed?(Gosu::KbTab)
@@ -859,15 +844,14 @@ class Editor
     G.window.height = C::SCREEN_HEIGHT
     StageMenu.initialize(true, true)
     SB.stage.start
-    @testing = :main
+    SB.state = :main
   end
 
   def stop_test
-    Gosu::Song.current_song.stop
     SB.player.bomb.do_warp(-1000, -1000)
     G.window.width = C::EDITOR_SCREEN_WIDTH
     G.window.height = C::EDITOR_SCREEN_HEIGHT
-    @testing = nil
+    SB.state = :editor
   end
 
   def toggle_floating_panel(index)
@@ -968,12 +952,6 @@ class Editor
 
   def draw
     return unless @inited
-
-    if @testing
-      SB.stage.draw
-      StageMenu.draw
-      return
-    end
 
     @section.map.foreach do |i, j, x, y|
       G.window.draw_quad x + 1, y + 1, NULL_COLOR,

@@ -134,8 +134,12 @@ class StageMenu
             @stage_menu.go_to_section 2
           },
           MenuButton.new(357, :exit) {
-            SB.save_and_exit
-            @stage_menu.reset
+            if editor
+              SB.editor_stop_test
+            else
+              SB.save_and_exit
+              @stage_menu.reset
+            end
           }
         ], [], options_comps, custom ? [
           MenuButton.new(400, :exit, false) {
@@ -348,7 +352,7 @@ class StageMenu
                          204, 60, C::PANEL_COLOR,
                          4, 60, C::PANEL_COLOR, 0
       @lives_icon.draw 12, 9, 0, 2, 2
-      SB.font.draw_text p.lives + SB.stage.life_count, 40, 8, 0, 2, 2, 0xff000000
+      SB.font.draw_text(p.lives >= 0 ? p.lives + SB.stage.life_count : '∞', 40, 8, 0, 2, 2, 0xff000000)
       @hp_icon.draw 105, 9, 0, 2, 2
       SB.font.draw_text "#{p.bomb.hp}/#{p.bomb.max_hp > 0 ? p.bomb.max_hp : '∞'}", 135, 8, 0, 2, 2, 0xff000000
       @score_icon.draw 10, 32, 0, 2, 2
