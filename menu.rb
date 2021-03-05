@@ -282,7 +282,7 @@ class Menu
       section.add(MenuText.new(:select_level, 400, 230, 760, :center))
       levels = (Dir["data/stage/custom/*"].reduce([]) do |obj, l|
         stage = l.split('/')[-1].split('-')[0]
-        obj << stage unless obj.include?(stage)
+        obj << stage unless obj.include?(stage) || stage == '__temp'
         obj
       end).sort
       levels[(page * 20)...((page + 1) * 20)].each_with_index do |l, i|
