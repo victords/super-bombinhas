@@ -1,0 +1,15 @@
+Type|enum|,2,3|1,2,3
+seq
+===
+ID|int|1..35
+seq
+===
+Don't fall|bool|$,|1
+seq
+===
+Type|enum|,2|1,2
+seq
+===
+Direction|enum|,1,2,3|Up,Right,Down,Left
+Type|enum|,2,3,4|1,2,3,4
+seq

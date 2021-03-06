@@ -396,7 +396,7 @@ class FloatingPanel
       Button.new(x: @x + c[:x], y: @y + c[:y], width: c[:img].width * 2, height: c[:img].height * 2, params: c[:index] || i) do |p|
         @editor.cur_element = @element_type
         @editor.cur_index = p
-        @editor.txt_args.text = ''
+        @editor.toggle_args_panel
         @visible = false
       end
     end
@@ -431,7 +431,7 @@ class Editor
   BLACK = 0xff000000
   WHITE = 0xffffffff
 
-  attr_reader :txt_args, :text_helper
+  attr_reader :text_helper
   attr_writer :cur_element, :cur_index
 
   def initialize
@@ -440,7 +440,7 @@ class Editor
 
     @cur_index = -1
 
-    bg_files = Dir["data/img/bg/*"].sort
+    bg_files = Dir["#{Res.prefix}img/bg/*"].sort
     @bgs = []
     bg_options = []
     bg_files.each do |f|
@@ -454,13 +454,13 @@ class Editor
     @cur_bg = @cur_bg2 = 0
 
     bgm_options = []
-    Dir["data/song/s*"].sort.select{ |f| !f.include?('-intro') }.each{ |f| bgm_options << f.split('/')[-1].chomp('.ogg') }
+    Dir["#{Res.prefix}song/s*"].sort.select{ |f| !f.include?('-intro') }.each{ |f| bgm_options << f.split('/')[-1].chomp('.ogg') }
     @cur_bgm = 0
 
     exit_options = %w(/\\ → \\/ ← -)
     @cur_exit = 0
 
-    ts_files = Dir["data/tileset/*.png"].sort
+    ts_files = Dir["#{Res.prefix}tileset/*.png"].sort
     @tilesets = []
     ts_options = []
     ts_files.each do |f|
@@ -470,7 +470,7 @@ class Editor
     end
     @cur_tileset = 0
 
-    el_files = Dir["data/img/editor/el/*"]
+    el_files = Dir["#{Res.prefix}img/editor/el/*"]
     @elements = {}
     @enemies = {}
     @objs = {}
@@ -492,6 +492,40 @@ class Editor
 
     @bomb = Res.imgs(:sprite_BombaAzul, 6, 2)
     @entrance = Res.img(:editor_entrance)
+
+    el_args = File.read("#{Res.prefix}editor").split('===').delete_if(&:empty?)
+    @element_args = []
+    el_args.each_with_index do |a, i|
+      lines = a.split("\n").delete_if(&:empty?)
+      fields = []
+      lines[0..-2].each do |l|
+        f = l.split('|')
+        fields << (field = {
+          name: f[0],
+          type: f[1]
+        })
+        case field[:type]
+        when 'enum'
+          field[:values] = f[2].split(',', -1)
+          field[:display_values] = f[3].split(',')
+        when 'int'
+          values = f[2].split('-')
+          field[:min] = values[0].to_i
+          field[:max] = values[1].to_i
+        when 'bool'
+          field[:values] = f[2].split(',', -1)
+          field[:default] = f[3] == '1'
+        end
+      end
+      @element_args[i + 1] = {
+        pattern: lines[-1],
+        fields: fields
+      }
+    end
+    @args = {
+      index: nil,
+      value: ''
+    }
 
     @panels = [
       ################################## General ##################################
@@ -542,21 +576,27 @@ class Editor
           @cur_tileset = ts_options.index(v)
           @floating_panels[0].set_children(@tilesets[@cur_tileset].map.with_index{ |t, i| { img: t, x: 4 + (i % 10) * 33, y: 4 + (i / 10) * 33 } })
           @section.change_tileset(v)
+          toggle_args_panel
         end),
         Button.new(x: 0, y: 38, img: :editor_btn1, font: SB.font, text: 'Wall', scale_x: 2, scale_y: 2, anchor: :top) do
           @cur_element = :wall
+          toggle_args_panel
         end,
         Button.new(x: 0, y: 38 + 44, img: :editor_btn1, font: SB.font, text: 'Pass', scale_x: 2, scale_y: 2, anchor: :top) do
           @cur_element = :pass
+          toggle_args_panel
         end,
         Button.new(x: 0, y: 38 + 88, img: :editor_btn1, font: SB.font, text: 'Hide', scale_x: 2, scale_y: 2, anchor: :top) do
           @cur_element = :hide
+          toggle_args_panel
         end,
         (ramp_btn = Button.new(x: 0, y: 38 + 132, img: :editor_btn1, font: SB.font, text: 'Ramp', scale_x: 2, scale_y: 2, anchor: :top) do
           toggle_floating_panel(1)
+          toggle_args_panel
         end),
         (other_tile_btn = Button.new(x: 0, y: 38, img: :editor_btn1, font: SB.font, text: 'Other', scale_x: 2, scale_y: 2, anchor: :bottom) do
           toggle_floating_panel(0)
+          toggle_args_panel
         end),
         (@ddl_tile_type = DropDownList.new(x: 0, y: 4, font: SB.font, img: :editor_ddl, opt_img: :editor_ddlOpt, options: %w(w p b f), text_margin: 4, scale_x: 2, scale_y: 2, anchor: :bottom)),
       ], :editor_pnl, :tiled, true, 2, 2, :left),
@@ -575,7 +615,7 @@ class Editor
           @section.clear
         end,
         Button.new(x: 68, y: 0, img: :editor_btn1, font: SB.font, text: 'Load', scale_x: 2, scale_y: 2, anchor: :right) do
-          path = "data/stage/custom/#{@txt_stage.text}-#{@txt_section.text}"
+          path = "#{Res.prefix}/stage/custom/#{@txt_stage.text}-#{@txt_section.text}"
           if File.exist? path
             f = File.open(path)
             all = f.readline.chomp.split('#')
@@ -652,13 +692,6 @@ class Editor
       ], :editor_pnl, :tiled, true, 2, 2, :right),
       ###########################################################################
 
-      ################################# Arguments ###############################
-      Panel.new(0, 0, 200, 70, [
-        Label.new(x: 0, y: 4, font: SB.font, text: 'Arguments:', scale_x: 2, scale_y: 2, anchor: :top),
-        (@txt_args = TextField.new(x: 0, y: 30, img: :editor_textField2, font: SB.font, margin_x: 2, margin_y: 3, scale_x: 2, scale_y: 2, anchor: :top, max_length: 500))
-      ], :editor_pnl, :tiled, true, 2, 2, :center),
-      ###########################################################################
-
       ################################## Offset #################################
       Panel.new(0, 0, 200, 70, [
         Label.new(x: 0, y: 4, font: SB.font, text: 'Offset', scale_x: 2, scale_y: 2, anchor: :top),
@@ -702,13 +735,13 @@ class Editor
         (@lbl_msg1 = Label.new(x: 0, y: 10, font: SB.font, text: 'The level must have an entrance', scale_x: 2, scale_y: 2, anchor: :top)),
         (@lbl_msg2 = Label.new(x: 0, y: 40, font: SB.font, text: 'or a start point', scale_x: 2, scale_y: 2, anchor: :top)),
         Button.new(x: 0, y: 10, img: :editor_btn1, font: SB.font, text: 'OK', scale_x: 2, scale_y: 2, anchor: :bottom) {
-          @panels[6].visible = false
+          @panels[5].visible = false
         }
       ], :editor_pnl, :tiled, true, 2, 2, :center)
       ###########################################################################
     ]
 
-    @panels[4].visible = @panels[5].visible = @panels[6].visible = @lbl_conf_save.visible = false
+    @panels[4].visible = @panels[5].visible = @lbl_conf_save.visible = false
 
     obj_items = []
     @objs.keys.sort.each_with_index do |k, i|
@@ -754,7 +787,7 @@ class Editor
       return
     end
 
-    @over_panel = [false, false, false, false, false]
+    @over_panel = []
     @dropdowns.each_with_index do |d, i|
       h = d.instance_eval('@open') ? d.instance_eval('@max_h') : d.h
       @over_panel[i < 3 ? 0 : 1] = true if Mouse.over?(d.x, d.y, d.w, h)
@@ -766,6 +799,11 @@ class Editor
     @panels.each_with_index do |p, i|
       p.update
       @over_panel[i] = true if p.visible && Mouse.over?(p.x, p.y, p.w, p.h)
+    end
+    if @args_panel
+      p = @args_panel
+      p.update
+      @over_panel[@panels.size] = true if p.visible && Mouse.over?(p.x, p.y, p.w, p.h)
     end
 
     speed = KB.key_down?(Gosu::KbLeftShift) || KB.key_down?(Gosu::KbRightShift) ? 10 : 20
@@ -788,7 +826,7 @@ class Editor
       if ctrl
         case @cur_element
         when /(obj|enemy)/
-          @txt_args.text += (@txt_args.text.empty? ? '' : ':') + "#{i},#{j}"
+          # @txt_args.text += (@txt_args.text.empty? ? '' : ':') + "#{i},#{j}"
         when :pass
           @pass_start = [i, j]
         end
@@ -803,7 +841,7 @@ class Editor
           sz = @ramp_sizes[@cur_index % 4]
           @section.set_ramp(i, j, sz[0], sz[1], @cur_index < 4, @ramp_tiles[@cur_index])
         when :entrance
-          @section.set_entrance(i, j, @txt_args.text.to_i, @chk_default.checked)
+          @section.set_entrance(i, j, @args[:value].to_i, @chk_default.checked)
         end
       end
     elsif !alt && Mouse.button_down?(:left)
@@ -821,7 +859,7 @@ class Editor
           prop = t == 'w' ? :wall= : t == 'p' ? :pass= : t == 'b' ? :back= : :fore=
           @section.tiles[i][j].send(prop, @cur_index)
         when :obj, :enemy
-          @section.set_object(i, j, @cur_index, @txt_args.text, SB.stage.switches)
+          @section.set_object(i, j, @cur_index, @args[:value], SB.stage.switches)
         when :bomb
           SB.stage.start_pos = [i, j, @txt_section.text]
         end
@@ -882,17 +920,68 @@ class Editor
   end
 
   def toggle_args_panel
-    @panels[4].visible = !@panels[4].visible
-    if @panels[4].visible
-      @txt_args.focus
+    unless @cur_element == :obj || @cur_element == :enemy
+      @args_panel.visible = false if @args_panel
+      return
+    end
+
+    if @args[:index] != @cur_index
+      pattern = @element_args[@cur_index][:pattern]
+      fields = @element_args[@cur_index][:fields]
+      controls = []
+      fields.each_with_index do |f, i|
+        y = 4 + i * 34
+        controls << Label.new(x: 10, y: y + 4, font: SB.font, text: f[:name], scale_x: 2, scale_y: 2)
+        case f[:type]
+        when 'enum'
+          controls << DropDownList.new(x: 150, y: y, font: SB.font, img: :editor_ddl, opt_img: :editor_ddlOpt, options: f[:display_values], text_margin: 4, scale_x: 2, scale_y: 2) {
+            @args[:value] = build_args_value(pattern, fields, controls)
+          }
+        when 'int'
+          controls << TextField.new(x: 150, y: y, font: SB.font, img: :editor_textField, max_length: 2, allowed_chars: '0123456789', margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2) {
+            @args[:value] = build_args_value(pattern, fields, controls)
+          }
+        when 'bool'
+          controls << ToggleButton.new(x: 150, y: y + 7, img: :editor_chk, scale_x: 2, scale_y: 2, checked: f[:default]) {
+            @args[:value] = build_args_value(pattern, fields, controls)
+          }
+        end
+      end
+      @args_panel = Panel.new(0, 0, 300, 4 + fields.size * 34, controls, :editor_pnl, :tiled, true, 2, 2, :center)
+      @args = {
+        index: @cur_index,
+        value: build_args_value(pattern, fields, controls)
+      }
     else
-      @txt_args.unfocus
+      @args_panel.visible = !@args_panel.visible
+    end
+  end
+
+  def build_args_value(pattern, fields, controls)
+    if pattern == 'seq'
+      value = ''
+      fields.each_with_index do |f, i|
+        control = controls[2 * i + 1]
+        v = case f[:type]
+            when 'enum'
+              f[:values][f[:display_values].index(control.value)]
+            when 'int'
+              control.text
+            when 'bool'
+              f[:values][control.checked ? 1 : 0]
+            end
+        unless v.empty?
+          value += ',' if i > 0
+          value += v
+        end
+      end
+      value
     end
   end
 
   def toggle_offset_panel
-    @panels[5].visible = !@panels[5].visible
-    if @panels[5].visible
+    @panels[4].visible = !@panels[4].visible
+    if @panels[4].visible
       @txt_offset_x.focus
     else
       @txt_offset_x.unfocus
@@ -903,12 +992,12 @@ class Editor
   def save(stage_name = nil)
     if (stage_name && !SB.stage.start_pos && !SB.stage.entrances[0]) || (!stage_name && !SB.stage.entrances[0])
       @lbl_msg2.text = stage_name ? 'or a start point' : ''
-      @panels[6].visible = true
+      @panels[5].visible = true
       return false
     end
 
     stage_name ||= @txt_stage.text
-    path = "data/stage/custom/#{stage_name}-#{@txt_section.text}"
+    path = "#{Res.prefix}/stage/custom/#{stage_name}-#{@txt_section.text}"
     will_save = if @save_confirm
                   @save_confirm = @lbl_conf_save.visible = false
                   true
@@ -919,7 +1008,7 @@ class Editor
                   true
                 end
     if will_save
-      FileUtils.mkdir_p('data/stage/custom')
+      FileUtils.mkdir_p("#{Res.prefix}/stage/custom")
 
       tiles_x = @section.tiles.size
       tiles_y = @section.tiles[0].size
@@ -1028,6 +1117,7 @@ class Editor
     @panels.each_with_index do |p, i|
       p.draw(@over_panel[i] ? 255 : 153, 2)
     end
+    @args_panel.draw(@over_panel[@panels.size] ? 255 : 153, 2) if @args_panel
 
     @floating_panels.each(&:draw)
 
