@@ -562,6 +562,7 @@ class Editor
           values = f[2].split('-')
           field[:min] = values[0].to_i
           field[:max] = values[1].to_i
+          field[:format] = f[3]
         when 'bool'
           field[:values] = f[2].split(',', -1)
           field[:default] = f[3] == '1'
@@ -871,7 +872,10 @@ class Editor
       if ctrl
         case @cur_element
         when /(obj|enemy)/
-          # @txt_args.text += (@txt_args.text.empty? ? '' : ':') + "#{i},#{j}"
+          if @args[:coords]
+            @args[:coords] << "#{i},#{j}"
+            build_args_value
+          end
         when :pass
           @pass_start = [i, j]
         end
@@ -980,14 +984,14 @@ class Editor
       @args = {
         index: -1,
         value: '',
-        text_fields: []
+        coords: nil
       }
     elsif @element_args[@cur_index].nil?
       @args_panel.visible = false if @args_panel
       return
     elsif @args[:index] != @cur_index
-      pattern = @element_args[@cur_index][:pattern]
-      fields = @element_args[@cur_index][:fields]
+      element = @element_args[@cur_index]
+      fields = element[:fields]
       controls = []
       text_fields = []
       @dropdowns.slice!(6, @dropdowns.size - 6)
@@ -997,7 +1001,7 @@ class Editor
         case f[:type]
         when 'enum'
           controls << (ddl = DropDownList.new(x: 150, y: y, font: SB.font, img: :editor_ddl2, opt_img: :editor_ddl2Opt, options: f[:display_values], text_margin: 4, scale_x: 2, scale_y: 2) {
-            @args[:value] = build_args_value(pattern, fields, controls)
+            build_args_value
           })
           @dropdowns << ddl
         when 'int'
@@ -1007,53 +1011,75 @@ class Editor
             elsif v.to_i > f[:max]
               @args[:text_fields][i].send(:text=, f[:max].to_s, false)
             end
-            @args[:value] = build_args_value(pattern, fields, controls)
+            build_args_value
           })
           text_fields[i] = txt
         when 'bool'
           controls << ToggleButton.new(x: 150, y: y + 7, img: :editor_chk, scale_x: 2, scale_y: 2, checked: f[:default]) {
-            @args[:value] = build_args_value(pattern, fields, controls)
+            build_args_value
           }
         when 'entrance'
           entrances = SB.stage.entrances.reject(&:nil?).map{ |e| e[:index].to_s }
           controls << (ddl = DropDownList.new(x: 150, y: y, font: SB.font, img: :editor_ddl, opt_img: :editor_ddlOpt, options: entrances, text_margin: 4, scale_x: 2, scale_y: 2) {
-            @args[:value] = build_args_value(pattern, fields, controls)
+            build_args_value
           })
           @dropdowns << ddl
+        when 'coords'
+          controls << Button.new(x: 150, y: y, font: SB.font, text: 'Clear', img: :editor_btn2, scale_x: 2, scale_y: 2) {
+            @args[:coords] = []
+            build_args_value
+          }
+          controls << Label.new(x: 220, y: y, font: SB.font, text: '')
         end
       end
       @args_panel = Panel.new(0, 0, 340, 4 + fields.size * 34, controls, :editor_pnl, :tiled, true, 2, 2, :center)
       @args = {
+        element: element,
         index: @cur_index,
-        value: build_args_value(pattern, fields, controls),
-        text_fields: text_fields
+        controls: controls,
+        text_fields: text_fields,
+        coords: []
       }
+      build_args_value
     else
       @args_panel.visible = !@args_panel.visible
     end
   end
 
-  def build_args_value(pattern, fields, controls)
-    if pattern == 'seq'
-      values = []
-      last_non_empty = nil
-      fields.each_with_index do |f, i|
-        control = controls[2 * i + 1]
-        v = case f[:type]
-            when 'enum'
-              f[:values][f[:display_values].index(control.value)]
-            when 'int'
+  def build_args_value
+    element = @args[:element]
+    controls = @args[:controls]
+    values = []
+    last_non_empty = nil
+    element[:fields].each_with_index do |f, i|
+      control = controls[2 * i + 1]
+      v = case f[:type]
+          when 'enum'
+            f[:values][f[:display_values].index(control.value)]
+          when 'int'
+            if f[:format]
+              control.text.empty? ? '' : f[:format].sub('$', control.text)
+            else
               control.text
-            when 'bool'
-              f[:values][control.checked ? 1 : 0]
-            when 'entrance'
-              control.value || ''
             end
-        values << v
-        last_non_empty = i unless v.empty?
-      end
-      last_non_empty ? values[0..last_non_empty].join(',') : ''
+          when 'bool'
+            f[:values][control.checked ? 1 : 0]
+          when 'entrance'
+            control.value || ''
+          when 'coords'
+            controls[-1].text = @args[:coords].empty? ? '(Ctrl-click to add points)' : @args[:coords].join('  ')
+            @args[:coords].join(':')
+          end
+      values << v
+      last_non_empty = i unless v.empty?
     end
+    pattern = element[:pattern]
+    value = if pattern == 'seq'
+              last_non_empty ? values[0..last_non_empty].join(',') : ''
+            else
+              pattern.gsub(/\$(\d+)/) { |m| values[m[1].to_i] }
+            end
+    @args[:value] = value
   end
 
   def toggle_offset_panel

@@ -20,3 +20,21 @@ Entrance|entrance
 Locked|bool|,.|0
 Type|int|0-14
 seq
+===
+Entrance|entrance
+seq
+===
+===
+Type|int|0-14
+seq
+===
+Type|enum|,2|Azul,Amarela
+seq
+===
+Type|int|1-13
+Speed|int|0-99
+Stop time|int|0-999|:$
+ID|int|0-99|($)
+Open path|bool|,!|0
+Path|coords
+$0$4:$1$3$2:$5

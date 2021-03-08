@@ -427,6 +427,7 @@ class Elevator < SBGameObject
   end
 
   def update(section)
+    return if SB.state == :editor
     if @active
       cycle @points, @speed_m, section.passengers, section.passengers.map{|p| section.get_obstacles(p.x, p.y)}.flatten, section.ramps, @stop_time
     end
