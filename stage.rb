@@ -143,7 +143,11 @@ class Stage
         return :finish
       elsif status == :next_section
         index = @sections.index(@cur_section)
-        @cur_section.start_warp(@sections[index + 1].default_entrance)
+        section = @sections[index + 1]
+        if section
+          entrance = section.default_entrance || (@entrances.find { |e| e[:section] == section } || @entrances[0])[:index]
+          @cur_section.start_warp(entrance)
+        end
       elsif SB.player.dead? && @is_bonus
         return :finish
       else
@@ -197,8 +201,8 @@ class Stage
   def check_warp
     if @cur_section.warp
       @warp_timer += 1
-      entrance = @entrances[@cur_section.warp]
-      section = @entrances[@cur_section.warp][:section]
+      entrance = @entrances[@cur_section.warp] || @entrances[0]
+      section = entrance[:section]
       if @warp_timer > 20 && section.bgm != @cur_section.bgm
         Gosu::Song.current_song.volume = (1 - (@warp_timer - 20).to_f / 10) * 0.1 * SB.music_volume
       end

@@ -52,6 +52,16 @@ class EditorStage < Stage
     super('custom', name)
     @entrances = []
     @switches = []
+
+    sections = Dir["#{Res.prefix}stage/#{@world}/#{@num}-*"]
+    sections.each do |s|
+      content = File.read(s)
+      entrances = content.scan(/!\d+/)
+      entrances.each do |e|
+        index = e[1..-1].to_i
+        @entrances[index] = { index: index }
+      end
+    end
   end
 
   def start(loaded = false, time = nil, objective = nil, reward = nil)
@@ -858,7 +868,6 @@ class Editor
       type = @cur_element == :tile ? (@ddl_tile_type.value == 'b' ? :back : @ddl_tile_type.value == 'f' ? :fore : nil) : @cur_element
       @section.check_fill(type, i, j, ctrl, @cur_index) if type == :wall || type == :hide || type == :back || type == :fore
     elsif Mouse.button_pressed?(:left)
-      @placing = true
       if ctrl
         case @cur_element
         when /(obj|enemy)/
@@ -994,9 +1003,9 @@ class Editor
         when 'int'
           controls << (txt = TextField.new(x: 150, y: y, font: SB.font, img: :editor_textField, max_length: 2, allowed_chars: '0123456789', margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2) { |v|
             if v.to_i < f[:min] && !v.empty?
-              @args[:text_fields][i].text = f[:min].to_s
+              @args[:text_fields][i].send(:text=, f[:min].to_s, false)
             elsif v.to_i > f[:max]
-              @args[:text_fields][i].text = f[:max].to_s
+              @args[:text_fields][i].send(:text=, f[:max].to_s, false)
             end
             @args[:value] = build_args_value(pattern, fields, controls)
           })
@@ -1043,9 +1052,7 @@ class Editor
         values << v
         last_non_empty = i unless v.empty?
       end
-      value = last_non_empty ? values[0..last_non_empty].join(',') : ''
-      puts value
-      value
+      last_non_empty ? values[0..last_non_empty].join(',') : ''
     end
   end
 
