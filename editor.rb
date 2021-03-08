@@ -531,9 +531,11 @@ class Editor
     @bomb = Res.imgs(:sprite_BombaAzul, 6, 2)
     @entrance = Res.img(:editor_entrance)
 
-    el_args = File.read("#{Res.prefix}editor").split('===').delete_if(&:empty?)
+    el_args = File.read("#{Res.prefix}editor").split('===')
     @element_args = []
     el_args.each_with_index do |a, i|
+      next if a.chomp.empty?
+
       lines = a.split("\n").delete_if(&:empty?)
       fields = []
       lines[0..-2].each do |l|
@@ -562,15 +564,16 @@ class Editor
     end
     @args = {
       index: nil,
-      value: ''
+      value: '',
+      text_fields: []
     }
 
     @panels = [
       ################################## General ##################################
       Panel.new(0, 0, 720, 48, [
-        Label.new(x: 10, y: 0, font: SB.font, text: 'W', scale_x: 2, scale_y: 2, anchor: :left),
+        Label.new(x: 10, y: 0, font: SB.font, text: 'W', max_length: 3, scale_x: 2, scale_y: 2, anchor: :left),
         (txt_w = TextField.new(x: 22, y: 0, img: :editor_textField, font: SB.font, text: '300', allowed_chars: '0123456789', margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2, anchor: :left)),
-        Label.new(x: 70, y: 0, font: SB.font, text: 'H', scale_x: 2, scale_y: 2, anchor: :left),
+        Label.new(x: 70, y: 0, font: SB.font, text: 'H', max_length: 3, scale_x: 2, scale_y: 2, anchor: :left),
         (txt_h = TextField.new(x: 84, y: 0, img: :editor_textField, font: SB.font, text: '300', allowed_chars: '0123456789', margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2, anchor: :left)),
         Button.new(x: 130, y: 0, img: :editor_btn1, font: SB.font, text: 'OK', scale_x: 2, scale_y: 2, anchor: :left) do
           @section.change_size(txt_w.text.to_i, txt_h.text.to_i)
@@ -709,9 +712,11 @@ class Editor
       Panel.new(0, 0, 68, 344, [
         Button.new(x: 0, y: 4, img: :editor_btn1, font: SB.font, text: 'Bomb', scale_x: 2, scale_y: 2, anchor: :top) do
           @cur_element = :bomb
+          toggle_args_panel
         end,
         Button.new(x: 0, y: 48, img: :editor_btn1, font: SB.font, text: 'entr.', scale_x: 2, scale_y: 2, anchor: :top) do
           @cur_element = :entrance
+          toggle_args_panel
         end,
         Label.new(x: 0, y: 92, font: SB.font, text: 'Default', scale_x: 1, scale_y: 1, anchor: :top),
         (@chk_default = ToggleButton.new(x: 0, y: 104, img: :editor_chk, checked: true, scale_x: 2, scale_y: 2, anchor: :top)),
@@ -788,7 +793,7 @@ class Editor
       FloatingPanel.new(:enemy, btn_enemy.x - 341, btn_enemy.y, 337, 300, enemy_items, self),
     ]
 
-    @dropdowns = [@ddl_bg, @ddl_bgm, ddl_exit, @ddl_ts, @ddl_tile_type]
+    @dropdowns = [@ddl_bg, @ddl_bg2, @ddl_bgm, ddl_exit, @ddl_ts, @ddl_tile_type]
 
     @ramp_sizes = [[1, 1], [2, 1], [3, 2], [1, 2]]
     @ramp_tiles = [
@@ -820,7 +825,7 @@ class Editor
     @over_panel = []
     @dropdowns.each_with_index do |d, i|
       h = d.instance_eval('@open') ? d.instance_eval('@max_h') : d.h
-      @over_panel[i < 3 ? 0 : 1] = true if Mouse.over?(d.x, d.y, d.w, h)
+      @over_panel[i < 4 ? 0 : i < 6 ? 1 : @panels.size] = true if Mouse.over?(d.x, d.y, d.w, h)
     end
     @floating_panels.each_with_index do |p, i|
       p.update
@@ -853,6 +858,7 @@ class Editor
       type = @cur_element == :tile ? (@ddl_tile_type.value == 'b' ? :back : @ddl_tile_type.value == 'f' ? :fore : nil) : @cur_element
       @section.check_fill(type, i, j, ctrl, @cur_index) if type == :wall || type == :hide || type == :back || type == :fore
     elsif Mouse.button_pressed?(:left)
+      @placing = true
       if ctrl
         case @cur_element
         when /(obj|enemy)/
@@ -964,34 +970,54 @@ class Editor
       ], :editor_pnl, :tiled, true, 2, 2, :center)
       @args = {
         index: -1,
-        value: ''
+        value: '',
+        text_fields: []
       }
+    elsif @element_args[@cur_index].nil?
+      @args_panel.visible = false if @args_panel
+      return
     elsif @args[:index] != @cur_index
       pattern = @element_args[@cur_index][:pattern]
       fields = @element_args[@cur_index][:fields]
       controls = []
+      text_fields = []
+      @dropdowns.slice!(6, @dropdowns.size - 6)
       fields.each_with_index do |f, i|
         y = 4 + i * 34
         controls << Label.new(x: 10, y: y + 4, font: SB.font, text: f[:name], scale_x: 2, scale_y: 2)
         case f[:type]
         when 'enum'
-          controls << DropDownList.new(x: 150, y: y, font: SB.font, img: :editor_ddl, opt_img: :editor_ddlOpt, options: f[:display_values], text_margin: 4, scale_x: 2, scale_y: 2) {
+          controls << (ddl = DropDownList.new(x: 150, y: y, font: SB.font, img: :editor_ddl2, opt_img: :editor_ddl2Opt, options: f[:display_values], text_margin: 4, scale_x: 2, scale_y: 2) {
             @args[:value] = build_args_value(pattern, fields, controls)
-          }
+          })
+          @dropdowns << ddl
         when 'int'
-          controls << TextField.new(x: 150, y: y, font: SB.font, img: :editor_textField, max_length: 2, allowed_chars: '0123456789', margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2) {
+          controls << (txt = TextField.new(x: 150, y: y, font: SB.font, img: :editor_textField, max_length: 2, allowed_chars: '0123456789', margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2) { |v|
+            if v.to_i < f[:min] && !v.empty?
+              @args[:text_fields][i].text = f[:min].to_s
+            elsif v.to_i > f[:max]
+              @args[:text_fields][i].text = f[:max].to_s
+            end
             @args[:value] = build_args_value(pattern, fields, controls)
-          }
+          })
+          text_fields[i] = txt
         when 'bool'
           controls << ToggleButton.new(x: 150, y: y + 7, img: :editor_chk, scale_x: 2, scale_y: 2, checked: f[:default]) {
             @args[:value] = build_args_value(pattern, fields, controls)
           }
+        when 'entrance'
+          entrances = SB.stage.entrances.reject(&:nil?).map{ |e| e[:index].to_s }
+          controls << (ddl = DropDownList.new(x: 150, y: y, font: SB.font, img: :editor_ddl, opt_img: :editor_ddlOpt, options: entrances, text_margin: 4, scale_x: 2, scale_y: 2) {
+            @args[:value] = build_args_value(pattern, fields, controls)
+          })
+          @dropdowns << ddl
         end
       end
-      @args_panel = Panel.new(0, 0, 300, 4 + fields.size * 34, controls, :editor_pnl, :tiled, true, 2, 2, :center)
+      @args_panel = Panel.new(0, 0, 340, 4 + fields.size * 34, controls, :editor_pnl, :tiled, true, 2, 2, :center)
       @args = {
         index: @cur_index,
-        value: build_args_value(pattern, fields, controls)
+        value: build_args_value(pattern, fields, controls),
+        text_fields: text_fields
       }
     else
       @args_panel.visible = !@args_panel.visible
@@ -1000,7 +1026,8 @@ class Editor
 
   def build_args_value(pattern, fields, controls)
     if pattern == 'seq'
-      value = ''
+      values = []
+      last_non_empty = nil
       fields.each_with_index do |f, i|
         control = controls[2 * i + 1]
         v = case f[:type]
@@ -1010,12 +1037,14 @@ class Editor
               control.text
             when 'bool'
               f[:values][control.checked ? 1 : 0]
+            when 'entrance'
+              control.value || ''
             end
-        unless v.empty?
-          value += ',' if i > 0
-          value += v
-        end
+        values << v
+        last_non_empty = i unless v.empty?
       end
+      value = last_non_empty ? values[0..last_non_empty].join(',') : ''
+      puts value
       value
     end
   end

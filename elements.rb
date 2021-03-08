@@ -239,17 +239,15 @@ class Door < GameObject
 
   def initialize(x, y, args, section, switch)
     args = (args || '').split(',')
-    type = args[2] ? args[2].to_i : nil
+    type = args[2] ? args[2].to_i : 0
     cols = 5
     rows = 1
     case type
-    when nil    then x_g = -1;  y_g = -63
-    when 3      then x_g = -1;  y_g = -63
-    when 5      then x_g = -17; y_g = -95; cols = rows = nil
-    when 6      then x_g = -1;  y_g = -63
-    when 10..13 then x_g = -5;  y_g = -67
-    when 14     then x_g = -11; y_g = -79
-    else             x_g = -10; y_g = -89 # all boss doors
+    when 0, 3, 6 then x_g = -1;  y_g = -63
+    when 5       then x_g = -17; y_g = -95; cols = rows = nil
+    when 10..13  then x_g = -5;  y_g = -67
+    when 14      then x_g = -11; y_g = -79
+    else              x_g = -10; y_g = -89 # all boss doors
     end
     super x + 1, y + 63, 30, 1, "sprite_Door#{type}", Vector.new(x_g, y_g), cols, rows
     @entrance = args[0].to_i
@@ -2912,11 +2910,12 @@ end
 class Graphic < Sprite
   def initialize(x, y, args, section)
     type = args.to_i
+    type = 1 if type == 0
     cols = 1; rows = 1
     img_index = nil
     @flip = nil
     case type
-    when 0..1 then @w = 32; @h = 64
+    when 1 then @w = 32; @h = 64
     when 2 then x += 16; y += 16; @w = 64; @h = 64; cols = 2; rows = 2; @indices = [0, 1, 2, 3]; @interval = 7; @rot = -5
     when 3..5 then x -= 16; @w = 64; @h = 32
     when 6 then x -= 134; y -= 208; @w = 300; @h = 240

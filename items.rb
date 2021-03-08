@@ -185,11 +185,11 @@ end
 
 class Key < FloatingItem
   def initialize(x, y, args, section, switch)
-    set_icon "Key#{args}"
-    @type = args.to_i if args
-    switch[:extra] = @type if @type
+    @type = args.to_i
+    set_icon "Key#{@type}"
+    switch[:extra] = @type
     return if check switch
-    super x + 3, y + 3, 26, 26, "sprite_Key#{args}", Vector.new(-3, -3)
+    super x + 3, y + 3, 26, 26, "sprite_Key#{@type}", Vector.new(-3, -3)
   end
 
   def update(section)
@@ -200,7 +200,7 @@ class Key < FloatingItem
 
   def use(section, switch)
     obj = section.active_object
-    if obj.is_a?(Door) && obj.locked && (((@type || obj.type) && @type == obj.type) || (!@type && !obj.type))
+    if obj.is_a?(Door) && obj.locked && @type == obj.type
       obj.unlock(section)
       set_switch(switch)
     end
