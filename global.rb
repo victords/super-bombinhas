@@ -405,6 +405,7 @@ class SB
     end
 
     def save_custom(reset = false)
+      return if SB.stage.is_a?(EditorStage)
       @save_data[0] = ''
       @save_data[1] = ''
       @save_data[2] = ''

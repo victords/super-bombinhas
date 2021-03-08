@@ -18,6 +18,7 @@ require_relative 'stage'
 include MiniGL
 
 class Entrance
+  attr_accessor :x, :y
   attr_reader :index
 
   def initialize(x, y, index)
@@ -33,7 +34,8 @@ class Entrance
 end
 
 class EditorRamp < Ramp
-  attr_reader :code
+  attr_writer :x, :y
+  attr_accessor :code
 
   def initialize(x, y, w, h, left, code)
     super(x, y, w, h, left)
@@ -123,7 +125,7 @@ class EditorSection < Section
       @tiles[i][j].obj.update(self)
       @tiles[i][j].code = "@#{ELEMENT_TYPES.key(el[:type])}#{el[:args] ? ":#{el[:args]}" : ''}"
     end
-    entrances.select { |e| e[:section] == self }.each do |e|
+    entrances.select { |e| e && e[:section] == self }.each do |e|
       i = e[:x] / C::TILE_SIZE
       j = e[:y] / C::TILE_SIZE
       @tiles[i][j].obj = Entrance.new(e[:x], e[:y], e[:index])
@@ -327,6 +329,42 @@ class EditorSection < Section
     tiles.each do |t|
       @tiles[i + t[0]][j + t[1]].obj = nil
       @tiles[i + t[0]][j + t[1]].back = t[2]
+    end
+  end
+
+  def offset(o_x, o_y, x_range, y_range)
+    tiles_x = @tiles.size
+    tiles_y = @tiles[0].size
+    x_range.each do |i|
+      y_range.each do |j|
+        ii = i + o_x; jj = j + o_y
+        obj = @tiles[i][j].obj
+        if obj
+          obj.x += o_x * C::TILE_SIZE
+          obj.y += o_y * C::TILE_SIZE
+          if obj.is_a?(Entrance)
+            e = SB.stage.entrances[obj.index]
+            e[:x] += o_x * C::TILE_SIZE
+            e[:y] += o_y * C::TILE_SIZE
+          end
+        end
+        if ii >= 0 && ii < tiles_x && jj >= 0 && jj < tiles_y
+          @tiles[ii][jj] = @tiles[i][j]
+        elsif obj.is_a?(Entrance)
+          SB.stage.entrances.delete_at(obj.index)
+        end
+        @tiles[i][j] = Tile.new
+      end
+    end
+
+    @ramps.each do |r|
+      i = r.x / C::TILE_SIZE
+      j = r.y / C::TILE_SIZE
+      if x_range.include?(i) && y_range.include?(j)
+        r.x += o_x * C::TILE_SIZE
+        r.y += o_y * C::TILE_SIZE
+        r.code.sub!(/:\d+,\d+/, ":#{i + o_x},#{j + o_y}")
+      end
     end
   end
 
@@ -696,9 +734,9 @@ class Editor
       Panel.new(0, 0, 200, 70, [
         Label.new(x: 0, y: 4, font: SB.font, text: 'Offset', scale_x: 2, scale_y: 2, anchor: :top),
         Label.new(x: 6, y: 7, font: SB.font, text: 'X', scale_x: 2, scale_y: 2, anchor: :left),
-        (@txt_offset_x = TextField.new(x: 22, y: 7, img: :editor_textField, font: SB.font, margin_x: 2, margin_y: 3, scale_x: 2, scale_y: 2, anchor: :left)),
+        (@txt_offset_x = TextField.new(x: 22, y: 7, img: :editor_textField, font: SB.font, margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2, anchor: :left)),
         Label.new(x: 66, y: 7, font: SB.font, text: 'Y', scale_x: 2, scale_y: 2, anchor: :left),
-        (@txt_offset_y = TextField.new(x: 82, y: 7, img: :editor_textField, font: SB.font, margin_x: 2, margin_y: 3, scale_x: 2, scale_y: 2, anchor: :left)),
+        (@txt_offset_y = TextField.new(x: 82, y: 7, img: :editor_textField, font: SB.font, margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2, anchor: :left)),
         Button.new(x: 4, y: 7, img: :editor_btn1, font: SB.font, text: 'OK', scale_x: 2, scale_y: 2, anchor: :right) do
           o_x = @txt_offset_x.text.to_i
           o_y = @txt_offset_y.text.to_i
@@ -710,15 +748,7 @@ class Editor
           end_y = @selection ? @selection[3] : tiles_y - 1
           x_range = o_x > 0 ? end_x.downto(start_x) : start_x.upto(end_x)
           y_range = o_y > 0 ? end_y.downto(start_y) : start_y.upto(end_y)
-          x_range.each do |i|
-            y_range.each do |j|
-              ii = i + o_x; jj = j + o_y
-              @objects[ii][jj] = @objects[i][j] if ii >= 0 && ii < tiles_x && jj >= 0 && jj < tiles_y
-              @objects[i][j] = Cell.new
-            end
-          end
-
-          @ramps.map! { |r| p = r.split(':'); x, y = p[1].split(',').map(&:to_i); x >= start_x && x <= end_x && y >= start_y && y <= end_y ? "#{p[0]}:#{x + o_x},#{y + o_y}" : r }
+          @section.offset(o_x, o_y, x_range, y_range)
 
           if @selection
             @selection[0] += o_x
@@ -920,12 +950,23 @@ class Editor
   end
 
   def toggle_args_panel
-    unless @cur_element == :obj || @cur_element == :enemy
+    unless @cur_element == :obj || @cur_element == :enemy || @cur_element == :entrance
       @args_panel.visible = false if @args_panel
       return
     end
 
-    if @args[:index] != @cur_index
+    if @cur_element == :entrance && @args[:index] != -1
+      @args_panel = Panel.new(0, 0, 300, 80, [
+        Label.new(x: 0, y: 10, font: SB.font, text: 'Entrance index', scale_x: 2, scale_y: 2, anchor: :top),
+        TextField.new(x: 0, y: 40, font: SB.font, img: :editor_textField, allowed_chars: '0123456789', max_length: 2, margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2, anchor: :top) { |v|
+          @args[:value] = v
+        }
+      ], :editor_pnl, :tiled, true, 2, 2, :center)
+      @args = {
+        index: -1,
+        value: ''
+      }
+    elsif @args[:index] != @cur_index
       pattern = @element_args[@cur_index][:pattern]
       fields = @element_args[@cur_index][:fields]
       controls = []
