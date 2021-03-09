@@ -222,6 +222,7 @@ class EditorSection < Section
       }
     }
     @ramps.clear
+    SB.stage.entrances.delete_if { |e| e[:section] == self }
   end
 
   def set_wall_tile(i, j, must_set = false)
@@ -422,6 +423,15 @@ class EditorSection < Section
     end
     false
   end
+
+  def add(element)
+    @elements.each do |e|
+      if e.class == element.class && e.x == element.x && e.y == element.y
+        return
+      end
+    end
+    @elements << element
+  end
 end
 
 class FloatingPanel
@@ -576,6 +586,8 @@ class Editor
         when 'bool'
           field[:values] = f[2].split(',', -1)
           field[:default] = f[3] == '1'
+        when 'coords'
+          field[:limit] = f[2].to_i
         end
       end
       @element_args[i + 1] = {
@@ -1077,6 +1089,7 @@ class Editor
           when 'entrance'
             control.value || ''
           when 'coords'
+            @args[:coords] = @args[:coords][0...f[:limit]] if f[:limit] != 0
             controls[-1].text = @args[:coords].empty? ? '(Ctrl-click to add points)' : @args[:coords].join('  ')
             @args[:coords].join(':')
           end

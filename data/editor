@@ -35,7 +35,7 @@ Leaps|int|1-99
 ===
 ===
 Direction|enum|,1,2,3|Up,Right,Down,Left
-Begin active|bool|,$|0
+Start active|bool|,$|0
 Delay|int|0-999
 ===
 ===
@@ -43,7 +43,7 @@ Type|enum|,2,3|Black (10 seconds),Blue (5 seconds),Yellow (2 seconds)
 ===
 Tile index|int|0-99
 ===
-Begin active|bool|,$|0
+Start active|bool|,$|0
 ===
 Range|int|0-99
 ===
@@ -102,3 +102,43 @@ Type|enum|,2|1,2
 Activate from above|bool|,$|0
 ID|int|0-99
 ===
+Type|enum|,2|1,2
+===
+Path|coords|5
+===
+===
+Type|enum|,2|Common,Mega
+===
+Duration (seconds)|int|1-999
+===
+Facing right|bool|$,|1
+===
+Range|int|1-99
+===
+===
+Facing right|bool|,$|1
+Enemy type|enum|,$|Forsby,Morsby
+===
+Don't fall|bool|$,|1
+===
+Range|int|1-99
+===
+===
+ID|int|0-99
+===
+ID|int|0-99
+Object type|enum|1,2,3,4|TwinWalls,Elevator,Box,Gate
+===
+===
+Don't fall|bool|$,|1
+===
+Don't fall|bool|$,|1
+===
+Range|int|1-999
+Start active|bool|,$|0
+===
+===
+===
+ID|int|0-99
+Closed|bool|!,.|1
+Twin location|coords|1

@@ -1451,7 +1451,7 @@ class TwinWalls < GameObject
     else
       @max_size = 0
       y = @y
-      until section.obstacle_at? @x, y - 1
+      until y <= 0 || section.obstacle_at?(@x, y - 1)
         y -= C::TILE_SIZE
         @max_size += C::TILE_SIZE
       end
@@ -1494,6 +1494,14 @@ class TwinWalls < GameObject
   end
 
   def draw(map, section)
+    if !@closed && SB.state == :editor
+      y = @y - @max_size
+      while y < @y
+        index = y == @y - @max_size ? 0 : 1
+        @img[index].draw @x - map.cam.x, y - map.cam.y, 0, 2, 2, 0x80ffffff
+        y += 16
+      end
+    end
     @img[0].draw @x - map.cam.x, @y - map.cam.y, 0, 2, 2 if @h > 0
     y = 16
     while y < @h
@@ -1669,7 +1677,7 @@ class Boulder < GameObject
   def update(section)
     b = SB.player.bomb
     if @state == :waiting
-      if b.x > @x + 100 && b.x < @x + 120 && b.y > @y
+      if b.y > @y && (@facing_right && b.x > @x + 100 && b.x < @x + 120 || !@facing_right && b.x + b.w < @x - 44 && b.x + b.w > @x - 64)
         @state = :falling
       end
     else
@@ -1873,11 +1881,14 @@ end
 
 class WindMachine < SBGameObject
   FORCE = 0.05
-  RANGE = 78 * C::TILE_SIZE
 
   def initialize(x, y, args, section, switch)
     super(x - 304, y - 32, 640, 64, :sprite_windMachine, Vector.new(0, -16), 1, 10)
-    @active = switch[:state] == :taken
+    args = (args || '').split(',')
+    @range = args[0].to_i * C::TILE_SIZE
+    @range = 78 * C::TILE_SIZE if @range == 0
+    @active = switch[:state] == :taken || !args[1].nil?
+    @timer = 0
     @rnd = Random.new
   end
 
@@ -1890,11 +1901,11 @@ class WindMachine < SBGameObject
       end
 
       animate([2, 3, 4, 5, 6, 7, 8, 9], 5)
-      section.add_effect(Effect.new(@x - 10 + @rnd.rand(@w + 20), @y - 120 - @rnd.rand(RANGE), :fx_wind, 8, 1, 7))
+      section.add_effect(Effect.new(@x - 10 + @rnd.rand(@w + 20), @y - 120 - @rnd.rand(@range), :fx_wind, 8, 1, 7))
       b = SB.player.bomb
-      if b.x + b.w > @x - 20 && @x + @w + 20 > b.x && b.y + b.h > @y - RANGE && b.y + b.h <= @y
+      if b.x + b.w > @x - 20 && @x + @w + 20 > b.x && b.y + b.h > @y - @range && b.y + b.h <= @y
         d_y = @y - b.y - b.h
-        b.speed.y -= G.gravity.y + [FORCE * (1 - d_y/RANGE), 0.0101].max
+        b.speed.y -= G.gravity.y + [FORCE * (1 - d_y/@range), 0.0101].max
       end
     end
   end
