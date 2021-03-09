@@ -473,6 +473,7 @@ class SB
       Gosu::Song.current_song.stop if Gosu::Song.current_song
       G.window.width = C::EDITOR_SCREEN_WIDTH
       G.window.height = C::EDITOR_SCREEN_HEIGHT
+      @player.reset
       @player.bomb.do_warp(-1000, -1000)
       @state = :editor
     end

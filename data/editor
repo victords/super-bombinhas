@@ -1,35 +1,26 @@
-Type|enum|,2,3|1,2,3
-seq
+Type|enum|,2,3|Red (10 points),Green (20 points),Blue (50 points)
 ===
 ID|int|1-35
-seq
 ===
 Don't fall|bool|$,|1
-seq
 ===
-Type|enum|,2|1,2
-seq
+Type|enum|,2|Common (+1),Mega (+5)
 ===
 Direction|enum|,1,2,3|Up,Right,Down,Left
 Type|enum|,2,3,4|1,2,3,4
-seq
 ===
 ===
 ===
 Entrance|entrance
 Locked|bool|,.|0
 Type|int|0-14
-seq
 ===
 Entrance|entrance
-seq
 ===
 ===
-Type|int|0-14
-seq
+Type|enum|,3,6,11,12,13|0,3,6,11,12,13
 ===
 Type|enum|,2|Azul,Amarela
-seq
 ===
 Type|int|1-13
 Speed|int|0-99
@@ -38,3 +29,40 @@ ID|int|0-99|($)
 Open path|bool|,!|0
 Path|coords
 $0$4:$1$3$2:$5
+===
+Leaps|int|1-99
+===
+===
+===
+Direction|enum|,1,2,3|Up,Right,Down,Left
+Begin active|bool|,$|0
+Delay|int|0-999
+===
+===
+Type|enum|,2,3|Black (10 seconds),Blue (5 seconds),Yellow (2 seconds)
+===
+Tile index|int|0-99
+===
+Begin active|bool|,$|0
+===
+Range|int|0-99
+===
+===
+===
+Entrance|entrance
+Stop time immune|bool|,$|0
+===
+===
+===
+Don't fall|bool|$,|1
+===
+===
+Enemy type|enum|,$|Yaw,Yawnster
+===
+Don't fall|bool|$,|1
+===
+===
+ID|int|0-99
+===
+ID|int|0-99
+Height (begin invisible)|int|0-99

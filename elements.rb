@@ -427,7 +427,6 @@ class Elevator < SBGameObject
   end
 
   def update(section)
-    return if SB.state == :editor
     if @active
       cycle @points, @speed_m, section.passengers, section.passengers.map{|p| section.get_obstacles(p.x, p.y)}.flatten, section.ramps, @stop_time
     end
@@ -672,6 +671,14 @@ class MovingWall < GameObject
   end
 
   def draw(map, section)
+    if !@closed && SB.state == :editor
+      y = @y - @max_size
+      while y < @y
+        index = y == @y - @max_size ? 0 : 1
+        @img[index].draw @x - map.cam.x, y - map.cam.y, 0, 2, 2, 0x80ffffff
+        y += 16
+      end
+    end
     @img[0].draw @x - map.cam.x, @y - map.cam.y, 0, 2, 2 if @h > 0
     y = 16
     while y < @h

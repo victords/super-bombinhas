@@ -83,7 +83,8 @@ class EditorStage < Stage
 
     if @start_pos
       section = @sections.find { |s| s.id == @start_pos[2] }
-      @cur_entrance = {x: @start_pos[0] * C::TILE_SIZE, y: @start_pos[1] * C::TILE_SIZE, section: section}
+      @entrances << (entrance = {x: @start_pos[0] * C::TILE_SIZE, y: @start_pos[1] * C::TILE_SIZE, section: section, index: @entrances.size})
+      @cur_entrance = entrance
       @cur_section = section
     else
       @cur_entrance = @entrances[0]
@@ -132,7 +133,6 @@ class EditorSection < Section
       i = el[:x] / C::TILE_SIZE
       j = el[:y] / C::TILE_SIZE
       @tiles[i][j].obj = el[:type].new(el[:x], el[:y], el[:args], self)
-      @tiles[i][j].obj.update(self)
       @tiles[i][j].code = "@#{ELEMENT_TYPES.key(el[:type])}#{el[:args] ? ":#{el[:args]}" : ''}"
     end
     entrances.select { |e| e && e[:section] == self }.each do |e|
@@ -145,7 +145,6 @@ class EditorSection < Section
       i = s[:x] / C::TILE_SIZE
       j = s[:y] / C::TILE_SIZE
       @tiles[i][j].obj = s[:obj] = s[:type].new(s[:x], s[:y], s[:args], self, s)
-      @tiles[i][j].obj.update(self)
       @tiles[i][j].code = "@#{ELEMENT_TYPES.key(s[:type])}#{s[:args] ? ":#{s[:args]}" : ''}"
     end
   end
@@ -322,7 +321,6 @@ class EditorSection < Section
     else
       @tiles[i][j].obj = ELEMENT_TYPES[code].new(i * C::TILE_SIZE, j * C::TILE_SIZE, args, self)
     end
-    @tiles[i][j].obj.update(self)
     @tiles[i][j].code = "@#{code}#{args ? ":#{args}" : ''}"
   end
 
@@ -547,8 +545,15 @@ class Editor
       next if a.chomp.empty?
 
       lines = a.split("\n").delete_if(&:empty?)
+      if lines[-1].start_with?('$')
+        pattern = lines[-1]
+        index = -2
+      else
+        pattern = :seq
+        index = -1
+      end
       fields = []
-      lines[0..-2].each do |l|
+      lines[0..index].each do |l|
         f = l.split('|')
         fields << (field = {
           name: f[0],
@@ -569,7 +574,7 @@ class Editor
         end
       end
       @element_args[i + 1] = {
-        pattern: lines[-1],
+        pattern: pattern,
         fields: fields
       }
     end
@@ -1000,12 +1005,12 @@ class Editor
         controls << Label.new(x: 10, y: y + 4, font: SB.font, text: f[:name], scale_x: 2, scale_y: 2)
         case f[:type]
         when 'enum'
-          controls << (ddl = DropDownList.new(x: 150, y: y, font: SB.font, img: :editor_ddl2, opt_img: :editor_ddl2Opt, options: f[:display_values], text_margin: 4, scale_x: 2, scale_y: 2) {
+          controls << (ddl = DropDownList.new(x: 230, y: y, font: SB.font, img: :editor_ddl2, opt_img: :editor_ddl2Opt, options: f[:display_values], text_margin: 4, scale_x: 2, scale_y: 2) {
             build_args_value
           })
           @dropdowns << ddl
         when 'int'
-          controls << (txt = TextField.new(x: 150, y: y, font: SB.font, img: :editor_textField, max_length: 2, allowed_chars: '0123456789', margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2) { |v|
+          controls << (txt = TextField.new(x: 230, y: y, font: SB.font, img: :editor_textField, max_length: 3, allowed_chars: '0123456789', margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2) { |v|
             if v.to_i < f[:min] && !v.empty?
               @args[:text_fields][i].send(:text=, f[:min].to_s, false)
             elsif v.to_i > f[:max]
@@ -1015,24 +1020,24 @@ class Editor
           })
           text_fields[i] = txt
         when 'bool'
-          controls << ToggleButton.new(x: 150, y: y + 7, img: :editor_chk, scale_x: 2, scale_y: 2, checked: f[:default]) {
+          controls << ToggleButton.new(x: 230, y: y + 7, img: :editor_chk, scale_x: 2, scale_y: 2, checked: f[:default]) {
             build_args_value
           }
         when 'entrance'
           entrances = SB.stage.entrances.reject(&:nil?).map{ |e| e[:index].to_s }
-          controls << (ddl = DropDownList.new(x: 150, y: y, font: SB.font, img: :editor_ddl, opt_img: :editor_ddlOpt, options: entrances, text_margin: 4, scale_x: 2, scale_y: 2) {
+          controls << (ddl = DropDownList.new(x: 230, y: y, font: SB.font, img: :editor_ddl, opt_img: :editor_ddlOpt, options: entrances, text_margin: 4, scale_x: 2, scale_y: 2) {
             build_args_value
           })
           @dropdowns << ddl
         when 'coords'
-          controls << Button.new(x: 150, y: y, font: SB.font, text: 'Clear', img: :editor_btn2, scale_x: 2, scale_y: 2) {
+          controls << Button.new(x: 230, y: y, font: SB.font, text: 'Clear', img: :editor_btn2, scale_x: 2, scale_y: 2) {
             @args[:coords] = []
             build_args_value
           }
-          controls << Label.new(x: 220, y: y, font: SB.font, text: '')
+          controls << Label.new(x: 300, y: y, font: SB.font, text: '')
         end
       end
-      @args_panel = Panel.new(0, 0, 340, 4 + fields.size * 34, controls, :editor_pnl, :tiled, true, 2, 2, :center)
+      @args_panel = Panel.new(0, 0, 420, 4 + fields.size * 34, controls, :editor_pnl, :tiled, true, 2, 2, :center)
       @args = {
         element: element,
         index: @cur_index,
@@ -1074,7 +1079,7 @@ class Editor
       last_non_empty = i unless v.empty?
     end
     pattern = element[:pattern]
-    value = if pattern == 'seq'
+    value = if pattern == :seq
               last_non_empty ? values[0..last_non_empty].join(',') : ''
             else
               pattern.gsub(/\$(\d+)/) { |m| values[m[1].to_i] }
