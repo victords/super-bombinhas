@@ -81,3 +81,24 @@ Range|int|1-99
 Width|int|1-999
 Height|int|1-999
 ===
+===
+Type|enum|,2|1,2
+===
+Radius|int|0-99
+Angular speed|int|0-99
+===
+===
+Facing right|bool|$,|1
+===
+===
+Place above|bool|$,|1
+===
+===
+Message ID|int|0-99
+===
+Don't fall|bool|$,|1
+===
+Type|enum|,2|1,2
+Activate from above|bool|,$|0
+ID|int|0-99
+===

@@ -1309,11 +1309,13 @@ class Rock < SBGameObject
       objs = [['l', 0, 0, 26, 96], [26, 0, 32, 96], [58, 27, 31, 69], ['r', 89, 27, 18, 35], [89, 62, 30, 34]]
       w = 120; h = 96; x -= 44; y -= 64
     end
-    objs.each do |o|
-      if o[0].is_a? String
-        section.ramps << Ramp.new(x + o[1], y + o[2], o[3], o[4], o[0] == 'l')
-      else
-        section.obstacles << Block.new(x + o[0], y + o[1], o[2], o[3])
+    unless SB.state == :editor
+      objs.each do |o|
+        if o[0].is_a? String
+          section.ramps << Ramp.new(x + o[1], y + o[2], o[3], o[4], o[0] == 'l')
+        else
+          section.obstacles << Block.new(x + o[0], y + o[1], o[2], o[3])
+        end
       end
     end
     super x, y, w, h, "sprite_rock#{args || 1}", Vector.new(0, 0)

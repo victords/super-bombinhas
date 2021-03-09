@@ -968,8 +968,8 @@ class Editor
     G.window.width = C::SCREEN_WIDTH
     G.window.height = C::SCREEN_HEIGHT
     StageMenu.initialize(true, true)
-    SB.stage.start
     SB.state = :main
+    SB.stage.start
   end
 
   def toggle_floating_panel(index)
