@@ -1102,8 +1102,9 @@ end
 
 class Branch < GameObject
   def initialize(x, y, args, section)
-    a = args ? args.split(',') : []
-    @scale = a[0] ? a[0].to_i : 2
+    a = (args || '').split(',')
+    @scale = a[0].to_i
+    @scale = 2 if @scale == 0
     @left = a[1].nil?
     super x, y, @scale * C::TILE_SIZE, 1, :sprite_branch, Vector.new(@left ? 0 : 4, 0)
     @passable = true
@@ -1156,7 +1157,20 @@ class Water
     true
   end
 
-  def draw(map, section); end
+  def draw(map, section)
+    if SB.state == :editor
+      img = Res.img('editor_el_41-Water')
+      x = @x / C::TILE_SIZE
+      y = (@y - 8) / C::TILE_SIZE
+      w = @w / C::TILE_SIZE
+      h = (@h + 8) / C::TILE_SIZE
+      map.foreach do |i, j, xx, yy|
+        if i >= x && i < x + w && j >= y && j < y + h
+          img.draw(xx, yy, 0, 2, 2)
+        end
+      end
+    end
+  end
 end
 
 class ForceField < GameObject

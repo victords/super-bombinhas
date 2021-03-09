@@ -26,6 +26,11 @@ class Entrance
     @y = y
     @index = index
     @img = Res.img(:editor_entrance)
+    @bounds = Rectangle.new(@x, @y, C::TILE_SIZE, C::TILE_SIZE)
+  end
+
+  def is_visible(map)
+    map.cam.intersect?(@bounds)
   end
 
   def draw(map, section)
@@ -1185,12 +1190,20 @@ class Editor
                          x + 31, y + 31, NULL_COLOR, -3
     end
     @section.draw
+    @section.tiles.each do |col|
+      col.each do |tile|
+        if tile.obj && tile.obj.is_visible(@section.map)
+          tile.obj.draw(@section.map, @section)
+          if tile.obj.is_a?(Entrance)
+            x = tile.obj.x + C::TILE_SIZE - @section.map.cam.x
+            y = tile.obj.y - @section.map.cam.y
+            SB.text_helper.write_line(tile.code[1..-1], x, y, :right, 0, 255, nil, 0, 0, 0, 0, 1, 1)
+          end
+        end
+      end
+    end
     @section.map.foreach do |i, j, x, y|
       tile = @section.tiles[i][j]
-      if tile.obj
-        tile.obj.draw(@section.map, @section)
-        SB.text_helper.write_line(tile.code[1..-1], x + C::TILE_SIZE, y, :right, 0, 255, nil, 0, 0, 0, 0, 1, 1) if tile.obj.is_a?(Entrance)
-      end
       if tile.hide
         color = tile.hide == 0 ? HIDE_COLOR : NULL_COLOR
         G.window.draw_quad x, y, color,

@@ -66,3 +66,18 @@ ID|int|0-99
 ===
 ID|int|0-99
 Height (begin invisible)|int|0-99
+===
+===
+Scale|enum|,3,4|2,3,4
+Pointing left|bool|$,|1
+===
+Don't fall|bool|$,|1
+===
+Type|enum|,2,3|Vermelha,Verde,Branca
+===
+Range|int|1-99
+===
+===
+Width|int|1-999
+Height|int|1-999
+===
