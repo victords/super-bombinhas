@@ -222,7 +222,9 @@ class EditorSection < Section
       }
     }
     @ramps.clear
-    SB.stage.entrances.delete_if { |e| e[:section] == self }
+    @elements.clear
+    @inter_elements.clear
+    SB.stage.entrances.delete_if { |e| e.nil? || e[:section] == self }
   end
 
   def set_wall_tile(i, j, must_set = false)
@@ -598,7 +600,7 @@ class Editor
     @args = {
       index: nil,
       value: '',
-      text_fields: []
+      active_field: nil
     }
 
     @panels = [
@@ -857,6 +859,7 @@ class Editor
 
     @over_panel = []
     @dropdowns.each_with_index do |d, i|
+      break if i > 5 && !@args_panel.visible
       h = d.instance_eval('@open') ? d.instance_eval('@max_h') : d.h
       @over_panel[i < 4 ? 0 : i < 6 ? 1 : @panels.size] = true if Mouse.over?(d.x, d.y, d.w, h)
     end
@@ -894,10 +897,7 @@ class Editor
       if ctrl
         case @cur_element
         when /(obj|enemy)/
-          if @args[:coords]
-            @args[:coords] << "#{i},#{j}"
-            build_args_value
-          end
+          add_coords(i, j)
         when :pass
           @pass_start = [i, j]
         end
@@ -1006,7 +1006,7 @@ class Editor
       @args = {
         index: -1,
         value: '',
-        coords: nil
+        active_field: nil
       }
     elsif @element_args[@cur_index].nil?
       @args_panel.visible = false if @args_panel
@@ -1015,11 +1015,11 @@ class Editor
       element = @element_args[@cur_index]
       fields = element[:fields]
       controls = []
-      text_fields = []
       @dropdowns.slice!(6, @dropdowns.size - 6)
       fields.each_with_index do |f, i|
         y = 4 + i * 34
         controls << Label.new(x: 10, y: y + 4, font: SB.font, text: f[:name], scale_x: 2, scale_y: 2)
+        f[:control_index] = controls.size
         case f[:type]
         when 'enum'
           controls << (ddl = DropDownList.new(x: 230, y: y, font: SB.font, img: :editor_ddl2, opt_img: :editor_ddl2Opt, options: f[:display_values], text_margin: 4, scale_x: 2, scale_y: 2) {
@@ -1027,15 +1027,14 @@ class Editor
           })
           @dropdowns << ddl
         when 'int'
-          controls << (txt = TextField.new(x: 230, y: y, font: SB.font, img: :editor_textField, max_length: 3, allowed_chars: '0123456789', margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2) { |v|
+          controls << TextField.new(x: 230, y: y, font: SB.font, img: :editor_textField, max_length: 3, allowed_chars: '0123456789', margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2) { |v|
             if v.to_i < f[:min] && !v.empty?
-              @args[:text_fields][i].send(:text=, f[:min].to_s, false)
+              @args[:controls][f[:control_index]].send(:text=, f[:min].to_s, false)
             elsif v.to_i > f[:max]
-              @args[:text_fields][i].send(:text=, f[:max].to_s, false)
+              @args[:controls][f[:control_index]].send(:text=, f[:max].to_s, false)
             end
             build_args_value
-          })
-          text_fields[i] = txt
+          }
         when 'bool'
           controls << ToggleButton.new(x: 230, y: y + 7, img: :editor_chk, scale_x: 2, scale_y: 2, checked: f[:default]) {
             build_args_value
@@ -1047,11 +1046,15 @@ class Editor
           })
           @dropdowns << ddl
         when 'coords'
-          controls << Button.new(x: 230, y: y, font: SB.font, text: 'Clear', img: :editor_btn2, scale_x: 2, scale_y: 2) {
-            @args[:coords] = []
+          controls << Label.new(x: 370, y: y, font: SB.font, text: '')
+          controls << Button.new(x: 230, y: y, font: SB.font, text: 'Set', img: :editor_btn2, scale_x: 2, scale_y: 2) {
+            @args[:active_field] = f
+          }
+          controls << Button.new(x: 300, y: y, font: SB.font, text: 'Clear', img: :editor_btn2, scale_x: 2, scale_y: 2) {
+            @args[:controls][f[:control_index]].text = ''
             build_args_value
           }
-          controls << Label.new(x: 300, y: y, font: SB.font, text: '')
+          controls << Label.new(x: 370, y: y + 15, font: SB.font, text: '(Use ctrl-click to add points)')
         when 'float'
           controls << TextField.new(x: 230, y: y, font: SB.font, img: :editor_textField2, max_length: 5, allowed_chars: '0123456789.', margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2) {
             build_args_value
@@ -1063,8 +1066,7 @@ class Editor
         element: element,
         index: @cur_index,
         controls: controls,
-        text_fields: text_fields,
-        coords: []
+        active_field: nil
       }
       build_args_value
     else
@@ -1078,7 +1080,7 @@ class Editor
     values = []
     last_non_empty = nil
     element[:fields].each_with_index do |f, i|
-      control = controls[2 * i + 1]
+      control = controls[f[:control_index]]
       v = case f[:type]
           when 'enum'
             f[:values][f[:display_values].index(control.value)]
@@ -1093,9 +1095,7 @@ class Editor
           when 'entrance'
             control.value || ''
           when 'coords'
-            @args[:coords] = @args[:coords][0...f[:limit]] if f[:limit] != 0
-            controls[-1].text = @args[:coords].empty? ? '(Ctrl-click to add points)' : @args[:coords].join('  ')
-            @args[:coords].join(':')
+            control.text.empty? ? '' : control.text.split('  ').join(':')
           when 'float'
             if control.text.empty?
               ''
@@ -1111,9 +1111,20 @@ class Editor
     value = if pattern == :seq
               last_non_empty ? values[0..last_non_empty].join(',') : ''
             else
-              pattern.gsub(/\$(\d+)/) { |m| values[m[1].to_i] }
+              pattern.gsub(/\$(\d\d)/) { |m| values[$1.to_i] }.gsub(/\$(\d)/) { |m| values[$1.to_i] }
             end
     @args[:value] = value
+  end
+
+  def add_coords(i, j)
+    field = @args[:active_field]
+    return if field.nil?
+    label = @args[:controls][field[:control_index]]
+    values = label.text.split('  ')
+    values.pop if field[:limit] > 0 && values.size >= field[:limit]
+    values << "#{i},#{j}"
+    label.text = values.join('  ')
+    build_args_value
   end
 
   def toggle_offset_panel

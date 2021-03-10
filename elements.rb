@@ -2654,8 +2654,10 @@ class BattleArena
     @enemies = []
     return if args.size < 3
     args[2..-1].each do |a|
+      next if a.nil? || a.empty?
       p = a.split(',').map(&:to_i)
-      @enemies << Section::ELEMENT_TYPES[p[0]].new(x + p[1] * C::TILE_SIZE, y + p[2] * C::TILE_SIZE, nil, section)
+      next if p[0].nil? || p[0] == 0
+      @enemies << Section::ELEMENT_TYPES[p[0]].new((p[1] || 0) * C::TILE_SIZE, (p[2] || 0) * C::TILE_SIZE, nil, section)
     end
   end
 

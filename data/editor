@@ -240,3 +240,20 @@ Close time (frames)|int|1-999
 Arena gate|bool|,$|0
 Arena exit gate|bool|,$|0
 ===
+Entrance gate ID|int|0-99
+Exit gate ID|int|0-99
+Enemy 1 Type|enum|114,115,118,121,122|Bombinfant,Bombarcher,Bombnight,Bombaladin,Bomblancer
+Enemy 1 position|coords|1
+Enemy 2 Type|enum|,114,115,118,121,122|None,Bombinfant,Bombarcher,Bombnight,Bombaladin,Bomblancer
+Enemy 2 position|coords|1
+Enemy 3 Type|enum|,114,115,118,121,122|None,Bombinfant,Bombarcher,Bombnight,Bombaladin,Bomblancer
+Enemy 3 position|coords|1
+Enemy 4 Type|enum|,114,115,118,121,122|None,Bombinfant,Bombarcher,Bombnight,Bombaladin,Bomblancer
+Enemy 4 position|coords|1
+Enemy 5 Type|enum|,114,115,118,121,122|None,Bombinfant,Bombarcher,Bombnight,Bombaladin,Bomblancer
+Enemy 5 position|coords|1
+Enemy 6 Type|enum|,114,115,118,121,122|None,Bombinfant,Bombarcher,Bombnight,Bombaladin,Bomblancer
+Enemy 6 position|coords|1
+Enemy 7 Type|enum|,114,115,118,121,122|None,Bombinfant,Bombarcher,Bombnight,Bombaladin,Bomblancer
+Enemy 7 position|coords|1
+$0:$1:$2,$3:$4,$5:$6,$7:$8,$9:$10,$11:$12,$13:$14,$15
