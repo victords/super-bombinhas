@@ -440,6 +440,20 @@ class Elevator < SBGameObject
   def is_visible(map)
     true
   end
+
+  def self.parse_args(args)
+    a = (args || '').split(':')
+    type = a[0].to_i.to_s
+    open = a[0] && a[0][-1] == '!' ? '!' : ''
+    index = a[1] && a[1].index('(')
+    speed = index ? a[1][0...index] : a[1].to_s
+    id = index ? a[1].split('(')[1].to_i.to_s : ''
+    index2 = a[2] && a[2].index(',')
+    stop_time = index2 ? '' : a[2].to_s
+    ps = index2 ? a[2..-1].join(':') : (a[3] ? a[3..-1].join(':') : '')
+
+    [type, speed, stop_time, id, open, ps]
+  end
 end
 
 class SaveBombie < SBGameObject
@@ -2644,6 +2658,9 @@ end
 
 class BattleArena
   def initialize(x, y, args, section, switch)
+    @x = x
+    @y = y
+
     if switch[:state] == :taken
       @dead = true
       return
@@ -2696,7 +2713,21 @@ class BattleArena
     true
   end
 
-  def draw(map, section); end
+  def draw(map, section)
+    Res.img('editor_el_124-BattleArena').draw(@x - map.cam.x, @y - map.cam.y, 0, 2, 2) if SB.state == :editor
+  end
+
+  def self.parse_args(args)
+    args = (args || '').split(':')
+    result = [args[0].to_s, args[1].to_s]
+    return result if args.size < 3
+    args[2..-1].each do |a|
+      p = a.split(',')
+      result << p[0]
+      result << (p[1] && p[2] ? "#{p[1]},#{p[2]}" : '')
+    end
+    result
+  end
 end
 
 class SpecPlatform < SBGameObject

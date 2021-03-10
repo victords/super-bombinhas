@@ -3400,4 +3400,13 @@ class Gaxlon < Enemy
   def is_visible(map)
     true
   end
+
+  def self.parse_args(args)
+    args = (args || '').split('%')
+    j = (args[0] || '').split('$')
+    s = (args[1] || '').split('$')
+    s5 = (s[5] || '').split(':')
+    e = (args[2] || '').split(',')
+    [j[0], j[1], j[2], j[3], j[4], j[5], s[0], s[1], s[2], s[3], s[4], s5[0], s5[1]] + e
+  end
 end

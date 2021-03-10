@@ -925,7 +925,7 @@ class Editor
             @cur_element = :obj
             @cur_index = Section::ELEMENT_TYPES.key(obj.class)
             code = @section.tiles[i][j].code
-            toggle_args_panel(code[(code.index(':') + 1)..-1])
+            toggle_args_panel(code.index(':') ? code[(code.index(':') + 1)..-1] : nil, obj.class)
           end
         end
       end
@@ -1004,7 +1004,7 @@ class Editor
     end
   end
 
-  def toggle_args_panel(args = nil)
+  def toggle_args_panel(args = nil, type = nil)
     unless @cur_element == :obj || @cur_element == :entrance
       @args_panel.visible = false if @args_panel
       return
@@ -1084,27 +1084,24 @@ class Editor
       }
 
       if args
-        @args[:value] = args
-
-        if element[:pattern] == :seq
-          values = args.split(',')
-          fields.each_with_index do |f, i|
-            next if values[i].nil?
-            control = controls[f[:control_index]]
-            case f[:type]
-            when 'enum'
-              control.value = f[:display_values][f[:values].index(values[i])]
-            when 'int', 'float'
-              control.text = values[i]
-            when 'bool'
-              control.checked = values[i] == f[:values][1]
-            when 'entrance'
-              control.value = values[i]
-            when 'coords'
-              control.text = values[i].split(':').join('  ')
-            end
+        values = element[:pattern] == :seq ? args.split(',') : type.parse_args(args)
+        fields.each_with_index do |f, i|
+          next if values[i].nil?
+          control = controls[f[:control_index]]
+          case f[:type]
+          when 'enum'
+            control.value = f[:display_values][f[:values].index(values[i])]
+          when 'int', 'float'
+            control.text = values[i]
+          when 'bool'
+            control.checked = values[i] == f[:values][1]
+          when 'entrance'
+            control.value = values[i]
+          when 'coords'
+            control.text = values[i].split(':').join('  ')
           end
         end
+        @args[:value] = args
       else
         build_args_value
       end
@@ -1244,13 +1241,14 @@ class Editor
   end
 
   def get_cell_string(i, j)
+    tile = @section.tiles[i][j]
     str = ''
-    str += "b#{'%02d' % @section.tiles[i][j].back}" if @section.tiles[i][j].back
-    str += "f#{'%02d' % @section.tiles[i][j].fore}" if @section.tiles[i][j].fore
-    str += "h#{'%02d' % @section.tiles[i][j].hide}" if @section.tiles[i][j].hide
-    str += "p#{'%02d' % @section.tiles[i][j].pass}" if @section.tiles[i][j].pass
-    str += "w#{'%02d' % @section.tiles[i][j].wall}" if @section.tiles[i][j].wall
-    str += @section.tiles[i][j].code if @section.tiles[i][j].obj
+    str += "b#{'%02d' % tile.back}" if tile.back
+    str += "f#{'%02d' % tile.fore}" if tile.fore
+    str += "h#{'%02d' % tile.hide}" if tile.hide
+    str += "p#{'%02d' % tile.pass}" if tile.pass
+    str += "w#{'%02d' % tile.wall}" if tile.wall
+    str += tile.code if tile.obj
     str
   end
 

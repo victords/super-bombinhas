@@ -140,6 +140,9 @@ class SB
       File.open("#{@save_dir}/options", 'w') do |f|
         f.print("#{@lang},#{@sound_volume},#{@music_volume},#{@full_screen ? 1 : 0}")
       end
+      Dir["#{Res.prefix}stage/custom/__temp*"].each do |f|
+        File.delete(f)
+      end
     end
 
     def toggle_full_screen
@@ -476,6 +479,9 @@ class SB
       @player.reset
       @player.bomb.do_warp(-1000, -1000)
       @state = :editor
+      Dir["#{Res.prefix}stage/custom/__temp*"].each do |f|
+        File.delete(f)
+      end
     end
 
     def load_custom_stage(name)
