@@ -501,6 +501,7 @@ class Editor
     SB.init_editor_stage(EditorStage.new)
     @section = EditorSection.new('300,300,0,1,s1#1!##', SB.stage.entrances, SB.stage.switches)
 
+    @cur_element = :inspect
     @cur_index = -1
 
     bg_files = Dir["#{Res.prefix}img/bg/*"].sort
@@ -562,7 +563,7 @@ class Editor
       next if a.chomp.empty?
 
       lines = a.split("\n").delete_if(&:empty?)
-      if lines[-1].start_with?('$')
+      if lines[-1].start_with?('#')
         pattern = lines[-1]
         index = -2
       else
@@ -744,7 +745,7 @@ class Editor
       ###########################################################################
 
       ################################# Elements ################################
-      Panel.new(0, 0, 68, 344, [
+      Panel.new(0, 0, 68, 392, [
         Button.new(x: 0, y: 4, img: :editor_btn1, font: SB.font, text: 'Bomb', scale_x: 2, scale_y: 2, anchor: :top) do
           @cur_element = :bomb
           toggle_args_panel
@@ -762,6 +763,11 @@ class Editor
           toggle_floating_panel(3)
         end),
         Button.new(x: 0, y: 232, img: :editor_btn1, font: SB.font, text: 'args', scale_x: 2, scale_y: 2, anchor: :top) do
+          toggle_args_panel
+        end,
+        Button.new(x: 0, y: 276, img: :editor_btn1, font: SB.font, text: 'insp.', scale_x: 2, scale_y: 2, anchor: :top) do
+          @cur_element = :inspect
+          @cur_index = @args[:index] = -1
           toggle_args_panel
         end,
         Button.new(x: 0, y: 4, img: :editor_btn1, font: SB.font, text: 'offst', scale_x: 2, scale_y: 2, anchor: :bottom) do
@@ -825,7 +831,7 @@ class Editor
       FloatingPanel.new(:tile, other_tile_btn.x + 64, other_tile_btn.y - 148, 337, 337, @tilesets[@cur_tileset].map.with_index{ |t, i| { img: t, x: 4 + (i % 10) * 33, y: 4 + (i / 10) * 33 } }, self),
       FloatingPanel.new(:ramp, ramp_btn.x + 64, ramp_btn.y, 271, 40, (0..7).map { |i| { img: Res.img("editor_ramp#{i}"), x: 4 + i * 33, y: 4 } }, self),
       FloatingPanel.new(:obj, btn_obj.x - 341, btn_obj.y, 337, 300, obj_items, self),
-      FloatingPanel.new(:enemy, btn_enemy.x - 341, btn_enemy.y, 337, 300, enemy_items, self),
+      FloatingPanel.new(:obj, btn_enemy.x - 341, btn_enemy.y, 337, 300, enemy_items, self),
     ]
 
     @dropdowns = [@ddl_bg, @ddl_bg2, @ddl_bgm, ddl_exit, @ddl_ts, @ddl_tile_type]
@@ -896,7 +902,7 @@ class Editor
     elsif Mouse.button_pressed?(:left)
       if ctrl
         case @cur_element
-        when /(obj|enemy)/
+        when :obj
           add_coords(i, j)
         when :pass
           @pass_start = [i, j]
@@ -913,6 +919,14 @@ class Editor
           @section.set_ramp(i, j, sz[0], sz[1], @cur_index < 4, @ramp_tiles[@cur_index])
         when :entrance
           @section.set_entrance(i, j, @args[:value].to_i, @chk_default.checked)
+        when :inspect
+          obj = @section.tiles[i][j].obj
+          if obj && !obj.is_a?(Entrance)
+            @cur_element = :obj
+            @cur_index = Section::ELEMENT_TYPES.key(obj.class)
+            code = @section.tiles[i][j].code
+            toggle_args_panel(code[(code.index(':') + 1)..-1])
+          end
         end
       end
     elsif !alt && Mouse.button_down?(:left)
@@ -929,7 +943,7 @@ class Editor
           t = @ddl_tile_type.value
           prop = t == 'w' ? :wall= : t == 'p' ? :pass= : t == 'b' ? :back= : :fore=
           @section.tiles[i][j].send(prop, @cur_index)
-        when :obj, :enemy
+        when :obj
           @section.set_object(i, j, @cur_index, @args[:value], SB.stage.switches)
         when :bomb
           SB.stage.start_pos = [i, j, @txt_section.text]
@@ -990,8 +1004,8 @@ class Editor
     end
   end
 
-  def toggle_args_panel
-    unless @cur_element == :obj || @cur_element == :enemy || @cur_element == :entrance
+  def toggle_args_panel(args = nil)
+    unless @cur_element == :obj || @cur_element == :entrance
       @args_panel.visible = false if @args_panel
       return
     end
@@ -1068,7 +1082,32 @@ class Editor
         controls: controls,
         active_field: nil
       }
-      build_args_value
+
+      if args
+        @args[:value] = args
+
+        if element[:pattern] == :seq
+          values = args.split(',')
+          fields.each_with_index do |f, i|
+            next if values[i].nil?
+            control = controls[f[:control_index]]
+            case f[:type]
+            when 'enum'
+              control.value = f[:display_values][f[:values].index(values[i])]
+            when 'int', 'float'
+              control.text = values[i]
+            when 'bool'
+              control.checked = values[i] == f[:values][1]
+            when 'entrance'
+              control.value = values[i]
+            when 'coords'
+              control.text = values[i].split(':').join('  ')
+            end
+          end
+        end
+      else
+        build_args_value
+      end
     else
       @args_panel.visible = !@args_panel.visible
     end
@@ -1086,7 +1125,7 @@ class Editor
             f[:values][f[:display_values].index(control.value)]
           when 'int'
             if f[:format]
-              control.text.empty? ? '' : f[:format].sub('$', control.text)
+              control.text.empty? ? '' : f[:format].sub('#', control.text)
             else
               control.text
             end
@@ -1111,7 +1150,7 @@ class Editor
     value = if pattern == :seq
               last_non_empty ? values[0..last_non_empty].join(',') : ''
             else
-              pattern.gsub(/\$(\d\d)/) { |m| values[$1.to_i] }.gsub(/\$(\d)/) { |m| values[$1.to_i] }
+              pattern.gsub(/#(\d\d)/) { |m| values[$1.to_i] }.gsub(/#(\d)/) { |m| values[$1.to_i] }
             end
     @args[:value] = value
   end

@@ -24,11 +24,11 @@ Type|enum|,2|Azul,Amarela
 ===
 Type|int|1-13
 Speed|int|0-99
-Stop time|int|0-999|:$
-ID|int|0-99|($)
+Stop time|int|0-999|:#
+ID|int|0-99|(#)
 Open path|bool|,!|0
 Path|coords
-$0$4:$1$3$2:$5
+#0#4:#1#3#2:#5
 ===
 Leaps|int|1-99
 ===
@@ -256,4 +256,27 @@ Enemy 6 Type|enum|,114,115,118,121,122|None,Bombinfant,Bombarcher,Bombnight,Bomb
 Enemy 6 position|coords|1
 Enemy 7 Type|enum|,114,115,118,121,122|None,Bombinfant,Bombarcher,Bombnight,Bombaladin,Bomblancer
 Enemy 7 position|coords|1
-$0:$1:$2,$3:$4,$5:$6,$7:$8,$9:$10,$11:$12,$13:$14,$15
+#0:#1:#2,#3:#4,#5:#6,#7:#8,#9:#10,#11:#12,#13:#14,#15
+===
+Main jump points|coords|4
+Phase 1 jump points|coords
+Phase 2 jump points|coords
+Phase 3 jump points|coords
+Phase 4 jump points|coords
+Phase 5 jump point|coords|1
+Phase 1 proj. spawn points|coords
+Phase 1 item spawn points|coords
+Phase 2 item spawn points|coords
+Phase 3 proj. spawn points|coords
+Phase 4 item spawn points|coords
+Phase 5 item spawn trigger|coords|1
+Phase 5 item spawn point|coords|1
+Phase 1 portal exit 1|entrance
+Phase 1 portal exit 2|entrance
+Phase 2 portal exit|entrance
+Phase 3 portal exit|entrance
+Phase 4 portal exit|entrance
+Phase 5 portal exit|entrance
+#0$#1$#2$#3$#4$#5%#6$#7$#8$#9$#10$#11:#12%#13,#14,#15,#16,#17,#18
+===
+===

@@ -3253,7 +3253,8 @@ class Gaxlon < Enemy
             add_spawn_effect(section, v.x, v.y)
             v.instance_exec { @dead = true }
           end
-          points = @subpoint_index == 0 ? @spawn_points[2][0..2] : @spawn_points[2][3..5]
+          index = @spawn_points[2].size / 2
+          points = @subpoint_index % 2 == 0 ? @spawn_points[2][0...index] : @spawn_points[2][index..-1]
           points.each_with_index do |p, i|
             item = Heart.new(p[0], p[1], nil, section)
             add_spawn_effect(section, p[0], p[1])
