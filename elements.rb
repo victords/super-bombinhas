@@ -2024,9 +2024,7 @@ class IcyFloor
   end
 
   def draw(map, section)
-    return unless SB.state == :editor
-
-    Res.img('editor_el_75-IcyFloor').draw(@bounds.x - map.cam.x, @bounds.y - 15 - map.cam.y, 0, 2, 2)
+    Res.img('editor_el_75-IcyFloor').draw(@bounds.x - map.cam.x, @bounds.y - 15 - map.cam.y, 0, 2, 2) if SB.state == :editor
   end
 end
 
@@ -2253,7 +2251,7 @@ class ThornyPlant < TwoStateObject
   def initialize(x, y, args, section)
     a = (args || '').split(',')
     @tiles_x = (a[0] || 1).to_i
-    @tiles_y = (a[1] || 1).to_i
+    @tiles_y = a[1] && !a[1].empty? ? a[1].to_i : 1
     super(x, y, @tiles_x * C::TILE_SIZE, @tiles_y * C::TILE_SIZE, :sprite_thornyPlant, Vector.new(0, 0), 3, 1,
           105, 0, 5, [0], [2], [1, 2], [1, 0], !a[2].nil?, 45, a[2] ? 30 : 0)
   end
@@ -2337,7 +2335,9 @@ class StickyFloor
     true
   end
 
-  def draw(map, section); end
+  def draw(map, section)
+    Res.img('editor_el_107-StickyFloor').draw(@bounds.x - map.cam.x, @bounds.y - 15 - map.cam.y, 0, 2, 2) if SB.state == :editor
+  end
 end
 
 class Aldan < SBGameObject
@@ -2385,6 +2385,7 @@ class ToxicDrop < SBGameObject
   def initialize(x, y, args, section)
     super(x, y - 4, 32, 16, :sprite_toxicDrop, Vector.new(0, 0), 2, 2)
     @fall_time = (args || 90).to_i
+    @fall_time = 30 if @fall_time < 30
     @timer = 0
     @drops = []
   end
@@ -2533,6 +2534,7 @@ class Gate < SBGameObject
     a = (args || '').split(',')
     @id = a[0].to_i
     @close_time = (a[1] || 180).to_i
+    @close_time = 1 if @close_time == 0
     @normal = a[2].nil?
     @first = a[3].nil?
     @opened = switch[:state] == :taken
@@ -2556,6 +2558,10 @@ class Gate < SBGameObject
         if @timer == 60 + @close_time
           @h = 14 + HEIGHT
           @active = false
+          if @timer <= 90
+            section.unset_fixed_camera
+            section.active_object = nil
+          end
         elsif @timer > 60
           @h = 14 + ((@timer - 60).to_f / @close_time) * HEIGHT
           if @timer == 90

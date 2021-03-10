@@ -104,7 +104,7 @@ ID|int|0-99
 ===
 Type|enum|,2|1,2
 ===
-Path|coords|5
+Path|coords
 ===
 ===
 Type|enum|,2|Common,Mega
@@ -161,3 +161,82 @@ Vertical speed|float
 Gravity scale|float
 Delay (frames)|int|0-999
 Wait time (frames)|int|0-999
+===
+Don't fall|bool|$,|1
+===
+Don't fall|bool|$,|1
+===
+Don't fall|bool|$,|1
+===
+Wall ID|int|0-99
+===
+Type|enum|1,2,3,4|1,2,3,4
+===
+===
+===
+Range|int|1-99
+Facing right|bool|$,|0
+===
+===
+===
+Leaps|int|1-99
+===
+Type|enum|,2,3|Green (slow),Yellow (medium),Red (fast)
+Width|int|1-99
+===
+Width|int|1-99
+Height|int|1-99
+===
+===
+===
+===
+Pointing left|bool|$,|1
+===
+===
+Facing right|bool|,$|0
+===
+===
+===
+===
+Don't fall|bool|$,|1
+===
+===
+===
+===
+===
+Explosion radius (px)|int|0-999
+===
+===
+Leaps|int|0-99
+===
+Interval (frames)|int|0-999
+===
+Jump points|coords
+===
+Don't fall|bool|$,|1
+===
+Shoot interval (frames)|int|1-999
+===
+===
+Type|enum|,2,3|Blue (slow),Yellow (medium),Red (fast)
+===
+===
+===
+Angle 1|int|0-359
+Angle 2|int|0-359
+Angle 3|int|0-359
+Angle 4|int|0-359
+Angle 5|int|0-359
+Angle 6|int|0-359
+Angle 7|int|0-359
+Angle 8|int|0-359
+Angle 9|int|0-359
+Angle 10|int|0-359
+===
+===
+===
+ID|int|0-99
+Close time (frames)|int|1-999
+Arena gate|bool|,$|0
+Arena exit gate|bool|,$|0
+===
