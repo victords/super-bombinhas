@@ -1483,7 +1483,8 @@ end
 class Icel < Enemy
   def initialize(x, y, args, section)
     super x - 4, y + 2, 40, 28, Vector.new(-4, -4), 2, 3, [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5], 7, 250
-    @radius = (args || 2).to_i * C::TILE_SIZE
+    @radius = args.to_i * C::TILE_SIZE
+    @radius = 2 * C::TILE_SIZE if @radius == 0
     @timer = @angle = 0
     @state = 3
     @center = Vector.new(@x + @w/2, @y + @h/2)
@@ -1709,7 +1710,7 @@ class Umbrex < FloorEnemy
   RANGE = 10
 
   def initialize(x, y, args, section)
-    super(x, y - 118, args, 64, 150, Vector.new(-48, -10), 4, 2, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1], 7, 250, 3)
+    super(x, y - 118, nil, 64, 150, Vector.new(-48, -10), 4, 2, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1], 7, 250, 3)
     @hop_timer = 0
   end
 

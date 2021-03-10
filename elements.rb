@@ -1158,16 +1158,16 @@ class Water
   end
 
   def draw(map, section)
-    if SB.state == :editor
-      img = Res.img('editor_el_41-Water')
-      x = @x / C::TILE_SIZE
-      y = (@y - 8) / C::TILE_SIZE
-      w = @w / C::TILE_SIZE
-      h = (@h + 8) / C::TILE_SIZE
-      map.foreach do |i, j, xx, yy|
-        if i >= x && i < x + w && j >= y && j < y + h
-          img.draw(xx, yy, 0, 2, 2)
-        end
+    return unless SB.state == :editor
+
+    img = Res.img('editor_el_41-Water')
+    x = @x / C::TILE_SIZE
+    y = (@y - 8) / C::TILE_SIZE
+    w = @w / C::TILE_SIZE
+    h = (@h + 8) / C::TILE_SIZE
+    map.foreach do |i, j, xx, yy|
+      if i >= x && i < x + w && j >= y && j < y + h
+        img.draw(xx, yy, 0, 2, 2)
       end
     end
   end
@@ -1553,24 +1553,38 @@ end
 class Lift < SBGameObject
   def initialize(x, y, args, section)
     args = (args || '').split(',')
-    case args[0]
-    when '5'  then w = 64
-    when '13' then w = 96
-    else           w = 96; args[0] = '1'
+    type = args[0].to_i
+    indices = nil
+    interval = 0
+    case type
+    when 2 then w = 64; cols = 4; rows = 1; x_g = y_g = 0; interval = 8
+    when 3 then w = 64; cols = rows = nil; x_g = 0; y_g = -3
+    when 4 then w = 96; cols = rows = nil; x_g = 0; y_g = -3
+    when 5 then w = 64; cols = rows = nil; x_g = y_g = 0
+    when 6 then w = 224; cols = rows = nil; x_g = y_g = 0
+    when 7 then w = 64; cols = rows = nil; x_g = y_g = 0
+    when 8 then w = 64; cols = 2; rows = 3; x_g = y_g = 0; indices = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5]; interval = 5
+    when 9..12 then w = 32; cols = rows = nil; x_g = y_g = 0
+    when 13 then w = 96; cols = rows = nil; x_g = y_g = 0
+    else type = 1; w = 96; cols = rows = nil; x_g = y_g = 0
     end
-    super x, section.size.y, w, 1, "sprite_Elevator#{args[0]}", Vector.new(0, 0)
+    super x, section.size.y, w, 1, "sprite_Elevator#{type}", Vector.new(x_g, y_g), cols, rows
     @start = Vector.new(x, @y)
     @x_force = args[1].to_f
-    @y_force = -((args[2] || 8).to_f)
-    @gravity_scale = (args[3] || 0.3).to_f
-    @delay = (args[4] || 0).to_i
-    @wait_time = (args[5] || 60).to_i
+    @y_force = args[2] && !args[2].empty? ? -args[2].to_f : -8
+    @gravity_scale = args[3] && !args[3].empty? ? args[3].to_f : 0.3
+    @delay = args[4].to_i
+    @wait_time = args[5] && !args[5].empty? ? args[5].to_i : 60
     @timer = @wait_time - 1
     @passable = true
     @active_bounds = Rectangle.new(x, @y - 5 * C::TILE_SIZE, 64, 5 * C::TILE_SIZE)
+    indices = *(0...@img.size) if indices.nil?
+    @indices = indices
+    @interval = interval
   end
 
   def update(section)
+    animate(@indices, @interval)
     b = SB.player.bomb
     if @launched
       prev_g = G.gravity.y
@@ -1589,7 +1603,7 @@ class Lift < SBGameObject
       @delay -= 1
     else
       @timer += 1
-      if @timer == @wait_time
+      if @timer >= @wait_time
         prev_g = G.gravity.y
         G.gravity.y *= @gravity_scale
         move_carrying(Vector.new(@x_force, @y_force), nil, section.passengers, section.get_obstacles(b.x, b.y), section.ramps, true)
@@ -2009,7 +2023,11 @@ class IcyFloor
     true
   end
 
-  def draw(map, section); end
+  def draw(map, section)
+    return unless SB.state == :editor
+
+    Res.img('editor_el_75-IcyFloor').draw(@bounds.x - map.cam.x, @bounds.y - 15 - map.cam.y, 0, 2, 2)
+  end
 end
 
 class Puzzle < SBGameObject
@@ -2142,7 +2160,8 @@ class FallingWall < GameObject
   def initialize(x, y, args, section)
     a = (args || '').split(',')
     type = a[0] == '2' ? 2 : 1
-    size = (a[1] || 4).to_i
+    size = a[1].to_i
+    size = 1 if size == 0
     super(x, y - (size - 1) * C::TILE_SIZE, C::TILE_SIZE, size * C::TILE_SIZE, "sprite_fallingWall#{type}", Vector.new(0, 0), 4, 2)
     @active_bounds = Rectangle.new(@x, @y, @w, @h)
     @blocks = []

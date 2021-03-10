@@ -1052,6 +1052,10 @@ class Editor
             build_args_value
           }
           controls << Label.new(x: 300, y: y, font: SB.font, text: '')
+        when 'float'
+          controls << TextField.new(x: 230, y: y, font: SB.font, img: :editor_textField2, max_length: 5, allowed_chars: '0123456789.', margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2) {
+            build_args_value
+          }
         end
       end
       @args_panel = Panel.new(0, 0, 420, 4 + fields.size * 34, controls, :editor_pnl, :tiled, true, 2, 2, :center)
@@ -1092,6 +1096,13 @@ class Editor
             @args[:coords] = @args[:coords][0...f[:limit]] if f[:limit] != 0
             controls[-1].text = @args[:coords].empty? ? '(Ctrl-click to add points)' : @args[:coords].join('  ')
             @args[:coords].join(':')
+          when 'float'
+            if control.text.empty?
+              ''
+            else
+              f_value = control.text.to_f
+              f_value == 0.0 ? '0' : ('%.2f' % f_value.round(2)).chomp('.00').chomp('.0').chomp('0')
+            end
           end
       values << v
       last_non_empty = i unless v.empty?

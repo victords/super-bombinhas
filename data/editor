@@ -84,7 +84,7 @@ Height|int|1-999
 ===
 Type|enum|,2|1,2
 ===
-Radius|int|0-99
+Movement radius|int|0-99
 Angular speed|int|0-99
 ===
 ===
@@ -142,3 +142,22 @@ Start active|bool|,$|0
 ID|int|0-99
 Closed|bool|!,.|1
 Twin location|coords|1
+===
+Attack radius|int|1-99
+===
+===
+===
+===
+===
+Range|int|0-99
+Facing right|bool|,$|0
+===
+Type|enum|,2|1,2
+Size|int|1-99
+===
+Type|int|1-13
+Horizontal speed|float
+Vertical speed|float
+Gravity scale|float
+Delay (frames)|int|0-999
+Wait time (frames)|int|0-999
