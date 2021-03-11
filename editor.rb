@@ -49,7 +49,7 @@ class EditorRamp < Ramp
 end
 
 class EditorStage < Stage
-  attr_reader :entrances
+  attr_reader :entrances, :bomb_mask
   attr_accessor :start_pos
 
   def initialize(name = nil)
@@ -59,13 +59,15 @@ class EditorStage < Stage
     @switches = []
 
     sections = Dir["#{Res.prefix}stage/#{@world}/#{@num}-*"]
-    sections.each do |s|
+    sections.sort.each_with_index do |s, i|
       content = File.read(s)
       entrances = content.scan(/!\d+/)
       entrances.each do |e|
         index = e[1..-1].to_i
         @entrances[index] = { index: index }
       end
+
+      @bomb_mask = content.split('#', -1)[4].to_i if i == 0
     end
   end
 
@@ -608,7 +610,7 @@ class Editor
 
     @panels = [
       ################################## General ##################################
-      Panel.new(0, 0, 720, 48, [
+      Panel.new(0, 0, 760, 48, [
         Label.new(x: 10, y: 0, font: SB.font, text: 'W', max_length: 3, scale_x: 2, scale_y: 2, anchor: :left),
         (txt_w = TextField.new(x: 22, y: 0, img: :editor_textField, font: SB.font, text: '300', allowed_chars: '0123456789', margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2, anchor: :left)),
         Label.new(x: 70, y: 0, font: SB.font, text: 'H', max_length: 3, scale_x: 2, scale_y: 2, anchor: :left),
@@ -684,7 +686,7 @@ class Editor
       ###########################################################################
 
       ################################### File ##################################
-      Panel.new(0, 0, 720, 48, [
+      Panel.new(0, 0, 760, 48, [
         Label.new(x: 7, y: 0, font: SB.font, text: 'Stage', scale_x: 2, scale_y: 2, anchor: :left),
         (@txt_stage = TextField.new(x: 64, y: 0, font: SB.font, img: :editor_textField2, margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2, text: '1', anchor: :left,
                                     allowed_chars: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,!?', max_length: 15)),
@@ -739,10 +741,19 @@ class Editor
             @saved_name = @txt_stage.text
             SB.init_editor_stage(EditorStage.new(@saved_name))
             @section = EditorSection.new(path, SB.stage.entrances, SB.stage.switches)
+            if SB.stage.bomb_mask != 0
+              controls = @panels[7].instance_eval('@controls')
+              controls.each_with_index do |c, i|
+                c.checked = (SB.stage.bomb_mask & (2**i)) > 0
+              end
+            end
           end
         end,
         Button.new(x: 505, y: 0, img: :editor_btn1, font: SB.font, text: 'Save', scale_x: 2, scale_y: 2, anchor: :left) do
           @saved_name = @txt_stage.text if save
+        end,
+        Button.new(x: 132, y: 0, img: :editor_btn1, font: SB.font, text: 'Bombs', scale_x: 2, scale_y: 2, anchor: :right) do
+          toggle_aux_panel(7)
         end,
         Button.new(x: 68, y: 0, img: :editor_btn1, font: SB.font, text: 'Test', scale_x: 2, scale_y: 2, anchor: :right) do
           start_test
@@ -778,7 +789,7 @@ class Editor
           hide_all_panels
         end,
         Button.new(x: 0, y: 4, img: :editor_btn1, font: SB.font, text: 'offst', scale_x: 2, scale_y: 2, anchor: :bottom) do
-          toggle_offset_panel
+          toggle_aux_panel(4)
         end
       ], :editor_pnl, :tiled, true, 2, 2, :right),
       ###########################################################################
@@ -833,11 +844,21 @@ class Editor
         Button.new(x: 32, y: 10, img: :editor_btn1, font: SB.font, text: 'No', scale_x: 2, scale_y: 2, anchor: :bottom) do
           @panels[6].visible = false
         end
+      ], :editor_pnl, :tiled, true, 2, 2, :center),
+      ###########################################################################
+
+      ################################### BOMBS #################################
+      Panel.new(0, 0, 240, 174, [
+        ToggleButton.new(x: 10, y: 11, font: SB.font, text: 'Bomba Azul', img: :editor_chk, checked: true, scale_x: 2, scale_y: 2, center_x: false, margin_x: 15) { |v| update_bomb_mask(v, 0) },
+        ToggleButton.new(x: 10, y: 45, font: SB.font, text: 'Bomba Vermelha', img: :editor_chk, checked: true, scale_x: 2, scale_y: 2, center_x: false, margin_x: 15) { |v| update_bomb_mask(v, 1) },
+        ToggleButton.new(x: 10, y: 79, font: SB.font, text: 'Bomba Amarela', img: :editor_chk, checked: true, scale_x: 2, scale_y: 2, center_x: false, margin_x: 15) { |v| update_bomb_mask(v, 2) },
+        ToggleButton.new(x: 10, y: 113, font: SB.font, text: 'Bomba Verde', img: :editor_chk, checked: true, scale_x: 2, scale_y: 2, center_x: false, margin_x: 15) { |v| update_bomb_mask(v, 3) },
+        ToggleButton.new(x: 10, y: 147, font: SB.font, text: 'Aldan', img: :editor_chk, checked: true, scale_x: 2, scale_y: 2, center_x: false, margin_x: 15) { |v| update_bomb_mask(v, 4) },
       ], :editor_pnl, :tiled, true, 2, 2, :center)
       ###########################################################################
     ]
 
-    @panels[4].visible = @panels[5].visible = @panels[6].visible = false
+    toggle_aux_panels
 
     obj_items = []
     @objs.keys.sort.each_with_index do |k, i|
@@ -876,7 +897,7 @@ class Editor
 
     confirm_exit if KB.key_pressed?(Gosu::KbEscape)
     toggle_args_panel if KB.key_pressed?(Gosu::KbReturn)
-    toggle_offset_panel if KB.key_pressed?(Gosu::KbTab)
+    toggle_aux_panel(4) if KB.key_pressed?(Gosu::KbTab)
 
     if KB.key_pressed?(Gosu::KB_SPACE)
       start_test
@@ -1213,19 +1234,6 @@ class Editor
     build_args_value
   end
 
-  def toggle_offset_panel
-    @floating_panels.each do |p|
-      p.visible = false
-    end
-    @panels[4].visible = !@panels[4].visible
-    if @panels[4].visible
-      @txt_offset_x.focus
-    else
-      @txt_offset_x.unfocus
-      @txt_offset_y.unfocus
-    end
-  end
-
   def save(stage_name = nil)
     if (stage_name && !SB.stage.start_pos && !SB.stage.entrances[0]) || (!stage_name && !SB.stage.entrances[0])
       @lbl_msg2.text = stage_name ? 'or a start point' : ''
@@ -1241,8 +1249,10 @@ class Editor
                   else
                     @confirm_action = Proc.new {
                       @save_confirm = true
+                      save
                     }
                     show_confirm_panel('Overwrite?')
+                    false
                   end
                 else
                   true
@@ -1292,15 +1302,51 @@ class Editor
       @section.ramps.each { |r| code += "#{r.code};" }
       code.chop! unless @section.ramps.empty?
 
+      code += "##{@bomb_mask}" if @bomb_mask
+
       File.open(path, 'w') { |f| f.write code }
     end
     true
   end
 
+  def get_cell_string(i, j)
+    tile = @section.tiles[i][j]
+    str = ''
+    str += "b#{'%02d' % tile.back}" if tile.back
+    str += "f#{'%02d' % tile.fore}" if tile.fore
+    str += "h#{'%02d' % tile.hide}" if tile.hide
+    str += "p#{'%02d' % tile.pass}" if tile.pass
+    str += "w#{'%02d' % tile.wall}" if tile.wall
+    str += tile.code if tile.obj
+    str
+  end
+
+  def update_bomb_mask(value, index)
+    if @bomb_mask
+      if value
+        @bomb_mask |= (2**index)
+        @bomb_mask = nil if @bomb_mask == 31
+      else
+        @bomb_mask &= ~(2**index)
+      end
+    elsif !value
+      @bomb_mask = 31
+      @bomb_mask &= ~(2**index)
+    end
+  end
+
   def toggle_aux_panels(show = nil)
-    (4..6).each do |i|
+    (4..7).each do |i|
       @panels[i].visible = i == show
     end
+  end
+
+  def toggle_aux_panel(index)
+    @floating_panels.each do |p|
+      p.visible = false
+    end
+    @args_panel.visible = false if @args_panel
+    @panels[index].visible = !@panels[index].visible
   end
 
   def show_confirm_panel(msg)
@@ -1318,18 +1364,6 @@ class Editor
     end
     toggle_aux_panels
     @args_panel.visible = false if @args_panel
-  end
-
-  def get_cell_string(i, j)
-    tile = @section.tiles[i][j]
-    str = ''
-    str += "b#{'%02d' % tile.back}" if tile.back
-    str += "f#{'%02d' % tile.fore}" if tile.fore
-    str += "h#{'%02d' % tile.hide}" if tile.hide
-    str += "p#{'%02d' % tile.pass}" if tile.pass
-    str += "w#{'%02d' % tile.wall}" if tile.wall
-    str += tile.code if tile.obj
-    str
   end
 
   def draw

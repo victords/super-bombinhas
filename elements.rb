@@ -2358,7 +2358,7 @@ class Aldan < SBGameObject
   include Speech
 
   def initialize(x, y, args, section)
-    if SB.player.bomb_unlocked?(:branca)
+    if SB.player.has_bomb?(:branca)
       @dead = true
     else
       t_s = C::TILE_SIZE
@@ -3017,7 +3017,7 @@ class Graphic < Sprite
     when 10 then x -= 236; y -= 416; @w = 600; @h = 480
     when 12
       x += 2; @w = 126; @h = 128; cols = 5; rows = 1
-      if SB.player.bomb_unlocked?(:vermelha)
+      if SB.player.has_bomb?(:vermelha)
         img_index = 4
       else
         @indices = [0, SB.lang == :portuguese ? 1 : SB.lang == :english ? 2 : 3]; @interval = 60
@@ -3029,7 +3029,7 @@ class Graphic < Sprite
     when 25 then x -= 4; y -= 4; @w = 40; @h = 68
     when 26..27
       x += 2; @w = 126; @h = 128; cols = 5; rows = 1
-      if SB.player.bomb_unlocked?(type == 26 ? :amarela : :verde)
+      if SB.player.has_bomb?(type == 26 ? :amarela : :verde)
         img_index = 4
       else
         @indices = [0, SB.lang == :portuguese ? 1 : SB.lang == :english ? 2 : 3]; @interval = 60

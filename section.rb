@@ -183,7 +183,7 @@ class Section
     127 => SpecGate,
   }
 
-  attr_reader :id, :reload, :tiles, :obstacles, :ramps, :passengers, :size, :default_entrance, :warp, :tileset_num, :map, :bgm, :fixed_camera
+  attr_reader :id, :reload, :tiles, :obstacles, :ramps, :passengers, :size, :default_entrance, :warp, :tileset_num, :map, :bgm, :fixed_camera, :bomb_mask
   attr_accessor :entrance, :loaded, :active_object
 
   def initialize(file, entrances, switches, taken_switches, used_switches)
@@ -193,6 +193,7 @@ class Section
     set_bgs parts[1].split ','
     set_elements parts[2].split(';'), entrances, switches, taken_switches, used_switches
     set_ramps parts[3].split ';'
+    @bomb_mask = parts[4].to_i
   end
 
   # initialization

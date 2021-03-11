@@ -410,7 +410,7 @@ class SB
     def save_custom(reset = false)
       return if SB.stage.is_a?(EditorStage)
       @save_data[0] = ''
-      @save_data[1] = ''
+      @save_data[1] = SB.stage.num
       @save_data[2] = ''
       @save_data[3] = @player.bomb.type.to_s
       @save_data[4] = @player.lives.to_s
@@ -486,8 +486,9 @@ class SB
 
     def load_custom_stage(name)
       custom_save_path = "#{@save_dir}/custom"
-      if File.exist?(custom_save_path)
-        @save_data = IO.readlines(custom_save_path).map(&:chomp)
+      data = File.exist?(custom_save_path) ? IO.readlines(custom_save_path).map(&:chomp) : nil
+      if data && data[1] == name
+        @save_data = data
       else
         @save_data = Array.new(14)
         @save_data[7] = '0'
@@ -502,10 +503,9 @@ class SB
                            @save_data[8],
                            (@save_data[4] || 5).to_i,
                            (@save_data[5] || 0).to_i)
-      StageMenu.initialize(true)
-
       @stage = Stage.new('custom', name)
       @stage.start(true)
+      StageMenu.initialize(true)
       @state = :main
     end
 

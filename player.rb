@@ -57,6 +57,10 @@ class Player
     end
   end
 
+  def has_bomb?(type)
+    @bombs.has_key?(type)
+  end
+
   def dead?
     @dead
   end
@@ -164,12 +168,12 @@ class Player
     return if SB.stage.stopped == :all
 
     ind = (@bombs.keys.index(@bomb.type) + 1) % @bombs.size
-    set_bomb(BOMB_TYPES[ind])
+    set_bomb(@bombs.keys[ind])
     section.add_effect(Effect.new(@bomb.x + @bomb.w / 2 - 32, @bomb.y + @bomb.h / 2 - 32, :fx_spawn, 2, 2, 6))
   end
 
   def save_bomb_hps
-    @bombs[:azul].save_hp
+    @bombs[:azul].save_hp     if @bombs[:azul]
     @bombs[:vermelha].save_hp if @bombs[:vermelha]
     @bombs[:amarela].save_hp  if @bombs[:amarela]
     @bombs[:verde].save_hp    if @bombs[:verde]
@@ -177,7 +181,8 @@ class Player
   end
 
   def get_bomb_hps
-    s =  "#{@bombs[:azul].saved_hp},"
+    s = ''
+    s += "#{@bombs[:azul].saved_hp},"     if @bombs[:azul]
     s += "#{@bombs[:vermelha].saved_hp}," if @bombs[:vermelha]
     s += "#{@bombs[:amarela].saved_hp},"  if @bombs[:amarela]
     s += "#{@bombs[:verde].saved_hp},"    if @bombs[:verde]
@@ -187,6 +192,22 @@ class Player
 
   def bomb_count
     @bombs.size
+  end
+
+  def set_bombs(mask)
+    return if mask == 0
+
+    hps = {}
+    @bombs.each do |k, v|
+      hps[k] = v.hp
+    end
+    @bombs.clear
+    BOMB_TYPES.each_with_index do |b, i|
+      @bombs[b] = Bomb.new(b, hps[b] || 0) if (mask & (2**i)) > 0
+    end
+    unless @bombs.has_key?(@bomb.type)
+      @bomb = @bombs[@bombs.keys[0]]
+    end
   end
 
   def update_timers

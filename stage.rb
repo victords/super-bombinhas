@@ -58,6 +58,7 @@ class Stage
       @sections << Section.new(s, @entrances, @switches, taken_switches, used_switches)
     end
 
+    SB.player.set_bombs(@sections[0].bomb_mask)
     SB.player.reset(loaded)
     @cur_entrance = @entrances[loaded ? SB.save_data[7].to_i : 0]
     @cur_section = @cur_entrance[:section]

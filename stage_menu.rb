@@ -175,12 +175,11 @@ class StageMenu
       sec = @stage_menu.section(1)
       sec.clear
       p = SB.player
-      start_x = 400 - (40 + (p.bomb_count - 1) * 50)
-      sec.add(BombButton.new(start_x, :azul, @stage_menu))
-      sec.add(BombButton.new(start_x + 100, :vermelha, @stage_menu)) if p.bomb_unlocked?(:vermelha)
-      sec.add(BombButton.new(start_x + 200, :amarela, @stage_menu))  if p.bomb_unlocked?(:amarela)
-      sec.add(BombButton.new(start_x + 300, :verde, @stage_menu))    if p.bomb_unlocked?(:verde)
-      sec.add(BombButton.new(start_x + 400, :branca, @stage_menu))   if p.bomb_unlocked?(:branca)
+      x = 400 - (40 + (p.bomb_count - 1) * 50)
+      Player::BOMB_TYPES.each do |type|
+        sec.add(BombButton.new(x, type, @stage_menu)) if p.has_bomb?(type)
+        x += 100
+      end
       sec.add(MenuButton.new(550, :back, true) {
         @stage_menu.go_to_section 0
       })
