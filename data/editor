@@ -84,8 +84,8 @@ Height|int|1-999
 ===
 Type|enum|,2|1,2
 ===
-Movement radius|int|0-99
-Angular speed|int|0-99
+Movement radius|int|1-99
+Angular speed|float
 ===
 ===
 Facing right|bool|$,|1
@@ -254,9 +254,7 @@ Enemy 5 Type|enum|,114,115,118,121,122|None,Bombinfant,Bombarcher,Bombnight,Bomb
 Enemy 5 position|coords|1
 Enemy 6 Type|enum|,114,115,118,121,122|None,Bombinfant,Bombarcher,Bombnight,Bombaladin,Bomblancer
 Enemy 6 position|coords|1
-Enemy 7 Type|enum|,114,115,118,121,122|None,Bombinfant,Bombarcher,Bombnight,Bombaladin,Bomblancer
-Enemy 7 position|coords|1
-#0:#1:#2,#3:#4,#5:#6,#7:#8,#9:#10,#11:#12,#13:#14,#15
+#0:#1:#2,#3:#4,#5:#6,#7:#8,#9:#10,#11:#12,#13
 ===
 Main jump points|coords|4
 Phase 1 jump points|coords

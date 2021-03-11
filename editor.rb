@@ -332,7 +332,9 @@ class EditorSection < Section
     @tiles[i][j].code = "@#{code}#{args ? ":#{args}" : ''}"
   end
 
-  def set_entrance(i, j, index, default)
+  def set_entrance(i, j, args)
+    index = args.to_i
+    default = args[-1] == '!'
     x = i * C::TILE_SIZE; y = j * C::TILE_SIZE
     SB.stage.entrances[index] = {x: x, y: y, section: self, index: index}
     @default_entrance = index if default
@@ -648,31 +650,33 @@ class Editor
       ###########################################################################
 
       ################################# Tileset #################################
-      Panel.new(0, 0, 68, 300, [
+      Panel.new(0, 0, 68, 320, [
         (@ddl_ts = DropDownList.new(x: 0, y: 4, font: SB.font, img: :editor_ddl, opt_img: :editor_ddlOpt, options: ts_options, text_margin: 4, scale_x: 2, scale_y: 2, anchor: :top) do |_, v|
           @cur_tileset = ts_options.index(v)
           @floating_panels[0].set_children(@tilesets[@cur_tileset].map.with_index{ |t, i| { img: t, x: 4 + (i % 10) * 33, y: 4 + (i / 10) * 33 } })
           @section.change_tileset(v)
-          toggle_args_panel
+          hide_all_panels
         end),
         Button.new(x: 0, y: 38, img: :editor_btn1, font: SB.font, text: 'Wall', scale_x: 2, scale_y: 2, anchor: :top) do
           @cur_element = :wall
-          toggle_args_panel
+          hide_all_panels
         end,
         Button.new(x: 0, y: 38 + 44, img: :editor_btn1, font: SB.font, text: 'Pass', scale_x: 2, scale_y: 2, anchor: :top) do
           @cur_element = :pass
-          toggle_args_panel
+          hide_all_panels
         end,
         Button.new(x: 0, y: 38 + 88, img: :editor_btn1, font: SB.font, text: 'Hide', scale_x: 2, scale_y: 2, anchor: :top) do
           @cur_element = :hide
-          toggle_args_panel
+          hide_all_panels
         end,
         (ramp_btn = Button.new(x: 0, y: 38 + 132, img: :editor_btn1, font: SB.font, text: 'Ramp', scale_x: 2, scale_y: 2, anchor: :top) do
           toggle_floating_panel(1)
+          toggle_aux_panels
           toggle_args_panel
         end),
         (other_tile_btn = Button.new(x: 0, y: 38, img: :editor_btn1, font: SB.font, text: 'Other', scale_x: 2, scale_y: 2, anchor: :bottom) do
           toggle_floating_panel(0)
+          toggle_aux_panels
           toggle_args_panel
         end),
         (@ddl_tile_type = DropDownList.new(x: 0, y: 4, font: SB.font, img: :editor_ddl, opt_img: :editor_ddlOpt, options: %w(w p b f), text_margin: 4, scale_x: 2, scale_y: 2, anchor: :bottom)),
@@ -680,18 +684,17 @@ class Editor
       ###########################################################################
 
       ################################### File ##################################
-      Panel.new(0, 0, 560, 48, [
+      Panel.new(0, 0, 720, 48, [
         Label.new(x: 7, y: 0, font: SB.font, text: 'Stage', scale_x: 2, scale_y: 2, anchor: :left),
         (@txt_stage = TextField.new(x: 64, y: 0, font: SB.font, img: :editor_textField2, margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2, text: '1', anchor: :left,
                                     allowed_chars: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,!?', max_length: 15)),
         Label.new(x: 247, y: 0, font: SB.font, text: 'Section', scale_x: 2, scale_y: 2, anchor: :left),
         (@txt_section = TextField.new(x: 319, y: 0, font: SB.font, img: :editor_textField, margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2, text: '1', anchor: :left,
                                       allowed_chars: '0123456789', max_length: 2)),
-        (@lbl_conf_save = Label.new(x: 0, y: 50, font: SB.font, text: 'Overwrite?', scale_x: 2, scale_y: 2, anchor: :bottom)),
-        Button.new(x: 132, y: 0, img: :editor_btn1, font: SB.font, text: 'Clear', scale_x: 2, scale_y: 2, anchor: :right) do
+        Button.new(x: 377, y: 0, img: :editor_btn1, font: SB.font, text: 'Clear', scale_x: 2, scale_y: 2, anchor: :left) do
           @section.clear
         end,
-        Button.new(x: 68, y: 0, img: :editor_btn1, font: SB.font, text: 'Load', scale_x: 2, scale_y: 2, anchor: :right) do
+        Button.new(x: 441, y: 0, img: :editor_btn1, font: SB.font, text: 'Load', scale_x: 2, scale_y: 2, anchor: :left) do
           path = "#{Res.prefix}/stage/custom/#{@txt_stage.text}-#{@txt_section.text}"
           if File.exist? path
             f = File.open(path)
@@ -738,37 +741,41 @@ class Editor
             @section = EditorSection.new(path, SB.stage.entrances, SB.stage.switches)
           end
         end,
-        Button.new(x: 4, y: 0, img: :editor_btn1, font: SB.font, text: 'Save', scale_x: 2, scale_y: 2, anchor: :right) do
+        Button.new(x: 505, y: 0, img: :editor_btn1, font: SB.font, text: 'Save', scale_x: 2, scale_y: 2, anchor: :left) do
           @saved_name = @txt_stage.text if save
         end,
+        Button.new(x: 68, y: 0, img: :editor_btn1, font: SB.font, text: 'Test', scale_x: 2, scale_y: 2, anchor: :right) do
+          start_test
+        end,
+        Button.new(x: 4, y: 0, img: :editor_btn1, font: SB.font, text: 'Exit', scale_x: 2, scale_y: 2, anchor: :right) do
+          confirm_exit
+        end
       ], :editor_pnl, :tiled, true, 2, 2, :bottom),
       ###########################################################################
 
       ################################# Elements ################################
-      Panel.new(0, 0, 68, 392, [
+      Panel.new(0, 0, 68, 320, [
         Button.new(x: 0, y: 4, img: :editor_btn1, font: SB.font, text: 'Bomb', scale_x: 2, scale_y: 2, anchor: :top) do
           @cur_element = :bomb
-          toggle_args_panel
+          hide_all_panels
         end,
         Button.new(x: 0, y: 48, img: :editor_btn1, font: SB.font, text: 'entr.', scale_x: 2, scale_y: 2, anchor: :top) do
           @cur_element = :entrance
           toggle_args_panel
         end,
-        Label.new(x: 0, y: 92, font: SB.font, text: 'Default', scale_x: 1, scale_y: 1, anchor: :top),
-        (@chk_default = ToggleButton.new(x: 0, y: 104, img: :editor_chk, checked: true, scale_x: 2, scale_y: 2, anchor: :top)),
-        (btn_obj = Button.new(x: 0, y: 144, img: :editor_btn1, font: SB.font, text: 'obj', scale_x: 2, scale_y: 2, anchor: :top) do
+        (btn_obj = Button.new(x: 0, y: 92, img: :editor_btn1, font: SB.font, text: 'obj', scale_x: 2, scale_y: 2, anchor: :top) do
           toggle_floating_panel(2)
         end),
-        (btn_enemy = Button.new(x: 0, y: 188, img: :editor_btn1, font: SB.font, text: 'enmy', scale_x: 2, scale_y: 2, anchor: :top) do
+        (btn_enemy = Button.new(x: 0, y: 136, img: :editor_btn1, font: SB.font, text: 'enmy', scale_x: 2, scale_y: 2, anchor: :top) do
           toggle_floating_panel(3)
         end),
-        Button.new(x: 0, y: 232, img: :editor_btn1, font: SB.font, text: 'args', scale_x: 2, scale_y: 2, anchor: :top) do
+        Button.new(x: 0, y: 180, img: :editor_btn1, font: SB.font, text: 'args', scale_x: 2, scale_y: 2, anchor: :top) do
           toggle_args_panel
         end,
-        Button.new(x: 0, y: 276, img: :editor_btn1, font: SB.font, text: 'insp.', scale_x: 2, scale_y: 2, anchor: :top) do
+        Button.new(x: 0, y: 224, img: :editor_btn1, font: SB.font, text: 'insp.', scale_x: 2, scale_y: 2, anchor: :top) do
           @cur_element = :inspect
           @cur_index = @args[:index] = -1
-          toggle_args_panel
+          hide_all_panels
         end,
         Button.new(x: 0, y: 4, img: :editor_btn1, font: SB.font, text: 'offst', scale_x: 2, scale_y: 2, anchor: :bottom) do
           toggle_offset_panel
@@ -806,18 +813,31 @@ class Editor
       ], :editor_pnl, :tiled, true, 2, 2, :center),
       ###########################################################################
 
-      ############################### CONFIRMATION ##############################
+      ################################## WARNING ################################
       Panel.new(0, 0, 360, 120, [
         (@lbl_msg1 = Label.new(x: 0, y: 10, font: SB.font, text: 'The level must have an entrance', scale_x: 2, scale_y: 2, anchor: :top)),
         (@lbl_msg2 = Label.new(x: 0, y: 40, font: SB.font, text: 'or a start point', scale_x: 2, scale_y: 2, anchor: :top)),
         Button.new(x: 0, y: 10, img: :editor_btn1, font: SB.font, text: 'OK', scale_x: 2, scale_y: 2, anchor: :bottom) {
           @panels[5].visible = false
         }
+      ], :editor_pnl, :tiled, true, 2, 2, :center),
+      ###########################################################################
+
+      ################################ CONFIRMATION #############################
+      Panel.new(0, 0, 360, 120, [
+        (@lbl_conf = Label.new(x: 0, y: 10, font: SB.font, text: '', scale_x: 2, scale_y: 2, anchor: :top)),
+        Button.new(x: -32, y: 10, img: :editor_btn1, font: SB.font, text: 'Yes', scale_x: 2, scale_y: 2, anchor: :bottom) do
+          @confirm_action.call if @confirm_action
+          @panels[6].visible = false
+        end,
+        Button.new(x: 32, y: 10, img: :editor_btn1, font: SB.font, text: 'No', scale_x: 2, scale_y: 2, anchor: :bottom) do
+          @panels[6].visible = false
+        end
       ], :editor_pnl, :tiled, true, 2, 2, :center)
       ###########################################################################
     ]
 
-    @panels[4].visible = @panels[5].visible = @lbl_conf_save.visible = false
+    @panels[4].visible = @panels[5].visible = @panels[6].visible = false
 
     obj_items = []
     @objs.keys.sort.each_with_index do |k, i|
@@ -854,7 +874,7 @@ class Editor
       @inited = true
     end
 
-    SB.close_editor if KB.key_pressed?(Gosu::KbEscape)
+    confirm_exit if KB.key_pressed?(Gosu::KbEscape)
     toggle_args_panel if KB.key_pressed?(Gosu::KbReturn)
     toggle_offset_panel if KB.key_pressed?(Gosu::KbTab)
 
@@ -918,7 +938,7 @@ class Editor
           sz = @ramp_sizes[@cur_index % 4]
           @section.set_ramp(i, j, sz[0], sz[1], @cur_index < 4, @ramp_tiles[@cur_index])
         when :entrance
-          @section.set_entrance(i, j, @args[:value].to_i, @chk_default.checked)
+          @section.set_entrance(i, j, @args[:value])
         when :inspect
           obj = @section.tiles[i][j].obj
           if obj && !obj.is_a?(Entrance)
@@ -954,7 +974,7 @@ class Editor
         @selection << i << j
       else
         @selection = nil
-        if @cur_element == :pass
+        if @cur_element == :pass && @pass_start
           min_x, max_x = i < @pass_start[0] ? [i, @pass_start[0]] : [@pass_start[0], i]
           min_y, max_y = j < @pass_start[1] ? [j, @pass_start[1]] : [@pass_start[1], j]
           (min_y..max_y).each do |l|
@@ -988,7 +1008,20 @@ class Editor
     end
   end
 
+  def confirm_exit
+    @confirm_action = Proc.new {
+      SB.close_editor
+    }
+    show_confirm_panel('Exit? Unsaved changes will be lost.')
+  end
+
   def start_test
+    toggle_aux_panels
+    @args_panel.visible = false if @args_panel
+    @floating_panels.each do |p|
+      p.visible = false
+    end
+
     @save_confirm = true
     return unless save(@saved_name || '__temp')
     G.window.width = C::SCREEN_WIDTH
@@ -999,6 +1032,8 @@ class Editor
   end
 
   def toggle_floating_panel(index)
+    toggle_aux_panels
+    @args_panel.visible = false if @args_panel
     @floating_panels.each_with_index do |p, i|
       p.visible = i == index ? !p.visible : false
     end
@@ -1010,18 +1045,28 @@ class Editor
       return
     end
 
+    @floating_panels.each do |p|
+      p.visible = false
+    end
+    toggle_aux_panels
+
     if @cur_element == :entrance && @args[:index] != -1
-      @args_panel = Panel.new(0, 0, 300, 80, [
-        Label.new(x: 0, y: 10, font: SB.font, text: 'Entrance index', scale_x: 2, scale_y: 2, anchor: :top),
-        TextField.new(x: 0, y: 40, font: SB.font, img: :editor_textField, allowed_chars: '0123456789', max_length: 2, margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2, anchor: :top) { |v|
-          @args[:value] = v
-        }
-      ], :editor_pnl, :tiled, true, 2, 2, :center)
+      controls = []
+      controls << Label.new(x: 10, y: 10, font: SB.font, text: 'Index', scale_x: 2, scale_y: 2)
+      controls << TextField.new(x: 150, y: 10, font: SB.font, img: :editor_textField, allowed_chars: '0123456789', max_length: 2, margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2) { |v|
+        build_args_value
+      }
+      controls << Label.new(x: 10, y: 44, font: SB.font, text: 'Default', scale_x: 2, scale_y: 2)
+      controls << ToggleButton.new(x: 150, y: 47, img: :editor_chk, scale_x: 2, scale_y: 2) { |v|
+        build_args_value
+      }
+      @args_panel = Panel.new(0, 0, 300, 72, controls, :editor_pnl, :tiled, true, 2, 2, :center)
       @args = {
         index: -1,
-        value: '',
+        controls: controls,
         active_field: nil
       }
+      build_args_value
     elsif @element_args[@cur_index].nil?
       @args_panel.visible = false if @args_panel
       return
@@ -1036,12 +1081,12 @@ class Editor
         f[:control_index] = controls.size
         case f[:type]
         when 'enum'
-          controls << (ddl = DropDownList.new(x: 230, y: y, font: SB.font, img: :editor_ddl2, opt_img: :editor_ddl2Opt, options: f[:display_values], text_margin: 4, scale_x: 2, scale_y: 2) {
+          controls << (ddl = DropDownList.new(x: 280, y: y, font: SB.font, img: :editor_ddl2, opt_img: :editor_ddl2Opt, options: f[:display_values], text_margin: 4, scale_x: 2, scale_y: 2) {
             build_args_value
           })
           @dropdowns << ddl
         when 'int'
-          controls << TextField.new(x: 230, y: y, font: SB.font, img: :editor_textField, max_length: 3, allowed_chars: '0123456789', margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2) { |v|
+          controls << TextField.new(x: 280, y: y, font: SB.font, img: :editor_textField, max_length: 3, allowed_chars: '0123456789', margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2) { |v|
             if v.to_i < f[:min] && !v.empty?
               @args[:controls][f[:control_index]].send(:text=, f[:min].to_s, false)
             elsif v.to_i > f[:max]
@@ -1050,32 +1095,32 @@ class Editor
             build_args_value
           }
         when 'bool'
-          controls << ToggleButton.new(x: 230, y: y + 7, img: :editor_chk, scale_x: 2, scale_y: 2, checked: f[:default]) {
+          controls << ToggleButton.new(x: 280, y: y + 7, img: :editor_chk, scale_x: 2, scale_y: 2, checked: f[:default]) {
             build_args_value
           }
         when 'entrance'
           entrances = SB.stage.entrances.reject(&:nil?).map{ |e| e[:index].to_s }
-          controls << (ddl = DropDownList.new(x: 230, y: y, font: SB.font, img: :editor_ddl, opt_img: :editor_ddlOpt, options: entrances, text_margin: 4, scale_x: 2, scale_y: 2) {
+          controls << (ddl = DropDownList.new(x: 280, y: y, font: SB.font, img: :editor_ddl, opt_img: :editor_ddlOpt, options: entrances, text_margin: 4, scale_x: 2, scale_y: 2) {
             build_args_value
           })
           @dropdowns << ddl
         when 'coords'
-          controls << Label.new(x: 370, y: y, font: SB.font, text: '')
-          controls << Button.new(x: 230, y: y, font: SB.font, text: 'Set', img: :editor_btn2, scale_x: 2, scale_y: 2) {
+          controls << Label.new(x: 420, y: y, font: SB.font, text: '')
+          controls << Button.new(x: 280, y: y, font: SB.font, text: 'Set', img: :editor_btn2, scale_x: 2, scale_y: 2) {
             @args[:active_field] = f
           }
-          controls << Button.new(x: 300, y: y, font: SB.font, text: 'Clear', img: :editor_btn2, scale_x: 2, scale_y: 2) {
+          controls << Button.new(x: 350, y: y, font: SB.font, text: 'Clear', img: :editor_btn2, scale_x: 2, scale_y: 2) {
             @args[:controls][f[:control_index]].text = ''
             build_args_value
           }
-          controls << Label.new(x: 370, y: y + 15, font: SB.font, text: '(Use ctrl-click to add points)')
+          controls << Label.new(x: 420, y: y + 15, font: SB.font, text: '(Use ctrl-click to add points)')
         when 'float'
-          controls << TextField.new(x: 230, y: y, font: SB.font, img: :editor_textField2, max_length: 5, allowed_chars: '0123456789.', margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2) {
+          controls << TextField.new(x: 280, y: y, font: SB.font, img: :editor_textField2, max_length: 5, allowed_chars: '0123456789.', margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2) {
             build_args_value
           }
         end
       end
-      @args_panel = Panel.new(0, 0, 420, 4 + fields.size * 34, controls, :editor_pnl, :tiled, true, 2, 2, :center)
+      @args_panel = Panel.new(0, 0, 600, 4 + fields.size * 34, controls, :editor_pnl, :tiled, true, 2, 2, :center)
       @args = {
         element: element,
         index: @cur_index,
@@ -1111,8 +1156,13 @@ class Editor
   end
 
   def build_args_value
-    element = @args[:element]
     controls = @args[:controls]
+    if @cur_element == :entrance
+      @args[:value] = "#{controls[1].text}#{controls[3].checked ? '!' : ''}"
+      return
+    end
+
+    element = @args[:element]
     values = []
     last_non_empty = nil
     element[:fields].each_with_index do |f, i|
@@ -1164,6 +1214,9 @@ class Editor
   end
 
   def toggle_offset_panel
+    @floating_panels.each do |p|
+      p.visible = false
+    end
     @panels[4].visible = !@panels[4].visible
     if @panels[4].visible
       @txt_offset_x.focus
@@ -1176,22 +1229,26 @@ class Editor
   def save(stage_name = nil)
     if (stage_name && !SB.stage.start_pos && !SB.stage.entrances[0]) || (!stage_name && !SB.stage.entrances[0])
       @lbl_msg2.text = stage_name ? 'or a start point' : ''
-      @panels[5].visible = true
+      toggle_aux_panels(5)
       return false
     end
 
     stage_name ||= @txt_stage.text
     path = "#{Res.prefix}/stage/custom/#{stage_name}-#{@txt_section.text}"
-    will_save = if @save_confirm
-                  @save_confirm = @lbl_conf_save.visible = false
-                  true
-                elsif File.exist? path
-                  @save_confirm = @lbl_conf_save.visible = true
-                  false
+    will_save = if File.exist? path
+                  if @save_confirm
+                    true
+                  else
+                    @confirm_action = Proc.new {
+                      @save_confirm = true
+                    }
+                    show_confirm_panel('Overwrite?')
+                  end
                 else
                   true
                 end
     if will_save
+      @save_confirm = false
       FileUtils.mkdir_p("#{Res.prefix}/stage/custom")
 
       tiles_x = @section.tiles.size
@@ -1238,6 +1295,29 @@ class Editor
       File.open(path, 'w') { |f| f.write code }
     end
     true
+  end
+
+  def toggle_aux_panels(show = nil)
+    (4..6).each do |i|
+      @panels[i].visible = i == show
+    end
+  end
+
+  def show_confirm_panel(msg)
+    @lbl_conf.text = msg
+    @floating_panels.each do |p|
+      p.visible = false
+    end
+    @args_panel.visible = false if @args_panel
+    toggle_aux_panels(6)
+  end
+
+  def hide_all_panels
+    @floating_panels.each do |p|
+      p.visible = false
+    end
+    toggle_aux_panels
+    @args_panel.visible = false if @args_panel
   end
 
   def get_cell_string(i, j)

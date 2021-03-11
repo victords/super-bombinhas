@@ -1030,6 +1030,7 @@ class Vamep < Enemy
       @radius = args[0].to_i * C::TILE_SIZE
       @radius = C::TILE_SIZE if @radius == 0
       @speed = (args[1] || 3.0).to_f
+      @speed = 1 if @speed == 0
     else
       @radius = C::TILE_SIZE
       @speed = 3
