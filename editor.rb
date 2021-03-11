@@ -611,7 +611,7 @@ class Editor
     @panels = [
       ################################## General ##################################
       Panel.new(0, 0, 760, 48, [
-        Label.new(x: 10, y: 0, font: SB.font, text: 'W', max_length: 3, scale_x: 2, scale_y: 2, anchor: :left),
+        Label.new(x: 8, y: 0, font: SB.font, text: 'W', max_length: 3, scale_x: 2, scale_y: 2, anchor: :left),
         (txt_w = TextField.new(x: 22, y: 0, img: :editor_textField, font: SB.font, text: '300', allowed_chars: '0123456789', margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2, anchor: :left)),
         Label.new(x: 70, y: 0, font: SB.font, text: 'H', max_length: 3, scale_x: 2, scale_y: 2, anchor: :left),
         (txt_h = TextField.new(x: 84, y: 0, img: :editor_textField, font: SB.font, text: '300', allowed_chars: '0123456789', margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2, anchor: :left)),
@@ -644,10 +644,13 @@ class Editor
         (ddl_exit = DropDownList.new(x: 572, y: 0, font: SB.font, img: :editor_ddl, opt_img: :editor_ddlOpt, options: exit_options, text_margin: 4, scale_x: 2, scale_y: 2, anchor: :left) do |_, v|
           @cur_exit = exit_options.index(v)
         end),
-        Label.new(x: 30, y: -10, font: SB.font, text: 'Dark', scale_x: 2, scale_y: 2, anchor: :right),
-        (@chk_dark = ToggleButton.new(x: 10, y: -10, img: :editor_chk, scale_x: 2, scale_y: 2, anchor: :right)),
-        Label.new(x: 30, y: 10, font: SB.font, text: 'Rain', scale_x: 2, scale_y: 2, anchor: :right),
-        (@chk_rain = ToggleButton.new(x: 10, y: 10, img: :editor_chk, scale_x: 2, scale_y: 2, anchor: :right))
+        Label.new(x: 94, y: -10, font: SB.font, text: 'Dark', scale_x: 2, scale_y: 2, anchor: :right),
+        (@chk_dark = ToggleButton.new(x: 74, y: -10, img: :editor_chk, scale_x: 2, scale_y: 2, anchor: :right)),
+        Label.new(x: 94, y: 10, font: SB.font, text: 'Rain', scale_x: 2, scale_y: 2, anchor: :right),
+        (@chk_rain = ToggleButton.new(x: 74, y: 10, img: :editor_chk, scale_x: 2, scale_y: 2, anchor: :right)),
+        Button.new(x: 4, y: 0, font: SB.font, text: 'Help', img: :editor_btn1, scale_x: 2, scale_y: 2, anchor: :right) do
+          toggle_aux_panel(8)
+        end
       ], :editor_pnl, :tiled, true, 2, 2, :top),
       ###########################################################################
 
@@ -824,7 +827,7 @@ class Editor
       ], :editor_pnl, :tiled, true, 2, 2, :center),
       ###########################################################################
 
-      ################################## WARNING ################################
+      ############################# ENTRANCE WARNING ############################
       Panel.new(0, 0, 360, 120, [
         (@lbl_msg1 = Label.new(x: 0, y: 10, font: SB.font, text: 'The level must have an entrance', scale_x: 2, scale_y: 2, anchor: :top)),
         (@lbl_msg2 = Label.new(x: 0, y: 40, font: SB.font, text: 'or a start point', scale_x: 2, scale_y: 2, anchor: :top)),
@@ -854,11 +857,25 @@ class Editor
         ToggleButton.new(x: 10, y: 79, font: SB.font, text: 'Bomba Amarela', img: :editor_chk, checked: true, scale_x: 2, scale_y: 2, center_x: false, margin_x: 15) { |v| update_bomb_mask(v, 2) },
         ToggleButton.new(x: 10, y: 113, font: SB.font, text: 'Bomba Verde', img: :editor_chk, checked: true, scale_x: 2, scale_y: 2, center_x: false, margin_x: 15) { |v| update_bomb_mask(v, 3) },
         ToggleButton.new(x: 10, y: 147, font: SB.font, text: 'Aldan', img: :editor_chk, checked: true, scale_x: 2, scale_y: 2, center_x: false, margin_x: 15) { |v| update_bomb_mask(v, 4) },
+      ], :editor_pnl, :tiled, true, 2, 2, :center),
+      ###########################################################################
+
+      ################################### HELP ##################################
+      Panel.new(0, 0, 1200, 600, [], :editor_pnl, :tiled, true, 2, 2, :center),
+      ###########################################################################
+
+      ########################### EXPERIMENTAL WARNING ##########################
+      Panel.new(0, 0, 1200, 180, [
+        Label.new(x: 0, y: 10, font: SB.font, text: '--- WARNING ---', scale_x: 2.5, scale_y: 2.5, anchor: :top),
+        Label.new(x: 0, y: 50, font: SB.font, text: 'This is an experimental feature. You can expect to find some bugs. If you do, please report them as issues at https://github.com/victords/super-bombinhas', scale_x: 1.5, scale_y: 1.5, anchor: :top),
+        Label.new(x: 0, y: 70, font: SB.font, text: "Also, if you haven't completed the game's story mode, there can be spoilers.", scale_x: 1.5, scale_y: 1.5, anchor: :top),
+        Label.new(x: 0, y: 90, font: SB.font, text: "For instructions, click the 'Help' button at the top right.", scale_x: 1.5, scale_y: 1.5, anchor: :top),
+        Button.new(x: 0, y: 10, font: SB.font, text: 'OK', img: :editor_btn1, scale_x: 2, scale_y: 2, anchor: :bottom) {
+          toggle_aux_panel(9)
+        }
       ], :editor_pnl, :tiled, true, 2, 2, :center)
       ###########################################################################
     ]
-
-    toggle_aux_panels
 
     obj_items = []
     @objs.keys.sort.each_with_index do |k, i|
@@ -871,8 +888,8 @@ class Editor
     @floating_panels = [
       FloatingPanel.new(:tile, other_tile_btn.x + 64, other_tile_btn.y - 148, 337, 337, @tilesets[@cur_tileset].map.with_index{ |t, i| { img: t, x: 4 + (i % 10) * 33, y: 4 + (i / 10) * 33 } }, self),
       FloatingPanel.new(:ramp, ramp_btn.x + 64, ramp_btn.y, 271, 40, (0..7).map { |i| { img: Res.img("editor_ramp#{i}"), x: 4 + i * 33, y: 4 } }, self),
-      FloatingPanel.new(:obj, btn_obj.x - 341, btn_obj.y, 337, 300, obj_items, self),
-      FloatingPanel.new(:obj, btn_enemy.x - 341, btn_enemy.y, 337, 300, enemy_items, self),
+      FloatingPanel.new(:obj, btn_obj.x - 341, btn_obj.y, 337, 238, obj_items, self),
+      FloatingPanel.new(:obj, btn_enemy.x - 341, btn_enemy.y, 337, 205, enemy_items, self),
     ]
 
     @dropdowns = [@ddl_bg, @ddl_bg2, @ddl_bgm, ddl_exit, @ddl_ts, @ddl_tile_type]
@@ -888,6 +905,26 @@ class Editor
       [[0, 0, 27], [1, 0, 28], [0, 1, 11], [1, 1, 38], [2, 1, 39]], # r 3x2
       [[0, 0, 19], [0, 1, 29]], # r 1x2
     ]
+
+    @help_text = <<END
+-- Top Panel --
+Set the width and height of the level (number of tiles) using the 'W' and 'H' fields; Select a background (BG) and optionally a second background (BG2); The 'tiled' checkbox indicates if the BG will be vertically tiled; Select a background music (BGM); Select the type of transition to the next section (if any) in the 'Exit' field ('/\\' for up, '→' for right, '\\/' for down and '←' for left); Select if the section should be dark or have rain (they don't work simultaneously).
+
+-- Left Panel --
+Select the tileset; Click 'Wall', 'Pass' or 'Hide' to place walls, passable blocks or 'hide' blocks (blocks that reveal what's behind when the player goes into them); Click 'Ramp' to select a ramp size and place ramps; Click 'Other' to place any tile of the tileset, specify what type of tile it will be in the dropdown below ('w' for wall, 'p' for passable, 'b' for backgroud and 'f' for foreground).
+
+-- Right Panel --
+Place the bomb for testing with the 'Bomb' button; Place an entrance for the section with the 'entr.' button (all sections must have an entrance to be saved); Use the 'default' attribute to indicate that this entrance will be used when transitioning from a previous section; Click 'obj' to select an object to place (if the object has parameters, a panel with them will show up, use the Enter key or the 'args' button below to hide it); Click 'enmy' to place an enemy, parameters also apply to some; Click the 'insp.' button and then click on an object/enemy on the map to see its parameters; Click the 'offst' button (or press the Tab key) to offset all objects or a selected area (select by holding Alt and dragging).
+
+-- Bottom Panel --
+Set the stage name in the 'Stage' field; Set the section number in the 'Section' field (in order to create a stage with multiple sections, just use the same name in the 'Stage' field, and don't forget to create entrances and use doors or the 'Exit' property to allow the player to enter the other sections); Click 'clear' to remove everything from the map; Click 'Load' to load the stage/section specified in these fields; Click 'Save' to save the current section; Click 'Bombs' to specify which bombs can be used in this level (this only needs to be specified in the first section of the stage); Click 'Test' (or press the space bar) to test the current section; Click 'Exit' to leave the editor.
+END
+
+    toggle_aux_panels
+    unless SB.editor_warning_shown
+      toggle_aux_panel(9)
+      SB.editor_warning_shown = true
+    end
   end
 
   def update
@@ -1336,7 +1373,7 @@ class Editor
   end
 
   def toggle_aux_panels(show = nil)
-    (4..7).each do |i|
+    (4..9).each do |i|
       @panels[i].visible = i == show
     end
   end
@@ -1422,7 +1459,11 @@ class Editor
     end
 
     @panels.each_with_index do |p, i|
-      p.draw(@over_panel[i] ? 255 : 153, 2)
+      alpha = @over_panel[i] ? 255 : 153
+      p.draw(alpha, 2)
+      if p.visible && i == 8
+        SB.text_helper.write_breaking(@help_text, (G.window.width - 1200) / 2 + 10, (G.window.height - 600) / 2 + 10, 1180, :justified, 0, alpha, 2, 1.5, 1.5)
+      end
     end
     @args_panel.draw(@over_panel[@panels.size] ? 255 : 153, 2) if @args_panel
 

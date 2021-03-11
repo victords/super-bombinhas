@@ -61,7 +61,7 @@ end
 class SB
   class << self
     attr_reader :font, :text_helper, :save_dir, :save_data, :lang, :full_screen, :editor
-    attr_accessor :state, :player, :world, :stage, :movie, :music_volume, :sound_volume
+    attr_accessor :state, :player, :world, :stage, :movie, :music_volume, :sound_volume, :editor_warning_shown
 
     def load_options(save_dir)
       @save_dir = save_dir
@@ -77,6 +77,7 @@ class SB
             @sound_volume = data[1].to_i
             @music_volume = data[2].to_i
             @full_screen = data[3].to_i > 0
+            @editor_warning_shown = data[4] == '1'
           end
         end
       else
@@ -132,13 +133,14 @@ class SB
       @sound_volume = 10
       @music_volume = 10
       @full_screen = false
+      @editor_warning_shown = false
       FileUtils.mkdir_p(@save_dir)
       save_options
     end
 
     def save_options
       File.open("#{@save_dir}/options", 'w') do |f|
-        f.print("#{@lang},#{@sound_volume},#{@music_volume},#{@full_screen ? 1 : 0}")
+        f.print("#{@lang},#{@sound_volume},#{@music_volume},#{@full_screen ? 1 : 0},#{@editor_warning_shown ? 1 : 0}")
       end
       Dir["#{Res.prefix}stage/custom/__temp*"].each do |f|
         File.delete(f)
