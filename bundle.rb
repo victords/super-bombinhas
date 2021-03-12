@@ -9,7 +9,7 @@ include MiniGL
 
 END
 
-file_names = %w(global credits bomb elements enemies form items movie options player section stage stage_menu world menu game)
+file_names = %w(global credits bomb elements enemies form items movie options player section stage stage_menu world menu editor game)
 
 file_names.each do |name|
   File.open("#{name}.rb") do |f|
@@ -24,8 +24,6 @@ file_names.each do |name|
   end
 end
 
-bundle.gsub!("\n\n", "\n")
-bundle.gsub!("\n\n", "\n")
 File.open('sb.rb', 'w+') do |f|
   f.write bundle
 end

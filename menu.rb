@@ -316,7 +316,7 @@ class Menu
       @clouds.each(&:draw)
       @title.draw @form.cur_section_index == 1 ? 20 : 50, 20, 0, @form.cur_section_index == 1 ? 1 : 2, @form.cur_section_index == 1 ? 1 : 2
       @form.draw
-      SB.font.draw_text("v1.2.4", 10, 579, 0, 1, 1, 0xff000000)
+      SB.font.draw_text("v1.3.0", 10, 579, 0, 1, 1, 0xff000000)
     end
   end
 end
