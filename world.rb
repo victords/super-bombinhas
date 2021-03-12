@@ -96,7 +96,7 @@ class World
   ITEM_ICONS = {
     Section::ELEMENT_TYPES.key(Attack1)   => :icon_Attack1,
     Section::ELEMENT_TYPES.key(BoardItem) => :icon_board,
-    Section::ELEMENT_TYPES.key(Key)       => :icon_Key,
+    Section::ELEMENT_TYPES.key(Key)       => :icon_Key0,
     Section::ELEMENT_TYPES.key(Shield)    => :icon_shield,
     Section::ELEMENT_TYPES.key(Attack2)   => :icon_attack2,
     Section::ELEMENT_TYPES.key(Spring)    => :icon_spring,

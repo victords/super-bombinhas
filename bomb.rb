@@ -386,9 +386,9 @@ class Bomb < GameObject
       if @poisoned && @active
         SB.text_helper.write_line(((180 - @poison_timer).to_f / 60).ceil.to_s, 400, 250, :center, 0xffffff, 255, :border, 0, 1, 255, 1)
       end
-      if @will_explode && @active
-        SB.text_helper.write_line SB.text(:count_down), 400, 200, :center, 0xffffff, 255, :border, 0, 1, 255, 0 if @explosion_counter > 6
-        SB.text_helper.write_line @explosion_counter.to_s, 400, 220, :center, 0xffffff, 255, :border, 0, 1, 255, 0
+      if @will_explode && @active && SB.state != :paused
+        SB.text_helper.write_line SB.text(:count_down), 400, 200, :center, 0xffffff, 255, :border, 0, 1, 255, 1 if @explosion_counter > 6
+        SB.text_helper.write_line @explosion_counter.to_s, 400, 220, :center, 0xffffff, 255, :border, 0, 1, 255, 1
       end
     end
     @explosion.draw map, 2 * @explosion_radius.to_f / 90, 2 * @explosion_radius.to_f / 90 if @exploding

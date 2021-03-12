@@ -1711,7 +1711,7 @@ class Umbrex < FloorEnemy
   RANGE = 10
 
   def initialize(x, y, args, section)
-    super(x, y - 118, nil, 64, 150, Vector.new(-48, -10), 4, 2, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1], 7, 250, 3)
+    super(x - 16, y - 118, nil, 64, 150, Vector.new(-48, -10), 4, 2, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1], 7, 250, 3)
     @hop_timer = 0
   end
 
@@ -1730,7 +1730,7 @@ class Umbrex < FloorEnemy
         animate([6, 5, 4, 3], 5)
       end
       if @timer >= 10 && @timer < 60
-        b.hit if b.collide?(self)
+        b.hit if b.bounds.intersect?(@attack_area)
       end
       check_hit(section, b)
     else
@@ -1740,6 +1740,7 @@ class Umbrex < FloorEnemy
           @x += 0.1 * (b.x - @x)
           if (b.x - @x).abs <= RANGE
             set_animation(3)
+            @attack_area = Rectangle.new(@x + 16, @y, 32, 150)
             @attacking = true
             @timer = 0
           end

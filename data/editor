@@ -127,7 +127,7 @@ Range|int|1-99
 ID|int|0-99
 ===
 ID|int|0-99
-Object type|enum|1,2,3,4|TwinWalls,Elevator,Box,Gate
+Object type|enum|,2,3,4|TwinWalls,Elevator,Box,Gate
 ===
 ===
 Don't fall|bool|$,|1

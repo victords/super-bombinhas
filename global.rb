@@ -217,7 +217,7 @@ class SB
     def lang=(value)
       @lang = value
       Menu.update_lang
-      StageMenu.update_lang if StageMenu.ready
+      StageMenu.update_lang
     end
 
     def change_volume(type, d = 1)
@@ -466,6 +466,7 @@ class SB
       G.window.width = C::SCREEN_WIDTH
       G.window.height = C::SCREEN_HEIGHT
       play_song(Res.song(:main))
+      Menu.reset
       @state = :menu
     end
 

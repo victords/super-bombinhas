@@ -1533,11 +1533,10 @@ class AButton < SBGameObject
     @id = args[0].to_i
     @type =
       case args[1]
-      when '1' then TwinWalls
       when '2' then Elevator
       when '3' then Box
       when '4' then Gate
-      else          nil
+      else          TwinWalls
       end
     @state = 0
   end
@@ -2173,7 +2172,7 @@ class FallingWall < GameObject
     a = (args || '').split(',')
     type = a[0] == '2' ? 2 : 1
     size = a[1].to_i
-    size = 1 if size == 0
+    size = 4 if size == 0
     super(x, y - (size - 1) * C::TILE_SIZE, C::TILE_SIZE, size * C::TILE_SIZE, "sprite_fallingWall#{type}", Vector.new(0, 0), 4, 2)
     @active_bounds = Rectangle.new(@x, @y, @w, @h)
     @blocks = []
@@ -2840,11 +2839,11 @@ class Fog
     @h = C::TILE_SIZE
     @img = Res.imgs(:sprite_fog, 4, 4)
     @active_bounds = Rectangle.new(@x, @y, @w, @h)
-    up = j > 0 && tiles[i][j - 1].hide >= 99
-    rt = tiles[i + 1] && tiles[i + 1][j].hide >= 99
-    dn = tiles[i][j + 1] && tiles[i][j + 1].hide >= 99
-    lf = i > 0 && tiles[i - 1][j].hide >= 99
-    dr = rt && dn && tiles[i + 1][j + 1].hide >= 99
+    up = j > 0 && tiles[i][j - 1].hide && tiles[i][j - 1].hide >= 99
+    rt = tiles[i + 1] && tiles[i + 1][j].hide && tiles[i + 1][j].hide >= 99
+    dn = tiles[i][j + 1] && tiles[i][j + 1].hide && tiles[i][j + 1].hide >= 99
+    lf = i > 0 && tiles[i - 1][j].hide && tiles[i - 1][j].hide >= 99
+    dr = rt && dn && tiles[i + 1][j + 1].hide && tiles[i + 1][j + 1].hide >= 99
     @img_index = if up
                    if rt
                      if dn

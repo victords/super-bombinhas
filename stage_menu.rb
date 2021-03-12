@@ -110,65 +110,58 @@ end
 
 class StageMenu
   class << self
-    attr_reader :ready
-
     def initialize(custom = false, editor = false)
-      if @ready
-        @stage_menu.reset
-        set_bomb_screen_comps
-        @alpha = 0
-      else
-        options_comps = [MenuPanel.new(10, 90, 780, 450)]
-        options_comps.concat(Options.get_menu)
+      options_comps = [MenuPanel.new(10, 90, 780, 450)]
+      options_comps.concat(Options.get_menu)
 
-        @stage_menu = Form.new([
-          MenuImage.new(280, 180, :ui_stageMenu),
-          MenuButton.new(207, :resume, true) {
-            SB.state = :main
-          },
-          MenuButton.new(257, :change_bomb) {
-            @stage_menu.go_to_section 1
-          },
-          MenuButton.new(307, :options) {
-            Options.set_temp
-            @stage_menu.go_to_section 2
-          },
-          MenuButton.new(357, :exit) {
-            if editor
-              SB.editor_stop_test
-            else
-              SB.save_and_exit
-              @stage_menu.reset
-            end
-          }
-        ], [], options_comps, custom ? [
-          MenuButton.new(400, :exit, false) {
-            if editor
-              SB.editor_stop_test
-            else
-              SB.leave_custom_stage(true)
-            end
-          }
-        ] : [
-          MenuButton.new(400, :continue, false, 219) {
-            SB.next_stage
-          },
-          MenuButton.new(400, :exit, false, 409) {
-            SB.next_stage false
-          }
-        ])
-        set_bomb_screen_comps
-        @alpha = 0
-        @ready = true
-        @lives_icon = Res.img :icon_lives
-        @hp_icon = Res.img :icon_hp
-        @score_icon = Res.img :icon_score
-        @star_icon = Res.img :icon_star
-        @selected_item = Res.img :ui_startupItem
-      end
+      @stage_menu = Form.new([
+        MenuImage.new(280, 180, :ui_stageMenu),
+        MenuButton.new(207, :resume, true) {
+          SB.state = :main
+        },
+        MenuButton.new(257, :change_bomb) {
+          @stage_menu.go_to_section 1
+        },
+        MenuButton.new(307, :options) {
+          Options.set_temp
+          @stage_menu.go_to_section 2
+        },
+        MenuButton.new(357, :exit) {
+          if editor
+            SB.editor_stop_test
+          else
+            SB.save_and_exit
+            @stage_menu.reset
+          end
+        }
+      ], [], options_comps, custom ? [
+        MenuButton.new(400, :exit, false) {
+          if editor
+            SB.editor_stop_test
+          else
+            SB.leave_custom_stage(true)
+          end
+        }
+      ] : [
+        MenuButton.new(400, :continue, false, 219) {
+          SB.next_stage
+        },
+        MenuButton.new(400, :exit, false, 409) {
+          SB.next_stage false
+        }
+      ])
+      set_bomb_screen_comps
       Options.form = @stage_menu
 
+      @alpha = 0
       @effects = []
+      @lives_icon = Res.img :icon_lives
+      @hp_icon = Res.img :icon_hp
+      @score_icon = Res.img :icon_score
+      @star_icon = Res.img :icon_star
+      @selected_item = Res.img :ui_startupItem
+
+      @ready = true
     end
 
     def set_bomb_screen_comps
@@ -313,7 +306,7 @@ class StageMenu
     end
 
     def update_lang
-      @stage_menu.update_lang if StageMenu.ready
+      @stage_menu.update_lang if @ready
     end
 
     def play_get_item_effect(origin_x, origin_y, type = nil)
