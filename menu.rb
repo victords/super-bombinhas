@@ -280,7 +280,7 @@ class Menu
       section = @form.section(10)
       section.clear
       section.add(MenuText.new(:select_level, 400, 230, 760, :center))
-      levels = (Dir["data/stage/custom/*"].reduce([]) do |obj, l|
+      levels = (Dir["#{SB.save_dir}/levels/*"].reduce([]) do |obj, l|
         stage = l.split('/')[-1].split('-')[0]
         obj << stage unless obj.include?(stage) || stage == '__temp'
         obj

@@ -53,7 +53,7 @@ class Stage
 
     @sections = []
     @entrances = []
-    sections = Dir["#{Res.prefix}stage/#{@world}/#{@num}-*"]
+    sections = Dir[@is_custom ? "#{SB.save_dir}/levels/#{@num}-*" : "#{Res.prefix}stage/#{@world}/#{@num}-*"]
     sections.sort.each do |s|
       @sections << Section.new(s, @entrances, @switches, taken_switches, used_switches)
     end

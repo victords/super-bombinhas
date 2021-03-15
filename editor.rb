@@ -58,7 +58,7 @@ class EditorStage < Stage
     @entrances = []
     @switches = []
 
-    sections = Dir["#{Res.prefix}stage/#{@world}/#{@num}-*"]
+    sections = Dir["#{SB.save_dir}/levels/#{@num}-*"]
     sections.sort.each_with_index do |s, i|
       content = File.read(s)
       entrances = content.scan(/!\d+/)
@@ -81,7 +81,7 @@ class EditorStage < Stage
 
     @sections = []
     @entrances = []
-    sections = Dir["#{Res.prefix}stage/#{@world}/#{@num}-*"]
+    sections = Dir["#{SB.save_dir}/levels/#{@num}-*"]
     sections.sort.each do |s|
       @sections << Section.new(s, @entrances, @switches, taken_switches, used_switches)
     end
@@ -700,7 +700,7 @@ class Editor
           @section.clear
         end,
         Button.new(x: 441, y: 0, img: :editor_btn1, font: SB.font, text: 'Load', scale_x: 2, scale_y: 2, anchor: :left) do
-          path = "#{Res.prefix}/stage/custom/#{@txt_stage.text}-#{@txt_section.text}"
+          path = "#{SB.save_dir}/levels/#{@txt_stage.text}-#{@txt_section.text}"
           if File.exist? path
             f = File.open(path)
             all = f.readline.chomp.split('#')
@@ -1279,7 +1279,7 @@ END
     end
 
     stage_name ||= @txt_stage.text
-    path = "#{Res.prefix}/stage/custom/#{stage_name}-#{@txt_section.text}"
+    path = "#{SB.save_dir}/levels/#{stage_name}-#{@txt_section.text}"
     will_save = if File.exist? path
                   if @save_confirm
                     true
@@ -1296,7 +1296,7 @@ END
                 end
     if will_save
       @save_confirm = false
-      FileUtils.mkdir_p("#{Res.prefix}/stage/custom")
+      FileUtils.mkdir_p("#{SB.save_dir}/levels")
 
       tiles_x = @section.tiles.size
       tiles_y = @section.tiles[0].size
