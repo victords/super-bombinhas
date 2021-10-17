@@ -1,0 +1,153 @@
+powered_by		Funkciigita de
+game_by			Ludo de
+play			Ludi
+help			Helpo
+options			Opcioj
+credits			Credits
+editor			Nivela Redaktilo
+exit			Eliri
+story			Rakonto
+custom			Tajloritaj Niveloj
+choose_game		Elektu ludon por ŝarĝi aŭ 'Nova Ludo'
+new_game		Nova Ludo
+what_name		Kio estas via nomo?
+back			Reen
+continue		Daŭrigi
+delete			Forigi
+delete_confirm	Ĉu vi certas, ke vi volas forigi ĉi tiun ludon?
+yes				Jes
+no				Ne
+select_level	Elektu nivelon por ludi
+help_text		Ĉi tio estas platforma ludo. Uzu la maldekstra kaj la dekstra sagaj klavoj por moviĝi, spacoklavo por salti, X por aĵoj, Z aŭ V por ŝanĝi inter aĵoj, C por kapabloj, majuskliga klavo por ŝanĝi inter roluloj, supra sago por malfermi pordojn, Esc por paŭzi.\nLa ludo ankaŭ subtenas stirstangojn (konektu antaŭ malfermi la ludon), kvankam la butona mapigo povas diferenci. Por XBOX kontrolilo uzu la analogan stangon aŭ D-klavaron kiel sagaj butonoj, A por salti kaj konfirmi, B por aĵoj kaj nuligi, X por kapabloj, Y por ŝanĝi inter roluloj, LB kaj RB por ŝanĝi inter âjoj, Start por paŭzi.\nUzu F4-n por baskuligi plenan ekranon.
+save			Konservi
+cancel			Nuligi
+language		Lingvo
+lang_name		Esperanto
+sound_volume	Laŭteco de sonojSounds volume
+music_volume	Musika laŭteca
+controls		Kontroliloj
+controls_0		Sagoj, Spacoklavo, Majuskliga klavo, A, S
+controls_1		WASD, JKLI
+full_screen		Prenu F4-n por ŝanĝi inter fenestra kaj plena ekrano
+credits_prog	- Fasonado, Programado kaj Grafikoj -
+credits_music	- Musiko -
+sounds			- Sonefektoj -
+sounds_edit		Redaktado de Victor David Santos
+developed		Plene programita en Linukso
+special_thanks	- Specialaj Dankoj -
+special_thanks2	La Gosu komunumo\n...kaj multaj aliaj amikoj kaj familianoj
+special_thanks3	La Gosu komunumo\nĈiuj aliaj amikoj kaj familianoj\nkiu ebligis ĉi tiun projekton...\nkaj VI, por ludi mian ludon!\nDANKEGON!
+graph_soft		- Grafika Programaro -
+music_soft		- Musika/Sona Programaro -
+langs_libs		- Lingvoj kaj Framoj -
+confirm_exit	Ĉu vi certe volas eliri?
+ch_st_instruct	Premu enigan klavon por komenci.\nPremu 'Esc' aŭ retropaŝan klavon por iri antaŭen.
+stage			Stage
+loading			Loading
+lives			Lives
+score			Score
+resume			Resume
+change_bomb		Change Bomb
+stage_complete	Stage Complete!
+total			Total
+spec_taken		Spec found?
+stars			Stars
+all_stars_found	Got an item!
+dead			You died!
+restart			Press 'Enter' to restart
+game_over		Game over!
+too_bad			Too bad!
+can_play		You can now play as:
+msg1			This artifact is called a Spec. It is said that they're scattered all around the world and that if someone collects them all, they unlock a gate to a magical world... Pretty crazy, right?
+msg2			Not all keys fit all doors...
+msg3			Have you been collecting these artifacts? Legend says they unlock a gate to some kind of magical world... I heard that this gate is located somewhere in Tars Island.
+msg_monep		Hey! Hold on! If you want to go any further, you must bring me a Forest Herb. Yes, a delicious Forest Herb... Now get lost and only come back here when you have it!
+msg_mnt_bomb	Hi, I was taking a walk in the mountains and I lost my precious Jillis Stone. It's a big, shiny, green gem... Do you think you could find it for me?
+msg_mnt_bomb2	Thanks a lot, mate! Well... I don't have much to offer in return, but you can use this float machine if you want. It will help you reach the highest parts of the mountain./It's a wonderful view from there!
+msg_aldan		Hey! It's so good to see a fellow bomb here... Thanks for freeing me! Now, we must hurry and defeat Gaxlon and his minions... our citizens are suffering!
+chamal_speech	So... you've come. Well, I'm afraid this is the end of your pointless journey, little bomb. GET HIM, WHEELIAMS!
+chamal_death	Noooooo...!! How come I lost to such a weakling...?! No, that's not... poss...
+sahiss_speech	Sssssss Ssssssssssss Sssss?! SSSSSS!! (Who are you who invades my sacred forest fortress?! PREPARE TO DIE!!)
+sahiss_death	Sssssssssssssssssssss...!! (Nooooooooooooooooooo...!!)
+ulor_speech		What do you think you're doing here, little bombs?! This is the end for you!
+ulor_death		Gaaaaaah! I can't believe... Defeated by these insignificant creatures...!
+zirkn_speech	It was so foolish of you to come here... Now, YOU SHALL PAY!
+zirkn_death		Curse youuuuu!!
+globb_speech	Grrrraaaaarrrblaaarrrgh!!! (Get out of my swamp!!!)
+globb_death		Ggaaaaarrrr! Bleearr...gh! (Aaaaah! Leave me al...one!)
+drepz_speech	I can't believe you made it this far... But it was all for nothing, because...\nYOU WILL NEVER LEAVE THIS PLACE!
+drepz_death		Heh... You're pretty strong... But I warn you: you will never defeat king Gaxlon!
+gaxlon_speech	Wow, I can't believe you came all the way here... Don't you see it's pointless? I'm much more powerful than all of you... But if it's a fight you want, then SHOW ME WHAT YOU GOT!
+gaxlon_death	NOOOOOOO!!! You took everything from me! Since our childhood, it's always been like that... Why, Aldan, WHY?!?!
+count_down		Countdown to explosion!
+world_1			Tars Island
+stage_1_1		Exploring the Tars Beach
+stage_1_2		Sand and Green Hills
+stage_1_3		A 'mechanimal' chaos
+stage_1_4		Finally! Chamal's Fortress
+stage_1_5		Chamal: the knock down!
+world_2			Wisemen's Forest
+stage_2_1		The border woods
+stage_2_2		Atop the tallest tree
+stage_2_3		The three trees engima
+stage_2_4		Entering the forest fortress
+stage_2_5		Deep in the forest fortress
+world_3			Rainy Mountains
+stage_3_1		By the base of the mountains
+stage_3_2		Puzzling hills
+stage_3_3		Meet the mountain tribe
+stage_3_4		The ice caverns
+stage_3_5		Ulor's hideout
+world_4			Inkut Village
+stage_4_1		A ruined village
+stage_4_2		Beware the falling walls!
+stage_4_3		The ancient temple
+stage_4_4		The hidden puzzle pieces
+stage_4_5		The ancient castle
+world_5			Mual Swamp
+stage_5_1		Welcome to the swamp
+stage_5_2		Thorns, poison and dangerous waters
+stage_5_3		The crazy descent!
+stage_5_4		Night falls at Mual
+stage_5_5		A nest of vicious creatures
+world_6			Ooria Caves
+stage_6_1		Rocky road ahead
+stage_6_2		Moving platforms out of control!
+stage_6_3		The deep underground maze
+stage_6_4		Venturing in the dark
+stage_6_5		Drepz in the dark pit
+world_7			Bomb Town
+stage_7_1		Sneaking through the town outskirts
+stage_7_2		The illegitimate king's army
+stage_7_3		Approaching the castle walls
+stage_7_4		Entering the royal castle
+stage_7_5		A showdown for justice
+world_8			Lae, the magical forest
+stage_8_1		An odyssey through the mist
+bonus			Bonus
+bonus_1			Reach the goal
+bonus_2			Kill all enemies
+bonus_3			Collect all Fire Rocks
+movie_0_0		In a distant land, there is a beautiful village inhabited by living... bombs./This village was once a peaceful place, where the people loved their king and had prosperous lives.../But the envy of Gaxlon, one of the king's counselors, has just unsettled this tranquility...
+movie_0_1		Gaxlon wanted to rule the kingdom by himself, so he imprisoned Aldan, the king. He couldn't bring himself to kill him, as they were once childhood friends.../As his minions captured the king, the 4 super bombs arrived and witnessed the terrible scene...
+movie_0_2		Gaxlon was quick and ordered his minions to also attack the super bombs, but Aldan protected them with an ancient magic./Seeing that the super bombs couldn't be defeated, he then ordered his minions to imprison each one of them in a distant place... And then he began his reign of terror.
+movie_0_3		As the super bombs were being taken to faraway places, Bomba Azul, the smartest of them, was able to trick his captor and escape.../He saw Bomba Vermelha being taken in the direction of the Tars Island, so he headed there to begin rescuing his friends...
+movie_1_0		Bomba Azul and Bomba vermelha rejoiced upon meeting again and having defeated the first of Gaxlon's minions./However, they had no time to lose and soon headed outside the castle to look for their other friends...
+movie_1_1		Bomba Vermelha said that he saw Bomba Amarela being carried in the direction of the Wisemen's Forest, in the continent./Bomba Azul looked at him and jokingly said: "I hope you're good at swimming!".
+movie_2_0		After defeating the scary snake Sahiss, Azul and Vermelha freed Bomba Amarela, who couldn't be happier. She started hopping, high as only she could./Again, they made haste to leave the place and look for Bomba Verde, the last of the captured Super Bombs.
+movie_2_1		Leaving the forest by the north, they saw the Rainy Mountains looming in the horizon./They thought that would be a nice hiding place for a Gaxlon minion, so ahead they went, ready to do a lot of climbing...
+movie_3_0		"RUN!!!", urged Bomba Verde to the others as icicles fell from the ceiling in the former Ulor's hideout./After escaping the threat, they could finally breathe and Bomba Verde thanked Azul, Vermelha and Amarela for the rescue./However, Bomba Verde wasn't in a good mood (as usual)...
+movie_3_1		He told the others that when he was being brought to the top of the mountain, he saw an evil-looking creature take over an innocent village right at the base of the mountains./"We gotta help those villagers!", he said, and they all agreed, starting the long descent...
+movie_4_0		After defeating the evil Zirk'n, the super bombs gathered around the village's elder, who profusely stated his gratefulness./He asked them if there was anything they could do in return, and the super bombs replied that what they needed most now was information, as they didn't know where to find Aldan.
+movie_4_1		The elder replied: "Little do I know about this vile Gaxlon you speak of, but I know of someone who might know.../It is said that a mysterious oracle lives in the Mual Swamp. I can't tell you his exact location, but I can give you this map to help you get to the swamp."/It seems another journey was about to begin...
+movie_5_0		Seeing the monster Globb defeated, a mysterious figure approached from the dark... It was the oracle mentioned by Inkut Village's elder!/The bombs asked him for a direction where to look for their king. The oracle then put his hands over a crystal ball and started mumbling.../"The overthrown king was captive in dark caves, but seems to have escaped to a less dark place nearby..."
+movie_5_1		The bombs concluded that he referred to the Ooria Caves, all the way to the north of Enmat, very far away.../"Don't worry friends, someone here might help you on your noble quest...", said the oracle, and then a large dragon-looking monster showed up and carried the super bombs to the sky!./"To the Ooria caves, please!", said Bomba Azul, and the creature seemed to understand.
+movie_6_0		The king and the four super bombs were filled with determination after the defeat of Gaxlon's second-in-command./"We had a victory here, but we must hurry, for our people are suffering the tyranny of Gaxlon as we speak!", the king spoke, and the super bombs felt motivated to put an end to that quest...
+movie_6_1		They headed towards Bomb Town, which was in the proximities, and as they approached its borders, it felt like Gaxlon was looking at them from the distance, with an evil smile in his face...
+movie_7_0		Gaxlon's reign of terror was finally ended. Aldan sentenced him to an eternal exile in a distant land, outside Enmat./The super bombs watched this moment relieved, as Gaxlon cowered in shame, backing away from the true king.
+movie_7_1		Peace was finally restored to Bomb Town! The king went out to the castle's walls and waved to the people./Everyone was ecstatic and cheered the king and the super bombs with lots of confetti... Surely, a day to be remembered!
+movie_8_0		As the bombs approached the massive artifact, beams of light started to shine from it, and a stunning voice seemed to come out of nowhere.../"Congratulations, travellers, you have reached a point never before reached by any others. However, if you seek true knowledge, the trip doesn't end here.../Come through this portal and a real test of your virtues will begin..."
+movie_8_1		An enormous portal opened up where the artifact was. The bombs looked at each other, perplexed./Then, Bomba Azul said with a smile: "I think we're done with tests for a while, right?". They all laughed, and started walking the long way back home...
+game_end		The End!
+game_end_sub	But... have you collected all the Specs?
+game_end_2_sub	Seriously, now.
