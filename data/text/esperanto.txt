@@ -23,7 +23,7 @@ save			Konservi
 cancel			Nuligi
 language		Lingvo
 lang_name		Esperanto
-sound_volume	Laŭteco de sonojSounds volume
+sound_volume	Laŭteco de sonoj
 music_volume	Musika laŭteca
 controls		Kontroliloj
 controls_0		Sagoj, Spacoklavo, Majuskliga klavo, A, S
