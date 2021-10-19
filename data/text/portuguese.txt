@@ -93,7 +93,6 @@ stage_2_3		O enigma das três árvores
 stage_2_4		Entrando na fortaleza florestal
 stage_2_5		Nas profundezas da fortaleza florestal
 world_3			Serra da Chuva
-stage_3_1		???
 stage_3_1		Na base das montanhas
 stage_3_2		Colinas enigmáticas
 stage_3_3		Conheça a tribo da montanha
