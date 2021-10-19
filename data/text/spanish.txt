@@ -14,17 +14,17 @@ what_name		¿Cómo te llamas?
 back			Volver
 continue		Continuar
 delete			Borrar
-delete_confirm	¿Estás seguro que deseas borrar esta partida?
+delete_confirm	¿Estás seguro de que deseas borrar esta partida?
 yes				Sí
 no				No
 select_level	Selecciona un nivel para jugar
-help_text		Este es un juego de plataformas. Utilice las teclas de flecha derecha e izquierda para moverse, la barra espaciadora para saltar, X para accionar ítem, Z o V para cambiar de ítem, C para habilidades, Shift para cambiar de personaje, flecha hacia arriba para abrir puertas, Esc para pausar.\nEl juego también ofrece soporte para joystick (conéctalo antes de iniciar el juego), pero el mapeo de botones puede variar. Para un control de XBOX 360, utilice el mando analógico o el pad direccional como las teclas de flechas, A para saltar o confirmar, B para accionar ítem o cancelar, X para habilidades, Y para cambiar de personaje, LB y RB para cambiar de ítem, Start para pausar.\nUtilice F4 para alternar entre pantalla completa y ventana.
+help_text		Este es un juego de plataformas. Utilice las teclas de flecha derecha e izquierda para moverse, la barra espaciadora para saltar, X para objetos, Z o V para cambiar de objeto, C para habilidades, Shift para cambiar de personaje, flecha hacia arriba para abrir puertas, Esc para pausar.\nEl juego también ofrece soporte para palancas de mando (conéctalo antes de iniciar el juego), pero la asignación de botones puede variar. Para un control de XBOX 360, utiliza el mando analógico o el pad direccional como las teclas de flechas, A para saltar o confirmar, B para accionar objeto o cancelar, X para habilidades, Y para cambiar de personaje, LB y RB para cambiar de objeto, Start para pausar.\nUtiliza F4 para alternar entre pantalla completa y ventana.
 save			Guardar
 cancel			Cancelar
 language		Idioma
 lang_name		Español
-sound_volume	Volumen de los sonidos
-music_volume	Volumen de la música
+sound_volume	Volumen de sonidos
+music_volume	Volumen de música
 controls		Controles
 controls_0		Flechas, Espacio, Shift, A, S
 controls_1		WASD, JKLI
@@ -39,9 +39,9 @@ special_thanks2	La comunidad Gosu\n...y muchos otros amigos y familia
 special_thanks3	La comunidad Gosu\nTodos los demás amigos y familiares\nque hicieron posible este proyecto ...\n¡y TÚ, por jugar mi juego!\n¡¡MUCHAS GRACIAS!!
 graph_soft		- Software de Gráficos -
 music_soft		- Software de Música/Audio -
-langs_libs		- Lenguajes y Frameworks -
-confirm_exit	¿Estás seguro que deseas salir?
-ch_st_instruct	Pulsa 'Enter' para empezar.\nPulsa 'Esc' o 'Backspace' para volver.
+langs_libs		- Lenguajes y Entornos de Trabajo -
+confirm_exit	¿Estás seguro de que deseas salir?
+ch_st_instruct	Pulsa Intro para empezar.\nPulsa 'Esc' o Retroceso para volver.
 stage			Etapa
 loading			Cargando
 lives			Vidas
@@ -52,40 +52,40 @@ stage_complete	¡Etapa Completa!
 total			Total
 spec_taken		¿El Spec ha sido encontrado?
 stars			Estrellas
-all_stars_found ¡Has obtenido un ítem!
+all_stars_found ¡Has obtenido objeto!
 dead			¡Has Muerto!
-restart			Pulsa 'Enter' para reanudar
+restart			Pulsa Intro para reanudar
 game_over		¡Fin del juego!
 too_bad			¡Qué pena!
 can_play		Ahora puedes jugar con:
-msg1			Este artefacto se llama Spec. Se dice que están esparcidos por todo el mundo y que si alguien los colecciona todos, abren una puerta a un mundo mágico ... Bastante loco, ¿verdad?
+msg1			Este artefacto se llama Spec. Se dice que están esparcidos por todo el mundo y que si alguien los consigue todos, abrirá una puerta a un mundo mágico... De locos, ¿verdad?
 msg2			No todas las llaves caben en todas las puertas...
-msg3			¿Ha estado coleccionando estos artefactos? La leyenda dice que abren una puerta a algún tipo de mundo mágico ... Escuché que esta puerta se encuentra en algún lugar de la Isla de Tars.
-msg_monep		¡Oye! ¡Espera un minuto! Si quieres seguir adelante, debes traerme una Hierba del Bosque. Sí, una deliciosa Hierba del Bosque... ¡Ahora ve!¡Y solo vuelve aquí cuando la tengas!
-msg_mnt_bomb	Hola, anduve de caminata por las montañas, y he perdido mi piedra preciosa Jillis. Es una grande y brillante gema verde... ¿Crees que la podrías encontrar por mí?
-msg_mnt_bomb2	¡Muchas gracias, compañero! Bueno... No tengo mucho para ofrecerte a cambio, pero puedes usar esta máquina flotante si quieres. Te va a ayudar a llegar a las partes más altas de la montaña./¡La vista es maravillosa desde allí!
-msg_aldan		¡Oye! Es tan bueno ver a un compañero bomba aquí ... ¡Gracias por liberarme! Ahora, debemos apurarnos y derrotar a Gaxlon y sus secuaces ... ¡nuestros ciudadanos están sufriendo!
-chamal_speech	Entonces... has venido. Bien, temo que este es el final de tu inútil viaje, pequeña bombita. ¡WHEELIAMS, ATRÁPALO!
+msg3			¿Has estado coleccionando estos artefactos? La leyenda dice que abren una puerta a algún tipo de mundo mágico... He Oído decir que esta puerta se encuentra en algún lugar de la Isla de Tars.
+msg_monep		¡Oye! ¡Un momento! Si quieres seguir adelante, debes traerme una Hierba del Bosque. Sí, una deliciosa Hierba del Bosque... ¡Ahora ve!¡Y solo vuelve aquí cuando la tengas!
+msg_mnt_bomb	Hola, estaba caminando por las montañas y perdí mi preciosa Piedra Jillis. Es una gema verde grande y brillante... ¿La podrías encontrar por mí?
+msg_mnt_bomb2	¡Muchas gracias, compañero! Bueno... no tengo mucho que ofrecerte a cambio, pero puedes usar esta máquina flotante si quieres. Te va a ayudar a llegar a las partes más altas de la montaña./¡La vista es maravillosa desde allí!
+msg_aldan		¡Hola! Qué bien ver a un compañero bomba aquí... ¡Gracias por liberarme! Ahora, debemos apurarnos y derrotar a Gaxlon y sus secuaces... ¡Nuestros ciudadanos están sufriendo!
+chamal_speech	Entonces... has venido. Bien, temo que este es el final de tu inútil viaje, bombita. ¡WHEELIAMS, ATRÁPALO!
 chamal_death	¡Noooooo...! ¡¿Cómo he podido perder contra alguien tan débil...?! No... No es posib...
 sahiss_speech	Sssssss Ssssssssssss Sssss?! ¡¡SSSSSS!! (¿Quién eres tú que invades mi sagrada fortaleza forestal? ¡¡PREPARATE PARA MORIR!!)
 sahiss_death	¡¡Sssssssssssssssssssss...!! (¡¡Noooooooooooooooo...!!)
-ulor_speech		¿Qué creen que están haciendo aquí, pequeñas bombitas? ¡Este es el final para ustedes!
+ulor_speech		¿Qué creéis que estáis haciendo aquí, bombitas? ¡Este es el final para vosotros!
 ulor_death		¡Gaaaaaah! No lo puedo creer... ¡Derrotado por estas insignificantes criaturas...!
-zirkn_speech	Fue tan tonto de su parte venir aquí ... ¡Ahora, USTEDES PAGARÁN!
-zirkn_death		¡Malditas sean!
+zirkn_speech	Venir aquí ha sido estúpido por vuestra parte... ¡Ahora, PAGARÉIS!
+zirkn_death		¡Malditos seáis!
 globb_speech	Grrrraaaaarrrblaaarrrgh!!! (¡¡¡Sal de mi pantano!!!)
 globb_death		Ggaaaaarrrr! Bleearr...gh! (¡Aaaaah! ¡Déjame en p...az!)
-drepz_speech	No creo que han llegado tan lejos. Pero, ha sido tudo en vano, porque...\n¡NUNCA SALIRÁN DE AQUÍ!
-drepz_death		Jaja... Ustedes son bastante fuertes... Pero les advierto: ¡nunca derrotarán el rey Gaxlon!
-gaxlon_speech	Vaya, no puedo creer que hayas venido hasta aquí ... ¿No ves que es inútil? Soy mucho más poderoso que todos ustedes ... Pero si lo que quieren es una pelea, ¡MUESTREME LO QUE PUEDEN HACER!
-gaxlon_death	NOOOOOOO!!! ¡Me lo quitaste todo! Desde nuestra infancia, siempre ha sido así ... ¡¿Por qué, Aldan?! ¡¿¡¿POR QUÉ?!?!
-count_down		¡Cuenta regresiva para la explosión!
+drepz_speech	No puedo creer que hayáis llegado tan lejos. Pero ha sido todo en vano, porque...\n¡NUNCA SALDRÉIS DE AQUÍ!
+drepz_death		Jaja... Sois bastante fuertes... Pero os advierto: ¡nunca derrotaréis al rey Gaxlon!
+gaxlon_speech	Vaya, no puedo creer que hayáis llegado hasta aquí ... ¿No veis que es inútil? Soy mucho más poderoso que todos vosotros... Pero si lo que queréis es una pelea, ¡MOSTRADME LO QUE PODÉIS HACER!
+gaxlon_death	¡¡¡NOOOOOOO!!! ¡Me lo has quitado todo! Desde nuestra infancia siempre ha sido así... ¡¿Por qué, Aldan?! ¡¿¡¿POR QUÉ?!?!
+count_down		¡Cuenta atrás para la explosión!
 world_1			Isla de Tars
 stage_1_1		Explorando la Playa de Tars
 stage_1_2		Arena y Colinas Verdes
 stage_1_3		Un caos de 'mecanimales'
 stage_1_4		¡Por Fin! La Fortaleza de Chamal
-stage_1_5		Chamal: ¡la derrota!
+stage_1_5		Chamal: ¡el derrocamiento!
 world_2			Bosque de los Sabios
 stage_2_1		El Bosque Fronterizo
 stage_2_2		Encima del árbol más alto
@@ -94,7 +94,7 @@ stage_2_4		Entrando en la fortaleza forestal
 stage_2_5		En las profundidades de la fortaleza forestal
 world_3			Montañas Lluviosas
 stage_3_1		En la base de las montañas
-stage_3_2		Colinas desconcertantes
+stage_3_2		Colinas misteriosas
 stage_3_3		Conoce a la tribu de la montaña
 stage_3_4		Las cavernas de hielo
 stage_3_5		El escondite de Ulor
@@ -128,26 +128,26 @@ bonus			Bonus
 bonus_1			Alcanza la meta
 bonus_2			Mata todos los enemigos
 bonus_3			Recoge todas las Rocas de Fuego
-movie_0_0		En una tierra lejana, hay una bella aldea, habitada por... bombas vivientes./Esta aldea solía ser un lugar tranquilo, donde el pueblo amaba a su rey, y tenía una vida próspera .../Pero la envidia de Gaxlon, uno de los consejeros del rey, acaba de trastornar esta tranquilidad...
-movie_0_1		Gaxlon quería regir el reino por sí solo, entonces aprisionó a Aldan, el rey. No fue capaz de matarlo, ya que fueran amigos de infancia .../Cuando sus secuaces capturaron al rey, las 4 súper bombas llegaron y presenciaron la terrible escena ...
-movie_0_2		Gaxlon fue rápido y ordenó a sus secuaces que también atacaran las súper bombas, pero Aldan los protegió con una magia ancestral./Viendo que las súper bombas no podían ser derrotadas, ordenó a sus secuaces que encarcelacen a cada uno de ellos en un lugar distante.../Y luego comenzó su reinado de terror.
-movie_0_3		Mientras las superbombas eran llevadas a lugares lejanos, Bomba Azul, el más inteligente de ellos, pudo engañar a su captor y escapar .../Vio que llevaban a Bomba Vermelha en dirección a la Isla Tars, por lo que se dirigió hacia allí, para empezar a rescatar a sus amigos ...
+movie_0_0		En una tierra lejana, hay una bella aldea, habitada por... bombas vivientes./Esta aldea solía ser un lugar tranquilo, donde el pueblo amaba a su rey y tenía una vida próspera.../Pero la envidia de Gaxlon, uno de los consejeros del rey, acaba de trastornar esta tranquilidad...
+movie_0_1		Gaxlon quería gobernar el reino por sí solo, entonces aprisionó a Aldan, el rey. No fue capaz de matarlo, ya que eran amigos de infancia.../Cuando sus secuaces capturaron al rey, las 4 súper bombas llegaron y presenciaron la terrible escena...
+movie_0_2		Gaxlon fue rápido y ordenó a sus secuaces que también atacaran las súper bombas, pero Aldan los protegió con una magia ancestral./Viendo que las súper bombas no podían ser derrotadas, ordenó a sus secuaces que encarcelasen a cada una de ellas en un lugar distante.../Y luego comenzó su reinado de terror.
+movie_0_3		Mientras las superbombas eran llevadas a lugares lejanos, Bomba Azul, el más inteligente de ellos, pudo engañar a su captor y escapar .../Vio que llevaban a Bomba Vermelha en dirección a la Isla Tars, por lo que se dirigió hacia allí, para empezar a rescatar a sus amigos...
 movie_1_0		Bomba Azul y Bomba vermelha se regocijaron al encontrarse de nuevo y haber derrotado al primero de los secuaces de Gaxlon./Sin embargo, no tenían tiempo que perder y pronto se dirigieron fuera del castillo en busca de sus otros amigos ...
-movie_1_1		Bomba Vermelha dijo que vio llevar a Bomba Amarela en dirección al Bosque de los Sabios, en el continente./Bomba Azul lo miró y bromeó diciendo: "¡Espero que seas bueno nadando!".
-movie_2_0		Luego de derrotar a la espantosa serpiente Sahiss, Azul y Vermelha liberaron a Bomba Amarela, quien no podría estar más feliz. Comenzó a saltar, tan alto como solo ella pudo./De nuevo, se apresuraron a salir del lugar y buscar a Bomba Verde, la última de las súper bombas capturadas.
+movie_1_1		Bomba Vermelha dijo que vio que se llevaban a Bomba Amarela en dirección al Bosque de los Sabios, en el continente./Bomba Azul lo miró y bromeó diciendo: "¡Espero que seas bueno nadando!".
+movie_2_0		Después de derrotar a la espantosa serpiente Sahiss, Azul y Vermelha liberaron a Bomba Amarela, quien no podría estar más feliz. Comenzó a saltar, tan alto como solo ella pudo./De nuevo, se apresuraron a salir del lugar y buscar a Bomba Verde, la última de las súper bombas capturadas.
 movie_2_1		Al salir del bosque por el norte, vieron las Montañas Lluviosas asomando en el horizonte./Pensaron que sería un buen escondite para un esbirro de Gaxlon, así que siguieron adelante, listos para escalar mucho ...
-movie_3_0		"¡¡¡CORRE !!!", instó Bomba Verde a los demás mientras caían carámbanos del techo en el antiguo escondite de Ulor./Después de escapar de la amenaza, finalmente pudieron respirar y Bomba Verde agradeció a Azul, Vermelha y Amarela por el rescate./Sin embargo Bomba Verde no estaba de buen humor (como siempre) ...
+movie_3_0		"¡¡¡CORRE!!!", instó Bomba Verde a los demás mientras caían carámbanos del techo en el antiguo escondite de Ulor./Después de escapar de la amenaza, finalmente pudieron respirar y Bomba Verde agradeció a Azul, Vermelha y Amarela por el rescate./Sin embargo, Bomba Verde no estaba de buen humor (como siempre)...
 movie_3_1		Les dijo a los demás que cuando lo llevaban a la cima de la montaña, vio a una criatura de aspecto maligno apoderarse de un pueblo inocente en la base de las montañas./"¡Tenemos que ayudar a esos aldeanos!", dijo, y todos estuvieron de acuerdo, iniciando el largo descenso ...
 movie_4_0		Después de derrotar al malvado Zirk'n, las súper bombas se reunieron alrededor del anciano de la aldea, quien expresó profusamente su agradecimiento./Él les preguntó si podían hacer algo a cambio, y las super bombas respondieron que lo que más necesitaban ahora era información, ya que no sabían dónde encontrar a Aldan.
-movie_4_1		El anciano respondió: "Poco sé sobre este vil Gaxlon del que hablas, pero sé de alguien que podría saber .../Se dice que un misterioso oráculo vive en el Pantano de Mual. No puedo decirte su ubicación, pero puedo darte este mapa para ayudarte a llegar al pantano"./Parece que otro viaje estaba a punto de comenzar ...
-movie_5_0		Al ver al monstruo Globb derrotado, una figura misteriosa se acercó desde la oscuridad ... ¡Era el oráculo mencionado por el anciano del Pueblo de Inkut!/Las bombas le preguntaron dónde buscar a su rey. El oráculo luego puso sus manos sobre una bola de cristal y comenzó a murmurar .../"El rey derrocado estaba cautivo en cuevas oscuras, pero parece haber escapado a un lugar menos oscuro cercano ..."
-movie_5_1		Las bombas concluyeron que se refería a las Cuevas de Ooria, todo el camino al norte de Enmat, muy lejos .../"No se preocupen amigos, alguien de aquí podría ayudarlos en su noble búsqueda ...", dijo el oráculo, y entonces apareció un dragón ¡y llevó las súper bombas al cielo!/"¡A las cuevas Ooria, por favor!", dijo Bomba Azul, y la criatura pareció entender.
-movie_6_0		El rey y las cuatro súper bombas se llenaron de determinación después de la derrota del segundo al mando de Gaxlon./"¡Tuvimos una victoria aquí, pero debemos apurarnos, porque nuestra gente está sufriendo la tiranía de Gaxlon mientras hablamos!", el rey habló, y las súper bombas se sintieron motivadas a poner fin a esa búsqueda ...
-movie_6_1		Se dirigieron hacia la Ciudad de las Bombas, que estaba en las proximidades, y mientras se acercaban a sus fronteras, se sintió como si Gaxlon los estuviera mirando desde la distancia, con una sonrisa malvada en su rostro ...
-movie_7_0		El reinado de terror de Gaxlon finalmente terminó. Aldan lo sentenció a un exilio eterno en una tierra lejana, en las afueras de Enmat./Las súper bombas vieron este momento aliviados, mientras Gaxlon se encogía de verguenza, retrocediendo del verdadero rey.
-movie_7_1		¡La paz finalmente fue restaurada en la Ciudad de las Bombas! El rey salió a las murallas del castillo y saludó a la gente./Todos estaban extasiados y vitorearon al rey y las súper bombas con mucho confeti ... ¡Seguramente, un día para recordar!
-movie_8_0		Cuando las bombas se acercaron al enorme artefacto, empezó a emanar rayos de luz y una voz deslumbrante pareció surgir de la nada .../"Felicidades, viajeros, han llegado a un punto nunca antes alcanzado por ningún otro. Sin embargo, si buscas el verdadero conocimiento, el viaje no termina aquí .../Pasad por este portal y comenzará una verdadera prueba de vuestras virtudes ..."
-movie_8_1		Se abrió un enorme portal donde estaba el artefacto. Las bombas se miraron perplejas./Entonces, Bomba Azul dijo con una sonrisa: "Creo que hemos terminado con las pruebas por un tiempo, ¿no?". Todos se rieron y comenzaron a caminar el largo camino de regreso a casa ...
+movie_4_1		El anciano respondió: "Poco sé sobre este vil Gaxlon del que hablas, pero sé de alguien que podría saber .../Se dice que un misterioso oráculo vive en el Pantano de Mual. No puedo decirte su ubicación, pero puedo darte este mapa para ayudarte a llegar al pantano"./Parece que otro viaje estaba a punto de comenzar...
+movie_5_0		Al ver al monstruo Globb derrotado, una figura misteriosa se acercó desde la oscuridad... ¡Era el oráculo mencionado por el anciano del Pueblo de Inkut!/Las bombas le preguntaron dónde buscar a su rey. El oráculo luego puso sus manos sobre una bola de cristal y comenzó a murmurar.../"El rey derrocado estaba cautivo en cuevas oscuras, pero parece haber escapado a un lugar menos oscuro cercano..."
+movie_5_1		Las bombas concluyeron que se refería a las Cuevas de Ooria, todo el camino al norte de Enmat, muy lejos.../"No os preocupéis amigos, alguien de aquí podría ayudaros en vuestra noble búsqueda...", dijo el oráculo, y entonces apareció un dragón ¡y llevó las súper bombas al cielo!/"¡A las cuevas Ooria, por favor!", dijo Bomba Azul, y la criatura pareció entenderle.
+movie_6_0		El rey y las cuatro súper bombas se llenaron de determinación después de la derrota del segundo al mando de Gaxlon./"¡Tuvimos una victoria aquí, pero debemos apurarnos, porque nuestra gente está sufriendo la tiranía de Gaxlon mientras hablamos!", el rey habló, y las súper bombas se sintieron motivadas a poner fin a esa búsqueda...
+movie_6_1		Se dirigieron hacia la Ciudad de las Bombas, que estaba en las proximidades, y mientras se acercaban a sus fronteras, se sintió como si Gaxlon los estuviera mirando desde la distancia, con una sonrisa malvada en su rostro...
+movie_7_0		El reinado de terror de Gaxlon finalmente terminó. Aldan lo sentenció a un exilio eterno en una tierra lejana, en las afueras de Enmat./Las súper bombas miraron en este momento aliviados como Gaxlon se encogía de verguenza retrocediendo del verdadero rey.
+movie_7_1		¡La paz finalmente fue restaurada en la Ciudad de las Bombas! El rey salió a las murallas del castillo y saludó a la gente./Todos estaban extasiados y vitorearon al rey y las súper bombas con mucho confeti... ¡Ciertamente, un día para recordar!
+movie_8_0		Cuando las bombas se acercaron al enorme artefacto, empezó a emanar rayos de luz y una voz deslumbrante pareció surgir de la nada.../"Felicidades, viajeros, han llegado a un punto nunca antes alcanzado por ningún otro. Sin embargo, si buscáis el verdadero conocimiento, el viaje no termina aquí .../Pasad por este portal y comenzará una verdadera prueba de vuestras virtudes ..."
+movie_8_1		Se abrió un enorme portal donde estaba el artefacto. Las bombas se miraron perplejas./Entonces Bomba Azul dijo con una sonrisa: "Creo que hemos terminado con las pruebas por un tiempo, ¿no?". Todos se rieron y comenzaron a caminar el largo camino de regreso a casa...
 game_end		¡Fin!
 game_end_sub	Pero... ¿has recogido todos los Specs?
 game_end_2_sub	Ahora sí, de verdad.
