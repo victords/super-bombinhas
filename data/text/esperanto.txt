@@ -42,57 +42,57 @@ music_soft		- Musika/Sona Programaro -
 langs_libs		- Lingvoj kaj Framoj -
 confirm_exit	Ĉu vi certe volas eliri?
 ch_st_instruct	Premu enigan klavon por komenci.\nPremu 'Esc' aŭ retropaŝan klavon por iri antaŭen.
-stage			Stage
-loading			Loading
-lives			Lives
-score			Score
-resume			Resume
-change_bomb		Change Bomb
-stage_complete	Stage Complete!
-total			Total
-spec_taken		Spec found?
-stars			Stars
-all_stars_found	Got an item!
-dead			You died!
-restart			Press 'Enter' to restart
-game_over		Game over!
-too_bad			Too bad!
-can_play		You can now play as:
-msg1			This artifact is called a Spec. It is said that they're scattered all around the world and that if someone collects them all, they unlock a gate to a magical world... Pretty crazy, right?
-msg2			Not all keys fit all doors...
-msg3			Have you been collecting these artifacts? Legend says they unlock a gate to some kind of magical world... I heard that this gate is located somewhere in Tars Island.
-msg_monep		Hey! Hold on! If you want to go any further, you must bring me a Forest Herb. Yes, a delicious Forest Herb... Now get lost and only come back here when you have it!
-msg_mnt_bomb	Hi, I was taking a walk in the mountains and I lost my precious Jillis Stone. It's a big, shiny, green gem... Do you think you could find it for me?
-msg_mnt_bomb2	Thanks a lot, mate! Well... I don't have much to offer in return, but you can use this float machine if you want. It will help you reach the highest parts of the mountain./It's a wonderful view from there!
-msg_aldan		Hey! It's so good to see a fellow bomb here... Thanks for freeing me! Now, we must hurry and defeat Gaxlon and his minions... our citizens are suffering!
-chamal_speech	So... you've come. Well, I'm afraid this is the end of your pointless journey, little bomb. GET HIM, WHEELIAMS!
-chamal_death	Noooooo...!! How come I lost to such a weakling...?! No, that's not... poss...
-sahiss_speech	Sssssss Ssssssssssss Sssss?! SSSSSS!! (Who are you who invades my sacred forest fortress?! PREPARE TO DIE!!)
-sahiss_death	Sssssssssssssssssssss...!! (Nooooooooooooooooooo...!!)
-ulor_speech		What do you think you're doing here, little bombs?! This is the end for you!
-ulor_death		Gaaaaaah! I can't believe... Defeated by these insignificant creatures...!
-zirkn_speech	It was so foolish of you to come here... Now, YOU SHALL PAY!
-zirkn_death		Curse youuuuu!!
-globb_speech	Grrrraaaaarrrblaaarrrgh!!! (Get out of my swamp!!!)
-globb_death		Ggaaaaarrrr! Bleearr...gh! (Aaaaah! Leave me al...one!)
-drepz_speech	I can't believe you made it this far... But it was all for nothing, because...\nYOU WILL NEVER LEAVE THIS PLACE!
-drepz_death		Heh... You're pretty strong... But I warn you: you will never defeat king Gaxlon!
-gaxlon_speech	Wow, I can't believe you came all the way here... Don't you see it's pointless? I'm much more powerful than all of you... But if it's a fight you want, then SHOW ME WHAT YOU GOT!
-gaxlon_death	NOOOOOOO!!! You took everything from me! Since our childhood, it's always been like that... Why, Aldan, WHY?!?!
-count_down		Countdown to explosion!
-world_1			Tars Island
-stage_1_1		Exploring the Tars Beach
-stage_1_2		Sand and Green Hills
-stage_1_3		A 'mechanimal' chaos
-stage_1_4		Finally! Chamal's Fortress
-stage_1_5		Chamal: the knock down!
-world_2			Wisemen's Forest
-stage_2_1		The border woods
-stage_2_2		Atop the tallest tree
-stage_2_3		The three trees engima
-stage_2_4		Entering the forest fortress
-stage_2_5		Deep in the forest fortress
-world_3			Rainy Mountains
+stage			Nivelo
+loading			Ŝarĝante
+lives			Vivoj
+score			Poentaro
+resume			Daŭrigi
+change_bomb		Ŝanĝi Bombon
+stage_complete	Nivelo finita!
+total			Totalo
+spec_taken		Spec trovita?
+stars			Steloj
+all_stars_found	Akiris âjon!
+dead			Vi mortis!
+restart			Premu enigan klavon por rekomenci
+game_over		Ludo finita!
+too_bad			Tro malbone!
+can_play		Vi nun povas ludi kiel:
+msg1			Ĉi tiu aĵo nomiĝas Spec. Oni diras, ke ili estas disigitaj en la tuta mondo kaj se iu kolektas ĉiujn, ili malŝloŝas pordon al magia mondo... Tre freneza, ĉu ne?
+msg2			Ne ĉiuj ŝloŝiloj taŭgas por ĉiuj pordoj...
+msg3			Ĉu vi estis kolektante ĉi tiuj aĵoj? Legendo diras, ke ili malŝloŝas pordon al ia magia mondo... Mi aŭdis, ke ĉi tiu pordo troviĝas ie en la Insulo de Tars.
+msg_monep		He! Atendu! Se vi volas iri plu, vi devas alporti al mi Arbaran Herbon. Jes, bongusta Arbara Herbo... Nun foriru kaj nur revenu ĉi tie, kiam vi havas ĝin!
+msg_mnt_bomb	Saluton, mi estis promenante en la montaro kaj mi perdis mia Jillis Gemo. Estas granda, brila, verda gemo... Ĉu vi pensas, ke vi povas trovi ĝin por mi?
+msg_mnt_bomb2	Dankege, ulo! Nu... Mi ne havas multon por oferi al vi kontraŭ ĝi, sed vi povas uzi ĉi tiun flosantan maŝinon, se vi volas. Ĝi helpos atingi la plej altajn partojn de la monto./La vido estas mirinda el tie!
+msg_aldan		He! Estas bone vidi bomban samulon ĉi tie. Dankon pro liberigi min! Nun ni devas hasti kaj venki Gaxlon kaj liajn servitojn... niaj civitanoj suferas!
+chamal_speech	Do... vi venis. Bone, mi timas, ke ĉi tio estas la fino de via sensenca vojaĝo, bombeto. PRENU LIN, WHEELIAMS!
+chamal_death	Neeeeee...!! Kiel mi povis perdi kontraŭ tia malfortulo...?! Ne, tio ne... ebl...
+sahiss_speech	Sssssss Ssssssssssss Sssss?! SSSSSS!! (Kiu estas vi, kiu invadas mian sanktan arbaran fortikaĵon?! PREPARU POR MORTI!!)
+sahiss_death	Sssssssssssssssssssss...!! (Neeeeeeeeeeeeeeeeeee...!!)
+ulor_speech		Kion vi celas fari ĉi tie, bombetoj?! Ĉi tio estas via fino!
+ulor_death		Gaaaaaah! Mi ne povas kredi... Venkita de ĉi tiuj sensignifaj estaĵoj...!
+zirkn_speech	Estis stulte veni ĉi tien... Nun, VI DEVOS PAGI!
+zirkn_death		Mi malbenas viiiiin!!
+globb_speech	Grrrraaaaarrrblaaarrrgh!!! (Eliru el mia marĉo!!!)
+globb_death		Ggaaaaarrrr! Bleearr...gh! (Aaaaah! Lasu min so...la!)
+drepz_speech	Mi ne povas kredi, ke vi iris tiel longe... Sed ĝi estis por nenio, ĉar...\nVI NENIAM FORIROS DE ĈI TIU EJO!
+drepz_death		He... Vi estas tre fortaj... Sed mi avertas vin: vi neniam venkos la reĝon Gaxlon!
+gaxlon_speech	Ha, mi ne povas kredi, ke vi trairis la tutan vojon al ĉi tie... Ĉu vi ne vidas, ke estas senutila? Mi estas multe pli forta ol vi... Sed se vi volas batalon, MONTRU MIN, KIUN VI POVAS FARI!
+gaxlon_death	NEEEEEEE!!! Vi forprenis ĉion el mi! Ekde nia infaneco ĉiam estis tiel... Kial, Aldan, KIAL?!?!
+count_down		Retrokalkulo por eksplodo!
+world_1			Insulo de Tars
+stage_1_1		Esplorante la Plâgo de Tars
+stage_1_2		Sablo kaj Verdaj Montetoj
+stage_1_3		'mekanimala' ĥaoso
+stage_1_4		Fine! Fortikaĵo de Chamal
+stage_1_5		Chamal: la faligo!
+world_2			Arbaro de Saĝuloj
+stage_2_1		La lima arbaro
+stage_2_2		Sur la plej alta arbo
+stage_2_3		La enigmo de tri arboj
+stage_2_4		Enirante la arbaran fortikaĵon
+stage_2_5		Profunde en la arbara fortikaĵo
+world_3			Pluvema Montaro
 stage_3_1		By the base of the mountains
 stage_3_2		Puzzling hills
 stage_3_3		Meet the mountain tribe
@@ -148,6 +148,6 @@ movie_7_0		Gaxlon's reign of terror was finally ended. Aldan sentenced him to an
 movie_7_1		Peace was finally restored to Bomb Town! The king went out to the castle's walls and waved to the people./Everyone was ecstatic and cheered the king and the super bombs with lots of confetti... Surely, a day to be remembered!
 movie_8_0		As the bombs approached the massive artifact, beams of light started to shine from it, and a stunning voice seemed to come out of nowhere.../"Congratulations, travellers, you have reached a point never before reached by any others. However, if you seek true knowledge, the trip doesn't end here.../Come through this portal and a real test of your virtues will begin..."
 movie_8_1		An enormous portal opened up where the artifact was. The bombs looked at each other, perplexed./Then, Bomba Azul said with a smile: "I think we're done with tests for a while, right?". They all laughed, and started walking the long way back home...
-game_end		The End!
-game_end_sub	But... have you collected all the Specs?
-game_end_2_sub	Seriously, now.
+game_end		La Fino!
+game_end_sub	Sed... ĉi vi kolektis ĉiujn Specs?
+game_end_2_sub	Nun serioze.
