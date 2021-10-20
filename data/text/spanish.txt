@@ -18,7 +18,7 @@ delete_confirm	¿Estás seguro de que deseas borrar esta partida?
 yes				Sí
 no				No
 select_level	Selecciona un nivel para jugar
-help_text		Este es un juego de plataformas. Utilice las teclas de flecha derecha e izquierda para moverse, la barra espaciadora para saltar, X para objetos, Z o V para cambiar de objeto, C para habilidades, Shift para cambiar de personaje, flecha hacia arriba para abrir puertas, Esc para pausar.\nEl juego también ofrece soporte para palancas de mando (conéctalo antes de iniciar el juego), pero la asignación de botones puede variar. Para un control de XBOX 360, utiliza el mando analógico o el pad direccional como las teclas de flechas, A para saltar o confirmar, B para accionar objeto o cancelar, X para habilidades, Y para cambiar de personaje, LB y RB para cambiar de objeto, Start para pausar.\nUtiliza F4 para alternar entre pantalla completa y ventana.
+help_text		Este es un juego de plataformas. Utiliza las teclas de flecha derecha e izquierda para moverse, la barra espaciadora para saltar, X para objetos, Z o V para cambiar de objeto, C para habilidades, Shift para cambiar de personaje, flecha hacia arriba para abrir puertas, Esc para pausar.\nEl juego también ofrece soporte para palancas de mando (conéctalo antes de iniciar el juego), pero la asignación de botones puede variar. Para un control de XBOX 360, utiliza el mando analógico o el pad direccional como las teclas de flechas, A para saltar o confirmar, B para accionar objeto o cancelar, X para habilidades, Y para cambiar de personaje, LB y RB para cambiar de objeto, Start para pausar.\nUtiliza F4 para alternar entre pantalla completa y ventana.
 save			Guardar
 cancel			Cancelar
 language		Idioma
@@ -52,7 +52,7 @@ stage_complete	¡Etapa Completa!
 total			Total
 spec_taken		¿El Spec ha sido encontrado?
 stars			Estrellas
-all_stars_found ¡Has obtenido un objeto!
+all_stars_found	¡Has obtenido un objeto!
 dead			¡Has Muerto!
 restart			Pulsa Intro para reanudar
 game_over		¡Fin del juego!
