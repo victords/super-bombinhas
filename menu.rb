@@ -180,7 +180,7 @@ class Menu
         MenuText.new(:credits_music, 400, 237, 780, :center, 1.5),
         MenuText.new("Zergananda (soundcloud.com/zergananda)\nFrancesco Corrado (soundcloud.com/franzcorradomusic)", 400, 260, 780, :center),
         MenuText.new(:special_thanks, 400, 347, 780, :center, 1.5),
-        MenuText.new("Yuri David Santos  -  Maria Alice Armelin  -  Francesco Corrado\nVinícius de Araújo Barboza  -  Stefano Girardi", 400, 370, 780, :center),
+        MenuText.new("Yuri David Santos  -  Maria Alice Armelin  -  Francesco Corrado\nVinícius de Araújo Barboza  -  Stefano Girardi  -  Jorge Maldonado Ventura", 400, 370, 780, :center),
         MenuText.new(:special_thanks2, 400, 440, 780, :center),
       ], [
         MenuButton.new(550, :back, true) {
@@ -316,7 +316,7 @@ class Menu
       @clouds.each(&:draw)
       @title.draw @form.cur_section_index == 1 ? 20 : 50, 20, 0, @form.cur_section_index == 1 ? 1 : 2, @form.cur_section_index == 1 ? 1 : 2
       @form.draw
-      SB.font.draw_text("v1.3.0", 10, 579, 0, 1, 1, 0xff000000)
+      SB.font.draw_text("v1.3.1", 10, 579, 0, 1, 1, 0xff000000)
     end
   end
 end
