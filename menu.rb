@@ -56,7 +56,7 @@ end
 class SavedGame
   include FormElement
 
-  def initialize(index, x, y, name, bomb, world_stage, specs, score)
+  def initialize(index, x, y, name, bomb, world_stage, specs, score, stars, completion)
     @index = index
     @x = x
     @y = y
@@ -69,9 +69,34 @@ class SavedGame
     @map_icon = Res.img(:icon_map)
     @spec_icon = Res.img(:icon_spec)
     @score_icon = Res.img(:icon_score)
+
+    if stars.split(',').uniq.size == C::TOTAL_LEVELS
+      @badge = Res.img(:ui_goldBadge)
+      @glow_color = 0xffdd80
+    elsif completion.to_i == 3
+      @badge = Res.img(:ui_silverBadge)
+      @glow_color = 0xeeeeee
+    elsif completion.to_i > 0
+      @badge = Res.img(:ui_bronzeBadge)
+      @glow_color = 0xff9933
+    end
+    @effects = []
   end
 
-  def update; end
+  def update
+    return unless @badge
+
+    if rand < 0.05
+      x = @x + rand(80) + 263
+      y = @y + rand(82) - 7
+      @effects << Effect.new(x, y, :fx_Glow1, 3, 2, 6, [0, 1, 2, 3, 4, 5, 4, 3, 2, 1, 0], 66)
+    end
+
+    @effects.reverse_each do |e|
+      e.update
+      @effects.delete(e) if e.dead
+    end
+  end
 
   def set_position(x, y)
     @x = x; @y = y
@@ -80,14 +105,18 @@ class SavedGame
   def draw
     @bg.draw @x, @y, 0, 2, 2
     @bomb.draw @x + 5, @y + 5, 0, 2, 2
-    @map_icon.draw @x + 45, @y + 40, 0, 2, 2
-    @spec_icon.draw @x + 135, @y + 40, 0, 2, 2
-    @score_icon.draw @x + 227, @y + 40, 0, 2, 2
+    @map_icon.draw @x + 45, @y + 42, 0, 2, 2
+    @spec_icon.draw @x + 120, @y + 42, 0, 2, 2
+    @score_icon.draw @x + 185, @y + 42, 0, 2, 2
+    if @badge
+      @badge.draw(@x + 270, @y, 0, 2, 2)
+      @effects.each { |e| e.draw(nil, 2, 2, 255, @glow_color) }
+    end
     SB.font.draw_text_rel @index.to_s, @x + 365, @y + 40, 0, 1, 0.5, 3, 3, 0x80000000
     SB.text_helper.write_line @name, @x + 45, @y + 5, :left, 0xffffff, 255, :border, 0, 2, 255, 0, 3, 3
     SB.text_helper.write_line @world_stage, @x + 75, @y + 43
-    SB.text_helper.write_line @specs.to_s, @x + 165, @y + 43
-    SB.text_helper.write_line @score, @x + 255, @y + 43
+    SB.text_helper.write_line @specs.to_s, @x + 150, @y + 43
+    SB.text_helper.write_line @score, @x + 215, @y + 43
   end
 end
 
@@ -254,7 +283,7 @@ class Menu
         end
         next_index = num + 1
         data = IO.readlines(g).map { |l| l.chomp }
-        saved_game = SavedGame.new(num + 1, 21 + (num % 2) * 390, 95 + (num / 2) * 90, data[0], data[3], data[2], data[6], data[5])
+        saved_game = SavedGame.new(num + 1, 21 + (num % 2) * 390, 95 + (num / 2) * 90, data[0], data[3], data[2], data[6], data[5], data[13], data[11])
         @saved_games << saved_game
         components << saved_game
         components <<

@@ -56,6 +56,7 @@ module C
   CAMERA_VERTICAL_MIN = 1.0
   STARS_PER_STAGE = 5
   TOTAL_SPECS = 35
+  TOTAL_LEVELS = 36
 end
 
 class SB
