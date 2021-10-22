@@ -1,0 +1,153 @@
+powered_by		Funkciigita de
+game_by			Ludo de
+play			Ludi
+help			Helpo
+options			Opcioj
+credits			Atribuoj
+editor			Nivela Redaktilo
+exit			Eliri
+story			Rakonto
+custom			Tajloritaj Niveloj
+choose_game		Elektu ludon por ŝarĝi aŭ 'Nova Ludo'
+new_game		Nova Ludo
+what_name		Kio estas via nomo?
+back			Reen
+continue		Daŭrigi
+delete			Forigi
+delete_confirm	Ĉu vi certas, ke vi volas forigi ĉi tiun ludon?
+yes				Jes
+no				Ne
+select_level	Elektu nivelon por ludi
+help_text		Ĉi tio estas platforma ludo. Uzu la maldekstran kaj la dekstran sagajn klavojn por moviĝi, spacoklavon por salti, X-n por aĵoj, Z-n aŭ V-n por ŝanĝi inter aĵoj, C-n por kapabloj, majuskligan klavon por ŝanĝi inter roluloj, supran sagon por malfermi pordojn, Esc-n por paŭzi.\nLa ludo ankaŭ subtenas stirstangojn (konektu antaŭ malfermi la ludon), kvankam la butona mapigo povas diferenci. Por XBOX kontrolilo uzu la analogan stangon aŭ D-klavaron kiel sagaj butonoj, A-n por salti kaj konfirmi, B-n por aĵoj kaj nuligi, X-n por kapabloj, Y-n por ŝanĝi inter roluloj, LB-n kaj RB-n por ŝanĝi inter âjoj, Start-n por paŭzi.\nUzu F4-n por baskuligi plenan ekranon.
+save			Konservi
+cancel			Nuligi
+language		Lingvo
+lang_name		Esperanto
+sound_volume	Laŭteco de sonoj
+music_volume	Musika laŭteca
+controls		Kontroliloj
+controls_0		Sagoj, Spacoklavo, Majuskliga klavo, A, S
+controls_1		WASD, JKLI
+full_screen		Prenu F4-n por ŝanĝi inter fenestra kaj plena ekrano
+credits_prog	- Fasonado, Programado kaj Grafikoj -
+credits_music	- Musiko -
+sounds			- Sonefektoj -
+sounds_edit		Redaktado de Victor David Santos
+developed		Plene programita en Linukso
+special_thanks	- Specialaj Dankoj -
+special_thanks2	La Gosu komunumo\n...kaj multaj aliaj amikoj kaj familianoj
+special_thanks3	La Gosu komunumo\nĈiuj aliaj amikoj kaj familianoj\nkiuj ebligis ĉi tiun projekton...\nkaj VI, por ludi mian ludon!\nDANKEGON!
+graph_soft		- Grafika Programaro -
+music_soft		- Musika/Sona Programaro -
+langs_libs		- Lingvoj kaj Framoj -
+confirm_exit	Ĉu vi certe volas eliri?
+ch_st_instruct	Premu enigan klavon por komenci.\nPremu 'Esc'-n aŭ retropaŝan klavon por iri antaŭen.
+stage			Nivelo
+loading			Ŝarĝante
+lives			Vivoj
+score			Poentaro
+resume			Daŭrigi
+change_bomb		Ŝanĝi Bombon
+stage_complete	Nivelo finita!
+total			Totalo
+spec_taken		Spec trovita?
+stars			Steloj
+all_stars_found	Akiris aĵon!
+dead			Vi mortis!
+restart			Premu enigan klavon por rekomenci
+game_over		Ludo finita!
+too_bad			Tro malbone!
+can_play		Vi nun povas ludi kiel:
+msg1			Ĉi tiu aĵo nomiĝas Spec. Oni diras, ke ili estas disigitaj en la tuta mondo kaj se iu kolektas ĉiujn, ili malŝloŝas pordon al magia mondo... Tre freneza, ĉu ne?
+msg2			Ne ĉiuj ŝloŝiloj taŭgas por ĉiuj pordoj...
+msg3			Ĉu vi estis kolektante ĉi tiuj aĵoj? Legendo diras, ke ili malŝloŝas pordon al ia magia mondo... Mi aŭdis, ke ĉi tiu pordo troviĝas ie en la Insulo de Tars.
+msg_monep		He! Atendu! Se vi volas iri plu, vi devas alporti al mi Arbaran Herbon. Jes, bongusta Arbara Herbo... Nun foriru kaj nur revenu ĉi tie, kiam vi havas ĝin!
+msg_mnt_bomb	Saluton, mi estis promenante en la montaro kaj mi perdis mian Jillis-Gemon. Estas granda, brila, verda gemo... Ĉu vi pensas, ke vi povas trovi ĝin por mi?
+msg_mnt_bomb2	Dankege, ulo! Nu... Mi ne havas multon por oferi al vi kontraŭ ĝi, sed vi povas uzi ĉi tiun ŝvebantan maŝinon, se vi volas. Ĝi helpos atingi la plej altajn partojn de la monto./La vido estas mirinda el tie!
+msg_aldan		He! Estas bone vidi bomban samulon ĉi tie. Dankon pro liberigi min! Nun ni devas hasti kaj venki Gaxlon kaj liajn servitojn... niaj civitanoj suferas!
+chamal_speech	Do... vi venis. Bone, mi timas, ke ĉi tio estas la fino de via sensenca vojaĝo, bombeto. PRENU LIN, WHEELIAMS!
+chamal_death	Neeeeee...!! Kiel mi povis perdi kontraŭ tia malfortulo...?! Ne, tio ne... ebl...
+sahiss_speech	Sssssss Ssssssssssss Sssss?! SSSSSS!! (Kiu estas vi, kiu invadas mian sanktan arbaran fortikaĵon?! PREPARU POR MORTI!!)
+sahiss_death	Sssssssssssssssssssss...!! (Neeeeeeeeeeeeeeeeeee...!!)
+ulor_speech		Kion vi celas fari ĉi tie, bombetoj?! Ĉi tio estas via fino!
+ulor_death		Gaaaaaah! Mi ne povas kredi... Venkita de ĉi tiuj sensignifaj estaĵoj...!
+zirkn_speech	Estis stulte veni ĉi tien... Nun, VI DEVOS PAGI!
+zirkn_death		Mi malbenas viiiiin!!
+globb_speech	Grrrraaaaarrrblaaarrrgh!!! (Eliru el mia marĉo!!!)
+globb_death		Ggaaaaarrrr! Bleearr...gh! (Aaaaah! Lasu min so...la!)
+drepz_speech	Mi ne povas kredi, ke vi iris tiel longe... Sed ĝi estis por nenio, ĉar...\nVI NENIAM FORIROS DE ĈI TIU EJO!
+drepz_death		He... Vi estas tre fortaj... Sed mi avertas vin: vi neniam venkos la reĝon Gaxlon!
+gaxlon_speech	Ha, mi ne povas kredi, ke vi trairis la tutan vojon al ĉi tie... Ĉu vi ne vidas, ke estas senutila? Mi estas multe pli forta ol vi... Sed se vi volas batalon, MONTRU MIN, KION VI POVAS FARI!
+gaxlon_death	NEEEEEEE!!! Vi forprenis ĉion el mi! Ekde nia infaneco ĉiam estis tiel... Kial, Aldano, KIAL?!?!
+count_down		Retrokalkulo por eksplodo!
+world_1			Insulo de Tars
+stage_1_1		Esplorante la Plâgo de Tars
+stage_1_2		Sablo kaj Verdaj Montetoj
+stage_1_3		'Mekanimala' ĥaoso
+stage_1_4		Fine! Fortikaĵo de Chamal
+stage_1_5		Chamal: la faligo!
+world_2			Arbaro de Saĝuloj
+stage_2_1		La lima arbaro
+stage_2_2		Sur la plej alta arbo
+stage_2_3		La enigmo de tri arboj
+stage_2_4		Enirante la arbaran fortikaĵon
+stage_2_5		Profunde en la arbara fortikaĵo
+world_3			Pluvema Montaro
+stage_3_1		Ĉe la bazo de la montaro
+stage_3_2		Enigmaj montetoj
+stage_3_3		Renkontu la montaran tribon
+stage_3_4		La glaciaj kavernoj
+stage_3_5		La kaŝejo de Ulor
+world_4			Vilaĝo de Inkut
+stage_4_1		Ruinigita vilaĝo
+stage_4_2		Gardu vin de la falantaj muroj!
+stage_4_3		La malnova templo
+stage_4_4		La kaŝitaj eroj de puzlo
+stage_4_5		La malnova kastelo
+world_5			Marĉo de Mual
+stage_5_1		Bonvenon al la marĉo
+stage_5_2		Dornoj, veneno kaj danĝeraj akvoj
+stage_5_3		La freneza malsupreniro!
+stage_5_4		Eknoktas en Mual
+stage_5_5		Nesto de malvirtaj estaĵoj
+world_6			Kavernoj de Ooria
+stage_6_1		Rokriĉa vojo antaŭe
+stage_6_2		Movantaj Platformoj senkontrolaj!
+stage_6_3		La profunda subtera labirinto
+stage_6_4		Entreprenante al la mallumo
+stage_6_5		Drepz en la malhela kavo
+world_7			Bomba Vilaĝo
+stage_7_1		Rampante tra la vilaĝa periferio
+stage_7_2		La armeo de malrajta reĝo
+stage_7_3		Proksimiĝante al la kastelaj muroj
+stage_7_4		Enigante la reĝan kastelon
+stage_7_5		Batalo pro justeco
+world_8			Lae, la magia arbaro
+stage_8_1		Longa vojaĝo tra la nebulo
+bonus			Kromaĵo
+bonus_1			Atingu la celon
+bonus_2			Mortigu ĉiujn malamikojn
+bonus_3			Kolektu ĉiujn Fajrajn Ŝtonojn
+movie_0_0		En disa lando estas bela vilaĝo loĝata de vivantaj... bomboj./Ĉi tiu vilaĝo estis iam paca ejo, kie la homoj amis sian reĝon kaj havis prosperajn vivojn.../Sed la envio de Gaxlon, unu el la reĝaj konsilistoj, ĵus interrompis ĉi tiun trankvilecon...
+movie_0_1		Gaxlon volis regi la regnon per si mem, do li malliberigis Aldanon, la reĝo. Li ne povis mortigi lin, ĉar ili estis iam infanecaj amikoj.../Kiam liaj servistoj kaptis la reĝon, la 4 superbomboj alvenis kaj vidis la teruran scenon...
+movie_0_2		Gaxlon estis rapida kaj ordonis al liaj servistoj ankaŭ ataki la superbombojn, sed Aldano protektis ilin per malnova sorĉo./Vidante, ke la superbomboj ne povis esti venkitaj, li ordonis al liaj servistoj malliberigi ĉiujn el ili en disa ejo... Kaj tiam li komencis lian teruran regadon.
+movie_0_3		Dum la superbomboj estis alportataj al disaj ejoj, Bomba Azul, la plej inteligenta el ili, povis trompi lian kaptinton kaj fuĝi.../Li vidis, ke Bomba Vermelha estis alportita en la direkto al la Insulo de Tars, do li ekiris tien por komenci savi liajn amikojn...
+movie_1_0		Bomba Azul kaj Bomba vermelha ĝojis pro ilia denova renkontiĝo kaj lia venko kontraŭ la unua el la servistoj de Gaxlon./Tamen ili ne havis tempon por perdi kaj baldaŭ eliris el la kastelo por serĉi iliajn aliajn amikojn...
+movie_1_1		Bomba Vermelha diris, ke li vidis, ke Bomba Amarela estis alportita en la direkto al la Arbaro de Saĝuloj, en la kontinento./Bomba Azul rigardis lin kaj ŝerce diris: "Mi esperas, ke vi kapablas bone naĝi!".
+movie_2_0		Post venki la teruran serpenton Sahiss-on, Azul kaj Vermelha liberigis Bomba-n Amarela-n, kiu ne povis esti pli feliĉa. Ŝi komencis salti, tiel alte kiel nur ŝi povis./Denove ili rapidis forlasi la ejon kaj serĉi Bomba-n Verde-n, la lastan de la kaptitaj Superbomboj.
+movie_2_1		Forlasante la arbaron el la nordo ili vidis la Pluveman Montaron aperante en la horizonto./Ili pensis, ke ĝi povus esti bona kaŝejo por servisto de Gaxlon, do antaŭen ili iris, pretaj por grimpi multe...
+movie_3_0		"KURU!!!", instigis Bomba Verde al la aliaj, kiam la glacipendaĵoj falis el la plafono en la antaŭa kaŝejo de Ulor./Post eviti la danĝeron, ili povis fine spiri kaj Bomba Verde dankis al Azul, Vermelha kaj Amarela pro la savo./Tamen Bomba Verde ne havis bonan humoron (kiel kutime)...
+movie_3_1		Li diris al la aliaj, ke kiam li estis alportata al la supro de la montaro, li vidis malbonaspektan estaĵon preni senkulpan vilaĝon ĉe la bazo de la montaro./"Ni devas helpi tiujn vilaĝanojn", li diris, kaj ili ĉiuj konsentis, komencante la longan malsupreniro...
+movie_4_0		Post venki la malbonan Zirk'n, la superbomboj kuniĝis ĉirkaŭ la vilaĝa aĝulo, kiu abunde dankis al ili./Li demandis al ili, se estas ion, kion ili povis fari kompense, kaj la superbomboj respondis, ke kion ili plej bezonis tiam estis informo, ĉar ili ne sciis, kie trovi Aldanon.
+movie_4_1		Mal aĝulo respondis: "Malmulton mi scias pri ĉi tiu malbona Gaxlon, pri kiu vi parolas, sed mi scias iun, kiu povus scii./Oni diras, ke mistera oraklo vivas en la Marĉo Mual. Mi ne povas diri al vi lian precizan lokon, sed mi povas doni al vi ĉi tiun mapon por helpi al vi iri al la marĉo"./Ŝajnas, ke alia vojaĝo tuj komenciĝos...
+movie_5_0		Vidante la monstron Globb venkitan, mistera figuro proksimiĝis el la mallumo... Estis la oraklo menciigita de la aĝulo de la Vilaĝo de Inkut!/La bomboj demandis al li pri loko, kie serĉi ilian reĝon. La oraklo tiam metis liajn manojn super kristala globo kaj ekmurmuris.../"La detronigita reĝo estis kaptita en malhelaj kavernoj, sed ŝajnas, ke li foĝis al pli hela proksima ejo".
+movie_5_1		La bomboj konkludis, ke li parolis pri la Kavernoj de Ooria, malproksime en la nordo de Enmat, tre malproksime.../"Ne zorgu amikoj, iu ĉi tie povus helpi vin en via nobla serĉo", diris la oraklo, kaj tiam granda draka-aspekta monstro aperis kaj portis la superbombojn al la aero!./"Al la kavernoj de Ooria, bonvolu!", diris Bomba Azul, kaj la estaĵo ŝajnis kompreni.
+movie_6_0		La reĝo kaj la kvar superbomboj plenigis de decideco post la venko kontraŭ la dua komandanto de Gaxlon./"Ni havis venkon ĉi tie, sed ni devas rapidi, ĉar niaj homoj suferas la tiranecon de Gaxlon dum ni parolas!", la reĝo diris, kaj la superbomboj sentis sin motivitaj por fini tiun serĉon...
+movie_6_1		Ili iris al Bomba Vilaĝo, kiu estis proksima, kaj kiam ili proksimiĝis al ĝiaj limoj, oni sentas kiel, se Gaxlon rigardis ilin en malproksimo, kun malbona rideto en lia vizaĝo...
+movie_7_0		Gaxlon terura regado fine finis. Aldano kondamnis lin al eterna ekzilo en disa lando, ekster Enmat./La superbomboj atentis ĉi tiun momenton trankviligitaj, en kiu Gaxlon honte kuntiriĝis, retroiris el la vera reĝo.
+movie_7_1		Pace estis fine reestigita en Bomba Vilaĝo! La reĝo eliris el la kastelaj muroj kaj mansalutis al la popolo./Ĉiuj estis ekstazaj kaj aklamis la reĝon kaj la superbombojn per  multaj konfetoj... Certe memorinda tago!
+movie_8_0		Kiam la bomboj proksimiĝis al la ega artefakto, radioj de lumo ekbrilis el ĝi kaj impresa voĉo ŝajnis veni el nenie.../"Gratulon, vojaĝantoj, vi atingis ejon neniam atingitan de aliaj. Tamen, se vi serĉas veran scion, la vojaĝo ne finas ĉi tie.../Iru trans ĉi ti enirejo kaj vera testo de viaj virtoj komencos..."
+movie_8_1		Ega enirejo malfermis, kie la artifakto estis. La bomboj rigardis unu la alian, perpleksaj./Tiam Bomba Azul diris kun rideto: "Mi pensas, ke ni finis la testojn dum kelka tempo, ĉu ne?". Ili ĉiuj ridis kaj ekmarĉis la longan vojon returne hejmen...
+game_end		La Fino!
+game_end_sub	Sed... ĉi vi kolektis ĉiujn Specs?
+game_end_2_sub	Nun serioze.
