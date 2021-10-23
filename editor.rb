@@ -692,7 +692,7 @@ class Editor
       Panel.new(0, 0, 760, 48, [
         Label.new(x: 7, y: 0, font: SB.font, text: 'Stage', scale_x: 2, scale_y: 2, anchor: :left),
         (@txt_stage = TextField.new(x: 64, y: 0, font: SB.font, img: :editor_textField2, margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2, text: '1', anchor: :left,
-                                    allowed_chars: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,!?', max_length: 15)),
+                                    allowed_chars: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,:!?- ', max_length: 15)),
         Label.new(x: 247, y: 0, font: SB.font, text: 'Section', scale_x: 2, scale_y: 2, anchor: :left),
         (@txt_section = TextField.new(x: 319, y: 0, font: SB.font, img: :editor_textField, margin_x: 2, margin_y: 2, scale_x: 2, scale_y: 2, text: '1', anchor: :left,
                                       allowed_chars: '0123456789', max_length: 2)),
@@ -936,7 +936,7 @@ END
     toggle_args_panel if KB.key_pressed?(Gosu::KbReturn)
     toggle_aux_panel(4) if KB.key_pressed?(Gosu::KbTab)
 
-    if KB.key_pressed?(Gosu::KB_SPACE)
+    if KB.key_pressed?(Gosu::KB_SPACE) && !@txt_stage.instance_eval('@active')
       start_test
       return
     end
@@ -1082,6 +1082,7 @@ END
 
     @save_confirm = true
     return unless save(@saved_name || '__temp')
+
     G.window.width = C::SCREEN_WIDTH
     G.window.height = C::SCREEN_HEIGHT
     StageMenu.initialize(true, true)
