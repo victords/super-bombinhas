@@ -81,7 +81,7 @@ gaxlon_speech	Ha, mi ne povas kredi, ke vi trairis la tutan vojon al ĉi tie... 
 gaxlon_death	NEEEEEEE!!! Vi forprenis ĉion el mi! Ekde nia infaneco ĉiam estis tiel... Kial, Aldano, KIAL?!?!
 count_down		Retrokalkulo por eksplodo!
 world_1			Insulo de Tars
-stage_1_1		Esplorante la Plâgo de Tars
+stage_1_1		Esplorante la Plâgon de Tars
 stage_1_2		Sablo kaj Verdaj Montetoj
 stage_1_3		'Mekanimala' ĥaoso
 stage_1_4		Fine! Fortikaĵo de Chamal
