@@ -2,3 +2,7 @@ data/stage/custom
 Gemfile.lock
 .idea/*
 deb/opt
+.ruby-version
+screenshot/*.gif
+screenshot/*.mp4
+publishing

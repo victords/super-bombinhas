@@ -609,7 +609,7 @@ class Turner < Enemy
       if @harmful
         SB.player.bomb.hit if SB.player.bomb.bounds.intersect? @harm_bounds
         move_free @aim1, @speed_m
-        if @speed.x == 0 and @speed.y == 0
+        if @speed.x == 0 && @speed.y == 0
           @harmful = false
           @indices = [3, 4, 5, 4]
           set_animation 3
@@ -618,11 +618,11 @@ class Turner < Enemy
       else
         b = SB.player.bomb
         move_carrying @aim2, @speed_m, [b], section.get_obstacles(b.x, b.y), section.ramps
-        if @speed.x == 0 and @speed.y == 0
+        if @speed.x == 0 && @speed.y == 0
           @harmful = true
           @indices = [0, 1, 2, 1]
           set_animation 0
-          @obst.delete self
+          @obst.delete(self)
         end
       end
     end
@@ -630,10 +630,14 @@ class Turner < Enemy
 
   def hit_by_bomb(section); end
 
-  def hit_by_explosion
-    SB.player.stage_score += @score
-    @obst.delete self unless @harmful
-    @dead = true
+  def hit_by_projectile(section)
+    super
+    @obst.delete(self)
+  end
+
+  def hit_by_explosion(section)
+    super
+    @obst.delete(self)
   end
 end
 
@@ -2979,7 +2983,7 @@ class Bombnight < Enemy
       move(forces, section.get_obstacles(@x, @y, @w, @h), section.ramps)
     end
   end
-  
+
   def hit_by_projectile(section); end
 
   def hit_by_explosion(section)
