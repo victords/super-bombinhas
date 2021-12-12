@@ -386,6 +386,9 @@ class SB
       if @stage.is_custom
         leave_custom_stage(true)
       else
+        @player.last_stage = 1
+        @player.specs.reject! { |s| s.start_with?("#{@player.last_world}-") }
+        @player.all_stars.reject! { |s| s.start_with?("#{@player.last_world}-") }
         @world = World.new(@player.last_world, @player.last_stage, true)
         @stage = Stage.new(@player.last_world, @player.last_stage)
         save(nil, @player.last_stage)
