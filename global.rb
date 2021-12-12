@@ -382,16 +382,12 @@ class SB
     end
 
     def game_over
-      @player.game_over(@stage.world, @stage.num)
+      @player.game_over
       if @stage.is_custom
         leave_custom_stage(true)
       else
-        @player.last_stage = 1
-        @player.specs.reject! { |s| s.start_with?("#{@player.last_world}-") }
-        @player.all_stars.reject! { |s| s.start_with?("#{@player.last_world}-") }
-        @world = World.new(@player.last_world, @player.last_stage, true)
-        @stage = Stage.new(@player.last_world, @player.last_stage)
-        save(nil, @player.last_stage)
+        @world = World.new(@player.last_world, 1, true)
+        save(nil, 1)
         @world.resume
       end
     end
