@@ -481,6 +481,15 @@ class SB
       @stage = stage
     end
 
+    def editor_start_test(casual)
+      G.window.width = C::SCREEN_WIDTH
+      G.window.height = C::SCREEN_HEIGHT
+      StageMenu.initialize(true, true)
+      @casual = casual
+      @state = :main
+      @stage.start
+    end
+
     def editor_stop_test
       Gosu::Song.current_song.stop if Gosu::Song.current_song
       G.window.width = C::EDITOR_SCREEN_WIDTH
@@ -493,7 +502,8 @@ class SB
       end
     end
 
-    def load_custom_stage(name)
+    def load_custom_stage(name, casual)
+      @casual = casual
       custom_save_path = "#{@save_dir}/custom"
       data = File.exist?(custom_save_path) ? IO.readlines(custom_save_path).map(&:chomp) : nil
       if data && data[1] == name

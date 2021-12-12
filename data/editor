@@ -4,7 +4,9 @@ ID|int|1-35
 ===
 Don't fall|bool|$,|1
 ===
-Type|enum|,2|Common (+1),Mega (+5)
+Casual mode replacement|enum|,10,11,12,19,27,38,49,57,64,96,108,116|FireRock,Attack1,Key,Shield,GunPowder,Board,Heart,Attack2,ForceField,Attack3,Attack4,Hourglass,Attack5
+Type|enum|,$|Common (+1),Mega (+5)
+Replacement args|int|1-999
 ===
 Direction|enum|,1,2,3|Up,Right,Down,Left
 Type|enum|,2,3,4|1,2,3,4

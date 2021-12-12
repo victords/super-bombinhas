@@ -177,7 +177,7 @@ class EditorSection < Section
 
   def change_size(w, h)
     return if w <= 0 || h <= 0
-    
+
     p_w = @tiles.size
     p_h = @tiles[0].size
     if w < p_w
@@ -759,7 +759,8 @@ class Editor
           toggle_aux_panel(7)
         end,
         Button.new(x: 68, y: 0, img: :editor_btn1, font: SB.font, text: 'Test', scale_x: 2, scale_y: 2, anchor: :right) do
-          start_test
+          toggle_aux_panels(10)
+          @args_panel.visible = false if @args_panel
         end,
         Button.new(x: 4, y: 0, img: :editor_btn1, font: SB.font, text: 'Exit', scale_x: 2, scale_y: 2, anchor: :right) do
           confirm_exit
@@ -873,7 +874,19 @@ class Editor
         Button.new(x: 0, y: 10, font: SB.font, text: 'OK', img: :editor_btn1, scale_x: 2, scale_y: 2, anchor: :bottom) {
           toggle_aux_panel(9)
         }
-      ], :editor_pnl, :tiled, true, 2, 2, :center)
+      ], :editor_pnl, :tiled, true, 2, 2, :center),
+      ###########################################################################
+
+      ################################# TEST MODE ###############################
+      Panel.new(0, 0, 360, 120, [
+        Label.new(x: 0, y: 10, font: SB.font, text: 'Select mode', scale_x: 2, scale_y: 2, anchor: :top),
+        Button.new(x: -32, y: 10, img: :editor_btn1, font: SB.font, text: 'old sc.', scale_x: 2, scale_y: 2, anchor: :bottom) do
+          start_test(false)
+        end,
+        Button.new(x: 32, y: 10, img: :editor_btn1, font: SB.font, text: 'casual', scale_x: 2, scale_y: 2, anchor: :bottom) do
+          start_test(true)
+        end
+      ], :editor_pnl, :tiled, true, 2, 2, :center),
       ###########################################################################
     ]
 
@@ -937,7 +950,8 @@ END
     toggle_aux_panel(4) if KB.key_pressed?(Gosu::KbTab)
 
     if KB.key_pressed?(Gosu::KB_SPACE) && !@txt_stage.instance_eval('@active')
-      start_test
+      toggle_aux_panels(10)
+      @args_panel.visible = false if @args_panel
       return
     end
 
@@ -1073,7 +1087,7 @@ END
     show_confirm_panel('Exit? Unsaved changes will be lost.')
   end
 
-  def start_test
+  def start_test(casual)
     toggle_aux_panels
     @args_panel.visible = false if @args_panel
     @floating_panels.each do |p|
@@ -1083,11 +1097,7 @@ END
     @save_confirm = true
     return unless save(@saved_name || '__temp')
 
-    G.window.width = C::SCREEN_WIDTH
-    G.window.height = C::SCREEN_HEIGHT
-    StageMenu.initialize(true, true)
-    SB.state = :main
-    SB.stage.start
+    SB.editor_start_test(casual)
   end
 
   def toggle_floating_panel(index)
@@ -1179,7 +1189,7 @@ END
           }
         end
       end
-      @args_panel = Panel.new(0, 0, 600, 4 + fields.size * 34, controls, :editor_pnl, :tiled, true, 2, 2, :center)
+      @args_panel = Panel.new(0, 50, 600, 4 + fields.size * 34, controls, :editor_pnl, :tiled, true, 2, 2, :top)
       @args = {
         element: element,
         index: @cur_index,
@@ -1374,7 +1384,7 @@ END
   end
 
   def toggle_aux_panels(show = nil)
-    (4..9).each do |i|
+    (4..10).each do |i|
       @panels[i].visible = i == show
     end
   end

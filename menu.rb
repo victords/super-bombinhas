@@ -271,7 +271,9 @@ class Menu
           },
           MenuText.new(:casual_desc, 400, 370, 760, :center, 1.5),
           MenuButton.new(430, :back, true) {
-            if @selected_game
+            if @custom_level
+              @form.go_to_section(10)
+            elsif @selected_game
               @form.go_to_section(2)
             else
               @form.go_to_section(3)
@@ -358,7 +360,8 @@ class Menu
       end).sort
       levels[(page * 20)...((page + 1) * 20)].each_with_index do |l, i|
         section.add(MenuButton.new(270 + (i / 4) * 50, l, false, 44 + (i % 4) * 180, true) {
-          SB.load_custom_stage(l)
+          @custom_level = l
+          @form.go_to_section(11)
         })
       end
       page_count = (levels.size - 1) / 20 + 1
@@ -369,6 +372,7 @@ class Menu
       end
       section.add(MenuButton.new(550, :back, true) {
         @form.go_to_section(9)
+        @custom_level = nil
       })
       if page_count > 1 && page < page_count - 1
         section.add(MenuArrowButton.new(720, 550, 'Right') {
@@ -388,7 +392,9 @@ class Menu
     end
 
     def start_game(casual)
-      if @selected_game
+      if @custom_level
+        SB.load_custom_stage(@custom_level, casual)
+      elsif @selected_game
         SB.load_game(@selected_game, casual)
       else
         SB.new_game(@txt_name.text.downcase, @new_game_index, casual) unless @txt_name.text.empty?

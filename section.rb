@@ -256,6 +256,7 @@ class Section
               if t == Life && SB.casual?
                 life = true
                 args = (a || '1').split(',', 3)
+                args[0] = '1' if args[0].empty?
                 t = ELEMENT_TYPES[args[0].to_i]
                 a = args[2]
               end
