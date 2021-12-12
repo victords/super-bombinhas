@@ -49,13 +49,13 @@ module Item
   end
 
   def set_switch(switch)
-    if switch[:state] == :taken
-      switch[:state] = :taken_temp_used
-    elsif switch[:state] == :temp_taken
-      switch[:state] = :temp_taken_used
-    else
-      switch[:state] = :temp_used
-    end
+    switch[:state] = if switch[:state] == :taken
+                       :taken_temp_used
+                     elsif switch[:state] == :temp_taken
+                       :temp_taken_used
+                     else
+                       :temp_used
+                     end
   end
 end
 
@@ -152,20 +152,22 @@ end
 class Life < FloatingItem
   def initialize(x, y, args, section, switch)
     return if check switch
-    if args.nil?
+    args = (args || '1').split(',', 3)
+
+    if args[1] == '$'
+      w = 32
+      h = 32
+      img = :sprite_megalife
+    else
       x += 2
       y += 2
       w = 28
       h = 28
       img = :sprite_Life
-    else
-      w = 32
-      h = 32
-      img = :sprite_megalife
     end
     super x, y, w, h, img, nil, 8, 1,
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7], 6
-    @lives = args ? 5 : 1
+    @lives = args[1] == '$' ? 5 : 1
   end
 
   def update(section)
@@ -227,8 +229,8 @@ class Attack1 < FloatingItem
   def use(section, switch)
     b = SB.player.bomb
     return false if b.type != @bomb_type
-    if b.facing_right; angle = 0
-    else; angle = 180; end
+    angle = if b.facing_right; 0
+    else; 180;         end
     section.add Projectile.new(b.x + b.w / 2 - 10, b.y + b.h / 2 - 6, 1, angle, b)
     set_switch(switch)
     true
@@ -239,10 +241,10 @@ class Shield < FloatingItem
   def initialize(x, y, args, section, switch)
     set_icon "shield#{args}"
     switch[:extra] = args
-    case args
-    when '2' then @bomb_type = :amarela
-    else          @bomb_type = :azul
-    end
+    @bomb_type = case args
+    when '2' then :amarela
+    else          :azul
+                 end
     return if check(switch)
     super x + 2, y + 2, 28, 28, "sprite_shield#{args}", nil, 4, 2,
           [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7], 6, @bomb_type
@@ -575,8 +577,8 @@ class Attack4 < FloatingItem
   def use(section, switch)
     b = SB.player.bomb
     return false if b.type != @bomb_type
-    if b.facing_right; angle = 0
-    else; angle = 180; end
+    angle = if b.facing_right; 0
+    else; 180;         end
     section.add Projectile.new(b.x + b.w / 2 - 4, b.y + b.h / 2 - 4, 9, angle, b)
     set_switch(switch)
     true

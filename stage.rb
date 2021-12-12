@@ -247,7 +247,7 @@ class Stage
       elsif s[:state] == :temp_used || s[:state] == :taken_temp_used
         s[:state] = :taken
       end
-      s[:obj] = s[:type].new(s[:x], s[:y], s[:args], s[:section], s)
+      s[:obj] = s[:type].new(s[:x], s[:y], s[:args], s[:section], s) if s[:type]
     end
   end
 

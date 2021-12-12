@@ -235,8 +235,10 @@ class Section
     @hide_tiles = []
     @passengers = [SB.player.bomb]
     s.each do |e|
-      if e[0] == '_'; x, y = set_spaces e[1..-1].to_i, x, y
-      elsif e[3] == '*'; x, y = set_tiles e[4..-1].to_i, x, y, tile_type(e[0]), e[1, 2]
+      if e[0] == '_'
+        x, y = set_spaces e[1..-1].to_i, x, y
+      elsif e[3] == '*'
+        x, y = set_tiles e[4..-1].to_i, x, y, tile_type(e[0]), e[1, 2]
       else
         i = 0
         begin
@@ -250,6 +252,14 @@ class Section
               @default_entrance = index if e[-1] == '!'
             else
               t, a = element_type e[(i+1)..-1]
+
+              if t == Life && SB.casual?
+                life = true
+                args = (a || '1').split(',', 3)
+                t = ELEMENT_TYPES[args[0].to_i]
+                a = args[2]
+              end
+
               el = {x: x * C::TILE_SIZE, y: y * C::TILE_SIZE, type: t, args: a}
               if t.instance_method(:initialize).parameters.length == 5
                 if s_index == used_switches[0]
@@ -266,6 +276,10 @@ class Section
                 switches << el
                 s_index += 1
               else
+                if life
+                  switches << {}
+                  s_index += 1
+                end
                 @element_info << el
               end
             end
@@ -356,7 +370,7 @@ class Section
     @dead_timer = 0
 
     switches.each do |s|
-      if s[:section] == self
+      if s[:section] == self && s[:obj]
         @elements << s[:obj]
       end
     end
