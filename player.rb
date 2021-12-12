@@ -67,7 +67,7 @@ class Player
 
   def die
     unless @dead
-      unless SB.stage.is_bonus || @lives < 0
+      unless SB.casual? || SB.stage.is_bonus || @lives < 0
         if SB.stage.life_count == 0
           @lives -= 1
         else

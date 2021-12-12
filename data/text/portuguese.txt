@@ -11,6 +11,11 @@ custom			Níveis do editor
 choose_game		Escolha um jogo para carregar ou 'Novo Jogo'
 new_game		Novo Jogo
 what_name		Qual é o seu nome?
+select_mode		Selecione o modo de jogo
+old_school		Retrô
+old_school_desc	Você tem um número limitado de vidas. Se esse número chegar a zero, você perde o progresso no último mundo que chegou.
+casual			Casual
+casual_desc		Não há limite de vidas. Você pode tentar quantas vezes quiser a partir de um check-point ou início de fase.
 back			Voltar
 continue		Continuar
 delete			Apagar

@@ -151,92 +151,134 @@ class Menu
         @clouds << CloudEffect.new(rand(500) - 1000, rand(210) - 10, 2 + rand * 3, 1.5 + rand * 1.5)
       end
 
-      @form = Form.new([
-        MenuButton.new(250, :play) {
-          @form.go_to_section 9
-        },
-        MenuButton.new(300, :help) {
-          @form.go_to_section 7
-        },
-        MenuButton.new(350, :options) {
-          Options.set_temp
-          @form.go_to_section 5
-        },
-        MenuButton.new(400, :credits) {
-          @form.go_to_section 6
-        },
-        MenuButton.new(450, :editor) {
-          SB.show_editor
-        },
-        MenuButton.new(500, :exit, true) {
-          @form.go_to_section(8)
-        }
-      ], [], [
-        MenuButton.new(295, :continue) {
-          SB.load_game @selected_game
-        },
-        MenuButton.new(345, :delete) {
-          @form.go_to_section 4
-        },
-        MenuButton.new(395, :back, true) {
-          @form.go_to_section 1
-        }
-      ], [
-        (@txt_name = MenuTextField.new(295)),
-        MenuText.new(:what_name, 400, 220, 400, :center),
-        MenuButton.new(345, :play) {
-          SB.new_game(@txt_name.text.downcase, @new_game_index) unless @txt_name.text.empty?
-        },
-        MenuButton.new(395, :back, true) {
-          @form.go_to_section 1
-        }
-      ], [
-        MenuText.new(:delete_confirm, 400, 270, 400, :center),
-        MenuButton.new(345, :no, true) {
-          @form.go_to_section 1
-        },
-        MenuButton.new(395, :yes) {
-          File.delete(@selected_game)
-          add_game_slots
-          @form.go_to_section 1
-        }
-      ], Options.get_menu, [
-        MenuButton.new(550, :back, true) {
-          @form.go_to_section 0
-        },
-        MenuText.new(:credits_prog, 400, 157, 780, :center, 1.5),
-        MenuText.new("Victor David Santos", 400, 180, 780, :center),
-        MenuText.new(:credits_music, 400, 237, 780, :center, 1.5),
-        MenuText.new("Zergananda (soundcloud.com/zergananda)\nFrancesco Corrado (soundcloud.com/franzcorradomusic)", 400, 260, 780, :center),
-        MenuText.new(:special_thanks, 400, 347, 780, :center, 1.5),
-        MenuText.new("Yuri David Santos  -  Maria Alice Armelin  -  Francesco Corrado\nVinícius de Araújo Barboza  -  Stefano Girardi  -  Jorge Maldonado Ventura", 400, 370, 780, :center),
-        MenuText.new(:special_thanks2, 400, 440, 780, :center),
-      ], [
-        MenuButton.new(550, :back, true) {
-          @form.go_to_section 0
-        },
-        MenuText.new(:help_text, 400, 170, 700, :center)
-      ], [
-        MenuText.new(:confirm_exit, 400, 250, 400, :center),
-        MenuButton.new(310, :yes, false, 219) {
-          SB.save_options
-          exit
-        },
-        MenuButton.new(310, :no, true, 409) {
-          @form.go_to_section(0)
-        }
-      ], [
-        MenuButton.new(295, :story) {
-          @form.go_to_section(1)
-        },
-        MenuButton.new(345, :custom) {
-          set_custom_slots
-          @form.go_to_section(10)
-        },
-        MenuButton.new(395, :back, true) {
-          @form.go_to_section(0)
-        }
-      ], [])
+      @form = Form.new(
+        # 0 - start screen
+        [
+          MenuButton.new(250, :play) {
+            @form.go_to_section 9
+          },
+          MenuButton.new(300, :help) {
+            @form.go_to_section 7
+          },
+          MenuButton.new(350, :options) {
+            Options.set_temp
+            @form.go_to_section 5
+          },
+          MenuButton.new(400, :credits) {
+            @form.go_to_section 6
+          },
+          MenuButton.new(450, :editor) {
+            SB.show_editor
+          },
+          MenuButton.new(500, :exit, true) {
+            @form.go_to_section(8)
+          }
+        ],
+        # 1 - saved games
+        [],
+        # 2 - continue/delete saved game
+        [
+          MenuButton.new(295, :continue) {
+            @form.go_to_section(11)
+          },
+          MenuButton.new(345, :delete) {
+            @form.go_to_section 4
+          },
+          MenuButton.new(395, :back, true) {
+            go_to_saved_games
+          }
+        ],
+        # 3 - new game name input
+        [
+          (@txt_name = MenuTextField.new(295)),
+          MenuText.new(:what_name, 400, 220, 400, :center),
+          MenuButton.new(345, :play) {
+            @form.go_to_section(11)
+          },
+          MenuButton.new(395, :back, true) {
+            go_to_saved_games
+          }
+        ],
+        # 4 - confirm delete saved game
+        [
+          MenuText.new(:delete_confirm, 400, 270, 400, :center),
+          MenuButton.new(345, :no, true) {
+            @form.go_to_section(2)
+          },
+          MenuButton.new(395, :yes) {
+            File.delete(@selected_game)
+            add_game_slots
+            go_to_saved_games
+          }
+        ],
+        # 5 - options
+        Options.get_menu,
+        # 6 - credits
+        [
+          MenuButton.new(550, :back, true) {
+            @form.go_to_section 0
+          },
+          MenuText.new(:credits_prog, 400, 157, 780, :center, 1.5),
+          MenuText.new("Victor David Santos", 400, 180, 780, :center),
+          MenuText.new(:credits_music, 400, 237, 780, :center, 1.5),
+          MenuText.new("Zergananda (soundcloud.com/zergananda)\nFrancesco Corrado (soundcloud.com/franzcorradomusic)", 400, 260, 780, :center),
+          MenuText.new(:special_thanks, 400, 347, 780, :center, 1.5),
+          MenuText.new("Yuri David Santos  -  Maria Alice Armelin  -  Francesco Corrado\nVinícius de Araújo Barboza  -  Stefano Girardi  -  Jorge Maldonado Ventura", 400, 370, 780, :center),
+          MenuText.new(:special_thanks2, 400, 440, 780, :center),
+        ],
+        # 7 - help
+        [
+          MenuButton.new(550, :back, true) {
+            @form.go_to_section 0
+          },
+          MenuText.new(:help_text, 400, 170, 700, :center)
+        ],
+        # 8 - confirm exit
+        [
+          MenuText.new(:confirm_exit, 400, 250, 400, :center),
+          MenuButton.new(310, :yes, false, 219) {
+            SB.save_options
+            exit
+          },
+          MenuButton.new(310, :no, true, 409) {
+            @form.go_to_section(0)
+          }
+        ],
+        # 9 - story/custom
+        [
+          MenuButton.new(295, :story) {
+            go_to_saved_games
+          },
+          MenuButton.new(345, :custom) {
+            set_custom_slots
+            @form.go_to_section(10)
+          },
+          MenuButton.new(395, :back, true) {
+            @form.go_to_section(0)
+          }
+        ],
+        # 10 - select custom level
+        [],
+        # 11 - select difficulty mode
+        [
+          MenuText.new(:select_mode, 400, 180, 400, :center),
+          MenuButton.new(230, :old_school) {
+            start_game(false)
+          },
+          MenuText.new(:old_school_desc, 400, 270, 760, :center, 1.5),
+          MenuButton.new(330, :casual) {
+            start_game(true)
+          },
+          MenuText.new(:casual_desc, 400, 370, 760, :center, 1.5),
+          MenuButton.new(430, :back, true) {
+            if @selected_game
+              @form.go_to_section(2)
+            else
+              @form.go_to_section(3)
+            end
+          }
+        ]
+      )
       Options.form = @form
 
       add_game_slots
@@ -251,7 +293,7 @@ class Menu
         end
       end
       if @form.cur_section_index == 3 && @form.section(3).cur_btn == @txt_name && SB.key_pressed?(:confirm)
-        SB.new_game(@txt_name.text.downcase, @new_game_index) unless @txt_name.text.empty?
+        @form.go_to_section(11)
       end
       @form.update
     end
@@ -338,6 +380,19 @@ class Menu
     def go_to_new_game(index)
       @new_game_index = index
       @form.go_to_section 3
+    end
+
+    def go_to_saved_games
+      @selected_game = nil
+      @form.go_to_section(1)
+    end
+
+    def start_game(casual)
+      if @selected_game
+        SB.load_game(@selected_game, casual)
+      else
+        SB.new_game(@txt_name.text.downcase, @new_game_index, casual) unless @txt_name.text.empty?
+      end
     end
 
     def draw

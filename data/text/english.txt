@@ -11,6 +11,11 @@ custom			Custom Levels
 choose_game		Choose a game to load or 'New Game'
 new_game		New Game
 what_name		What is your name?
+select_mode		Select the game mode
+old_school		Old School
+old_school_desc	You have a limited number of lives. If it reaches zero, you lose all progress in the last visited world.
+casual			Casual
+casual_desc		There's no lives limit. You can retry as many times as you want from a check-point or level start.
 back			Back
 continue		Continue
 delete			Delete

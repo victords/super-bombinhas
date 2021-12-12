@@ -229,7 +229,8 @@ class SB
       Gosu::Song.current_song.volume = vol * 0.1 if Gosu::Song.current_song and type == 'music'
     end
 
-    def new_game(name, index)
+    def new_game(name, index, casual)
+      @casual = casual
       @save_file_name = "#{@save_dir}/#{index}"
       @save_data = Array.new(14)
       @game_completion = 0
@@ -244,7 +245,8 @@ class SB
       StageMenu.initialize
     end
 
-    def load_game(file_name)
+    def load_game(file_name, casual)
+      @casual = casual
       data = IO.readlines(file_name).map(&:chomp)
       @save_file_name = file_name
       @save_data = data
@@ -264,6 +266,10 @@ class SB
       @world = World.new(world_stage[0].to_i, world_stage[1].to_i, true)
       @world.resume
       StageMenu.initialize
+    end
+
+    def casual?
+      @casual
     end
 
     def play_sound(sound, volume = 1, speed = 1)

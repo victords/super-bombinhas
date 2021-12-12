@@ -340,13 +340,15 @@ class StageMenu
     def draw_player_stats
       p = SB.player
       G.window.draw_quad 4, 4, C::PANEL_COLOR,
-                         204, 4, C::PANEL_COLOR,
-                         204, 60, C::PANEL_COLOR,
+                         SB.casual? ? 104 : 204, 4, C::PANEL_COLOR,
+                         SB.casual? ? 104 : 204, 60, C::PANEL_COLOR,
                          4, 60, C::PANEL_COLOR, 0
-      @lives_icon.draw 12, 9, 0, 2, 2
-      SB.font.draw_text(p.lives >= 0 ? p.lives + SB.stage.life_count : '∞', 40, 8, 0, 2, 2, 0xff000000)
-      @hp_icon.draw 105, 9, 0, 2, 2
-      SB.font.draw_text "#{p.bomb.hp}/#{p.bomb.max_hp > 0 ? p.bomb.max_hp : '∞'}", 135, 8, 0, 2, 2, 0xff000000
+      unless SB.casual?
+        @lives_icon.draw 12, 9, 0, 2, 2
+        SB.font.draw_text(p.lives >= 0 ? p.lives + SB.stage.life_count : '∞', 40, 8, 0, 2, 2, 0xff000000)
+      end
+      @hp_icon.draw SB.casual? ? 12 : 105, 9, 0, 2, 2
+      SB.font.draw_text "#{p.bomb.hp}/#{p.bomb.max_hp > 0 ? p.bomb.max_hp : '∞'}", SB.casual? ? 42 : 135, 8, 0, 2, 2, 0xff000000
       @score_icon.draw 10, 32, 0, 2, 2
       SB.font.draw_text p.stage_score, 40, 30, 0, 2, 2, 0xff000000
 

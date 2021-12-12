@@ -138,8 +138,10 @@ class Stage
         SB.play_sound(Res.sound(:victory), SB.music_volume * 0.1)
         Gosu::Song.current_song.stop
         SB.player.temp_startup_item = get_startup_item if @star_count >= C::STARS_PER_STAGE
-        SB.player.lives += @reward if @reward
-        SB.player.lives += @life_count
+        unless SB.casual?
+          SB.player.lives += @reward if @reward
+          SB.player.lives += @life_count
+        end
         @won_reward = true
         return :finish
       elsif status == :next_section
@@ -257,7 +259,7 @@ class Stage
         s[:state] = :used
       end
     end
-    SB.player.lives += @life_count
+    SB.player.lives += @life_count unless SB.casual?
     @life_count = 0
   end
 

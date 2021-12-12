@@ -11,6 +11,11 @@ custom			Tajloritaj Niveloj
 choose_game		Elektu ludon por ŝarĝi aŭ 'Nova Ludo'
 new_game		Nova Ludo
 what_name		Kio estas via nomo?
+select_mode		Select the game mode
+old_school		Old School
+old_school_desc	You have a limited number of lives. If it reaches zero, you lose all progress in the last visited world.
+casual			Casual
+casual_desc		There's no lives limit. You can retry as many times as you want from a check-point or level start.
 back			Reen
 continue		Daŭrigi
 delete			Forigi
