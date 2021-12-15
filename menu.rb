@@ -193,7 +193,7 @@ class Menu
           (@txt_name = MenuTextField.new(295)),
           MenuText.new(:what_name, 400, 220, 400, :center),
           MenuButton.new(345, :play) {
-            @form.go_to_section(11)
+            @form.go_to_section(11) unless @txt_name.text.empty?
           },
           MenuButton.new(395, :back, true) {
             go_to_saved_games
@@ -295,7 +295,7 @@ class Menu
         end
       end
       if @form.cur_section_index == 3 && @form.section(3).cur_btn == @txt_name && SB.key_pressed?(:confirm)
-        @form.go_to_section(11)
+        @form.go_to_section(11) unless @txt_name.text.empty?
       end
       @form.update
     end
@@ -397,7 +397,7 @@ class Menu
       elsif @selected_game
         SB.load_game(@selected_game, casual)
       else
-        SB.new_game(@txt_name.text.downcase, @new_game_index, casual) unless @txt_name.text.empty?
+        SB.new_game(@txt_name.text.downcase, @new_game_index, casual)
       end
     end
 
