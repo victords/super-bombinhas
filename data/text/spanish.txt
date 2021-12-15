@@ -13,9 +13,9 @@ new_game		Nuevo Juego
 what_name		¿Cómo te llamas?
 select_mode		Selecciona el modo de juego
 old_school		Clásico
-old_school_desc	Tienes un límite de vidas. Si llega a cero, pierdes todo el progreso en el último mundo que llegaste.
+old_school_desc	Tienes un límite de vidas. Si llega a cero, pierdes todo el progreso en el último mundo al que llegaste.
 casual			Casual
-casual_desc		No hay límite de vidas. Puede intentarlo tantas veces como deseas desde un punto de control o inicio de nivel.
+casual_desc		No hay límite de vidas. Puedes intentarlo tantas veces como deseas desde un punto de control o inicio de nivel.
 back			Volver
 continue		Continuar
 delete			Borrar
