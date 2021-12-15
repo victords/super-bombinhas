@@ -183,7 +183,8 @@ class Section
     127 => SpecGate,
   }
 
-  attr_reader :id, :reload, :tiles, :obstacles, :ramps, :passengers, :size, :default_entrance, :warp, :tileset_num, :map, :bgm, :fixed_camera, :bomb_mask
+  attr_reader :id, :reload, :tiles, :obstacles, :ramps, :passengers, :inter_elements, :size, :default_entrance, :warp,
+              :tileset_num, :map, :bgm, :fixed_camera, :bomb_mask
   attr_accessor :entrance, :loaded, :active_object
 
   def initialize(file, entrances, switches, taken_switches, used_switches)

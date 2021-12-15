@@ -718,6 +718,8 @@ class Chamal < Enemy
     SB.player.bomb.bounce(false)
   end
 
+  def hit_by_projectile(section); end
+
   def hit_by_explosion(section)
     hit(section)
     @speed_m = 4 if @hp == 1
@@ -1205,11 +1207,15 @@ class Sahiss < FloorEnemy
 
   def update(section)
     update_boss(section, false) do
-      obj = section.active_object
-      if obj && !obj.dying && obj.bounds.intersect?(bounds)
-        hit(section)
-        next
+      was_hit = false
+      section.inter_elements.each do |obj|
+        if obj.is_a?(Stalactite) && !obj.dying && obj.bounds.intersect?(bounds)
+          hit(section)
+          was_hit = true
+          break
+        end
       end
+      next if was_hit
 
       if @attacking
         move_free @aim, 6

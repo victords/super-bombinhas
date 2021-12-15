@@ -1236,7 +1236,7 @@ class Stalactite < SBGameObject
     @active_bounds = Rectangle.new(x + 2, y, 28, 48)
     @normal = args[1].nil?
     @id = args[2].to_i
-    section.active_object = self unless @normal
+    section.add_interacting_element(self) unless @normal
   end
 
   def update(section)
