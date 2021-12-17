@@ -20,7 +20,7 @@ require_relative 'bomb'
 class Player
   BOMB_TYPES = [:azul, :vermelha, :amarela, :verde, :branca]
 
-  attr_reader :score, :stage_score, :items, :cur_item_type, :specs, :all_stars
+  attr_reader :score, :stage_score, :items, :cur_item_type, :specs, :all_stars, :bombs
   attr_accessor :name, :last_world, :last_stage, :lives, :startup_item, :temp_startup_item
 
   def initialize(name, last_world = 1, last_stage = 1, bomb = :azul, hps = nil, lives = 5, score = 0, specs = '', startup_item = nil, all_stars = '')
@@ -149,7 +149,7 @@ class Player
     bomb = @bombs[type]
     bomb.x = @bomb.x
     bomb.y = @bomb.y
-    bomb.set_invulnerable(@bomb.invulnerable_time, @bomb.invulnerable_timer) if @bomb.invulnerable
+    bomb.set_invulnerable(@bomb.invulnerable_time, @bomb.invulnerable_timer, !@bomb.force_field.nil?) if @bomb.invulnerable
     @bomb = bomb
     SB.stage.update_bomb
 

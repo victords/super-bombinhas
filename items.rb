@@ -273,14 +273,28 @@ class Heart < FloatingItem
            when 1 then :vermelha
            when 2 then :verde
            when 3 then :branca
+           else        nil
            end
-    super x + 2, y + 2, 28, 28, "sprite_heart#{args}", nil, 8, 1,
+    if bomb
+      x += 2
+      y += 2
+      w = 28
+      h = 28
+    else
+      w = 32
+      h = 32
+    end
+    super x, y, w, h, bomb.nil? ? 'sprite_megaHeart' : "sprite_heart#{args}", nil, 8, 1,
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7], 6, bomb
   end
 
   def update(section)
     super(section) do
-      SB.player.bomb.hp += 1
+      if @bomb_type
+        SB.player.bomb.hp += 1
+      else
+        SB.player.bombs.each { |_, b| b.hp += 1 }
+      end
       SB.play_sound(Res.sound(:getItem))
       StageMenu.play_get_item_effect(@x - section.map.cam.x + @w / 2, @y - section.map.cam.y + @h / 2, :health)
     end

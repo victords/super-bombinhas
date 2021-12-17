@@ -1190,38 +1190,24 @@ end
 class ForceField < GameObject
   def initialize(x, y, args, section, switch)
     return if switch[:state] == :taken
+
     super x, y, 32, 32, :sprite_ForceField, Vector.new(-14, -14), 3, 1
     @life_time = (args || 20).to_i * 60
     @active_bounds = Rectangle.new(x - 14, y - 14, 60, 60)
-    @alpha = 255
   end
 
   def update(section)
     animate [0, 1, 2, 1], 10
     b = SB.player.bomb
-    if @taken
-      @x = b.x + b.w / 2 - 16; @y = b.y + b.h / 2 - 16
-      @timer += 1
-      @dead = true if @timer == @life_time
-      if @timer >= @life_time - 120
-        if @timer % 5 == 0
-          @alpha = @alpha == 0 ? 255 : 0
-        end
-      end
-    elsif b.collide? self
-      b.set_invulnerable @life_time
-      SB.stage.set_switch self
-      @taken = true
-      @timer = 0
+    if b.collide?(self)
+      b.set_invulnerable(@life_time, nil, true)
+      SB.stage.set_switch(self)
+      @dead = true
     end
   end
 
-  def is_visible(map)
-    @taken || @active_bounds && map.cam.intersect?(@active_bounds)
-  end
-
   def draw(map, section)
-    super(map, 2, 2, @alpha)
+    super(map, 2, 2)
   end
 end
 

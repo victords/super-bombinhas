@@ -17,6 +17,8 @@
 
 require 'minigl'
 
+include MiniGL
+
 class Bomb < GameObject
   EXPLODE_COOLDOWN = 900
   STOP_TIME_DURATION = 300
@@ -35,7 +37,7 @@ class Bomb < GameObject
   ]
 
   attr_reader :type, :name, :hp, :max_hp, :saved_hp, :facing_right, :can_use_ability, :cooldown, :will_explode, :exploding,
-              :poison_timer, :invulnerable, :invulnerable_time, :invulnerable_timer
+              :poison_timer, :invulnerable, :invulnerable_time, :invulnerable_timer, :force_field
   attr_accessor :active, :power, :slipping, :sticking, :poisoned, :shielded, :in_vortex
 
   def initialize(type, hp)
@@ -178,11 +180,18 @@ class Bomb < GameObject
       end
     end
 
+    if @force_field && @invulnerable_timer >= @invulnerable_time - 120 && @invulnerable_timer % 5 == 0
+      @force_field_alpha = @force_field_alpha == 0 ? 255 : 0
+    end
+
     return if switched
 
     if @invulnerable
       @invulnerable_timer += 1
-      @invulnerable = false if @invulnerable_timer == @invulnerable_time
+      if @invulnerable_timer >= @invulnerable_time
+        @invulnerable = false
+        @force_field = nil
+      end
     end
     if @poisoned
       @poison_timer += 1
@@ -213,7 +222,10 @@ class Bomb < GameObject
   def update_timers
     if @invulnerable
       @invulnerable_timer += 1
-      @invulnerable = false if @invulnerable_timer == @invulnerable_time
+      if @invulnerable_timer >= @invulnerable_time
+        @invulnerable = false
+        @force_field = nil
+      end
     end
     unless @can_use_ability
       @cooldown -= 1
@@ -321,10 +333,14 @@ class Bomb < GameObject
     @saved_hp = @hp
   end
 
-  def set_invulnerable(time = nil, timer = nil)
+  def set_invulnerable(time = nil, timer = nil, force_field = false)
     @invulnerable = true
     @invulnerable_timer = timer || 0
     @invulnerable_time = time || C::INVULNERABLE_TIME
+    if force_field
+      @force_field = Sprite.new(0, 0, :sprite_ForceField, 3, 1)
+      @force_field_alpha = 255
+    end
   end
 
   def set_aura(power, duration)
@@ -342,6 +358,7 @@ class Bomb < GameObject
   def reset(loaded = false)
     @will_explode = @exploding = @aura = @dying = @shielded = @poisoned = @invulnerable = false
     @active = @facing_right = @can_use_ability = true
+    @force_field = nil
     @cooldown = @paralyze_timer = @poison_timer = @invulnerable_timer = 0
     @speed.x = @speed.y = @stored_forces.x = @stored_forces.y = 0
     @power = 1
@@ -372,7 +389,9 @@ class Bomb < GameObject
   end
 
   def draw(map, section)
-    super(map, 2, 2, 255, @paralyze_timer > 0 ? 0xff6666 : 0xffffff, nil, @facing_right ? nil : :horiz) unless @invulnerable && @invulnerable_timer % 6 < 3
+    unless @invulnerable && @force_field.nil? && @invulnerable_timer % 6 < 3
+      super(map, 2, 2, 255, @paralyze_timer > 0 ? 0xff6666 : 0xffffff, nil, @facing_right ? nil : :horiz)
+    end
     unless SB.player.dead?
       if @shielded
         @shield_fx.x = @x + @img_gap.x + @img[0].width * 2 - 6
@@ -380,8 +399,14 @@ class Bomb < GameObject
         @shield_fx.draw(map, 2, 2)
       end
       if @aura
-        @aura_fx.x = @x - 10; @aura_fx.y = @y - 30
+        @aura_fx.x = @x - 10
+        @aura_fx.y = @y - 30
         @aura_fx.draw(map, 2, 2)
+      end
+      if @force_field
+        @force_field.x = @x + @w / 2 - 30
+        @force_field.y = @y + @h / 2 - 30
+        @force_field.draw(map, 2, 2, @force_field_alpha)
       end
       if @poisoned && @active
         SB.text_helper.write_line(((180 - @poison_timer).to_f / 60).ceil.to_s, 400, 250, :center, 0xffffff, 255, :border, 0, 1, 255, 1)
