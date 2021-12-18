@@ -176,3 +176,4 @@ end
 
 SBGame.new.show
 SB.save_options
+SB.clear_temp_files

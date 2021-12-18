@@ -534,5 +534,9 @@ class SB
       play_song(Res.song(:main))
       @state = :menu
     end
+
+    def clear_temp_files
+      Dir["#{@save_dir}/levels/__temp*"].each { |f| File.delete(f) }
+    end
   end
 end

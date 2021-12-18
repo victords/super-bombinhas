@@ -879,11 +879,12 @@ class Editor
 
       ################################# TEST MODE ###############################
       Panel.new(0, 0, 360, 120, [
-        Label.new(x: 0, y: 10, font: SB.font, text: 'Select mode', scale_x: 2, scale_y: 2, anchor: :top),
-        Button.new(x: -32, y: 10, img: :editor_btn1, font: SB.font, text: 'old sc.', scale_x: 2, scale_y: 2, anchor: :bottom) do
+        Label.new(x: 0, y: 10, font: SB.font, text: 'Select mode (old/space bar:', scale_x: 2, scale_y: 2, anchor: :top),
+        Label.new(x: 0, y: 40, font: SB.font, text: 'Old School, cas: Casual)', scale_x: 2, scale_y: 2, anchor: :top),
+        Button.new(x: -32, y: 10, img: :editor_btn1, font: SB.font, text: 'old', scale_x: 2, scale_y: 2, anchor: :bottom) do
           start_test(false)
         end,
-        Button.new(x: 32, y: 10, img: :editor_btn1, font: SB.font, text: 'casual', scale_x: 2, scale_y: 2, anchor: :bottom) do
+        Button.new(x: 32, y: 10, img: :editor_btn1, font: SB.font, text: 'cas', scale_x: 2, scale_y: 2, anchor: :bottom) do
           start_test(true)
         end
       ], :editor_pnl, :tiled, true, 2, 2, :center),
@@ -950,8 +951,12 @@ END
     toggle_aux_panel(4) if KB.key_pressed?(Gosu::KbTab)
 
     if KB.key_pressed?(Gosu::KB_SPACE) && !@txt_stage.instance_eval('@active')
-      toggle_aux_panels(10)
-      @args_panel.visible = false if @args_panel
+      if @panels[10].visible
+        start_test(false)
+      else
+        toggle_aux_panels(10)
+        @args_panel.visible = false if @args_panel
+      end
       return
     end
 
