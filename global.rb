@@ -279,6 +279,7 @@ class SB
     def end_stage
       if @bonus
         @bonus = nil
+        @player.score += @player.stage_score
         next_movie = @world.num == @player.last_world && @prev_stage.num == @world.stage_count
         StageMenu.end_stage(false, false, next_movie, true)
       elsif @stage.is_custom

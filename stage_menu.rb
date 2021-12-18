@@ -232,12 +232,14 @@ class StageMenu
 
       if bonus
         if SB.stage.won_reward
-          t4 = MenuImage.new(372, 905, :icon_lives)
-          t4.move_to 372, 305
+          x = SB.casual? ? 360 : 372
+          t4 = MenuImage.new(x, 905, SB.casual? ? :icon_score : :icon_lives)
+          t4.move_to x, 305
           t4.init_movement
-          t5 = MenuText.new("x #{SB.stage.reward}", 413, 905, 400, :center)
+          x = SB.casual? ? 420 : 413
+          t5 = MenuText.new(SB.casual? ? (SB.stage.reward * 1000).to_s : "x #{SB.stage.reward}", x, 905, 400, :center)
           t5.init_movement
-          t5.move_to 413, 305
+          t5.move_to x, 305
           @stage_end_comps << t4 << t5
         end
       else

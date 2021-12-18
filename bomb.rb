@@ -180,8 +180,11 @@ class Bomb < GameObject
       end
     end
 
-    if @force_field && @invulnerable_timer >= @invulnerable_time - 120 && @invulnerable_timer % 5 == 0
-      @force_field_alpha = @force_field_alpha == 0 ? 255 : 0
+    if @force_field
+      @force_field.animate([0, 1, 2, 1], 6)
+      if @invulnerable_timer >= @invulnerable_time - 120 && @invulnerable_timer % 5 == 0
+        @force_field_alpha = @force_field_alpha == 0 ? 255 : 0
+      end
     end
 
     return if switched

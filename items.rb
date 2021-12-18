@@ -649,7 +649,7 @@ end
 class Star < FloatingItem
   def initialize(x, y, args, section, switch)
     if switch[:state] == :used
-      SB.stage.get_star
+      SB.stage.star_count += 1
       return
     end
     super x + 4, y + 4, 24, 24, :sprite_star, Vector.new(-8, -8), 3, 1, [0, 1, 2, 1], 10
@@ -665,7 +665,8 @@ class Star < FloatingItem
   end
 
   def use(section, switch)
-    SB.stage.get_star
+    SB.stage.star_count += 1
+    SB.player.stage_score += 500
     switch[:state] = :temp_used
   end
 end

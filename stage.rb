@@ -18,8 +18,8 @@
 require_relative 'section'
 
 class Stage
-  attr_accessor :life_count
-  attr_reader :world, :num, :id, :starting, :cur_entrance, :switches, :star_count, :spec_taken, :is_bonus, :is_custom,
+  attr_accessor :life_count, :star_count
+  attr_reader :world, :num, :id, :starting, :cur_entrance, :switches, :spec_taken, :is_bonus, :is_custom,
               :time, :objective, :reward, :won_reward, :stopped, :stopped_timer, :stop_time_duration
 
   def initialize(world, num)
@@ -138,7 +138,9 @@ class Stage
         SB.play_sound(Res.sound(:victory), SB.music_volume * 0.1)
         Gosu::Song.current_song.stop
         SB.player.temp_startup_item = get_startup_item if @star_count >= C::STARS_PER_STAGE
-        unless SB.casual?
+        if SB.casual?
+          SB.player.score += @reward * 1000 if @reward
+        else
           SB.player.lives += @reward if @reward
           SB.player.lives += @life_count
         end
@@ -296,11 +298,6 @@ class Stage
 
   def update_bomb
     @cur_section.update_passengers
-  end
-
-  def get_star
-    @star_count += 1
-    SB.player.stage_score += 500
   end
 
   def set_spec_taken
