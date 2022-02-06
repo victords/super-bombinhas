@@ -1,7 +1,7 @@
 # Super Bombinhas
 
 Super Bombinhas is a retro platformer game inspired by classics like Super Mario World, but with a unique change characters mechanic. It is built with Ruby and the Gosu and MiniGL libraries.
-You can download the installers from releases here in GitHub or in [itch.io](https://victords.itch.io/super-bombinhas), where you can also find a more detailed description and a gameplay video.
+You can download the installers from releases here in GitHub or in [itch.io](https://victords.itch.io/super-bombinhas), where you can also find a more detailed description and a gameplay video. It's also available on [Steam](https://store.steampowered.com/app/1553840).
 
 Join the [subreddit](https://www.reddit.com/r/SuperBombinhas)!
 
@@ -13,13 +13,15 @@ Join the [subreddit](https://www.reddit.com/r/SuperBombinhas)!
 
 ## Screenshots
 
-![Super Bombinhas 1](https://raw.githubusercontent.com/victords/super-bombinhas/master/screenshot/game-menu.png)
+![Super Bombinhas gif](https://raw.githubusercontent.com/victords/super-bombinhas/master/screenshot/sb.gif)
 
-![Super Bombinhas 2](https://raw.githubusercontent.com/victords/super-bombinhas/master/screenshot/map.png)
+![Super Bombinhas screenshot 1](https://raw.githubusercontent.com/victords/super-bombinhas/master/screenshot/main1.png)
 
-![Super Bombinhas 3](https://raw.githubusercontent.com/victords/super-bombinhas/master/screenshot/main1.png)
+![Super Bombinhas screenshot 2](https://raw.githubusercontent.com/victords/super-bombinhas/master/screenshot/main3.png)
 
-![Super Bombinhas 4](https://raw.githubusercontent.com/victords/super-bombinhas/master/screenshot/main2.png)
+![Super Bombinhas screenshot 3](https://raw.githubusercontent.com/victords/super-bombinhas/master/screenshot/main4.png)
+
+![Super Bombinhas screenshot 4](https://raw.githubusercontent.com/victords/super-bombinhas/master/screenshot/editor1.png)
 
 ## Running the game
 
