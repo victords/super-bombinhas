@@ -165,7 +165,6 @@ class FormSection
     @visible = visible
     @changing = nil
     @cur_btn = @buttons[@cur_btn_index = 0]
-    @cur_btn.focus if @cur_btn.respond_to? :focus
   end
 
   def update(mouse_moved)

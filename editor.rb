@@ -675,11 +675,15 @@ class Editor
           hide_all_panels
         end,
         (ramp_btn = Button.new(x: 0, y: 38 + 132, img: :editor_btn1, font: SB.font, text: 'Ramp', scale_x: 2, scale_y: 2, anchor: :top) do
+          @cur_element = :ramp
+          @cur_index = 0
           toggle_floating_panel(1)
           toggle_aux_panels
           toggle_args_panel
         end),
         (other_tile_btn = Button.new(x: 0, y: 38, img: :editor_btn1, font: SB.font, text: 'Other', scale_x: 2, scale_y: 2, anchor: :bottom) do
+          @cur_element = :tile
+          @cur_index = 0
           toggle_floating_panel(0)
           toggle_aux_panels
           toggle_args_panel
@@ -745,8 +749,7 @@ class Editor
             SB.init_editor_stage(EditorStage.new(@saved_name))
             @section = EditorSection.new(path, SB.stage.entrances, SB.stage.switches)
             if SB.stage.bomb_mask != 0
-              controls = @panels[7].instance_eval('@controls')
-              controls.each_with_index do |c, i|
+              @panels[7].controls.each_with_index do |c, i|
                 c.checked = (SB.stage.bomb_mask & (2**i)) > 0
               end
             end
@@ -950,7 +953,7 @@ END
     toggle_args_panel if KB.key_pressed?(Gosu::KbReturn)
     toggle_aux_panel(4) if KB.key_pressed?(Gosu::KbTab)
 
-    if KB.key_pressed?(Gosu::KB_SPACE) && !@txt_stage.instance_eval('@active')
+    if KB.key_pressed?(Gosu::KB_SPACE) && !@txt_stage.focused
       if @panels[10].visible
         start_test(false)
       else
@@ -963,7 +966,7 @@ END
     @over_panel = []
     @dropdowns.each_with_index do |d, i|
       break if i > 5 && !@args_panel.visible
-      h = d.instance_eval('@open') ? d.instance_eval('@max_h') : d.h
+      h = d.open ? d.instance_eval('@max_h') : d.h
       @over_panel[i < 4 ? 0 : i < 6 ? 1 : @panels.size] = true if Mouse.over?(d.x, d.y, d.w, h)
     end
     @floating_panels.each_with_index do |p, i|
