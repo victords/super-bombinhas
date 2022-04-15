@@ -110,8 +110,8 @@ class MenuButton < Button
     @sound = Res.sound(back ? :btn2 : :btn1)
   end
 
-  def click
-    @action.call @params
+  private def perform_action
+    super
     SB.play_sound @sound
   end
 end
@@ -124,8 +124,8 @@ class MenuArrowButton < Button
     @sound = Res.sound :btn3
   end
 
-  def click
-    @action.call @params
+  private def perform_action
+    super
     SB.play_sound @sound
   end
 end

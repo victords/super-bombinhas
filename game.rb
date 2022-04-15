@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Super Bombinhas.  If not, see <https://www.gnu.org/licenses/>.
 
+gem 'minigl', '2.3.7'
+
 require 'rbconfig'
 require 'gosu'
 require_relative 'menu'

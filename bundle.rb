@@ -1,6 +1,6 @@
 bundle = <<END
 gem 'gosu', '>=1.1.0'
-gem 'minigl', '>=2.3.5'
+gem 'minigl', '2.3.7'
 
 require 'minigl'
 require 'fileutils'
