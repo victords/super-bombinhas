@@ -46,4 +46,4 @@ The first goal of this repository is for people to play the game and give feedba
 
 If you're interested in contributing with the source code, contact me on [victordavidsantos@gmail.com](mailto:victordavidsantos@gmail.com) so I can give you an overview of the project's structure. If there are many people interested, I will then include such overview in this README.
 
-Also, if you want to support my work, you can donate bitcoins to this wallet: bc1qq2x69etga4a2zk9ca99dpc5xpc4q48hn5jg065
+Also, if you want to support my work, you can purchase the game on [itch.io](https://victords.itch.io/super-bombinhas) or [Steam](https://store.steampowered.com/app/1553840).
