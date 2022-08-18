@@ -66,7 +66,7 @@ can_play		Vi nun povas ludi kiel:
 msg1			Ĉi tiu aĵo nomiĝas Spec. Oni diras, ke ili estas disigitaj en la tuta mondo kaj se iu kolektas ĉiujn, ili malŝloŝas pordon al magia mondo... Tre freneza, ĉu ne?
 msg2			Ne ĉiuj ŝloŝiloj taŭgas por ĉiuj pordoj...
 msg3			Ĉu vi estis kolektante ĉi tiuj aĵoj? Legendo diras, ke ili malŝloŝas pordon al ia magia mondo... Mi aŭdis, ke ĉi tiu pordo troviĝas ie en la Insulo de Tars.
-msg_monep		He! Atendu! Se vi volas iri plu, vi devas alporti al mi Arbaran Herbon. Jes, bongusta Arbara Herbo... Nun foriru kaj nur revenu ĉi tie, kiam vi havas ĝin!
+msg_monep		He! Atendu! Se vi volas iri plu, vi devas alporti al mi Arbaran Herbon. Jes, bongusta Arbara Herbo... Nun foriru kaj nur revenu ĉi tien, kiam vi havas ĝin!
 msg_mnt_bomb	Saluton, mi estis promenante en la montaro kaj mi perdis mian Jillis-Gemon. Estas granda, brila, verda gemo... Ĉu vi pensas, ke vi povas trovi ĝin por mi?
 msg_mnt_bomb2	Dankege, ulo! Nu... Mi ne havas multon por oferi al vi kontraŭ ĝi, sed vi povas uzi ĉi tiun ŝvebantan maŝinon, se vi volas. Ĝi helpos atingi la plej altajn partojn de la monto./La vido estas mirinda el tie!
 msg_aldan		He! Estas bone vidi bomban samulon ĉi tie. Dankon pro liberigi min! Nun ni devas hasti kaj venki Gaxlon kaj liajn servitojn... niaj civitanoj suferas!
