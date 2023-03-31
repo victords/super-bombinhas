@@ -104,7 +104,7 @@ class MenuButton < Button
 
   def initialize(y, text_id, back = false, x = 314, fixed_text = false, &action)
     text = fixed_text ? text_id : SB.text(text_id)
-    super(x, y, SB.font, text, :ui_button1, 0, 0x808080, 0, 0, true, true, 0, 7, 0, 0, 0, nil, 2, 2, &action)
+    super(x, y, SB.font, text, :ui_button1, 0, 0x808080, 0, 0, true, true, 0, 0, 0, 0, 0, nil, 2, 2, &action)
     @text_id = fixed_text ? nil : text_id
     @back = back
     @sound = Res.sound(back ? :btn2 : :btn1)
@@ -180,33 +180,40 @@ class FormSection
       @buttons.each_with_index do |b, i|
         next unless b.is_a? Button
         if b.state == :down || mouse_moved && b.state == :over
-          @cur_btn_index = i
+          @cur_btn = @buttons[@cur_btn_index = i]
           break
         end
       end
       if SB.key_pressed?(:down) || SB.key_pressed?(:right) && @cur_btn.is_a?(Button)
         @cur_btn_index += 1
         @cur_btn_index = 0 if @cur_btn_index == @buttons.length
-        @cur_btn.unfocus if @cur_btn.respond_to? :unfocus
+        change_cur_btn
       elsif SB.key_pressed?(:up) || SB.key_pressed?(:left) && @cur_btn.is_a?(Button)
         @cur_btn_index -= 1
         @cur_btn_index = @buttons.length - 1 if @cur_btn_index < 0
-        @cur_btn.unfocus if @cur_btn.respond_to? :unfocus
+        change_cur_btn
       elsif SB.key_pressed?(:confirm)
         @cur_btn.click if @cur_btn.respond_to? :click
       elsif @back_btn && (SB.key_pressed?(:back) && !@cur_btn.is_a?(TextField) ||
                           KB.key_pressed?(Gosu::KB_ESCAPE) || KB.key_pressed?(Gosu::GP_0_BUTTON_1))
         @back_btn.click
       end
-      @cur_btn = @buttons[@cur_btn_index]
-      @cur_btn.focus if @cur_btn.respond_to? :focus
     end
+  end
+
+  def change_cur_btn
+    @cur_btn.unfocus if @cur_btn.respond_to? :unfocus
+    @cur_btn = @buttons[@cur_btn_index]
+    @cur_btn.focus if @cur_btn.respond_to? :focus
   end
 
   def show
     @visible = true
     @changing = 1
-    @components.each { |c| c.move_to(c.start_x, c.y) }
+    @components.each do |c|
+      c.move_to(c.start_x, c.y)
+      c.focus if c.respond_to?(:focus)
+    end
   end
 
   def hide

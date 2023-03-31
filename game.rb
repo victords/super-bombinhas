@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Super Bombinhas.  If not, see <https://www.gnu.org/licenses/>.
 
-gem 'minigl', '2.3.7'
+gem 'minigl', '2.4.3'
 
 require 'rbconfig'
 require 'gosu'
@@ -172,6 +172,10 @@ class MiniGL::GameObject
   end
 
   def stop_time_immune?
+    false
+  end
+
+  def scale_image_gap?
     false
   end
 end
