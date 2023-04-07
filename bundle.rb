@@ -1,12 +1,11 @@
 bundle = <<END
 gem 'gosu', '>=1.1.0'
-gem 'minigl', '2.3.7'
+gem 'minigl', '2.4.3'
 
 require 'minigl'
 require 'fileutils'
 require 'rbconfig'
 include MiniGL
-
 END
 
 file_names = %w(global credits bomb elements enemies form items movie options player section stage stage_menu world menu editor game)
