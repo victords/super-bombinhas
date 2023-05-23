@@ -66,7 +66,7 @@ can_play		Ahora puedes jugar con:
 msg1			Este artefacto se llama Spec. Se dice que están esparcidos por todo el mundo y que si alguien los consigue todos, abrirá una puerta a un mundo mágico... De locos, ¿verdad?
 msg2			No todas las llaves caben en todas las puertas...
 msg3			¿Has estado coleccionando estos artefactos? La leyenda dice que abren una puerta a algún tipo de mundo mágico... He oído decir que esta puerta se encuentra en algún lugar de la Isla de Tars.
-msg_monep		¡Oye! ¡Un momento! Si quieres seguir adelante, debes traerme una Hierba del Bosque. Sí, una deliciosa Hierba del Bosque... ¡Ahora ve!¡Y solo vuelve aquí cuando la tengas!
+msg_monep		¡Oye! ¡Un momento! Si quieres seguir adelante, debes traerme una Hierba del Bosque. Sí, una deliciosa Hierba del Bosque... ¡Ahora ve! ¡Y solo vuelve aquí cuando la tengas!
 msg_mnt_bomb	Hola, estaba caminando por las montañas y perdí mi preciosa Piedra Jillis. Es una gema verde grande y brillante... ¿La podrías encontrar por mí?
 msg_mnt_bomb2	¡Muchas gracias, compañero! Bueno... no tengo mucho que ofrecerte a cambio, pero puedes usar esta máquina flotante si quieres. Te va a ayudar a llegar a las partes más altas de la montaña./¡La vista es maravillosa desde allí!
 msg_aldan		¡Hola! Qué bien ver a un compañero bomba aquí... ¡Gracias por liberarme! Ahora, debemos apurarnos y derrotar a Gaxlon y sus secuaces... ¡Nuestros ciudadanos están sufriendo!
