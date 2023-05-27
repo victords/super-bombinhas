@@ -80,7 +80,7 @@ zirkn_speech	Estis stulte veni ĉi tien... Nun, VI DEVOS PAGI!
 zirkn_death		Mi malbenas viiiiin!!
 globb_speech	Grrrraaaaarrrblaaarrrgh!!! (Eliru el mia marĉo!!!)
 globb_death		Ggaaaaarrrr! Bleearr...gh! (Aaaaah! Lasu min so...la!)
-drepz_speech	Mi ne povas kredi, ke vi iris tiel longe... Sed ĝi estis por nenio, ĉar...\nVI NENIAM FORIROS DE ĈI TIU EJO!
+drepz_speech	Mi ne povas kredi, ke vi iris tiel longe... Sed tio estis por nenio, ĉar...\nVI NENIAM FORIROS DE ĈI TIU EJO!
 drepz_death		He... Vi estas tre fortaj... Sed mi avertas vin: vi neniam venkos la reĝon Gaxlon!
 gaxlon_speech	Ha, mi ne povas kredi, ke vi trairis la tutan vojon al ĉi tie... Ĉu vi ne vidas, ke estas senutila? Mi estas multe pli forta ol vi... Sed se vi volas batalon, MONTRU MIN, KION VI POVAS FARI!
 gaxlon_death	NEEEEEEE!!! Vi forprenis ĉion el mi! Ekde nia infaneco ĉiam estis tiel... Kial, Aldano, KIAL?!?!
