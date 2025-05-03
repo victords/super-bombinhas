@@ -30,9 +30,6 @@ language		Language
 lang_name		English
 sound_volume	Sounds volume
 music_volume	Music volume
-controls		Controls
-controls_0		Arrows, Space, Shift, A, S
-controls_1		WASD, JKLI
 full_screen		Press F4 to alternate between window and full screen
 credits_prog	- Design, Programming and Graphics -
 credits_music	- Music -
@@ -48,7 +45,6 @@ langs_libs		- Languages and Frameworks -
 confirm_exit	Are you sure you want to exit?
 ch_st_instruct	Press 'Enter' to start.\nPress 'Esc' or 'Backspace' to go back.
 stage			Stage
-loading			Loading
 lives			Lives
 score			Score
 resume			Resume

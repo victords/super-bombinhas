@@ -1,0 +1,154 @@
+powered_by		Didukung oleh
+game_by			Dibuat oleh
+play			Main
+help			Bantuan
+options			Pilihan
+credits			Kredit
+editor			Edit Level
+exit			Keluar
+story			Cerita
+custom			Level Kustom
+choose_game		Pilih game yang ingin dimuat atau 'Mulai Baru'
+new_game		Mulai Baru
+what_name		Siapa namamu?
+select_mode		Pilih mode
+old_school		Klasik
+old_school_desc	Nyawamu terbatas. Jika nyawamu mencapai nol, seluruh progres di dunia terakhir yang kamu kunjungi terhapus.
+casual			Santai
+casual_desc		Nyawamu tidak terbatas. Kamu bebas mengulang dari titik lanjut atau awal level kapan saja.
+back			Kembali
+continue		Lanjut
+delete			Hapus
+delete_confirm	Yakin mau hapus game ini?
+yes				Ya
+no				Tidak
+select_level	Pilih level yang ingin dimainkan
+help_text		Ini adalah game platform. Gunakan panah kiri dan kanan untuk bergerak, spasi untuk loncat, X untuk menggunakan item, Z atau V untuk mengganti item, C untuk memakai kemampuan, Shift untuk mengganti karakter, panah atas untuk membuka pintu, Esc untuk jeda game.\nGame ini juga kompatibel dengan joystick (hubungkan sebelum memulai memulai game). Pemetaan tombol mungkin berbeda-beda. Untuk controller XBOX 360, gunakan stik analog atau D-pad sebagai tombol panah, A untuk loncat atau konfirmasi, B untuk menggunakan item atau batalkan, X untuk memakai kemampuan, Y untuk mengganti karakter, LB dan RB untuk mengganti item, Start untuk jeda game.\nTekan F4 untuk beralih ke tampilan layar penuh.
+save			Simpan
+cancel			Batal
+language		Bahasa
+lang_name		Bahasa Indonesia
+sound_volume	Volume suara
+music_volume	Volume musik
+full_screen		Tekan F4 untuk beralih antara tampilan jendela dan layar penuh
+credits_prog	- Desain, Pemrograman, dan Grafis -
+credits_music	- Musik -
+sounds			- Efek Suara -
+sounds_edit		Disunting oleh Victor David Santos
+developed		Dikembangkan sepenuhnya di Linux
+special_thanks	- Ucapan Terima Kasih Spesial -
+special_thanks2	Komunitas Gosu\n...dan semua teman dan keluarga yang telah mendukung
+special_thanks3	Komunitas Gosu\nSemua teman dan keluarga\nyang turut mewujudkan proyek ini...\ndan KAMU, yang sudah memainkan game ini!\nTERIMA KASIH BANYAK, YA!
+graph_soft		- Aplikasi Grafis -
+music_soft		- Aplikasi Musik/Audio -
+langs_libs		- Bahasa dan Framework -
+confirm_exit	Yakin mau keluar?
+ch_st_instruct	Tekan 'Enter' untuk mulai.\nTekan 'Esc' atau 'Backspace' untuk kembali.
+stage			Tahap
+lives			Nyawa
+score			Skor
+resume			Lanjut
+change_bomb		Ganti Bom
+stage_complete	Tahap Selesai!
+total			Total
+spec_taken		Dapat Spec?
+stars			Bintang
+all_stars_found	Mendapatkan item!
+dead			Kamu mati!
+restart			Tekan 'Enter' untuk mengulang
+game_over		Kamu kalah!
+too_bad			Sayang sekali!
+can_play		Sekarang kamu bisa bermain sebagai:
+msg1			Artefak ini disebut dengan Spec. Konon, artefak-artefak ini tersebar di seluruh dunia. Siapa pun yang berhasil mengumpulkan semuanya, akan membuka gerbang menuju dunia ajaib... Terdengar agak gila, kan?
+msg2			Tidak semua kunci bisa membuka setiap pintu...
+msg3			Apakah kamu sudah mengumpulkan artefak-artefak ini? Menurut legenda, mereka membuka gerbang menuju semacam dunia ajaib... Aku pernah dengar gerbang itu terletak di suatu tempat di Pulau Tars.
+msg_monep		Hei! Tunggu! Kalau kamu ingin melangkah lebih jauh, kamu harus bawakan aku sebuah Herba Hutan. Benar, Herba Hutan yang lezat itu... Sekarang enyah dan jangan kembali kalau barangnya belum ada!
+msg_mnt_bomb	Hai, aku sempat jalan-jalan di pegunungan dan kehilangan Batu Jilis milikku yang berharga. Batu itu besar, berkilat, berwarna hijau... Maukah kamu mencarikannya untukku?
+msg_mnt_bomb2	Terima kasih banyak, kawan! Sebenarnya aku tidak punya banyak hal yang bisa kuberikan sebagai imbalan atas kebaikanmu, tapi kalau mau, kamu bisa menggunakan mesin pengapung ini. Mesin ini akan membantumu mencapai puncak gunung./Pemandangannya sangat indah di atas sana!
+msg_aldan		Hei! Senang sekali bertemu sesama bom di sini... Terima kasih sudah membebaskanku! Ayo, kita harus segera mengalahkan Gaxlon dan para kaki tangannya... rakyat kita sedang menderita!
+chamal_speech	Akhirnya... kau datang juga. Sayang sekali, perjalananmu yang tak berarti ini harus berakhir sekarang, bom kecil. TANGKAP DIA, WHEELIAMS!
+chamal_death	Tidaaaaaak...!! Bagaimana bisa aku dikalahkan oleh makhluk lemah seperti ini...?! Tidak, itu tidak...mung...
+sahiss_speech	Sssssss Ssssssssssss Sssss?! SSSSSS!! (Siapa kamu yang berani masuk ke benteng suci hutanku?! BERSIAPLAH UNTUK MATI!!)
+sahiss_death	Sssssssssssssssssssss...!! (Tidaaaaaaaaaaaaaaaaaaak...!!)
+ulor_speech		Apa yang kalian lakukan di sini, bom-bom kecil?! Tamatlah kalian!
+ulor_death		Gaaaaaah! Tak kusangka... Aku kalah dari makhluk remeh ini...!
+zirkn_speech	Bodoh sekali kamu datang ke sini... Sekarang, KAMU HARUS MEMBAYAR AKIBATNYA!
+zirkn_death		Terkutuklah kauuuuu!!
+globb_speech	Grrrraaaaarrrblaaarrrgh!!! (Keluar dari rawa milikku!!!)
+globb_death		Ggaaaaarrrr! Bleearr...gh! (Aaaaah! Biarkan aku sen...diri!)
+drepz_speech	Tak kusangka kau bisa berhasil sejauh ini... Tapi percuma saja, karena...\nKAU TAK AKAN BISA MENINGGALKAN TEMPAT INI!
+drepz_death		Heh... Kau kuat juga, ya... Tapi biar aku peringatkan: kau tidak akan bisa mengalahkan Raja Gaxlon!
+gaxlon_speech	Wah, tak kusangka kalian bisa sampai ke sini... Tak sadarkah kalian kalau ini semua sia-sia? Kekuatanku jauh melampaui kalian semua... Tapi kalau kalian memang ingin bertarung, TUNJUKKAN KEHEBATAN KALIAN!
+gaxlon_death	TIDAAAAAAAK!!! Kau rampas semuanya dariku! Sejak kita masih kecil, kau selalu begitu... Kenapa, Aldan, KENAPA?!?!
+count_down		Hitungan mundur menuju ledakan!
+world_1			Pulau Tars
+stage_1_1		Jelajahi Pantai Tars
+stage_1_2		Pasir dan Perbukitan Hijau
+stage_1_3		Kekacauan 'Mechanimal'
+stage_1_4		Akhirnya! Benteng Chamal
+stage_1_5		Chamal: Saat Kejatuhannya!
+world_2			Hutan Orang Bijak
+stage_2_1		Hutan Perbatasan
+stage_2_2		Puncak Pohon Tertinggi
+stage_2_3		Teka-Teki Tiga Pohon
+stage_2_4		Memasuki Benteng Hutan
+stage_2_5		Jauh di Dalam Benteng Hutan
+world_3			Pegunungan Hujan
+stage_3_1		Di Kaki Pegunungan
+stage_3_2		Bukit Teka-Teki
+stage_3_3		Berjumpa dengan Suku Pegunungan
+stage_3_4		Gua Es
+stage_3_5		Tempat Persembunyian Ulor
+world_4			Desa Inkut
+stage_4_1		Desa yang Hancur
+stage_4_2		Awas Ada Dinding Jatuh!
+stage_4_3		Kuil Kuno
+stage_4_4		Bagian-Bagian Puzzle yang Tersembunyi
+stage_4_5		Istana Kuno
+world_5			Rawa Mual
+stage_5_1		Selamat Datang di Rawa
+stage_5_2		Duri, Racun, dan Air yang Berbahaya
+stage_5_3		Lereng Curam!
+stage_5_4		Malam Turun di Mual
+stage_5_5		Sarang Para Makhluk Buas
+world_6			Gua Ooria
+stage_6_1		Jalan Berbatu di Depan
+stage_6_2		Platform yang Tak Terkendali!
+stage_6_3		Labirin Bawah Tanah yang Dalam
+stage_6_4		Menjelajah Dalam Kegelapan
+stage_6_5		Drepz di Jurang Gelap
+world_7			Kota Bom
+stage_7_1		Menyusup Melalui Pinggiran Kota
+stage_7_2		Tentara Sang Raja Palsu
+stage_7_3		Mendekati Tembok Istana
+stage_7_4		Memasuki Istana Kerajaan
+stage_7_5		Pertarungan untuk Menegakkan Keadilan
+world_8			Lae, Hutan Ajaib
+stage_8_1		Petualangan Menembus Kabut
+bonus			Bonus
+bonus_1			Sampai ke garis akhir
+bonus_2			Bunuh semua musuh
+bonus_3			Kumpulkan semua Batu Api
+movie_0_0		Di tanah yang jauh, berdiri sebuah desa indah yang dihuni oleh para bom hidup./Dulu, desa itu penuh dengan kedamaian, rakyatnya hidup makmur dan menghormati rajanya.../Tapi kini, kedamaian itu terusik oleh rasa dengki Gaxlon, salah satu penasihat raja...
+movie_0_1		Gaxlon ingin merebut takhtanya dan memimpin sendiri, maka ia menjebak Aldan, rajanya sendiri. Namun, ia tak tega membunuhnya karena dulu mereka berteman sejak kecil.../Saat para bawahannya menyeret raja, keempat bom super datang dan melihat kejadian mengerikan itu dengan mata kepala sendiri...
+movie_0_2		Gaxlon dengan sigap memerintahkan pasukannya menyerang para bom super, namun, Aldan melindungi mereka dengan sihir kuno./Menyadari bahwa kekuatan mereka terlalu besar untuk dikalahkan, Gaxlon pun memerintahkan agar mereka dikurung di tempat-tempat terpencil... Dari sanalah, masa kekuasaan kejamnya dimulai.
+movie_0_3		Di saat para bom super dibawa ke tempat yang jauh, Bomba Azul—si paling pintar—berhasil mengelabui penjaganya dan melarikan diri.../Ia sempat melihat Bomba Vermelha dibawa ke arah Tars Island. Tanpa ragu, ia pun bergegas ke sana untuk menyelamatkan teman-temannya...
+movie_1_0		Bomba Azul dan Bomba Vermelha bersukacita saat bertemu kembali dan berhasil mengalahkan anak buah pertama Gaxlon./Namun, mereka tak punya waktu untuk berlama-lama dan segera keluar dari istana untuk mencari teman-teman mereka yang lain...
+movie_1_1		Kata Bomba Vermelha, dia melihat Bomba Amarela dibawa ke Hutan Wisemen, yang ada di benua sana./Dengan nada bercanda, Bomba Azul menatapnya dan berkata, "Semoga kamu bisa berenang, ya!".
+movie_2_0		Usai mengalahkan Sahiss si ular menakutkan, Azul dan Vermelha berhasil membebaskan Bomba Amarela, yang tampak begitu bahagia. hingga langsung melompat tinggi seperti biasanya. Dia langsung melompat tinggi seperti biasanya./Tanpa membuang waktu, mereka segera melanjutkan perjalanan demi menyelamatkan Bomba Verde, bom super terakhir yang masih disekap.
+movie_2_1		Saat meninggalkan hutan lewat utara, tampak Pegunungan Hujan menjulang di kejauhan./Mereka menduga itulah tempat persembunyian sempurna bagi anak buah Gaxlon, maka mereka pun melangkah maju, siap menghadapi pendakian panjang...
+movie_3_0		"LARI!!!", seru Bomba Verde panik, saat es-es tajam berjatuhan dari langit-langit bekas persembunyian Ulor./Setelah mereka berhasil meloloskan diri dari bahaya, akhirnya mereka bisa bernapas lega. Bomba Verde pun mengucapkan terima kasih pada Azul, Vermelha, dan Amarela yang telah menyelamatkannya./Meski begitu, suasanya hatinya tetap muram (seperti biasanya)...
+movie_3_1		Ia bercerita pada yang lain bahwa saat dibawa ke atas gunung, ia melihat sesosok makhluk jahat menguasai desa tampak damai di kaki gunung./"Kita harus bantu mereka!", ujarnya. Semuanya setuju dan mereka pun mulai menuruni lereng panjang...
+movie_4_0		Usai mengalahkan si jahat Zirk'n, para bom super berkumpul di sekitar tetua desa, yang tak henti-hentinya mengucap syukur./Ia bertanya apakah ada yang bisa ia lakukan untuk membalas jasa mereka, dan para bom super menjawab bahwa yang paling mereka butuhkan saat ini adalah informasi, karena mereka sama sekali tak tahu di mana Aldan berada.
+movie_4_1		Sang tetua berkata, "Aku tak tahu banyak soal Gaxlon keji yang kalian sebutkan, tapi aku tahu seseorang yang mungkin mengetahuinya.../Katanya, ada seorang peramal misterius yang tinggal di Rawa Mual. Aku tak bisa memberitahu kalian letak pastinya, tapi peta ini bisa membantu kalian sampai ke sana."/Petualangan baru pun tampaknya segera dimulai...
+movie_5_0		Begitu Globb dikalahkan, dari balik bayang-bayang muncullah sosok misterius... Ternyata ia adalah peramal yang pernah disebut oleh tetua Desa Inkut!/Para bom pun menanyakan ke mana arah untuk menemukan raja mereka. Sang peramal menaruh tangannya di atas bola kristal dan bergumam pelan.../"Raja yang digulingkan ditahan di gua gelap, tapi sepertinya kini ia berada di tempat yang sedikit lebih terang, tak jauh dari sana..."
+movie_5_1		Mereka pun menyimpulkan bahwa yang dimaksud adalah Gua Ooria, jauh di bagian utara Enmat.../"Jangan cemas, kawan-kawan. Ada makhluk di sini yang mungkin bisa menolong kalian dalam misi mulia ini," kata sang peramal. Seekor monster besar berbentuk naga pun muncul dan membawa para bom super ke udara!./"Ke Gua Ooria, tolong ya!" pinta Bomba Azul. Ajaibnya, sang makhluk seolah paham.
+movie_6_0		Setelah berhasil menumbangkan tangan kanan Gaxlon, sang raja dan keempat bom super semakin bersemangat./"Kita memang menang, tapi kita tak boleh berlama-lama. Rakyat kita sedang merasakan kekejaman Gaxlon saat ini juga!", seru sang raja. Mendengar itu, para bom super pun makin terpacu untuk menyelesaikan perjalanan mereka...
+movie_6_1		Mereka bergerak ke arah Kota Bom yang berada di dekat situ. Semakin dekat mereka ke batas kota, perasaan aneh menyergap—seakan-akan Gaxlon sedang memperhatikan mereka dari kejauhan, tersenyum jahat...
+movie_7_0		Akhirnya, kekuasaan kejam Gaxlon runtuh. Aldan menghukumnya dengan pengasingan selamanya di tanah asing, jauh di luar Enmat./Para bom super melihatnya dengan rasa puas, sementara Gaxlon merunduk dan perlahan mundur dari hadapan sang raja sejati.
+movie_7_1		Kota Bom akhirnya kembali damai! Raja muncul di atas tembok istana dan melambaikan tangan pada rakyatnya./Sambutan meriah pun pecah, dengan konfeti beterbangan menyambut raja dan para bom super... Sebuah hari yang akan dikenang selamanya!
+movie_8_0		Cahaya menyilaukan menyembur dari artefak besar pada saat para bom semakin dekat, disusul suara megah entah dari mana datangnya.../"Selamat, para penjelajah. Tak ada satu pun yang pernah sampai sejauh ini. Namun, bila kalian menginginkan kebenaran sejati, maka ini baru permulaan.../Lalui portal ini, dan ujian sesungguhnya akan menguji jiwa kalian..."
+movie_8_1		Portal raksasa terbuka di tempat artefak itu berada. Para bom terpaku, saling memandang dalam kebingungan./Bomba Azul pun tersenyum dan berkata, "Sepertinya kita sudah cukup menjalani ujian untuk saat ini, kan?" Mereka semua tertawa, lalu mulai berjalan menyusuri perjalanan panjang pulang ke rumah...
+game_end		Tamat!
+game_end_sub	Tapi... apakah kamu sudah mengumpulkan semua Spec-nya?
+game_end_2_sub	Kali ini benar-benar tamat.

@@ -30,9 +30,6 @@ language		Lingvo
 lang_name		Esperanto
 sound_volume	Laŭteco de sonoj
 music_volume	Muzika laŭteco
-controls		Kontroliloj
-controls_0		Sagoj, Spacoklavo, Majuskliga klavo, A, S
-controls_1		WASD, JKLI
 full_screen		Prenu F4-n por ŝanĝi inter fenestra kaj plena ekrano
 credits_prog	- Fasonado, Programado kaj Grafikoj -
 credits_music	- Musiko -
@@ -48,7 +45,6 @@ langs_libs		- Lingvoj kaj Framoj -
 confirm_exit	Ĉu vi certe volas eliri?
 ch_st_instruct	Premu enigan klavon por komenci.\nPremu 'Esc'-n aŭ retropaŝan klavon por iri antaŭen.
 stage			Nivelo
-loading			Ŝarĝante
 lives			Vivoj
 score			Poentaro
 resume			Daŭrigi

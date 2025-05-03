@@ -30,9 +30,6 @@ language		Idioma
 lang_name		Português
 sound_volume	Volume dos sons
 music_volume	Volume da música
-controls		Controles
-controls_0		Setas, Espaço, Shift, A, S
-controls_1		WASD, JKLI
 full_screen		Aperte F4 para alternar entre janela e tela cheia
 credits_prog	- Design, Programação e Gráficos -
 credits_music	- Música -
@@ -48,7 +45,6 @@ langs_libs		- Linguagens e Frameworks -
 confirm_exit	Tem certeza de que deseja sair?
 ch_st_instruct	Aperte 'Enter' para começar.\nAperte 'Esc' ou 'Backspace' para voltar.
 stage			Fase
-loading			Carregando
 lives			Vidas
 score			Pontos
 resume			Continuar
