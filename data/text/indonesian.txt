@@ -64,7 +64,7 @@ msg2			Tidak semua kunci bisa membuka setiap pintu...
 msg3			Apakah kamu sudah mengumpulkan artefak-artefak ini? Menurut legenda, mereka membuka gerbang menuju semacam dunia ajaib... Aku pernah dengar gerbang itu terletak di suatu tempat di Pulau Tars.
 msg_monep		Hei! Tunggu! Kalau kamu ingin melangkah lebih jauh, kamu harus bawakan aku sebuah Herba Hutan. Benar, Herba Hutan yang lezat itu... Sekarang enyah dan jangan kembali kalau barangnya belum ada!
 msg_mnt_bomb	Hai, aku sempat jalan-jalan di pegunungan dan kehilangan Batu Jilis milikku yang berharga. Batu itu besar, berkilat, berwarna hijau... Maukah kamu mencarikannya untukku?
-msg_mnt_bomb2	Terima kasih banyak, kawan! Sebenarnya aku tidak punya banyak hal yang bisa kuberikan sebagai imbalan atas kebaikanmu, tapi kalau mau, kamu bisa menggunakan mesin pengapung ini. Mesin ini akan membantumu mencapai puncak gunung./Pemandangannya sangat indah di atas sana!
+msg_mnt_bomb2	Terima kasih banyak, kawan! Sebenarnya aku tidak punya banyak hal yang bisa kuberikan sebagai imbalan atas kebaikanmu, tapi kalau mau, kamu bisa menggunakan mesin pengapung ini. Mesin ini akan membantumu mencapai/puncak gunung. Pemandangannya sangat indah di atas sana!
 msg_aldan		Hei! Senang sekali bertemu sesama bom di sini... Terima kasih sudah membebaskanku! Ayo, kita harus segera mengalahkan Gaxlon dan para kaki tangannya... rakyat kita sedang menderita!
 chamal_speech	Akhirnya... kau datang juga. Sayang sekali, perjalananmu yang tak berarti ini harus berakhir sekarang, bom kecil. TANGKAP DIA, WHEELIAMS!
 chamal_death	Tidaaaaaak...!! Bagaimana bisa aku dikalahkan oleh makhluk lemah seperti ini...?! Tidak, itu tidak...mung...

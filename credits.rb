@@ -23,7 +23,7 @@ class Credits
         [SB.text(:langs_libs), 2],
         ["Ruby language\nGosu\nMiniGL\n" + SB.text(:developed), 3],
         [SB.text(:special_thanks), 2],
-        ["Yuri David Santos\nMaria Alice Armelin\nFrancesco Corrado\nVinícius de Araújo Barboza\nStefano Girardi\nJorge Maldonado Ventura\n" + SB.text(:special_thanks3), 3]
+        ["Yuri David Santos\nMaria Alice Armelin\nFrancesco Corrado\nVinícius de Araújo Barboza\nStefano Girardi\nJorge Maldonado Ventura\nNur Bagus Satrio\n" + SB.text(:special_thanks3), 3]
       ]
       @full_height = @title.height * 2 + FIRST_SPACING
       @texts.each do |t|

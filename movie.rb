@@ -65,7 +65,11 @@ class Movie
       next if @timer <= i * 60
       alpha = ((@timer - i * 60).to_f / 60 * 255).round
       alpha = 255 if alpha > 255
-      SB.text_helper.write_breaking(text, 80, 280 + i * 100, 640, :justified, 0xffffff, alpha)
+      y = 280 + i * 100
+      y += 26 if @id == 2 && @scene == 0 && i == 1 && SB.lang == :indonesian
+      y -= 26 if @id == 3 && @scene == 0 && i == 1 && SB.lang == :indonesian
+      y -= 26 if @id == 5 && @scene == 1 && i == 1 && SB.lang == :indonesian
+      SB.text_helper.write_breaking(text, 80, y, 640, :justified, 0xffffff, alpha)
     end if @texts
     if @changing
       c = @alpha << 24

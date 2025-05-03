@@ -281,7 +281,7 @@ class StageMenu
           SB.check_next_stage
         })
         if unlock_bomb
-          @stage_menu.section(3).add(MenuText.new(:can_play, 210, 400))
+          @stage_menu.section(3).add(MenuText.new(:can_play, 210, 400, 400, :left, SB.lang == :indonesian ? 1.5 : 2))
           @stage_menu.section(3).add(MenuImage.new(558, 394, get_next_bomb_icon))
         end
         @continue_only = true

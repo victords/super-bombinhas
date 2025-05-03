@@ -2986,6 +2986,14 @@ class Lightning < SBGameObject
 end
 
 class Graphic < Sprite
+  LANG_INDEX = {
+    english: 0,
+    portuguese: 1,
+    spanish: 2,
+    esperanto: 0,
+    indonesian: 3
+  }.freeze
+
   def initialize(x, y, args, section)
     type = args.to_i
     type = 1 if type == 0
@@ -3000,25 +3008,23 @@ class Graphic < Sprite
     when 7..8 then @w = 128; @h = 64
     when 9 then x -= 16; @w = 160; @h = 64
     when 10 then x -= 236; y -= 416; @w = 600; @h = 480
-    when 12
-      x += 2; @w = 126; @h = 128; cols = 5; rows = 1
-      if SB.player.has_bomb?(:vermelha)
-        img_index = 4
+    when 12, 26, 27
+      x += 2; @w = 126; @h = 128; cols = 6; rows = 1
+      bomb_type = case type
+                  when 12 then :vermelha
+                  when 26 then :amarela
+                  else         :verde
+                  end
+      if SB.player.has_bomb?(bomb_type)
+        img_index = 5
       else
-        @indices = [0, SB.lang == :portuguese ? 1 : SB.lang == :english ? 2 : 3]; @interval = 60
+        @indices = [0, LANG_INDEX[SB.lang] + 1]
+        @interval = 60
       end
-    when 13..18 then x -= 64; y -= 88; @w = 160; @h = 120; cols = 1; rows = 3; img_index = SB.lang == :portuguese ? 1 : SB.lang == :english ? 0 : 2
+    when 13..18, 24 then x -= 64; y -= 88; @w = 160; @h = 120; cols = 1; rows = 4; img_index = LANG_INDEX[SB.lang]
     when 19..20 then x -= 64; y -= 88; @w = 160; @h = 120
     when 21..23 then x -= 14; @w = 60; @h = 32
-    when 24 then x -= 64; y -= 88; @w = 160; @h = 120; cols = 1; rows = 2; img_index = SB.lang == :english ? 0 : 1
     when 25 then x -= 4; y -= 4; @w = 40; @h = 68
-    when 26..27
-      x += 2; @w = 126; @h = 128; cols = 5; rows = 1
-      if SB.player.has_bomb?(type == 26 ? :amarela : :verde)
-        img_index = 4
-      else
-        @indices = [0, SB.lang == :portuguese ? 1 : SB.lang == :english ? 2 : 3]; @interval = 60
-      end
     when 28 then x -= 12; @w = 56; @h = 36
     when 29..32 then x -= 12; @w = 56; @h = 32
     when 33 then x -= 88; y -= 96; @w = 208; @h = 128
