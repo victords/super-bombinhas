@@ -90,7 +90,7 @@ stage_1_5		Chamal: the knock down!
 world_2			Wisemen's Forest
 stage_2_1		The border woods
 stage_2_2		Atop the tallest tree
-stage_2_3		The three trees engima
+stage_2_3		The three trees enigma
 stage_2_4		Entering the forest fortress
 stage_2_5		Deep in the forest fortress
 world_3			Rainy Mountains
